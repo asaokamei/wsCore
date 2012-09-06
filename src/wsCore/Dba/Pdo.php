@@ -29,7 +29,10 @@ class Pdo
      */
     public static function set( $name, $config )
     {
-        if( !is_array( $config ) && is_string( $config ) ) {
+        if( is_array( $config ) && isset( $config[ 'dsn' ] ) ) {
+            $config = array_merge( $config, static::parseDbCon( $config[ 'dsn' ] ) );
+        }
+        elseif( is_string( $config ) ) {
             $config = static::parseDbCon( $config );
         }
         if( !isset( $config[ 'attributes' ] ) ) {
@@ -106,7 +109,7 @@ class Pdo
      */
     private static function parseDbCon( $db_con )
     {
-        $conn_str = array( 'db', 'dbname', 'port', 'host', 'user', 'password' );
+        $conn_str = array( 'db', 'dbname', 'port', 'host', 'username', 'password' );
         $return_array = array();
         foreach( $conn_str as $parameter ) {
             $pattern = "/{$parameter}\s*=\s*(\S+)/";
