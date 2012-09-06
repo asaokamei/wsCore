@@ -1,0 +1,10 @@
+# ignore git
+
+# DreamWeaver's sync xml file.
+dwsync.xml
+# netbean
+nbproject/*
+# ?
+.DS_Store
+# PHPStorm
+.idea/*
