@@ -24,6 +24,14 @@ class Dba
         $this->fetchMode = \PDO::FETCH_ASSOC;
     }
 
+    public function dbConnect( $conn=NULL, $new=FALSE ) {
+        if( is_object( $conn ) ) {
+            $this->dbConn = $conn;
+        }
+        elseif( $conn ) {
+            $this->dbConn = ( $new ) ? Pdo::connectNew( $conn ): Pdo::connect( $conn );
+        }
+    }
     /**
      * @return Sql
      */
