@@ -11,15 +11,15 @@ class Pdo
 
     /** @var array   default attributes for PDO driver  */
     private static $defaultAttr = array(
-        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-        \PDO::ATTR_CASE => \PDO::CASE_LOWER,
+        \PDO::ATTR_ERRMODE      => \PDO::ERRMODE_EXCEPTION,
+        \PDO::ATTR_CASE         => \PDO::CASE_LOWER,
         \PDO::ATTR_ORACLE_NULLS => \PDO::NULL_NATURAL,
     );
 
     /** @var array   list of constructed PDO drivers    */
     private static $drivers = array();
 
-    private static $pdo = '\PDO';
+    private static $pdoClass = '\PDO';
     // +----------------------------------------------------------------------+
     /**
      * set a named configs for database connection.
@@ -100,7 +100,7 @@ class Pdo
 
     /**
      * connect to database by PDO using $configs setting.
-     * 
+     *
      * @static
      * @param array $config
      * @return Pdo
@@ -115,7 +115,7 @@ class Pdo
                 $dsn .= "{$item}=" . $config[$item] . "; ";
             }
         }
-        $class = static::$pdo;
+        $class = static::$pdoClass;
         /** @var $pdo \PDO */
         $pdo   = new $class( $dsn, $config[ 'username' ], $config[ 'password' ], $config[ 'attributes' ] );
         if( isset( $config[ 'exec' ] ) ) {
@@ -150,7 +150,7 @@ class Pdo
      */
     public static function setPdoClass( $class )
     {
-        static::$pdo = $class;
+        static::$pdoClass = $class;
     }
     // +----------------------------------------------------------------------+
 }
