@@ -67,7 +67,7 @@ class Rdb
      *
      * @static
      * @param string|null $name
-     * @return Rdb
+     * @return \Pdo
      * @throws \RuntimeException
      */
     public static function connect( $name=NULL )
@@ -84,7 +84,7 @@ class Rdb
      *
      * @static
      * @param $name
-     * @return Rdb
+     * @return \Pdo
      * @throws \RuntimeException
      */
     public static function connectNew( $name ) {
@@ -103,7 +103,7 @@ class Rdb
      *
      * @static
      * @param array $config
-     * @return Rdb
+     * @return \Pdo
      */
     public static function connectPdo( $config )
     {
