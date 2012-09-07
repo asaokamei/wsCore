@@ -13,6 +13,7 @@ class Sql
     var $where;
     var $group;
     var $having;
+    var $misc;
     var $limit = FALSE;
     var $offset = 0;
     var $distinct = FALSE;
@@ -30,15 +31,40 @@ class Sql
     /**
      * @param Dba $dba
      */
-    public function __construct( $dba ) {
-        $this->dba = $dba;
+    public function __construct( $dba=NULL ) {
+        $this->dba = ( $dba ) ?: NULL;
     }
 
     /**
+     * clear returns brand new Sql object, instead of using
+     * the same object and reset all variables.
+     *
+     * @return Sql
+     */
+    public function clear() {
+        return new self( $this->dba );
+    }
+
+    /**
+     * executes SQL statement.
+     *
      * @return \PdoStatement
      */
     public function exec() {
         $this->dba->execSQL( $this->sql, $this->prepared_values );
+        return $this->dba->stmt();
+    }
+
+    /**
+     * executes SQL statement. mostly for backward compatibility.
+     *
+     * @param null $sql
+     * @param null $prepared
+     * @return \PdoStatement
+     */
+    public function execSQL( $sql=NULL, $prepared=NULL ) {
+        $sql = ( $sql ) ?: $this->sql;
+        $this->dba->execSQL( $sql, $prepared );
         return $this->dba->stmt();
     }
     // +----------------------------------------------------------------------+
@@ -99,6 +125,10 @@ class Sql
         $this->group = $group;
         return $this;
     }
+    public function misc( $misc ) {
+        $this->misc = $misc;
+        return $this;
+    }
     public function limit( $limit ) {
         $this->limit  = ( $limit  ) ? $limit : FALSE;
         return $this;
@@ -131,6 +161,7 @@ class Sql
     public function joinLeftOn( $table, $columns ) {
         return $this->join( $table, 'LEFT JOIN', 'ON', $columns );
     }
+    // +----------------------------------------------------------------------+
     public function where( $col, $val, $rel='=', $op='' ) {
         $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => $op );
         $this->where[] = $where;
@@ -140,7 +171,33 @@ class Sql
         $this->where = $where;
         return $this;
     }
+    public function addWhere( $where, $op='AND' ) {
+        return $this->where( $where, '', '', $op );
+    }
     // +----------------------------------------------------------------------+
+    public function makeSQL( $type )
+    {
+        $type = strtoupper( $type );
+        switch( $type ) {
+            case 'INSERT':
+                $sql = $this->makeInsert();
+                break;
+            case 'UPDATE':
+                $sql = $this->makeUpdate();
+                break;
+            case 'DELETE':
+                $sql = $this->makeDelete();
+                break;
+            case 'COUNT':
+                $sql = $this->makeCount();
+                break;
+            default:
+            case 'SELECT':
+                $sql = $this->makeSelect();
+                break;
+        }
+        $this->sql = $sql;
+    }
     public function makeWhere() {
         if( is_array( $this->where ) ) {
             $where = '';
@@ -208,6 +265,16 @@ class Sql
         }
         return "DELETE FROM {$this->table} WHERE " . $where;
     }
+    public function makeCount() {
+        $column = $this->columns;
+        $update = $this->forUpdate;
+        $this->columns   = 'COUNT(*) AS wscore_count';
+        $this->forUpdate = FALSE;
+        $select = $this->makeSelect();
+        $this->columns   = $column;
+        $this->forUpdate = $update;
+        return $select;
+    }
     public function makeSelect() {
         $select = 'SELECT '
             . ( $this->distinct ) ? 'DISTINCT ': ''
@@ -217,6 +284,17 @@ class Sql
     }
     public function makeSelectBody() {
         if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
+        $select  = $this->makeColumn();
+        $select .= ' FROM ' . $this->table;
+        $select .= $this->makeJoin();
+        $select .= ( $where = $this->makeWhere() ) ? ' WHERE '.$where: '';
+        $select .= ( $this->group  ) ? ' GROUP BY '   . $this->group: '';
+        $select .= ( $this->having ) ? ' HAVING '     . $this->having: '';
+        $select .= ( $this->order  ) ? ' ORDER BY '   . $this->order: '';
+        $select .= ( $this->misc   ) ? ' '            . $this->misc: '';
+        $select .= ( $this->limit  > 0 ) ? ' LIMIT '  . $this->limit: '';
+        $select .= ( $this->offset > 0 ) ? ' OFFSET ' . $this->offset: '';
+        return $select;
     }
     public function makeJoin() {
         $joined = '';
