@@ -10,10 +10,11 @@ class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->mockPdo = '\wsTests\Dba\RdbMockPdo';
+        \wsCore\Dba\Rdb::_init();
     }
 
     /**
-     * expectedException RuntimeException
+     * @expectedException RuntimeException
      */
     // +----------------------------------------------------------------------+
     public function test_name_not_exists()
@@ -27,7 +28,7 @@ class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
         \wsCore\Dba\Rdb::set( $name1, $dsn1 );
         // getting name that does not exist
         $name_not_exist = 'must_throw_exception';
-        //$pdo = \wsCore\Dba\Rdb::connect( $name_not_exist );
+        $pdo = \wsCore\Dba\Rdb::connect( $name_not_exist );
     }
     /**
      * @expectedException RuntimeException

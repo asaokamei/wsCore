@@ -20,6 +20,13 @@ class Rdb
     private static $drivers = array();
 
     private static $pdoClass = '\PDO';
+    
+    public static function _init() {
+        static::$configs = array();
+        static::$defaultName = NULL;
+        static::$drivers = array();
+        static::$pdoClass = '\PDO';
+    }
     // +----------------------------------------------------------------------+
     /**
      * set a named configs for database connection.
