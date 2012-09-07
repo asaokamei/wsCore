@@ -7,7 +7,7 @@ class Rdb
     private static $configs = array();
 
     /** @var string  use the configs name as defaultName */
-    private static $defaultName = '';
+    private static $defaultName = NULL;
 
     /** @var array   default attributes for PDO driver  */
     private static $defaultAttr = array(
@@ -41,10 +41,10 @@ class Rdb
             $config[ 'attributes' ] = static::$defaultAttr;
         }
         if( !isset( $config[ 'username' ] ) ) {
-            $config[ 'username' ] = '';
+            $config[ 'username' ] = NULL;
         }
         if( !isset( $config[ 'password' ] ) ) {
-            $config[ 'password' ] = '';
+            $config[ 'password' ] = NULL;
         }
         static::$configs[ $name ] = $config;
         if( !isset( static::$defaultName ) ) {
@@ -88,8 +88,8 @@ class Rdb
      * @throws \RuntimeException
      */
     public static function connectNew( $name ) {
-        $name = ( $name )?: static::$defaultName;
-        if( !isset( static::$configs[ $name ] ) ) {
+        $name = ( $name )? $name : static::$defaultName;
+        if( !$name ) {
             throw new \RuntimeException( "PDO Config name is not set.'" );
         }
         if( !isset( static::$configs[ $name ] ) ) {
