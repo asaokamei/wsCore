@@ -2,19 +2,30 @@
 namespace wsCore\Dba;
 
 /**
- * base class for various dao's for each table.
- * a table data gateway pattern.
+ * base class for dao's for database tables.
+ * a Table Data Gateway pattern.
  */
 class Dao
 {
+    /** @var string     name of database table     */
     private $table;
+    /** @var string     name of primary key        */
     private $id_name;
 
+    /** @var array      property names as key => name  */
     private $properties = array();
+    /** @var array      list of accessible keys        */
+    private $restricts  = array();
+    /** @var array      for selector construction      */
     private $selectors  = array();
+    /** @var array      for validation of inputs       */
+    private $pggChecks  = array();
 
     private $dba;
     // +----------------------------------------------------------------------+
+    /**
+     * @param Dba $dba
+     */
     public function __construct( $dba=NULL )
     {
         $this->dba = ( is_object( $dba ) )?:
@@ -111,17 +122,69 @@ class Dao
      */
     public function getSelector( $var_name )
     {
+        $sel = NULL;
         if( isset( $this->selectors[ $var_name ] ) ) {
             $info  = $this->selectors[ $var_name ];
             $args  = array( $var_name ) + $info[ 'args' ];
-            $class = new ReflectionClass( $info[ 'class' ] );
+            $class = new \ReflectionClass( $info[ 'class' ] );
             $sel   = $class->newInstanceArgs( $args );
             if( isset( $info[ 'call' ] ) && is_callable( $info[ 'call' ] ) ) {
                 $function = $info[ 'call' ];
                 call_user_func( $function, $sel );
             }
         }
-        return NULL;
+        return $sel;
+    }
+
+    /**
+     * checks input data using pggCheck.
+     * $pggChecks[ $var_name ] = [
+     *     type  => method_name,
+     *     args  => [ arg2, arg3, arg4...],
+     *   ]
+     * @param $pgg
+     * @param $var_name
+     * @return mixed|null
+     */
+    public function checkPgg( $pgg, $var_name )
+    {
+        $return = NULL;
+        if( isset( $this->pggChecks[ $var_name ] ) ) {
+            $info   = $this->pggChecks[ $var_name ];
+            $method = $info[ 'type' ];
+            $args   = $info[ 'args' ];
+            $return = call_user_func_array( array( $pgg, $method ), $args );
+        }
+        return $return;
+    }
+
+    /**
+     * returns name of property, if set.
+     *
+     * @param $var_name
+     * @return null
+     */
+    public function propertyName( $var_name )
+    {
+        return ( isset( $this->properties[ $var_name ] ) )?
+            $this->properties[ $var_name ]: NULL;
+    }
+
+    /**
+     * restrict values to only the defined keys.
+     * uses $this->restricts or $this->properties
+     *
+     * @param array $values
+     */
+    public function restrict( &$values )
+    {
+        if( !empty( $values ) )
+        foreach( $values as $key => $val ) {
+            if( !in_array( $key, $this->restricts ) ||
+                !isset( $this->properties[ $key ] ) ) {
+                unset( $values[ $key ] );
+            }
+        }
     }
     // +----------------------------------------------------------------------+
 }
