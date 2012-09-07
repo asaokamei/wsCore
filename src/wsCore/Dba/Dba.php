@@ -12,6 +12,7 @@ class Dba
 
     private $fetchMode;
     private $fetchClass = NULL;
+    private static $self=array();
     // +----------------------------------------------------------------------+
     /**
      * @param NULL|\Pdo $dbConn
@@ -24,6 +25,18 @@ class Dba
         $this->fetchMode = \PDO::FETCH_ASSOC;
     }
 
+    /**
+     * @static
+     * @return Dba
+     */
+    public static function getInstance()
+    {
+        $class = get_called_class();
+        if( isset( static::$self[ $class ] ) ) {
+            return static::$self[ $class ];
+        }
+        return static::$self[ $class ] = new static();
+    }
     public function dbConnect( $conn=NULL, $new=FALSE ) {
         if( is_object( $conn ) ) {
             $this->dbConn = $conn;
@@ -148,7 +161,7 @@ class Dba
     public function fetchNumRow() {
         return $this->numRows();
     }
-    public function fetchAll( &$data ) {
+    public function fetchAll() {
         if( is_object( $this->dbStmt ) ) {
             return $this->dbStmt->fetchAll();
         }
