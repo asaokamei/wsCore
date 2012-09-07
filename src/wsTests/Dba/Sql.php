@@ -15,9 +15,50 @@ class Dba_Sql_Test extends \PHPUnit_Framework_TestCase
         $this->pdo = new SqlMockDba();
         $this->sql = new \wsCore\Dba\Sql( $this->pdo );
     }
+    public function getValFromUpdate( $sql, $name ) {
+        preg_match( "/{$name}=(:db_prep_[0-9]+)/", $sql, $matches );
+        return $matches[1];
+    }
+    public function checkUpdateContainsVal( $sql, $name, $values, $prepared ) {
+        $prep1 = $this->getValFromUpdate( $sql, $name );
+        $val1  = $prepared[ $prep1 ];
+        $this->assertEquals( $values[ $name ], $val1 );
+    }
     // +----------------------------------------------------------------------+
     public function test_1()
     {
+    }
+    // +----------------------------------------------------------------------+
+    public function test_values_null_and_empty_string()
+    {
+        // check setting table name
+        $table = 'testTable';
+        $this->sql->table( $table );
+        $this->assertEquals( $table, $this->sql->table );
+
+        // check UPDATE
+        $values = array( 'col1' => 'val1', 'colNull' => NULL, 'colZero' => '' );
+        $this->sql->values( $values );
+        $this->sql->makeSQL( 'UPDATE' );
+        $this->sql->exec();
+
+        // check SQL statement
+        $this->assertContains( "UPDATE {$table} SET ", $this->sql->sql );
+        foreach( $this->sql->prepared_values as $key => $val ) {
+            $this->assertContains( $key, $this->sql->sql );
+            $this->assertContains( $val, $values );
+        }
+        // check mock PDO
+        $this->assertEquals( $this->sql->sql, $this->pdo->sql );
+        $this->assertContains( 'colNull=NULL', $this->pdo->sql );
+        $this->assertContains( 'col1=:db_prep_', $this->pdo->sql );
+        $this->assertContains( 'colZero=:db_prep_', $this->pdo->sql );
+
+        $this->checkUpdateContainsVal( $this->pdo->sql, 'col1', $values, $this->pdo->prep );
+        $this->checkUpdateContainsVal( $this->pdo->sql, 'colZero', $values, $this->pdo->prep );
+
+        echo $this->pdo->sql;
+        var_dump( $this->pdo->prep );
     }
     // +----------------------------------------------------------------------+
     public function test_update()
@@ -45,6 +86,8 @@ class Dba_Sql_Test extends \PHPUnit_Framework_TestCase
             $this->assertContains( $key, $this->pdo->sql );
             $this->assertContains( $val, $values );
         }
+        $this->checkUpdateContainsVal( $this->pdo->sql, 'col1', $values, $this->pdo->prep );
+        $this->checkUpdateContainsVal( $this->pdo->sql, 'col2', $values, $this->pdo->prep );
     }
     // +----------------------------------------------------------------------+
     public function test_insert()
