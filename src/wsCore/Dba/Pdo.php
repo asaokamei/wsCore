@@ -23,6 +23,8 @@ class Pdo
     // +----------------------------------------------------------------------+
     /**
      * set a named configs for database connection.
+     * the first config name is used as default if no default name is set.
+     *
      * @static
      * @param $name
      * @param $config
@@ -45,10 +47,14 @@ class Pdo
             $config[ 'password' ] = '';
         }
         static::$configs[ $name ] = $config;
+        if( !isset( static::$defaultName ) ) {
+            static::$defaultName = $name;
+        }
     }
 
     /**
      * set a configs name as a defaultName
+     *
      * @static
      * @param $name
      */
@@ -57,6 +63,8 @@ class Pdo
     }
 
     /**
+     * returns Pdo connection which is pooled by config name.
+     *
      * @static
      * @param string|null $name
      * @return Pdo
@@ -65,20 +73,34 @@ class Pdo
     public static function connect( $name=NULL )
     {
         $name = ( $name )?: static::$defaultName;
+        if( isset( static::$drivers[ $name ] ) ) {
+            return static::$drivers[ $name ];
+        }
+        return static::$drivers[ $name ] = static::connectNew( $name );
+    }
+
+    /**
+     * always created brand new Pdo connection.
+     *
+     * @static
+     * @param $name
+     * @return Pdo
+     * @throws \RuntimeException
+     */
+    public static function connectNew( $name ) {
+        $name = ( $name )?: static::$defaultName;
         if( !isset( static::$configs[ $name ] ) ) {
             throw new \RuntimeException( "PDO Config name is not set.'" );
         }
-        if( isset( static::$drivers[ $name ] ) ) return static::$drivers[ $name ];
         if( !isset( static::$configs[ $name ] ) ) {
             throw new \RuntimeException( "PDO Config '{$name}' is missing.'" );
         }
-        $pdo = static::connectPdo( static::$configs[ $name ] );
-        static::$drivers[ $name ] = $pdo;
-        return $pdo;
+        return static::connectPdo( static::$configs[ $name ] );
     }
 
     /**
      * connect to database by PDO using $configs setting.
+     * 
      * @static
      * @param array $config
      * @return Pdo
