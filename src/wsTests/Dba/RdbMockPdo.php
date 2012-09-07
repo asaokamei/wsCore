@@ -1,8 +1,6 @@
 <?php
 namespace wsTests\Dba;
 
-require_once( __DIR__ . '/../autoloader.php' );
-
 class RdbMockPdo
 {
     var $config;
