@@ -160,4 +160,18 @@ class Dba
         }
         return array();
     }
+
+    /**
+     * @param string $table
+     * @return string
+     */
+    public function lockTable( $table ) {
+        $lock = "LOCK TABLE {$table}";
+        $driver = $this->dbConn->getAttribute( \PDO::ATTR_DRIVER_NAME );
+        if( $driver == 'pgsql' ) {
+            $lock .= ' IN ACCESS EXCLUSIVE MODE';
+        }
+        $this->execSQL( $lock );
+        return $this;
+    }
 }

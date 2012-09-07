@@ -153,12 +153,5 @@ class Pdo
         static::$pdoClass = $class;
     }
 
-    public static function lockTable( $table ) {
-        $lock = "LOCK TABLE {$table}";
-        if( static::$configs['db'] == 'pgsql' ) {
-            $lock .= ' IN ACCESS EXCLUSIVE MODE';
-        }
-        return $lock;
-    }
     // +----------------------------------------------------------------------+
 }

@@ -199,9 +199,6 @@ class Sql
             ->exec()
             ->fetchColumn(0);
     }
-    public function lockTable( $table ) {
-        // ToDo: cannot lock table for various database types. need to rewrite...
-    }
     public function makeSQL( $type )
     {
         $type = strtoupper( $type );
