@@ -3,11 +3,6 @@ namespace wsCore\Dba;
 
 class Sql
 {
-    /** @var \Pdo   PDO object  */
-    var $dbConn = NULL;
-    /** @var \PdoStatement               PDO statement obj */
-    var $dbStmt = NULL;
-
     // public variables to represent sql statement.
     var $table;
     var $join = array();
@@ -21,14 +16,30 @@ class Sql
     var $limit = FALSE;
     var $offset = 0;
     var $distinct = FALSE;
+    var $forUpdate = FALSE;
 
-    var $sql = '';
     var $prepared_values = array();
-    var $fetchMode;
+
+    /** @var string   SQL Statement created by this class    */
+    var $sql = '';
+
+    /** @var Dba      DataBase Access object                 */
+    private $dba;
+
     // +----------------------------------------------------------------------+
-    public function __construct( $dbConn=NULL )
-    {
-        $this->dbConn = ( is_object( $dbConn ) ) ?: Pdo::connect( $dbConn );
+    /**
+     * @param Dba $dba
+     */
+    public function __construct( $dba ) {
+        $this->dba = $dba;
+    }
+
+    /**
+     * @return \PdoStatement
+     */
+    public function exec() {
+        $this->dba->execSQL( $this->sql, $this->prepared_values );
+        return $this->dba->stmt();
     }
     // +----------------------------------------------------------------------+
     public function prepValue( &$val ) {
@@ -52,8 +63,8 @@ class Sql
             }
         }
         else {
-            if( is_object( $this->dbConn ) ) {
-                $val = $this->dbConn->quote( $val );
+            if( is_object( $this->dba->dbConn ) ) {
+                $val = $this->dba->dbConn->quote( $val );
             }
             $val = addslashes( $val );
         }
@@ -100,6 +111,10 @@ class Sql
         $this->distinct = TRUE;
         return $this;
     }
+    public function forUpdate() {
+        $this->forUpdate = TRUE;
+        return $this;
+    }
     public function join( $table, $join, $by=NULL, $columns=NULL ) {
         $this->join[] = "{$join} {$table}" . ($by)? " {$by}( {$columns} )": '';
         return $this;
@@ -126,7 +141,7 @@ class Sql
         return $this;
     }
     // +----------------------------------------------------------------------+
-    public function makeWhere( $whereList ) {
+    public function makeWhere() {
         if( is_array( $this->where ) ) {
             $where = '';
             foreach( $this->where as $wh ) {
@@ -169,77 +184,59 @@ class Sql
         return array_merge( $this->functions, $this->p( $this->values ) );
     }
     public function makeInsert() {
+        if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
         $values = $this->processValues();
         $listV = implode( ', ', $values );
         $listC = implode( ', ', array_keys( $values ) );
         return "INSERT INTO {$this->table} ( {$listC} ) VALUES ( {$listV} )";
     }
-    // +----------------------------------------------------------------------+
-    public function execSQL( $sql=NULL )
-    {
-        $sql = ( $sql ) ?: $this->sql;
-        if( strtoupper( substr( $sql, 0, 6 ) ) == 'SELECT' ) {
-            return $this->query( $sql );
+    public function makeUpdate() {
+        if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
+        $list   = array();
+        $values = $this->processValues();
+        foreach( $values as $col => $val ) {
+            $list[] = "{$col}={$val}";
         }
-        return $this->exec( $sql );
+        $sql  = "UPDATE {$this->table} SET " . implode( ', ', $list );
+        $sql .= ( $where=$this->makeWhere() ) ? " WHERE {$where}" : '';
+        return $sql;
     }
-    public function query( $sql=NULL )
-    {
-        $sql = ( $sql ) ?: $this->sql;
-        $this->dbStmt = $this->dbConn->query( $sql );
-        return $this;
+    public function makeDelete() {
+        if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
+        if( !$where = $this->makeWhere() ) {
+            throw new \RuntimeException( 'Cannot delete without where condition. ' );
+        }
+        return "DELETE FROM {$this->table} WHERE " . $where;
     }
-    public function exec( $sql=NULL )
-    {
-        $sql = ( $sql ) ?: $this->sql;
-        if( !empty( $this->prepared_values ) ) {
-            $this->prepare( $sql, $this->prepared_values );
+    public function makeSelect() {
+        $select = 'SELECT '
+            . ( $this->distinct ) ? 'DISTINCT ': ''
+            . $this->makeSelectBody()
+            . ( $this->forUpdate ) ? ' FOR UPDATE': '';
+        return $select;
+    }
+    public function makeSelectBody() {
+        if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
+    }
+    public function makeJoin() {
+        $joined = '';
+        if( !empty( $this->join ) )
+        foreach( $this->join as $join ) {
+            $joined .= $join . ' ';
+        }
+        return $joined;
+    }
+    public function makeColumn() {
+        if( empty( $this->columns ) ) {
+            $column = '*';
+        }
+        elseif( is_array( $this->columns ) ) {
+            $column = implode( ', ', $this->columns );
         }
         else {
-            $this->dbConn->exec( $sql );
+            $column = $this->columns;
         }
-        $this->setFetchMode( \PDO::FETCH_ASSOC );
-        return $this;
-    }
-    public function prepare( $sql, $prepared_values ) {
-        if( is_object( $this->dbStmt ) ) {
-            $this->dbStmt->closeCursor();
-        }
-        $this->dbStmt = $this->dbConn->prepare( $sql, array(
-            \PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL
-        ) );
-        $this->dbStmt->execute( $prepared_values );
-        return $this;
-    }
-    public function setFetchMode( $mode, $class=NULL ) {
-        $this->dbStmt->setFetchMode( $mode, $class );
-        $this->fetchMode = $mode;
-        return $this;
-    }
-    // +----------------------------------------------------------------------+
-    public function lastId() {
-        return $this->dbConn->lastInsertId();
-    }
-    public function numRows() {
-        if( is_numeric( $this->dbStmt ) ) {
-            return $this->dbStmt;
-        }
-        return$this->dbStmt->rowCount();
-    }
-    public function fetchNumRow() {
-        return $this->numRows();
-    }
-    public function fetchAll( &$data ) {
-        if( is_object( $this->dbStmt ) ) {
-            return $this->dbStmt->fetchAll();
-        }
-        return array();
-    }
-    public function fetchRow( $row ) {
-        if( is_object( $this->dbStmt ) ) {
-            return $this->dbStmt->fetch( $this->fetchMode, \PDO::FETCH_ORI_ABS, $row );
-        }
-        return array();
+        return $column;
     }
     // +----------------------------------------------------------------------+
 }
