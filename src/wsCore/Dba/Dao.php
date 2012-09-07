@@ -19,7 +19,7 @@ class Dao
     /** @var array      for selector construction      */
     private $selectors  = array();
     /** @var array      for validation of inputs       */
-    private $pggChecks  = array();
+    private $validators = array();
 
     private $dba;
     // +----------------------------------------------------------------------+
@@ -138,7 +138,7 @@ class Dao
 
     /**
      * checks input data using pggCheck.
-     * $pggChecks[ $var_name ] = [
+     * $validators[ $var_name ] = [
      *     type  => method_name,
      *     args  => [ arg2, arg3, arg4...],
      *   ]
@@ -149,8 +149,8 @@ class Dao
     public function checkPgg( $pgg, $var_name )
     {
         $return = NULL;
-        if( isset( $this->pggChecks[ $var_name ] ) ) {
-            $info   = $this->pggChecks[ $var_name ];
+        if( isset( $this->validators[ $var_name ] ) ) {
+            $info   = $this->validators[ $var_name ];
             $method = $info[ 'type' ];
             $args   = $info[ 'args' ];
             $return = call_user_func_array( array( $pgg, $method ), $args );
