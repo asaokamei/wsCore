@@ -24,12 +24,12 @@ class Dao
     private $dba;
     // +----------------------------------------------------------------------+
     /**
-     * @param Dba $dba
+     * @param Dba|string $dba
      */
     public function __construct( $dba=NULL )
     {
         $this->dba = ( is_object( $dba ) )?:
-            ( $dba )? new Dba( Pdo::connect( $dba ) ) : new Dba();
+            ( $dba )? new Dba( Rdb::connect( $dba ) ) : new Dba();
     }
     // +----------------------------------------------------------------------+
     /**

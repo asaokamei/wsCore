@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\Dba;
 
-class Pdo
+class Rdb
 {
     /** @var array   stores configs for PDO construction */
     private static $configs = array();
@@ -67,7 +67,7 @@ class Pdo
      *
      * @static
      * @param string|null $name
-     * @return Pdo
+     * @return Rdb
      * @throws \RuntimeException
      */
     public static function connect( $name=NULL )
@@ -84,7 +84,7 @@ class Pdo
      *
      * @static
      * @param $name
-     * @return Pdo
+     * @return Rdb
      * @throws \RuntimeException
      */
     public static function connectNew( $name ) {
@@ -103,7 +103,7 @@ class Pdo
      *
      * @static
      * @param array $config
-     * @return Pdo
+     * @return Rdb
      */
     public static function connectPdo( $config )
     {

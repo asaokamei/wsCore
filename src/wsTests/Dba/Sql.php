@@ -7,7 +7,7 @@ class Dba_Sql_Test extends \PHPUnit_Framework_TestCase
 {
     /** @var \wsCore\Dba\Sql */
     var $sql;
-    /** @var \wsCore\Dba\Pdo */
+    /** @var \wsCore\Dba\Rdb */
     var $pdo;
     // +----------------------------------------------------------------------+
     public function setUp()

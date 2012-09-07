@@ -14,12 +14,12 @@ class Dba
     private $fetchClass = NULL;
     // +----------------------------------------------------------------------+
     /**
-     * @param \Pdo $dbConn
+     * @param NULL|\Pdo $dbConn
      * @param Sql  $sql
      */
     public function __construct( $dbConn=NULL, $sql=NULL )
     {
-        $this->dbConn = ( is_object( $dbConn ) ) ?: Pdo::connect( $dbConn );
+        $this->dbConn = ( is_object( $dbConn ) ) ?: Rdb::connect( $dbConn );
         $this->sql    = ( is_object( $sql ) ) ?: new Sql( $this );
         $this->fetchMode = \PDO::FETCH_ASSOC;
     }
@@ -29,7 +29,7 @@ class Dba
             $this->dbConn = $conn;
         }
         elseif( $conn ) {
-            $this->dbConn = ( $new ) ? Pdo::connectNew( $conn ): Pdo::connect( $conn );
+            $this->dbConn = ( $new ) ? Rdb::connectNew( $conn ): Rdb::connect( $conn );
         }
     }
     /**

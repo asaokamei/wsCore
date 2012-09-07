@@ -3,13 +3,13 @@ namespace wsTests\Dba;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
-class Dba_Pdo_Test extends \PHPUnit_Framework_TestCase
+class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
 {
     var $mockPdo;
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->mockPdo = '\wsTests\Dba\PdoMockPdo';
+        $this->mockPdo = '\wsTests\Dba\RdbMockPdo';
     }
     // +----------------------------------------------------------------------+
     public function test_1()
