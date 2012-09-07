@@ -39,7 +39,6 @@ class Dba_Pdo_Test extends \PHPUnit_Framework_TestCase
         \wsCore\Dba\Pdo::set( $name, $dsn );
         $pdo = \wsCore\Dba\Pdo::connect( $name );
 
-        //var_dump( $pdo->config );
         $this->assertEquals( 'myTest:dbname=my_test; ', $pdo->config[0] );
         $this->assertEquals( 'test_user', $pdo->config[1] );
         $this->assertEquals( 'SET NAMES UTF8', $pdo->exec );
@@ -53,12 +52,8 @@ class Dba_Pdo_Test extends \PHPUnit_Framework_TestCase
         \wsCore\Dba\Pdo::set( $name, $dsn );
         $pdo = \wsCore\Dba\Pdo::connect( $name );
 
-        //var_dump( $pdo->config );
-        //$this->assertEquals( '', $pdo->exec );
         $this->assertEquals( 'myTest:dbname=my_test; ', $pdo->config[0] );
         $this->assertEquals( 'test_user', $pdo->config[1] );
-        //echo $pdo->exec;
-        //echo 'hi';
 
     }
 }
