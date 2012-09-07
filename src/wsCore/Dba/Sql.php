@@ -4,21 +4,49 @@ namespace wsCore\Dba;
 class Sql
 {
     // public variables to represent sql statement.
+    /** @var string           name of database table    */
     var $table;
+
+    /** @var array            join for table            */
     var $join = array();
+
+    /** @var string|array     columns to select in array or string     */
     var $columns;
+
+    /** @var array            values for insert/update in array        */
     var $values = array();
+
+    /** @var array            sql functions for insert/update          */
     var $functions = array();
+
+    /** @var string */
     var $order;
+
+    /** @var array|string */
     var $where;
+
+    /** @var string */
     var $group;
+
+    /** @var string */
     var $having;
+
+    /** @var string */
     var $misc;
+
+    /** @var bool|int */
     var $limit = FALSE;
+
+    /** @var int */
     var $offset = 0;
+
+    /** @var bool */
     var $distinct = FALSE;
+
+    /** @var bool */
     var $forUpdate = FALSE;
 
+    /** @var array    stores prepared values and holder name */
     var $prepared_values = array();
 
     /** @var string   SQL Statement created by this class    */
@@ -68,7 +96,15 @@ class Sql
         return $this->dba->stmt();
     }
     // +----------------------------------------------------------------------+
-    public function prepValue( &$val ) {
+    /**
+     * replaces value with holder for prepared statement. the value is kept
+     * inside prepared_value array.
+     *
+     * @param string|array $val
+     * @return Sql
+     */
+    public function prepValue( &$val )
+    {
         if( is_array( $val ) ) {
             foreach( $val as $k => $v ) {
                 $this->prepValue( $v );
@@ -82,7 +118,13 @@ class Sql
         }
         return $this;
     }
-    public function quote( $val ) {
+
+    /**
+     * @param string|array $val
+     * @return array|string
+     */
+    public function quote( $val )
+    {
         if( is_array( $val ) ) {
             foreach( $val as $k => $v ) {
                 $val[ $k ] = $this->quote( $v );
@@ -96,23 +138,48 @@ class Sql
         }
         return $val;
     }
+
+    /**
+     * @param string $val
+     * @return mixed
+     */
     public function p( $val ) {
         $this->prepValue( $val );
         return $val;
     }
+
+    /**
+     * @param string $val
+     * @return string
+     */
     public function q( &$val ) {
         $val = '\'' . $this->quote( $val ) . '\'';
         return $val;
     }
     // +----------------------------------------------------------------------+
+    /**
+     * @param string $table
+     * @return Sql
+     */
     public function table( $table ) {
         $this->table = $table;
         return $this;
     }
+
+    /**
+     * @param string|array $column
+     * @return Sql
+     */
     public function column( $column ) {
         $this->columns = $column;
         return $this;
     }
+
+    /**
+     * set values for INSERT or UPDATE.
+     * @param array $values
+     * @return Sql
+     */
     public function values( $values ) {
         $this->values = $values;
         return $this;
@@ -137,10 +204,20 @@ class Sql
         $this->offset = ( is_numeric( $offset ) ) ? $offset: 0;
         return $this;
     }
+
+    /**
+     * creates SELECT DISTINCT statement.
+     * @return Sql
+     */
     public function distinct(){
         $this->distinct = TRUE;
         return $this;
     }
+
+    /**
+     * creates SELECT for UPDATE statement.
+     * @return Sql
+     */
     public function forUpdate() {
         $this->forUpdate = TRUE;
         return $this;
@@ -162,43 +239,90 @@ class Sql
         return $this->join( $table, 'LEFT JOIN', 'ON', $columns );
     }
     // +----------------------------------------------------------------------+
+    /**
+     * @param string $col
+     * @param string $val
+     * @param string $rel
+     * @param string $op
+     * @return Sql
+     */
     public function where( $col, $val, $rel='=', $op='' ) {
         $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => $op );
         $this->where[] = $where;
         return $this;
     }
+
+    /**
+     * sets where. replaces where data as is.
+     * @param string $where
+     * @return Sql
+     */
     public function setWhere( $where ) {
         $this->where = $where;
         return $this;
     }
+
+    /**
+     * @param string $where
+     * @param string $op
+     * @return Sql
+     */
     public function addWhere( $where, $op='AND' ) {
         return $this->where( $where, '', '', $op );
     }
+
+    /**
+     * @return Sql
+     */
     public function clearWhere() {
         $this->where = NULL;
         return $this;
     }
     // +----------------------------------------------------------------------+
+    /**
+     * @param array $values
+     * @return \PdoStatement
+     */
     public function update( $values ) {
         return $this->values( $values )
             ->makeSQL( 'UPDATE' )
             ->exec();
     }
+
+    /**
+     * @param array $values
+     * @return \PdoStatement
+     */
     public function insert( $values ) {
         return $this->values( $values )
             ->makeSQL( 'INSERT' )
             ->exec();
     }
+
+    /**
+     * @param array|null $column
+     */
     public function select( $column=NULL ) {
         if( $column ) $this->column( $column );
         $this->makeSQL( 'SELECT' )
             ->exec();
     }
+
+    /**
+     * @return string
+     */
     public function count() {
         return $this->makeSQL( 'COUNT' )
             ->exec()
             ->fetchColumn(0);
     }
+
+    /**
+     * makes SQL statement. $types are:
+     * INSERT, UPDATE, DELETE, COUNT, SELECT.
+     * @param $type
+     * @return Sql
+     */
     public function makeSQL( $type )
     {
         $type = strtoupper( $type );
@@ -223,7 +347,12 @@ class Sql
         $this->sql = $sql;
         return $this;
     }
-    public function makeWhere() {
+
+    /**
+     * @return string
+     */
+    public function makeWhere()
+    {
         if( is_array( $this->where ) ) {
             $where = '';
             foreach( $this->where as $wh ) {
@@ -237,6 +366,14 @@ class Sql
         preg_replace( '/^(AND|OR)/i', '', $where );
         return $where;
     }
+
+    /**
+     * @param string $col
+     * @param string $val
+     * @param string $rel
+     * @param string $op
+     * @return string
+     */
     public function formWhere( $col, $val, $rel='=', $op='AND' ) {
         $where = '';
         $rel = strtoupper( $rel );
@@ -255,7 +392,15 @@ class Sql
         $where .= trim( "{$op} {$col} {$rel} {$val}" ) . ' ';
         return $where;
     }
-    public function processValues() {
+
+    /**
+     * prepares value for prepared statement. if value is NULL,
+     * it will not be treated as prepared value, instead it is
+     * set to SQL's NULL value.
+     * @return array
+     */
+    public function processValues()
+    {
         if( !empty( $this->values ) )
         foreach( $this->values as $key => $val ) {
             if( $val === NULL ) {
@@ -265,14 +410,26 @@ class Sql
         }
         return array_merge( $this->functions, $this->p( $this->values ) );
     }
-    public function makeInsert() {
+
+    /**
+     * @return string
+     * @throws \RuntimeException
+     */
+    public function makeInsert()
+    {
         if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
         $values = $this->processValues();
         $listV = implode( ', ', $values );
         $listC = implode( ', ', array_keys( $values ) );
         return "INSERT INTO {$this->table} ( {$listC} ) VALUES ( {$listV} )";
     }
-    public function makeUpdate() {
+
+    /**
+     * @return string
+     * @throws \RuntimeException
+     */
+    public function makeUpdate()
+    {
         if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
         $list   = array();
         $values = $this->processValues();
@@ -283,14 +440,25 @@ class Sql
         $sql .= ( $where=$this->makeWhere() ) ? " WHERE {$where}" : '';
         return $sql;
     }
-    public function makeDelete() {
+
+    /**
+     * @return string
+     * @throws \RuntimeException
+     */
+    public function makeDelete()
+    {
         if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
         if( !$where = $this->makeWhere() ) {
             throw new \RuntimeException( 'Cannot delete without where condition. ' );
         }
         return "DELETE FROM {$this->table} WHERE " . $where;
     }
-    public function makeCount() {
+
+    /**
+     * @return string
+     */
+    public function makeCount()
+    {
         $column = $this->columns;
         $update = $this->forUpdate;
         $this->columns   = 'COUNT(*) AS wscore__count__';
@@ -300,14 +468,25 @@ class Sql
         $this->forUpdate = $update;
         return $select;
     }
-    public function makeSelect() {
+
+    /**
+     * @return string
+     */
+    public function makeSelect()
+    {
         $select = 'SELECT '
             . ( $this->distinct ) ? 'DISTINCT ': ''
             . $this->makeSelectBody()
             . ( $this->forUpdate ) ? ' FOR UPDATE': '';
         return $select;
     }
-    public function makeSelectBody() {
+
+    /**
+     * @return string
+     * @throws \RuntimeException
+     */
+    public function makeSelectBody()
+    {
         if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
         $select  = $this->makeColumn();
         $select .= ' FROM ' . $this->table;
@@ -321,6 +500,10 @@ class Sql
         $select .= ( $this->offset > 0 ) ? ' OFFSET ' . $this->offset: '';
         return $select;
     }
+
+    /**
+     * @return string
+     */
     public function makeJoin() {
         $joined = '';
         if( !empty( $this->join ) )
@@ -329,6 +512,10 @@ class Sql
         }
         return $joined;
     }
+
+    /**
+     * @return string
+     */
     public function makeColumn() {
         if( empty( $this->columns ) ) {
             $column = '*';
