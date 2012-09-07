@@ -174,7 +174,34 @@ class Sql
     public function addWhere( $where, $op='AND' ) {
         return $this->where( $where, '', '', $op );
     }
+    public function clearWhere() {
+        $this->where = NULL;
+        return $this;
+    }
     // +----------------------------------------------------------------------+
+    public function update( $values ) {
+        return $this->values( $values )
+            ->makeSQL( 'UPDATE' )
+            ->exec();
+    }
+    public function insert( $values ) {
+        return $this->values( $values )
+            ->makeSQL( 'INSERT' )
+            ->exec();
+    }
+    public function select( $column=NULL ) {
+        if( $column ) $this->column( $column );
+        $this->makeSQL( 'SELECT' )
+            ->exec();
+    }
+    public function count() {
+        return $this->makeSQL( 'COUNT' )
+            ->exec()
+            ->fetchColumn(0);
+    }
+    public function lockTable( $table ) {
+        // ToDo: cannot lock table for various database types. need to rewrite...
+    }
     public function makeSQL( $type )
     {
         $type = strtoupper( $type );
@@ -197,6 +224,7 @@ class Sql
                 break;
         }
         $this->sql = $sql;
+        return $this;
     }
     public function makeWhere() {
         if( is_array( $this->where ) ) {
@@ -268,7 +296,7 @@ class Sql
     public function makeCount() {
         $column = $this->columns;
         $update = $this->forUpdate;
-        $this->columns   = 'COUNT(*) AS wscore_count';
+        $this->columns   = 'COUNT(*) AS wscore__count__';
         $this->forUpdate = FALSE;
         $select = $this->makeSelect();
         $this->columns   = $column;
