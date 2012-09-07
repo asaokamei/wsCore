@@ -59,10 +59,10 @@ class Sql
      * executes SQL statement. mostly for backward compatibility.
      *
      * @param null $sql
-     * @param null $prepared
+     * @param array $prepared
      * @return \PdoStatement
      */
-    public function execSQL( $sql=NULL, $prepared=NULL ) {
+    public function execSQL( $sql=NULL, $prepared=array() ) {
         $sql = ( $sql ) ?: $this->sql;
         $this->dba->execSQL( $sql, $prepared );
         return $this->dba->stmt();
@@ -133,7 +133,7 @@ class Sql
         $this->limit  = ( $limit  ) ? $limit : FALSE;
         return $this;
     }
-    public function offset( $offset, $limit=FALSE ) {
+    public function offset( $offset ) {
         $this->offset = ( is_numeric( $offset ) ) ? $offset: 0;
         return $this;
     }
