@@ -23,9 +23,9 @@ class Dba_Pdo_Test extends \PHPUnit_Framework_TestCase
             'dsn'  => 'db=myTest dbname=my_test username=test_user',
             'exec' => 'SET NAMES UTF8',
         );
-        \wsCore\Dba\Pdo::setPdoClass( $this->mockPdo );
-        \wsCore\Dba\Pdo::set( $name, $dsn );
-        $pdo = \wsCore\Dba\Pdo::connect( $name );
+        \wsCore\Dba\Rdb::setPdoClass( $this->mockPdo );
+        \wsCore\Dba\Rdb::set( $name, $dsn );
+        $pdo = \wsCore\Dba\Rdb::connect( $name );
 
         $this->assertEquals( 'myTest:dbname=my_test; ', $pdo->config[0] );
         $this->assertEquals( 'test_user', $pdo->config[1] );
@@ -36,9 +36,9 @@ class Dba_Pdo_Test extends \PHPUnit_Framework_TestCase
     {
         $name = 'pdoTest';
         $dsn  = 'db=myTest dbname=my_test username=test_user';
-        \wsCore\Dba\Pdo::setPdoClass( $this->mockPdo );
-        \wsCore\Dba\Pdo::set( $name, $dsn );
-        $pdo = \wsCore\Dba\Pdo::connect( $name );
+        \wsCore\Dba\Rdb::setPdoClass( $this->mockPdo );
+        \wsCore\Dba\Rdb::set( $name, $dsn );
+        $pdo = \wsCore\Dba\Rdb::connect( $name );
 
         $this->assertEquals( 'myTest:dbname=my_test; ', $pdo->config[0] );
         $this->assertEquals( 'test_user', $pdo->config[1] );
