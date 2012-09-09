@@ -20,7 +20,7 @@ abstract class InjectDbaAbstract implements InjectDbaInterface
             $this->injectedDba = $dba;
         }
         elseif( is_string( $dba ) ) {
-            new $this->classNameDba( Rdb::connect( $dba ) );
+            $this->injectedDba = new $this->classNameDba( Rdb::connect( $dba ) );
         }
     }
 
