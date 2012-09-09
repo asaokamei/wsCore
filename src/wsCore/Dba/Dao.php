@@ -5,7 +5,7 @@ namespace wsCore\Dba;
  * base class for dao's for database tables.
  * a Table Data Gateway pattern.
  */
-class Dao
+class Dao extends injectDbaAbstract
 {
     /** @var string     name of database table     */
     private $table;
@@ -20,16 +20,12 @@ class Dao
     private $selectors  = array();
     /** @var array      for validation of inputs       */
     private $validators = array();
-
-    private $dba;
     // +----------------------------------------------------------------------+
     /**
-     * @param Dba|string $dba
+     * 
      */
-    public function __construct( $dba=NULL )
+    public function __construct()
     {
-        $this->dba = ( is_object( $dba ) )?:
-            ( $dba )? new Dba( Rdb::connect( $dba ) ) : new Dba();
     }
     // +----------------------------------------------------------------------+
     /**
@@ -37,7 +33,7 @@ class Dao
      * @return \PdoStatement
      */
     public function find( $id ) {
-        return $this->dba->sql()
+        return $this->obtainDba()->sql()
             ->table( $this->table )
             ->where( $this->id_name, $id )
             ->limit(1)
@@ -52,7 +48,7 @@ class Dao
     public function update( $id, $values )
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
-        return $this->dba->sql()->clearWhere()
+        return $this->obtainDba()->sql()->clearWhere()
             ->table( $this->table )
             ->where( $this->id_name, $id )
             ->update( $values )
@@ -65,7 +61,7 @@ class Dao
      */
     public function insert( $values )
     {
-        return $this->dba->sql()
+        return $this->obtainDba()->sql()
             ->table( $this->table )
             ->insert( $values );
     }
@@ -76,7 +72,7 @@ class Dao
      */
     public function removeDataFromTable( $id )
     {
-        return $this->dba->sql()->clearWhere()
+        return $this->obtainDba()->sql()->clearWhere()
             ->table( $this->table )
             ->where( $this->id_name, $id )
             ->limit(1)
@@ -92,7 +88,7 @@ class Dao
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
         $this->insert( $values );
-        return $this->dba->lastId();
+        return $this->obtainDba()->lastId();
     }
     // +----------------------------------------------------------------------+
     /**
