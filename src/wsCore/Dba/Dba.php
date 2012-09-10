@@ -4,9 +4,9 @@ namespace wsCore\Dba;
 class Dba
 {
     /** @var \Pdo                        PDO object          */
-    var $dbConn = NULL;
+    var $pdoObj  = NULL;
     /** @var \PdoStatement               PDO statement obj   */
-    var $dbStmt = NULL;
+    var $pdoStmt = NULL;
     /** @var Sql                         Sql builder obj     */
     var $sql;
 
@@ -15,17 +15,18 @@ class Dba
     private static $self=array();
     // +----------------------------------------------------------------------+
     /**
-     * @param NULL|\Pdo $dbConn
+     * @param NULL|\Pdo $pdoObj
      * @param Sql  $sql
      */
-    public function __construct( $dbConn=NULL, $sql=NULL )
+    public function __construct( $pdoObj=NULL, $sql=NULL )
     {
-        $this->dbConn = ( is_object( $dbConn ) ) ?: Rdb::connect( $dbConn );
+        $this->pdoObj = ( is_object( $pdoObj ) ) ?: Rdb::connect( $pdoObj );
         $this->sql    = ( is_object( $sql ) ) ?: new Sql( $this );
         $this->fetchMode = \PDO::FETCH_ASSOC;
     }
 
     /**
+     * TODO: is this method necessary?
      * @static
      * @return Dba
      */
@@ -37,14 +38,23 @@ class Dba
         }
         return static::$self[ $class ] = new static();
     }
+
+    /**
+     * connect to database. $conn maybe \Pdo object,
+     * or connection string for Rdb::connect.
+     *
+     * @param \Pdo|string|null $conn
+     * @param bool $new
+     */
     public function dbConnect( $conn=NULL, $new=FALSE ) {
         if( is_object( $conn ) ) {
-            $this->dbConn = $conn;
+            $this->pdoObj = $conn;
         }
         elseif( $conn ) {
-            $this->dbConn = ( $new ) ? Rdb::connectNew( $conn ): Rdb::connect( $conn );
+            $this->pdoObj = ( $new ) ? Rdb::connectNew( $conn ): Rdb::connect( $conn );
         }
     }
+
     /**
      * @return Sql
      */
@@ -56,7 +66,7 @@ class Dba
      * @return \PdoStatement
      */
     public function stmt() {
-        return $this->dbStmt;
+        return $this->pdoStmt;
     }
     // +----------------------------------------------------------------------+
     /**
@@ -78,7 +88,7 @@ class Dba
      */
     public function query( $sql )
     {
-        $this->dbStmt = $this->dbConn->query( $sql );
+        $this->pdoStmt = $this->pdoObj->query( $sql );
         return $this;
     }
 
@@ -94,9 +104,9 @@ class Dba
             $this->execute( $prepared );
         }
         else {
-            $this->dbConn->exec( $sql );
+            $this->pdoObj->exec( $sql );
         }
-        $this->dbStmt->setFetchMode( $this->fetchMode, $this->fetchClass );
+        $this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass );
         return $this;
     }
 
@@ -105,10 +115,10 @@ class Dba
      * @return Dba
      */
     public function prepare( $sql ) {
-        if( is_object( $this->dbStmt ) ) {
-            $this->dbStmt->closeCursor();
+        if( is_object( $this->pdoStmt ) ) {
+            $this->pdoStmt->closeCursor();
         }
-        $this->dbStmt = $this->dbConn->prepare( $sql, array(
+        $this->pdoStmt = $this->pdoObj->prepare( $sql, array(
             \PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL
         ) );
         return $this;
@@ -119,7 +129,7 @@ class Dba
      * @return Dba
      */
     public function execute( $prepared ) {
-        $this->dbStmt->execute( $prepared );
+        $this->pdoStmt->execute( $prepared );
         return $this;
     }
 
@@ -129,8 +139,8 @@ class Dba
      * @return Dba
      */
     public function setFetchMode( $mode, $class=NULL ) {
-        if( is_object( $this->dbStmt ) ) {
-            $this->dbStmt->setFetchMode( $mode, $class );
+        if( is_object( $this->pdoStmt ) ) {
+            $this->pdoStmt->setFetchMode( $mode, $class );
         }
         $this->fetchMode  = $mode;
         $this->fetchClass = $class;
@@ -141,34 +151,43 @@ class Dba
      * @return string
      */
     public function lastId() {
-        return $this->dbConn->lastInsertId();
+        return $this->pdoObj->lastInsertId();
     }
 
     /**
-     * @return int|null|\PdoStatement
+     * @return int|null
      */
     public function numRows() {
-        if( is_numeric( $this->dbStmt ) ) {
-            return $this->dbStmt;
+        if( is_numeric( $this->pdoStmt ) ) {
+            return $this->pdoStmt;
         }
-        return$this->dbStmt->rowCount();
+        return$this->pdoStmt->rowCount();
     }
 
     /**
-     * @return int|null|\PdoStatement
+     * @return int|null
      */
     public function fetchNumRow() {
         return $this->numRows();
     }
+
+    /**
+     * @return array
+     */
     public function fetchAll() {
-        if( is_object( $this->dbStmt ) ) {
-            return $this->dbStmt->fetchAll();
+        if( is_object( $this->pdoStmt ) ) {
+            return $this->pdoStmt->fetchAll();
         }
         return array();
     }
+
+    /**
+     * @param $row
+     * @return array|mixed
+     */
     public function fetchRow( $row ) {
-        if( is_object( $this->dbStmt ) ) {
-            return $this->dbStmt->fetch( $this->fetchMode, \PDO::FETCH_ORI_ABS, $row );
+        if( is_object( $this->pdoStmt ) ) {
+            return $this->pdoStmt->fetch( $this->fetchMode, \PDO::FETCH_ORI_ABS, $row );
         }
         return array();
     }
@@ -179,7 +198,7 @@ class Dba
      */
     public function lockTable( $table ) {
         $lock = "LOCK TABLE {$table}";
-        $driver = $this->dbConn->getAttribute( \PDO::ATTR_DRIVER_NAME );
+        $driver = $this->pdoObj->getAttribute( \PDO::ATTR_DRIVER_NAME );
         if( $driver == 'pgsql' ) {
             $lock .= ' IN ACCESS EXCLUSIVE MODE';
         }
