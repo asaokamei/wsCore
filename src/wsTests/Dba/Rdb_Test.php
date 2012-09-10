@@ -13,10 +13,24 @@ class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
         \wsCore\Dba\Rdb::_init();
     }
 
+    // +----------------------------------------------------------------------+
+    public function test_connect_with_new()
+    {
+        $name1 = 'pdoTest1';
+        $dsn1   = array(
+            'dsn' => 'db=myTest dbname=test1'
+        );
+        \wsCore\Dba\Rdb::setPdoClass( $this->mockPdo );
+        \wsCore\Dba\Rdb::set( $name1, $dsn1 );
+        $pdo1 = \wsCore\Dba\Rdb::connect( $name1 );
+        $pdo2 = \wsCore\Dba\Rdb::connect( $name1, TRUE );
+        $this->assertEquals( $pdo1, $pdo2 );
+        $this->assertNotSame( $pdo1, $pdo2 );
+    }
+    // +----------------------------------------------------------------------+
     /**
      * @expectedException RuntimeException
      */
-    // +----------------------------------------------------------------------+
     public function test_name_not_exists()
     {
         \wsCore\Dba\Rdb::setPdoClass( $this->mockPdo );
@@ -33,7 +47,6 @@ class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException RuntimeException
      */
-    // +----------------------------------------------------------------------+
     public function test_name_not_set()
     {
         $pdo = \wsCore\Dba\Rdb::connect();

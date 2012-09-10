@@ -15,11 +15,15 @@ class Dba implements InjectSqlInterface
     private static $self=array();
     // +----------------------------------------------------------------------+
     /**
+     * inject Pdo object, or config name for Rdb::connect.
+     * set $new=TRUE with config name to use brand-new Pdo object.
+     *
      * @param NULL|string|\Pdo $pdoObj
+     * @param bool $new
      */
-    public function __construct( $pdoObj=NULL )
+    public function __construct( $pdoObj=NULL, $new=FALSE )
     {
-        $this->pdoObj = ( is_object( $pdoObj ) ) ?: Rdb::connect( $pdoObj );
+        $this->pdoObj = ( is_object( $pdoObj ) ) ?: Rdb::connect( $pdoObj, $new );
         $this->fetchMode = \PDO::FETCH_ASSOC;
     }
 
