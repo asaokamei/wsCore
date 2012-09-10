@@ -55,8 +55,8 @@ class Dba implements InjectSqlInterface
         if( is_object( $conn ) ) {
             $this->pdoObj = $conn;
         }
-        elseif( $conn ) {
-            $this->pdoObj = Rdb::connectNew( $conn, $new );
+        else {
+            $this->pdoObj = Rdb::connect( $conn, $new );
         }
     }
 
