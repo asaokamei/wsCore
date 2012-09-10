@@ -15,10 +15,18 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
         );
         Rdb::set( 'config', $this->config );
     }
-    public function test_1()
-    {
-    }
     // +----------------------------------------------------------------------+
+    public function test_returning_2_pdo()
+    {
+        Rdb::set( 'con2nd', $this->config );
+        $pdo1 = Rdb::connect( 'config' );
+        $pdo2 = Rdb::connect( 'con2nd' );
+        
+        // two PDO has the same attributes
+        $this->assertEquals( $pdo1, $pdo2 );
+        // but references different PDO object.
+        $this->assertNotSame( $pdo1, $pdo2 );
+    }
     /**
      * @expectedException PDOException
      */
@@ -28,20 +36,26 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
         $test = "CREATE TABLE test ( id int ) is a bad sql ;";
         $pdo->query( $test );
     }
-    // +----------------------------------------------------------------------+
+
+    /**
+     *
+     */
     public function test_connection_to_wsCore_db()
     {
         // should not throw any exceptions.
         $pdo = Rdb::connect( 'config' );
     }
-    // +----------------------------------------------------------------------+
+
+    /**
+     *
+     */
     public function test_mysql_driver_name()
     {
         $pdo = Rdb::connect( 'config' );
         $db  = $pdo->getAttribute( \PDO::ATTR_DRIVER_NAME );
         $this->assertEquals( 'mysql', $db );
     }
-    // +----------------------------------------------------------------------+
+
     /**
      * @expectedException PDOException
      */
