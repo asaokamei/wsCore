@@ -173,7 +173,7 @@ class Dba implements InjectSqlInterface
         if( is_numeric( $this->pdoStmt ) ) {
             return $this->pdoStmt;
         }
-        return$this->pdoStmt->rowCount();
+        return $this->pdoStmt->rowCount();
     }
 
     /**
@@ -194,11 +194,18 @@ class Dba implements InjectSqlInterface
     }
 
     /**
-     * @param $row
+     * @param int $row
+     * @throws \RuntimeException
      * @return array|mixed
      */
-    public function fetchRow( $row ) {
+    public function fetchRow( $row=0 ) {
         if( is_object( $this->pdoStmt ) ) {
+            if( $row > 0 ) {
+                $driver = $this->getDriverName();
+                if( $driver == 'mysql' || $driver == 'sqlite' ) {
+                    throw new \RuntimeException( "Cannot fetch with offset for ".$driver );
+                }
+            }
             return $this->pdoStmt->fetch( $this->fetchMode, \PDO::FETCH_ORI_ABS, $row );
         }
         return array();
@@ -210,11 +217,19 @@ class Dba implements InjectSqlInterface
      */
     public function lockTable( $table ) {
         $lock = "LOCK TABLE {$table}";
-        $driver = $this->pdoObj->getAttribute( \PDO::ATTR_DRIVER_NAME );
+        $driver = $this->getDriverName();
         if( $driver == 'pgsql' ) {
             $lock .= ' IN ACCESS EXCLUSIVE MODE';
         }
         $this->execSQL( $lock );
         return $this;
+    }
+
+    /**
+     * get driver name, such as mysql, sqlite, pgsql.
+     * @return string
+     */
+    public function getDriverName() {
+        return $this->pdoObj->getAttribute( \PDO::ATTR_DRIVER_NAME );
     }
 }
