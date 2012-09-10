@@ -78,7 +78,29 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         return $values;
     }
     // +----------------------------------------------------------------------+
-    public function test_select()
+    public function test_fetchRow()
+    {
+        $max = 12;
+        $this->setUp_TestTable_perm();
+        $this->fill_columns( $max );
+
+        // get all data
+        $this->dba->execSQL( "SELECT * FROM {$this->table};" );
+
+        // check fetchNumRow
+        $numRows = $this->dba->fetchNumRow();
+        $this->assertEquals( $max, $numRows );
+
+        $columns = array( 'name', 'age', 'bdate', 'no_null' );
+        for( $row = 0; $row < $max; $row ++ ) {
+            $rowData = $this->get_column_by_row($row);
+            $fetched = $this->dba->fetchRow();
+            foreach( $columns as $colName ) {
+                $this->assertEquals( $fetched[$colName], $rowData[':'.$colName] );
+            }
+        }
+    }
+    public function test_fetchAll()
     {
         $max = 12;
         $this->setUp_TestTable_perm();
