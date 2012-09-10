@@ -63,6 +63,12 @@ class Dba
     }
 
     /**
+     * @return \Pdo
+     */
+    public function pdo() {
+        return $this->pdoObj;
+    }
+    /**
      * @return \PdoStatement
      */
     public function stmt() {
