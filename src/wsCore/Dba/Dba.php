@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\Dba;
 
-class Dba
+class Dba implements InjectSqlInterface
 {
     /** @var \Pdo                        PDO object          */
     var $pdoObj  = NULL;
@@ -15,14 +15,19 @@ class Dba
     private static $self=array();
     // +----------------------------------------------------------------------+
     /**
-     * @param NULL|\Pdo $pdoObj
-     * @param Sql  $sql
+     * @param NULL|string|\Pdo $pdoObj
      */
-    public function __construct( $pdoObj=NULL, $sql=NULL )
+    public function __construct( $pdoObj=NULL )
     {
         $this->pdoObj = ( is_object( $pdoObj ) ) ?: Rdb::connect( $pdoObj );
-        $this->sql    = ( is_object( $sql ) ) ?: new Sql( $this );
         $this->fetchMode = \PDO::FETCH_ASSOC;
+    }
+
+    /**
+     * @param \wsCore\Dba\Sql $sql
+     */
+    public function injectSql( $sql ) {
+        $this->sql = $sql;
     }
 
     /**
@@ -59,6 +64,7 @@ class Dba
      * @return Sql
      */
     public function sql() {
+        if( !$this->sql ) $this->sql = new Sql( $this );
         return $this->sql;
     }
 
