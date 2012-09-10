@@ -21,7 +21,7 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
         Rdb::set( 'con2nd', $this->config );
         $pdo1 = Rdb::connect( 'config' );
         $pdo2 = Rdb::connect( 'con2nd' );
-        
+
         // two PDO has the same attributes
         $this->assertEquals( $pdo1, $pdo2 );
         // but references different PDO object.
