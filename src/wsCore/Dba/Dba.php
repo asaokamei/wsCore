@@ -91,6 +91,7 @@ class Dba
     {
         if( !empty( $prepared ) ) {
             $this->prepare( $sql, $prepared );
+            $this->execute( $prepared );
         }
         else {
             $this->dbConn->exec( $sql );
@@ -101,17 +102,15 @@ class Dba
 
     /**
      * @param string $sql
-     * @param array $prepared
      * @return Dba
      */
-    public function prepare( $sql, $prepared ) {
+    public function prepare( $sql ) {
         if( is_object( $this->dbStmt ) ) {
             $this->dbStmt->closeCursor();
         }
         $this->dbStmt = $this->dbConn->prepare( $sql, array(
             \PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL
         ) );
-        $this->prepExec( $prepared );
         return $this;
     }
 
@@ -119,7 +118,7 @@ class Dba
      * @param array $prepared
      * @return Dba
      */
-    public function prepExec( $prepared ) {
+    public function execute( $prepared ) {
         $this->dbStmt->execute( $prepared );
         return $this;
     }
