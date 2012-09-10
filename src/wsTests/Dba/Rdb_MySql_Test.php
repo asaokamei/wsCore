@@ -17,13 +17,17 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     public function test_1()
     {
+    }
+    // +----------------------------------------------------------------------+
+    public function test_connection_to_wsCore_db()
+    {
         $pdo = \wsCore\Dba\Rdb::connect( 'config' );
     }
     // +----------------------------------------------------------------------+
     /**
      * @expectedException PDOException
      */
-    public function test_db_bad_connect()
+    public function test_bad_database_connection()
     {
         $badDsn = array(
             'dsn' => 'db=noDb dbname=test username=admin password=admin'
