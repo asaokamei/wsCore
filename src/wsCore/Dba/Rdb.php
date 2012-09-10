@@ -74,11 +74,13 @@ class Rdb
      *
      * @static
      * @param string|null $name
+     * @param bool $new
      * @return \Pdo
-     * @throws \RuntimeException
      */
-    public static function connect( $name=NULL )
+    public static function connect( $name=NULL, $new=FALSE )
     {
+        if( $new ) return Rdb::connectNew( $name );
+
         $name = ( $name )?: static::$defaultName;
         if( isset( static::$drivers[ $name ] ) ) {
             return static::$drivers[ $name ];
