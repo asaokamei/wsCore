@@ -16,6 +16,7 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->config = array(
             'dsn' => 'db=mysql dbname=test_wsCore username=admin password=admin'
         );
+        \wsCore\Dba\Rdb::_init();
         \wsCore\Dba\Rdb::set( 'config', $this->config );
         $this->dba = new \wsCore\Dba\Dba();
         $this->column_list = '
