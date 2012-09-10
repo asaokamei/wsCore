@@ -78,6 +78,43 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         return $values;
     }
     // +----------------------------------------------------------------------+
+    public function test_dbConnect_and_new()
+    {
+        // the original pdo object.
+        $pdo = $this->dba->pdo();
+        // reconnect with the same config. should reuse the $pdo.
+        $this->dba->dbConnect( NULL );
+        $pdo1 = $this->dba->pdo();
+        // now reconnect with new pdo.
+        $this->dba->dbConnect( NULL, TRUE );
+        $pdo2 = $this->dba->pdo();
+
+        $this->assertEquals( $pdo, $pdo1 );
+        $this->assertSame( $pdo, $pdo1 );
+
+        $this->assertEquals( $pdo1, $pdo2 );
+        $this->assertNotSame( $pdo1, $pdo2 );
+    }
+    public function test_inject_dbConnect()
+    {
+        // clude test.
+        $this->dba->dbConnect( $this );
+        $injectedPdo = $this->dba->pdo();
+        $this->assertEquals( $this, $injectedPdo );
+        $this->assertSame( $this, $injectedPdo );
+    }
+    public function test_inject_sql()
+    {
+        $sql = 'injected sql';
+        $this->dba->injectSql( $sql );
+        $injectedSql = $this->dba->sql();
+        $this->assertEquals( $sql, $injectedSql );
+    }
+    public function test_driver_name()
+    {
+        $driver = $this->dba->getDriverName();
+        $this->assertEquals( 'mysql', $driver );
+    }
     public function test_fetchRow()
     {
         $max = 12;
