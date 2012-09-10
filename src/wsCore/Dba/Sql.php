@@ -125,19 +125,22 @@ class Sql
 
     /**
      * @param string|array $val
+     * @param bool|\Pdo $pdo
      * @return array|string
      */
-    public function quote( $val )
+    public function quote( $val, $pdo=FALSE )
     {
+        // try to get Pdo only once. false used only here... I think.
+        if( $pdo === FALSE ) $pdo = $this->dba->pdo();
         if( is_array( $val ) ) {
             foreach( $val as $k => $v ) {
-                $val[ $k ] = $this->quote( $v );
+                $val[ $k ] = $this->quote( $v, $pdo );
             }
         }
+        elseif( $pdo ) {
+            $val = $pdo->quote( $val );
+        }
         else {
-            if( is_object( $this->dba->dbConn ) ) {
-                $val = $this->dba->dbConn->quote( $val );
-            }
             $val = addslashes( $val );
         }
         return $val;
