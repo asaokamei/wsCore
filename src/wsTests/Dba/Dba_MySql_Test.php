@@ -49,7 +49,57 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         CREATE TABLE {$this->table} ( {$this->column_list} );
         " );
     }
+
+    public function fill_columns( $max=10 )
+    {
+        $prepare = "
+            INSERT {$this->table}
+                ( name, age, bdate, no_null )
+            VALUES
+                ( :name, :age, :bdate, :no_null );
+        ";
+        $this->dba->prepare( $prepare );
+        for( $i = 0; $i < $max; $i ++ ) {
+            $values = $this->get_column_by_row( $i );
+            $this->dba->execute( $values );
+        }
+    }
+
+    public function get_column_by_row( $row )
+    {
+        $date = new \DateTime( '1980-05-01' );
+        $date = $date->add( new \DateInterval( "P{$row}D" ) );
+        $values = array(
+            ':name' => 'filed #' . $row,
+            ':age' => 40 + $row,
+            ':bdate' => $date->format( 'Y-m-d' ),
+            ':no_null' => 'never null'.($row+1),
+        );
+        return $values;
+    }
     // +----------------------------------------------------------------------+
+    public function test_select()
+    {
+        $max = 12;
+        $this->setUp_TestTable_perm();
+        $this->fill_columns( $max );
+
+        // get all data
+        $this->dba->execSQL( "SELECT * FROM {$this->table};" );
+
+        // check fetchNumRow
+        $numRows = $this->dba->fetchNumRow();
+        $this->assertEquals( $max, $numRows );
+
+        $columns = array( 'name', 'age', 'bdate', 'no_null' );
+        $allData = $this->dba->fetchAll();
+        for( $row = 0; $row < $max; $row ++ ) {
+            $rowData = $this->get_column_by_row($row);
+            foreach( $columns as $colName ) {
+                $this->assertEquals( $allData[$row][$colName], $rowData[':'.$colName] );
+            }
+        }
+    }
     public function test_insert_using_prepare()
     {
         $prepare = "
