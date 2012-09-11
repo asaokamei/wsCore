@@ -40,6 +40,7 @@ class Dimplet
     {
         if( array_key_exists($id, $this->values) ) {
             $found = $this->values[$id];
+            /** @var $found callable */
             $found = ( $found instanceof Closure ) ? $found( $this ) : $found;
         }
         elseif( class_exists( $id ) ) {
