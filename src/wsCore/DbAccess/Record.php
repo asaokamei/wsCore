@@ -7,6 +7,10 @@ class Record implements InjectDaoInterface
     const TYPE_GET = 'get-record';  // record from database. 
     const TYPE_IGNORE = 'ignored';  // non-operational record. 
     
+    const EXEC_NONE = 'exec-none';
+    const EXEC_SAVE = 'exec-save';
+    const EXEC_DEL  = 'exec-delete';
+    
     /** @var mixed         value of id. probably an integer     */
     private $id         = NULL;
     
@@ -26,6 +30,8 @@ class Record implements InjectDaoInterface
     /** @var string      set type of record. default is get  */
     private $type = NULL;
 
+    /** @var string      set execution type                  */
+    private $exec = self::EXEC_NONE;
     // +----------------------------------------------------------------------+
     /**
      */
@@ -81,12 +87,17 @@ class Record implements InjectDaoInterface
      * @return Record
      */
     public function save() {
-        if( $this->type == self::TYPE_NEW ) {
-            $id = $this->dao->insert( $this->properties );
-            $this->load( $id );
+        if( $this->exec == self::EXEC_SAVE ) { 
+            if( $this->type == self::TYPE_NEW ) {
+                $id = $this->dao->insert( $this->properties );
+                $this->load( $id );
+            }
+            elseif( $this->exec == self::EXEC_SAVE && $this->type == self::TYPE_GET ) {
+                $this->dao->update( $this->id, $this->properties );
+            }
         }
-        elseif( $this->type == self::TYPE_GET ) {
-            $this->dao->update( $this->id, $this->properties );
+        elseif( $this->exec == self::EXEC_DEL && $this->type == self::TYPE_GET ) {
+            $this->dao->delete( $this->id );
         }
         return $this;
     }
@@ -108,9 +119,28 @@ class Record implements InjectDaoInterface
     /**
      * @return string
      */
-    public function getModelName() {
+    public function getModel() {
         return $this->dao->getModelName();
     }
+
+    /**
+     * @return mixed|null
+     */
+    public function getId() {
+        return $this->id;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getType() {
+        return $this->type;
+    }
+    
+    public function validate() {}
+    public function validationOK() {}
+    public function resetValidation() {}
+    public function isValid() {}
     // +----------------------------------------------------------------------+
     /**
      * store properties. for Pdo's fetch as class method. 
@@ -122,8 +152,32 @@ class Record implements InjectDaoInterface
         $this->properties[ $name ] = $value;
     }
 
+    /**
+     * returns it's property. 
+     * 
+     * @param $name
+     * @return bool
+     */
     public function pop( $name ) {
         return ( isset( $this->properties[ $name ] ) ) ? $this->properties[ $name ]: FALSE;
+    }
+
+    /**
+     * sets property. or set properties by an array( $name => $value ). 
+     * 
+     * @param string|array $name
+     * @param null|mixed   $value
+     * @return Record
+     */
+    public function set( $name, $value=NULL ) {
+        if( is_array( $name ) ) {
+            $this->properties = array_merge( $this->properties, $name );
+        }
+        else {
+            $this->properties[ $name ] = $value;
+        }
+        $this->exec = self::EXEC_SAVE;
+        return $this;
     }
     /**
      * @param      $name
