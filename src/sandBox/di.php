@@ -28,9 +28,9 @@ namespace main
 {
     require_once( '../wsCore/DiContainer/Dimplet.php' );
     $container = new \wsCore\DiContainer\Dimplet();
-    /** @var $more \action\Invoice */
     $more = $container->get( '\action\Invoice' );
 
+    /** @var $more \action\Invoice */
     $more->showDbType();
 
 }
