@@ -5,7 +5,7 @@ namespace wsCore\Dba;
  * base class for dao's for database tables.
  * a Table Data Gateway pattern.
  */
-class Dao extends injectDbaAbstract
+class Dao implements InjectDbaInterface
 {
     /** @var string     name of database table     */
     private $table;
@@ -20,6 +20,12 @@ class Dao extends injectDbaAbstract
     private $selectors  = array();
     /** @var array      for validation of inputs       */
     private $validators = array();
+
+    /** @var \wsCore\Dba\Dba */
+    private $dba;
+    /** @var string */
+    public  $classNameDba = '\wsCore\Dba\Dba';
+
     // +----------------------------------------------------------------------+
     /**
      * 
@@ -27,13 +33,39 @@ class Dao extends injectDbaAbstract
     public function __construct()
     {
     }
+
+    /**
+     * injects Dba object for accessing database.
+     * if the injected $dba is a string, it is used to construct Dba object.
+     *
+     * @param $dba
+     */
+    public function injectDba( $dba )
+    {
+        if( is_object( $dba ) ) {
+            $this->dba = $dba;
+        }
+        elseif( is_string( $dba ) ) {
+            $this->dba = new $this->classNameDba( $dba );
+        }
+    }
+
+    /**
+     * @return \wsCore\Dba\Dba
+     */
+    public function dba() {
+        if( !isset( $this->dba ) ) {
+            $this->dba = new $this->classNameDba;
+        }
+        return $this->dba;
+    }
     // +----------------------------------------------------------------------+
     /**
      * @param string $id
      * @return \PdoStatement
      */
     public function find( $id ) {
-        return $this->obtainDba()->sql()
+        return $this->dba()->sql()
             ->table( $this->table )
             ->where( $this->id_name, $id )
             ->limit(1)
@@ -48,7 +80,7 @@ class Dao extends injectDbaAbstract
     public function update( $id, $values )
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
-        return $this->obtainDba()->sql()->clearWhere()
+        return $this->dba()->sql()->clearWhere()
             ->table( $this->table )
             ->where( $this->id_name, $id )
             ->update( $values )
@@ -61,7 +93,7 @@ class Dao extends injectDbaAbstract
      */
     public function insert( $values )
     {
-        return $this->obtainDba()->sql()
+        return $this->dba()->sql()
             ->table( $this->table )
             ->insert( $values );
     }
@@ -72,7 +104,7 @@ class Dao extends injectDbaAbstract
      */
     public function removeDataFromTable( $id )
     {
-        return $this->obtainDba()->sql()->clearWhere()
+        return $this->dba()->sql()->clearWhere()
             ->table( $this->table )
             ->where( $this->id_name, $id )
             ->limit(1)
@@ -88,7 +120,7 @@ class Dao extends injectDbaAbstract
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
         $this->insert( $values );
-        return $this->obtainDba()->lastId();
+        return $this->dba()->lastId();
     }
     // +----------------------------------------------------------------------+
     /**
