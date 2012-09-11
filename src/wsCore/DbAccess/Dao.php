@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Dba;
+namespace wsCore\DbAccess;
 
 /**
  * base class for dao's for database tables.
@@ -21,7 +21,7 @@ class Dao implements InjectDbaInterface
     /** @var array      for validation of inputs       */
     private $validators = array();
 
-    /** @var \wsCore\Dba\Dba */
+    /** @var \wsCore\DbAccess\Dba */
     private $dba;
     /** @var string */
     public  $classNameDba = '\wsCore\DbAccess\DbAccess';
@@ -51,7 +51,7 @@ class Dao implements InjectDbaInterface
     }
 
     /**
-     * @return \wsCore\Dba\Dba
+     * @return \wsCore\DbAccess\Dba
      */
     public function dba() {
         if( !isset( $this->dba ) ) {

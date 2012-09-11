@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Dba;
+namespace wsCore\DbAccess;
 
 class Dba implements InjectSqlInterface
 {
@@ -28,7 +28,7 @@ class Dba implements InjectSqlInterface
     }
 
     /**
-     * @param \wsCore\Dba\Sql $sql
+     * @param \wsCore\DbAccess\Sql $sql
      */
     public function injectSql( $sql ) {
         $this->sql = $sql;

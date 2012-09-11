@@ -1,5 +1,5 @@
 <?php
-namespace wsTests\Dba;
+namespace wsTests\DbAccess;
 
 class SqlMockDba
 {

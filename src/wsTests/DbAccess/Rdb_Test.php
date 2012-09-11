@@ -1,5 +1,5 @@
 <?php
-namespace wsTests\Dba;
+namespace wsTests\DbAccess;
 use \wsCore\DbAccess\Rdb as Rdb;
 
 require_once( __DIR__ . '/../../autoloader.php' );
@@ -71,7 +71,7 @@ class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
         Rdb::set( $name2, $dsn2 );
         
         // should connect to the default, i.e. the first name.
-        /** @var $pdo \wsTests\Dba\RdbMockPdo */
+        /** @var $pdo \wsTests\DbAccess\RdbMockPdo */
         $pdo = Rdb::connect();
         $this->assertEquals( 'myTest:dbname=test1; ', $pdo->config[0] );
 
@@ -98,7 +98,7 @@ class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
         );
         Rdb::setPdoClass( $this->mockPdo );
         Rdb::set( $name, $dsn );
-        /** @var $pdo \wsTests\Dba\RdbMockPdo */
+        /** @var $pdo \wsTests\DbAccess\RdbMockPdo */
         $pdo = Rdb::connect( $name );
 
         $this->assertEquals( 'myTest:dbname=my_test; ', $pdo->config[0] );
@@ -113,7 +113,7 @@ class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
         $dsn  = 'db=myTest dbname=my_test';
         Rdb::setPdoClass( $this->mockPdo );
         Rdb::set( $name, $dsn );
-        /** @var $pdo \wsTests\Dba\RdbMockPdo */
+        /** @var $pdo \wsTests\DbAccess\RdbMockPdo */
         $pdo = Rdb::connect( $name );
 
         $this->assertEquals( 'myTest:dbname=my_test; ', $pdo->config[0] );

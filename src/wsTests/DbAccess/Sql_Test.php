@@ -1,5 +1,5 @@
 <?php
-namespace wsTests\Dba;
+namespace wsTests\DbAccess;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 

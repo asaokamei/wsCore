@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Dba;
+namespace wsCore\DbAccess;
 
 interface InjectPdoInterface
 {
