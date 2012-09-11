@@ -26,6 +26,9 @@ class Dao implements InjectDbaInterface
     /** @var string */
     public  $classNameDba = '\wsCore\DbAccess\DbAccess';
 
+    /** @var \wsCore\DbAccess\Record */
+    private $recordClassName = '\wsCore\DbAccess\Record';
+    
     // +----------------------------------------------------------------------+
     /**
      * 
@@ -59,6 +62,15 @@ class Dao implements InjectDbaInterface
         }
         return $this->dba;
     }
+
+    /**
+     * @return Record
+     */
+    public function getRecord() {
+        /** @var $record \wsCore\DbAccess\Record */
+        $record = new $this->recordClassName();
+        return $record;
+    }
     // +----------------------------------------------------------------------+
     /**
      * @param string $id
@@ -73,6 +85,9 @@ class Dao implements InjectDbaInterface
     }
 
     /**
+     * update data of primary key of $id.
+     * TODO: check accessible data. 
+     * 
      * @param string $id
      * @param array $values
      * @return \PdoStatement
@@ -88,6 +103,9 @@ class Dao implements InjectDbaInterface
     }
 
     /**
+     * insert data into database. 
+     * TODO: check accessible data, return id of insert data. 
+     * 
      * @param string $values
      * @return \PdoStatement
      */
@@ -113,6 +131,7 @@ class Dao implements InjectDbaInterface
     }
 
     /**
+     * todo: merge with insert method. 
      * @param string $values
      * @return string                 id of the inserted data
      */
@@ -123,6 +142,18 @@ class Dao implements InjectDbaInterface
         return $this->dba()->lastId();
     }
     // +----------------------------------------------------------------------+
+    /**
+     * @param string $type
+     * @param string $var_name
+     * @param mixed  $value
+     * @return mixed
+     */
+    public function popHtml( $type, $var_name, $value=NULL )
+    {
+        $sel = $this->getSelInstance( $var_name );
+        $val = $sel->show( $type, $value );
+        return $val;
+    }
     /**
      * @param string $var_name
      * @return null|object
@@ -213,6 +244,23 @@ class Dao implements InjectDbaInterface
                 unset( $values[ $key ] );
             }
         }
+    }
+
+    /**
+     * name of primary key. 
+     * 
+     * @return string
+     */
+    public function getIdName() {
+        return $this->id_name;
+    }
+
+    /**
+     * name of the model: i.e. class name. 
+     * @return string
+     */
+    public function getModelName() {
+        return get_called_class();
     }
     // +----------------------------------------------------------------------+
 }
