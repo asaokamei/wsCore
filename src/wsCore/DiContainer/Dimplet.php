@@ -42,7 +42,9 @@ class Dimplet
         if( array_key_exists( $id, $this->objects ) ) {
             return $this->objects[ $id ];
         }
-        return $this->fresh( $id );
+        $found = $this->fresh( $id );
+        $this->objects[ $id ] = $found;
+        return $found;
     }
     /**
      * gets _fresh_ id from container. returns freshly constructed objects 
@@ -67,8 +69,6 @@ class Dimplet
         else {
             throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
         }
-        // stores the result for later use (by get method). 
-        $this->objects[ $id ] = $found;
         return $found;
     }
 

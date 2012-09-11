@@ -9,6 +9,6 @@ class Invoice implements \wsTests\DiContainer\DimpleMockDb\injectDbAccessInterfa
         $this->dba = $dba;
     }
     function showDbType() {
-        echo $this->dba->dbType();
+        return $this->dba->dbType();
     }
 }
