@@ -7,10 +7,6 @@ class DataRecord implements InjectDaoInterface
     const TYPE_GET = 'get-record';  // record from database. 
     const TYPE_IGNORE = 'ignored';  // non-operational record. 
     
-    const EXEC_NONE = 'exec-none';
-    const EXEC_SAVE = 'exec-save';
-    const EXEC_DEL  = 'exec-delete';
-    
     /** @var mixed         value of id. probably an integer     */
     private $_id_         = NULL;
     
@@ -21,17 +17,14 @@ class DataRecord implements InjectDaoInterface
     /** @var array         stores error messages from validator */
     private $_errors_     = array();
     
-    /** @var array         stores relations */
-    private $_relations_  = array();
-    
-    /** @var \wsCore\DbAccess\Dao     */
+    /** @var \wsCore\DbAccess\Dao                               */
     private $_dao_ = NULL;
     
-    /** @var string      set type of record. default is get  */
+    /** @var string         set type of record. default is get  */
     private $_type_ = NULL;
-
-    /** @var string      set execution type                  */
-    private $_exec_ = self::EXEC_NONE;
+    
+    /** @var string         html type to show                   */
+    private $_html_type_ = 'NAME';
     // +----------------------------------------------------------------------+
     /**
      */
@@ -78,27 +71,6 @@ class DataRecord implements InjectDaoInterface
         $this->_properties_ = $this->_originals_  = $stmt[0];
         $this->_id_ = $id;
         $this->_type_ = self::TYPE_GET;
-        return $this;
-    }
-
-    /**
-     * saves record into database. 
-     * 
-     * @return Record
-     */
-    public function save() {
-        if( $this->_exec_ == self::EXEC_SAVE ) { 
-            if( $this->_type_ == self::TYPE_NEW ) {
-                $id = $this->_dao_->insert( $this->_properties_ );
-                $this->load( $id );
-            }
-            elseif( $this->_exec_ == self::EXEC_SAVE && $this->_type_ == self::TYPE_GET ) {
-                $this->_dao_->update( $this->_id_, $this->_properties_ );
-            }
-        }
-        elseif( $this->_exec_ == self::EXEC_DEL && $this->_type_ == self::TYPE_GET ) {
-            $this->_dao_->delete( $this->_id_ );
-        }
         return $this;
     }
 
@@ -155,11 +127,14 @@ class DataRecord implements InjectDaoInterface
     /**
      * returns it's property. 
      * 
-     * @param $name
-     * @return bool
+     * @param null|string $name
+     * @return mixed
      */
-    public function pop( $name ) {
-        return ( isset( $this->_properties_[ $name ] ) ) ? $this->_properties_[ $name ]: FALSE;
+    public function pop( $name=NULL ) {
+        if( $name ) {
+            return ( isset( $this->_properties_[ $name ] ) ) ? $this->_properties_[ $name ]: FALSE;
+        }
+        return $this->_properties_;
     }
 
     /**
@@ -179,13 +154,25 @@ class DataRecord implements InjectDaoInterface
         $this->_exec_ = self::EXEC_SAVE;
         return $this;
     }
+
     /**
-     * @param      $name
-     * @param null $type
+     * setter/getter for html_type to show html elements. 
+     * 
+     * @param null|string $html_type
+     * @return string
+     */
+    public function setHtmlType( $html_type=NULL ) {
+        if( $html_type ) $this->_html_type_ = $html_type;
+        return $this->_html_type_;
+    }
+    /**
+     * @param string $name
+     * @param null   $html_type
      * @return mixed
      */
-    public function popHtml( $name, $type=NULL ) {
-        return $this->_dao_->popHtml( $type, $name, $this->_properties_[ $name ] );
+    public function popHtml( $name, $html_type=NULL ) {
+        $html_type = ( $html_type ) ?: $this->_html_type_;
+        return $this->_dao_->popHtml( $html_type, $name, $this->_properties_[ $name ] );
     }
 
     /**
