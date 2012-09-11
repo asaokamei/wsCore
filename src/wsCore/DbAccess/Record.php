@@ -11,6 +11,8 @@ class Record implements InjectDaoInterface
     const EXEC_SAVE = 'exec-save';
     const EXEC_DEL  = 'exec-delete';
     
+    // TODO: should rename variables as __variable. __set method may overwrite it!
+    
     /** @var mixed         value of id. probably an integer     */
     private $id         = NULL;
     
