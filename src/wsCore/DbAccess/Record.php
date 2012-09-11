@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Record
+class Record implements InjectDaoInterface
 {
     const TYPE_NEW = 'new-record';  // new record. not saved to database, yet
     const TYPE_GET = 'get-record';  // record from database. 
