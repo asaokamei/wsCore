@@ -10,6 +10,8 @@ class Dimplet
 {
     private $values = array();
 
+    private $objects = array();
+    
     /**
      * Sets a parameter or an object.
      *
@@ -31,12 +33,26 @@ class Dimplet
      * gets id from container. id can be:
      *  - a pre-set id for a data or a factory closure.
      *  - a class name to construct.
+     * 
+     * @param $id
+     * @return mixed
+     */
+    public function get( $id )
+    {
+        if( array_key_exists( $id, $this->objects ) ) {
+            return $this->objects[ $id ];
+        }
+        return $this->fresh( $id );
+    }
+    /**
+     * gets _fresh_ id from container. returns freshly constructed objects 
+     * unless it is wrapped by share method. 
      *
      * @param $id
      * @return mixed
      * @throws \RuntimeException
      */
-    public function get( $id )
+    public function fresh( $id )
     {
         if( array_key_exists($id, $this->values) ) {
             $found = $this->values[$id];
@@ -51,6 +67,8 @@ class Dimplet
         else {
             throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
         }
+        // stores the result for later use (by get method). 
+        $this->objects[ $id ] = $found;
         return $found;
     }
 
@@ -86,7 +104,7 @@ class Dimplet
         return function ($c) use ($callable) {
             static $object;
 
-            if (null === $object) {
+            if (NULL === $object) {
                 $object = $callable($c);
             }
 
