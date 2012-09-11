@@ -86,7 +86,7 @@ class Dimplet
                     $className = $matches[1] . $matches[2];
                     $injector  = "inject" . $matches[2];
                     // now inject an object.
-                    $injObj = $this->fresh( $className );
+                    $injObj = $this->get( $className );
                     $object->$injector( $injObj );
                 }
             }
