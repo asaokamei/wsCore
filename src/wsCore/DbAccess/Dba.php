@@ -35,20 +35,6 @@ class Dba implements InjectSqlInterface
     }
 
     /**
-     * TODO: is this method necessary?
-     * @static
-     * @return Dba
-     */
-    public static function getInstance()
-    {
-        $class = get_called_class();
-        if( isset( static::$self[ $class ] ) ) {
-            return static::$self[ $class ];
-        }
-        return static::$self[ $class ] = new static();
-    }
-
-    /**
      * connect to database. $conn maybe \Pdo object,
      * or connection string for Rdb::connect.
      *
