@@ -12,7 +12,6 @@ class Dba implements InjectSqlInterface
 
     private $fetchMode;
     private $fetchClass = NULL;
-    private static $self=array();
     // +----------------------------------------------------------------------+
     /**
      * inject Pdo object, or config name for Rdb::connect.
