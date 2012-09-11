@@ -7,7 +7,7 @@ class Dba implements InjectSqlInterface
     var $pdoObj  = NULL;
     /** @var \PdoStatement               PDO statement obj   */
     var $pdoStmt = NULL;
-    /** @var Sql                         Sql builder obj     */
+    /** @var \wsCore\DbAccess\Sql        Sql builder obj     */
     var $sql;
 
     private $fetchMode;
