@@ -11,29 +11,27 @@ class Record implements InjectDaoInterface
     const EXEC_SAVE = 'exec-save';
     const EXEC_DEL  = 'exec-delete';
     
-    // TODO: should rename variables as __variable. __set method may overwrite it!
-    
     /** @var mixed         value of id. probably an integer     */
-    private $id         = NULL;
+    private $_id_         = NULL;
     
     /** @var array         stores property of the record        */
-    private $properties = array();
-    private $originals  = array(); // stores original data from db  
+    private $_properties_ = array();
+    private $_originals_  = array(); // stores original data from db  
     
     /** @var array         stores error messages from validator */
-    private $errors     = array();
+    private $_errors_     = array();
     
     /** @var array         stores relations */
-    private $relations  = array();
+    private $_relations_  = array();
     
     /** @var \wsCore\DbAccess\Dao     */
-    private $dao = NULL;
+    private $_dao_ = NULL;
     
     /** @var string      set type of record. default is get  */
-    private $type = NULL;
+    private $_type_ = NULL;
 
     /** @var string      set execution type                  */
-    private $exec = self::EXEC_NONE;
+    private $_exec_ = self::EXEC_NONE;
     // +----------------------------------------------------------------------+
     /**
      */
@@ -45,7 +43,7 @@ class Record implements InjectDaoInterface
      * @param \wsCore\DbAccess\Dao $dao
      */
     public function injectDao( $dao ) {
-        $this->dao = $dao;
+        $this->_dao_ = $dao;
     }
     /**
      * create fresh/new record with or without id.
@@ -56,16 +54,16 @@ class Record implements InjectDaoInterface
     public function fresh( $data=NULL ) {
         $id = NULL;
         if( is_array( $data ) ) {
-            $this->properties = $this->originals = $data;
-            if( isset( $this->properties[ $this->dao->getIdName() ] ) ) {
-                $id = $this->properties[ $this->dao->getIdName() ];
+            $this->_properties_ = $this->_originals_ = $data;
+            if( isset( $this->_properties_[ $this->_dao_->getIdName() ] ) ) {
+                $id = $this->_properties_[ $this->_dao_->getIdName() ];
             }
         }
         else {
             $id = $data;
         }
-        $this->id = $id;
-        $this->type = self::TYPE_NEW;
+        $this->_id_ = $id;
+        $this->_type_ = self::TYPE_NEW;
         return $this;
     }
 
@@ -76,10 +74,10 @@ class Record implements InjectDaoInterface
      * @return Record
      */
     public function load( $id ) {
-        $stmt = $this->dao->find( $id );
-        $this->properties = $this->originals  = $stmt[0];
-        $this->id = $id;
-        $this->type = self::TYPE_GET;
+        $stmt = $this->_dao_->find( $id );
+        $this->_properties_ = $this->_originals_  = $stmt[0];
+        $this->_id_ = $id;
+        $this->_type_ = self::TYPE_GET;
         return $this;
     }
 
@@ -89,17 +87,17 @@ class Record implements InjectDaoInterface
      * @return Record
      */
     public function save() {
-        if( $this->exec == self::EXEC_SAVE ) { 
-            if( $this->type == self::TYPE_NEW ) {
-                $id = $this->dao->insert( $this->properties );
+        if( $this->_exec_ == self::EXEC_SAVE ) { 
+            if( $this->_type_ == self::TYPE_NEW ) {
+                $id = $this->_dao_->insert( $this->_properties_ );
                 $this->load( $id );
             }
-            elseif( $this->exec == self::EXEC_SAVE && $this->type == self::TYPE_GET ) {
-                $this->dao->update( $this->id, $this->properties );
+            elseif( $this->_exec_ == self::EXEC_SAVE && $this->_type_ == self::TYPE_GET ) {
+                $this->_dao_->update( $this->_id_, $this->_properties_ );
             }
         }
-        elseif( $this->exec == self::EXEC_DEL && $this->type == self::TYPE_GET ) {
-            $this->dao->delete( $this->id );
+        elseif( $this->_exec_ == self::EXEC_DEL && $this->_type_ == self::TYPE_GET ) {
+            $this->_dao_->delete( $this->_id_ );
         }
         return $this;
     }
@@ -110,10 +108,10 @@ class Record implements InjectDaoInterface
      * @return Record
      */
     public function reconstruct() {
-        if( $this->type == NULL && !empty( $this->properties ) ) {
-            $this->id = $this->properties[ $this->dao->getIdName() ];
-            $this->originals = $this->properties;
-            $this->type = self::TYPE_GET;
+        if( $this->_type_ == NULL && !empty( $this->_properties_ ) ) {
+            $this->_id_ = $this->_properties_[ $this->_dao_->getIdName() ];
+            $this->_originals_ = $this->_properties_;
+            $this->_type_ = self::TYPE_GET;
         }
         return $this;
     }
@@ -122,21 +120,21 @@ class Record implements InjectDaoInterface
      * @return string
      */
     public function getModel() {
-        return $this->dao->getModelName();
+        return $this->_dao_->getModelName();
     }
 
     /**
      * @return mixed|null
      */
     public function getId() {
-        return $this->id;
+        return $this->_id_;
     }
 
     /**
      * @return null|string
      */
     public function getType() {
-        return $this->type;
+        return $this->_type_;
     }
     
     public function validate() {}
@@ -151,7 +149,7 @@ class Record implements InjectDaoInterface
      * @param $value
      */
     public function __set( $name, $value ) {
-        $this->properties[ $name ] = $value;
+        $this->_properties_[ $name ] = $value;
     }
 
     /**
@@ -161,7 +159,7 @@ class Record implements InjectDaoInterface
      * @return bool
      */
     public function pop( $name ) {
-        return ( isset( $this->properties[ $name ] ) ) ? $this->properties[ $name ]: FALSE;
+        return ( isset( $this->_properties_[ $name ] ) ) ? $this->_properties_[ $name ]: FALSE;
     }
 
     /**
@@ -173,12 +171,12 @@ class Record implements InjectDaoInterface
      */
     public function set( $name, $value=NULL ) {
         if( is_array( $name ) ) {
-            $this->properties = array_merge( $this->properties, $name );
+            $this->_properties_ = array_merge( $this->_properties_, $name );
         }
         else {
-            $this->properties[ $name ] = $value;
+            $this->_properties_[ $name ] = $value;
         }
-        $this->exec = self::EXEC_SAVE;
+        $this->_exec_ = self::EXEC_SAVE;
         return $this;
     }
     /**
@@ -187,7 +185,7 @@ class Record implements InjectDaoInterface
      * @return mixed
      */
     public function popHtml( $name, $type=NULL ) {
-        return $this->dao->popHtml( $type, $name, $this->properties[ $name ] );
+        return $this->_dao_->popHtml( $type, $name, $this->_properties_[ $name ] );
     }
 
     /**
@@ -195,14 +193,14 @@ class Record implements InjectDaoInterface
      * @return mixed
      */
     public function popError( $name ) {
-        return $this->errors[ $name ];
+        return $this->_errors_[ $name ];
     }
 
     /**
      * @param $name
      */
     public function popName( $name ) {
-        $this->dao->propertyName( $name );
+        $this->_dao_->propertyName( $name );
     }
     // +----------------------------------------------------------------------+
 }
