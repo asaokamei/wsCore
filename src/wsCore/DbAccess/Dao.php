@@ -120,7 +120,7 @@ class Dao implements InjectDbaInterface
      * @param string $id
      * @return \PdoStatement
      */
-    public function removeDataFromTable( $id )
+    public function delete( $id )
     {
         return $this->dba()->sql()->clearWhere()
             ->table( $this->table )
