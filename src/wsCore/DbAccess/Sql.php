@@ -535,5 +535,21 @@ class Sql
         }
         return $column;
     }
+
+    /**
+     * magic method to access Dba's method. 
+     * 
+     * @param $name
+     * @param $args
+     * @return mixed
+     * @throws \RuntimeException
+     */
+    public function __call( $name, $args )
+    {
+        if( method_exists( $this->dba, $name ) ) {
+            return call_user_func_array( array( $this->dba, $name ), $args );
+        }
+        throw new \RuntimeException( "Cannot access $name in Sql object." );
+    }
     // +----------------------------------------------------------------------+
 }

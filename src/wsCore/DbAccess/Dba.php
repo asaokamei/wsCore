@@ -236,4 +236,20 @@ class Dba implements InjectSqlInterface
     public function getDriverName() {
         return $this->pdoObj->getAttribute( \PDO::ATTR_DRIVER_NAME );
     }
+
+    /**
+     * magic method to access Sql's method.
+     *
+     * @param $name
+     * @param $args
+     * @return mixed
+     * @throws \RuntimeException
+     */
+    public function __call( $name, $args )
+    {
+        if( method_exists( $this->sql, $name ) ) {
+            return call_user_func_array( array( $this->sql, $name ), $args );
+        }
+        throw new \RuntimeException( "Cannot access $name in Dba object." );
+    }
 }
