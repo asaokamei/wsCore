@@ -42,7 +42,7 @@ class DataRecord implements InjectDaoInterface
      * create fresh/new record with or without id.
      * 
      * @param null|string|array|int $data
-     * @return Record
+     * @return DataRecord
      */
     public function fresh( $data=NULL ) {
         $id = NULL;
@@ -64,7 +64,7 @@ class DataRecord implements InjectDaoInterface
      * get record from database. 
      * 
      * @param $id
-     * @return Record
+     * @return DataRecord
      */
     public function load( $id ) {
         $stmt = $this->_dao_->find( $id );
@@ -76,12 +76,17 @@ class DataRecord implements InjectDaoInterface
 
     /**
      * re-populates id. use this after Pdo's fetch as class.
-     * 
-     * @return Record
+     *
+     * @param null|\wsCore\DbAccess\Dao $dao
+     * @return DataRecord
      */
-    public function reconstruct() {
-        if( $this->_type_ == NULL && !empty( $this->_properties_ ) ) {
+    public function reconstruct( $dao=NULL ) 
+    {
+        if( $dao ) {
+            $this->_dao_ = $dao;
             $this->_id_ = $this->_properties_[ $this->_dao_->getIdName() ];
+        }
+        if( $this->_type_ == NULL && !empty( $this->_properties_ ) ) {
             $this->_originals_ = $this->_properties_;
             $this->_type_ = self::TYPE_GET;
         }
@@ -121,7 +126,7 @@ class DataRecord implements InjectDaoInterface
      * @param $value
      */
     public function __set( $name, $value ) {
-        $this->_properties_[ $name ] = $value;
+        $this->set( $name, $value );
     }
 
     /**
@@ -142,7 +147,7 @@ class DataRecord implements InjectDaoInterface
      * 
      * @param string|array $name
      * @param null|mixed   $value
-     * @return Record
+     * @return DataRecord
      */
     public function set( $name, $value=NULL ) {
         if( is_array( $name ) ) {
@@ -151,7 +156,6 @@ class DataRecord implements InjectDaoInterface
         else {
             $this->_properties_[ $name ] = $value;
         }
-        $this->_exec_ = self::EXEC_SAVE;
         return $this;
     }
 
