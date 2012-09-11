@@ -80,7 +80,7 @@ class Sql
      * @return \PdoStatement
      */
     public function exec() {
-        if( !$this->dba ) throw new \RuntimeException( 'Dba object not set to perform this method.' );
+        if( !$this->dba ) throw new \RuntimeException( 'DbAccess object not set to perform this method.' );
         $this->dba->execSQL( $this->sql, $this->prepared_values );
         return $this->dba->stmt();
     }
@@ -94,7 +94,7 @@ class Sql
      * @return \PdoStatement
      */
     public function execSQL( $sql=NULL, $prepared=array() ) {
-        if( !$this->dba ) throw new \RuntimeException( 'Dba object not set to perform this method.' );
+        if( !$this->dba ) throw new \RuntimeException( 'DbAccess object not set to perform this method.' );
         $sql = ( $sql ) ?: $this->sql;
         $this->dba->execSQL( $sql, $prepared );
         return $this->dba->stmt();

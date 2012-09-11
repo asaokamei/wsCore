@@ -1,6 +1,6 @@
 <?php
 namespace wsTests\Dba;
-use \wsCore\Dba\Rdb as Rdb;
+use \wsCore\DbAccess\Rdb as Rdb;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 

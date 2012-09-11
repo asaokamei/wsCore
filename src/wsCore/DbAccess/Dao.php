@@ -24,7 +24,7 @@ class Dao implements InjectDbaInterface
     /** @var \wsCore\Dba\Dba */
     private $dba;
     /** @var string */
-    public  $classNameDba = '\wsCore\Dba\Dba';
+    public  $classNameDba = '\wsCore\DbAccess\DbAccess';
 
     // +----------------------------------------------------------------------+
     /**
@@ -35,8 +35,8 @@ class Dao implements InjectDbaInterface
     }
 
     /**
-     * injects Dba object for accessing database.
-     * if the injected $dba is a string, it is used to construct Dba object.
+     * injects DbAccess object for accessing database.
+     * if the injected $dba is a string, it is used to construct DbAccess object.
      *
      * @param $dba
      */

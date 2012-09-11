@@ -6,7 +6,7 @@ require_once( __DIR__ . '/../../autoloader.php' );
 class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
-    /** @var \wsCore\Dba\Dba */
+    /** @var \wsCore\DbAccess\Dba */
     var $dba = NULL;
     var $table = 'test_wsCore';
     var $column_list = '';
@@ -16,9 +16,9 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->config = array(
             'dsn' => 'db=mysql dbname=test_wsCore username=admin password=admin'
         );
-        \wsCore\Dba\Rdb::_init();
-        \wsCore\Dba\Rdb::set( 'config', $this->config );
-        $this->dba = new \wsCore\Dba\Dba();
+        \wsCore\DbAccess\Rdb::_init();
+        \wsCore\DbAccess\Rdb::set( 'config', $this->config );
+        $this->dba = new \wsCore\DbAccess\Dba();
         $this->column_list = '
             id int NOT NULL AUTO_INCREMENT,
             name CHAR(30),

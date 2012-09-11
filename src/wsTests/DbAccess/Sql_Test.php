@@ -5,15 +5,15 @@ require_once( __DIR__ . '/../../autoloader.php' );
 
 class Dba_Sql_Test extends \PHPUnit_Framework_TestCase
 {
-    /** @var \wsCore\Dba\Sql */
+    /** @var \wsCore\DbAccess\Sql */
     var $sql;
-    /** @var \wsCore\Dba\Rdb */
+    /** @var \wsCore\DbAccess\Rdb */
     var $pdo;
     // +----------------------------------------------------------------------+
     public function setUp()
     {
         $this->pdo = new SqlMockDba();
-        $this->sql = new \wsCore\Dba\Sql( $this->pdo );
+        $this->sql = new \wsCore\DbAccess\Sql( $this->pdo );
     }
     public function getValFromUpdate( $sql, $name ) {
         preg_match( "/{$name}=(:db_prep_[0-9]+)/", $sql, $matches );
