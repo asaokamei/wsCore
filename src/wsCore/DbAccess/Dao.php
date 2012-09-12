@@ -82,7 +82,7 @@ class Dao implements InjectDbaInterface
      */
     public function find( $id ) {
         return $this->dba()->sql()
-            ->table( $this->table )
+            ->table( $this->table, $this->id_name )
             ->where( $this->id_name, $id )
             ->limit(1)
             ->exec();
@@ -100,7 +100,7 @@ class Dao implements InjectDbaInterface
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
         return $this->dba()->sql()->clearWhere()
-            ->table( $this->table )
+            ->table( $this->table, $this->id_name )
             ->where( $this->id_name, $id )
             ->update( $values )
         ;
@@ -116,7 +116,7 @@ class Dao implements InjectDbaInterface
     public function insert( $values )
     {
         return $this->dba()->sql()
-            ->table( $this->table )
+            ->table( $this->table, $this->id_name )
             ->insert( $values );
     }
 
@@ -127,7 +127,7 @@ class Dao implements InjectDbaInterface
     public function delete( $id )
     {
         return $this->dba()->sql()->clearWhere()
-            ->table( $this->table )
+            ->table( $this->table, $this->id_name )
             ->where( $this->id_name, $id )
             ->limit(1)
             ->makeSQL( 'DELETE' )

@@ -56,8 +56,8 @@ class Dba implements InjectSqlInterface
         if( !$this->sql ) $this->sql = new Sql( $this );
         return $this->sql;
     }
-    public function table( $table ) {
-        return $this->sql()->table( $table );
+    public function table( $table, $id_name='id' ) {
+        return $this->sql()->table( $table, $id_name );
     }
 
     /**

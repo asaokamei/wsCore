@@ -6,6 +6,9 @@ class Sql
     // public variables to represent sql statement.
     /** @var string           name of database table    */
     var $table;
+    
+    /** @var string           name of id (primary key)  */
+    var $id_name = 'id';
 
     /** @var array            join for table            */
     var $join = array();
@@ -165,10 +168,12 @@ class Sql
     // +----------------------------------------------------------------------+
     /**
      * @param string $table
+     * @param string $id_name
      * @return Sql
      */
-    public function table( $table ) {
+    public function table( $table, $id_name='id' ) {
         $this->table = $table;
+        $this->id_name = $id_name;
         return $this;
     }
 
