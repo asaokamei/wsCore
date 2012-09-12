@@ -1,0 +1,189 @@
+<?php
+namespace wsCore\DbAccess;
+
+class SqlBuilder
+{
+    // +----------------------------------------------------------------------+
+    /**
+     * @param Sql $sql
+     * @throws \RuntimeException
+     * @return string
+     */
+    public static function makeInsert( $sql )
+    {
+        if( is_array( $sql ) ) $sql = (object) $sql;
+        if( !$sql->table ) throw new \RuntimeException( 'table not set. ' );
+        $values = $sql->processValues();
+        $listV = implode( ', ', $values );
+        $listC = implode( ', ', array_keys( $values ) );
+        return "INSERT INTO {$sql->table} ( {$listC} ) VALUES ( {$listV} )";
+    }
+
+    /**
+     * @param Sql $sql
+     * @return string
+     * @throws \RuntimeException
+     */
+    public static function makeUpdate( $sql )
+    {
+        if( is_array( $sql ) ) $sql = (object) $sql;
+        if( !$sql->table ) throw new \RuntimeException( 'table not set. ' );
+        $list   = array();
+        $values = $sql->processValues();
+        foreach( $values as $col => $val ) {
+            $list[] = "{$col}={$val}";
+        }
+        $update  = "UPDATE {$sql->table} SET " . implode( ', ', $list );
+        $update .= ( $where=$sql->makeWhere() ) ? " WHERE {$where}" : '';
+        return $update;
+    }
+
+    /**
+     * @param Sql $sql
+     * @return string
+     * @throws \RuntimeException
+     */
+    public static function makeDelete( $sql )
+    {
+        if( is_array( $sql ) ) $sql = (object) $sql;
+        if( !$sql->table ) throw new \RuntimeException( 'table not set. ' );
+        if( !$where = self::makeWhere( $sql->where ) ) {
+            throw new \RuntimeException( 'Cannot delete without where condition. ' );
+        }
+        return "DELETE FROM {$sql->table} WHERE " . $where;
+    }
+
+    // +----------------------------------------------------------------------+
+    /**
+     * @param array|string $where
+     * @return string
+     */
+    public static function makeWhere( $where )
+    {
+        if( is_array( $where ) ) {
+            $where_str = '';
+            foreach( $where as $wh ) {
+                $where_str .= call_user_func_array( array( 'self', 'formWhere' ), $wh );
+            }
+        }
+        else {
+            $where_str = $where;
+        }
+        $where_str = trim( $where_str );
+        preg_replace( '/^(AND|OR)/i', '', $where_str );
+        return $where_str;
+    }
+
+    /**
+     * @param string $col
+     * @param string $val
+     * @param string $rel
+     * @param string $op
+     * @return string
+     */
+    public static function formWhere( $col, $val, $rel='=', $op='AND' ) 
+    {
+        $where = '';
+        $rel = strtoupper( $rel );
+        if( $rel == 'IN' ) {
+            $val = "( " . is_array( $val ) ? implode( ", ", $val ): "{$val}" . " )";
+        }
+        elseif( $rel == 'BETWEEN' ) {
+            $val = "{$val{0}} AND {$val{1}}";
+        }
+        elseif( $col == '(' ) {
+            $val = $rel = '';
+        }
+        elseif( $col == ')' ) {
+            $op = $rel = $val = '';
+        }
+        $where .= trim( "{$op} {$col} {$rel} {$val}" ) . ' ';
+        return $where;
+    }
+    
+    /**
+     * @param Sql $sql
+     * @return string
+     */
+    public static function makeCount( $sql )
+    {
+        if( is_array( $sql ) ) $sql = (object) $sql;
+        $column = $sql->columns;
+        $update = $sql->forUpdate;
+        
+        $sql->columns   = 'COUNT(*) AS wsCore__Count__';
+        $sql->forUpdate = FALSE;
+        $select = $sql->makeSelect();
+        
+        $sql->columns   = $column;
+        $sql->forUpdate = $update;
+        return $select;
+    }
+
+    /**
+     * @param Sql $sql
+     * @return string
+     */
+    public static function makeSelect( $sql )
+    {
+        if( is_array( $sql ) ) $sql = (object) $sql;
+        $select  = 'SELECT ';
+        $select .= ( $sql->distinct ) ? 'DISTINCT ': '';
+        $select .= self::makeSelectBody( $sql );
+        $select .= ( $sql->forUpdate ) ? ' FOR UPDATE': '';
+        return $select;
+    }
+
+    /**
+     * @param Sql $sql
+     * @return string
+     * @throws \RuntimeException
+     */
+    public static function makeSelectBody( $sql )
+    {
+        if( !$sql->table ) throw new \RuntimeException( 'table not set. ' );
+        $select  = self::makeColumn( $sql->columns );
+        $select .= ' FROM ' . $sql->table;
+        $select .= self::makeJoin( $sql->join );
+        $select .= ( $where = self::makeWhere( $sql->where ) ) ? ' WHERE '.$where: '';
+        $select .= ( $sql->group  ) ? ' GROUP BY '   . $sql->group: '';
+        $select .= ( $sql->having ) ? ' HAVING '     . $sql->having: '';
+        $select .= ( $sql->order  ) ? ' ORDER BY '   . $sql->order: '';
+        $select .= ( $sql->misc   ) ? ' '            . $sql->misc: '';
+        $select .= ( $sql->limit  > 0 ) ? ' LIMIT '  . $sql->limit: '';
+        $select .= ( $sql->offset > 0 ) ? ' OFFSET ' . $sql->offset: '';
+        return $select;
+    }
+
+    /**
+     * @param array $join
+     * @return string
+     */
+    public static function makeJoin( $join ) 
+    {
+        $joined = '';
+        if( !empty( $join ) )
+            foreach( $join as $j ) {
+                $joined .= $j . ' ';
+            }
+        return $joined;
+    }
+
+    /**
+     * @param array|string $columns
+     * @return string
+     */
+    public static function makeColumn( $columns ) 
+    {
+        if( empty( $columns ) ) {
+            $column = '*';
+        }
+        elseif( is_array( $columns ) ) {
+            $column = implode( ', ', $columns );
+        }
+        else {
+            $column = $columns;
+        }
+        return $column;
+    }    
+}
