@@ -72,6 +72,7 @@ class Dao implements InjectDbaInterface
     public function getRecord() {
         /** @var $record \wsCore\DbAccess\DataRecord */
         $record = new $this->recordClassName();
+        $record->injectDao( $this );
         return $record;
     }
     // +----------------------------------------------------------------------+
