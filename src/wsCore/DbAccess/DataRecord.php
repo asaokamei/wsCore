@@ -106,7 +106,8 @@ class DataRecord
      */
     public function fetch( $id ) {
         $stmt = $this->_dao_->find( $id );
-        $this->_properties_ = $this->_originals_  = $stmt[0];
+        $this->_properties_ = $this->_originals_
+            = is_array( $stmt[0] ) ? $stmt[0] : $stmt[0]->get();
         $this->_id_ = $id;
         $this->_type_ = self::TYPE_GET;
         return $this;
@@ -172,7 +173,7 @@ class DataRecord
      * @param null|string $name
      * @return mixed
      */
-    public function pop( $name=NULL ) {
+    public function get( $name=NULL ) {
         if( $name ) {
             return ( isset( $this->_properties_[ $name ] ) ) ? $this->_properties_[ $name ]: FALSE;
         }
