@@ -13,10 +13,10 @@ class SqlBuilder
     {
         if( is_array( $sql ) ) $sql = (object) $sql;
         if( !$sql->table ) throw new \RuntimeException( 'table not set. ' );
-        $values = $sql->processValues();
-        $listV = implode( ', ', $values );
-        $listC = implode( ', ', array_keys( $values ) );
-        return "INSERT INTO {$sql->table} ( {$listC} ) VALUES ( {$listV} )";
+        $listV = implode( ', ', $sql->rowData );
+        $listC = implode( ', ', array_keys( $sql->rowData ) );
+        $insert = "INSERT INTO {$sql->table} ( {$listC} ) VALUES ( {$listV} )";
+        return $insert;
     }
 
     /**
@@ -29,12 +29,11 @@ class SqlBuilder
         if( is_array( $sql ) ) $sql = (object) $sql;
         if( !$sql->table ) throw new \RuntimeException( 'table not set. ' );
         $list   = array();
-        $values = $sql->processValues();
-        foreach( $values as $col => $val ) {
+        foreach( $sql->rowData as $col => $val ) {
             $list[] = "{$col}={$val}";
         }
         $update  = "UPDATE {$sql->table} SET " . implode( ', ', $list );
-        $update .= ( $where=$sql->makeWhere() ) ? " WHERE {$where}" : '';
+        $update .= ( $where= self::makeWhere( $sql->where ) ) ? " WHERE {$where}" : '';
         return $update;
     }
 

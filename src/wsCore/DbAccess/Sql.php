@@ -22,6 +22,9 @@ class Sql
     /** @var array            sql functions for insert/update          */
     var $functions = array();
 
+    /** @var array            data to insert/update. from $values and $functions */
+    var $rowData   = array();
+
     /** @var string */
     var $order;
 
@@ -195,6 +198,17 @@ class Sql
         $this->values = $values;
         return $this;
     }
+
+    /**
+     * set SQL functions for INSERT or UPDATE. The functions are not 'prepared'.
+     * TODO: find better name than functions???
+     * @param $func
+     * @return Sql
+     */
+    public function functions( $func ) {
+        $this->functions = $func;
+        return $this;
+    }
     public function order( $order ) {
         $this->order = $order;
         return $this;
@@ -340,20 +354,22 @@ class Sql
         $type = strtoupper( $type );
         switch( $type ) {
             case 'INSERT':
-                $sql = $this->makeInsert();
+                $this->processValues();
+                $sql = SqlBuilder::makeInsert( $this );
                 break;
             case 'UPDATE':
-                $sql = $this->makeUpdate();
+                $this->processValues();
+                $sql = SqlBuilder::makeUpdate( $this );
                 break;
             case 'DELETE':
-                $sql = $this->makeDelete();
+                $sql = SqlBuilder::makeDelete( $this );
                 break;
             case 'COUNT':
-                $sql = $this->makeCount();
+                $sql = SqlBuilder::makeCount( $this );
                 break;
             default:
             case 'SELECT':
-                $sql = $this->makeSelect();
+                $sql = SqlBuilder::makeSelect( $this );
                 break;
         }
         $this->sql = $sql;
@@ -361,55 +377,11 @@ class Sql
     }
 
     /**
-     * @return string
-     */
-    public function makeWhere()
-    {
-        if( is_array( $this->where ) ) {
-            $where = '';
-            foreach( $this->where as $wh ) {
-                $where .= call_user_func_array( array( $this, 'formWhere' ), $wh );
-            }
-        }
-        else {
-            $where = $this->where;
-        }
-        $where = trim( $where );
-        preg_replace( '/^(AND|OR)/i', '', $where );
-        return $where;
-    }
-
-    /**
-     * @param string $col
-     * @param string $val
-     * @param string $rel
-     * @param string $op
-     * @return string
-     */
-    public function formWhere( $col, $val, $rel='=', $op='AND' ) {
-        $where = '';
-        $rel = strtoupper( $rel );
-        if( $rel == 'IN' ) { 
-            $val = "( " . is_array( $val ) ? implode( ", ", $val ): "{$val}" . " )";
-        }
-        elseif( $rel == 'BETWEEN' ) {
-            $val = "{$val{0}} AND {$val{1}}";
-        }
-        elseif( $col == '(' ) {
-            $val = $rel = '';
-        }
-        elseif( $col == ')' ) {
-            $op = $rel = $val = '';
-        }
-        $where .= trim( "{$op} {$col} {$rel} {$val}" ) . ' ';
-        return $where;
-    }
-
-    /**
      * prepares value for prepared statement. if value is NULL,
      * it will not be treated as prepared value, instead it is
      * set to SQL's NULL value.
-     * @return array
+     *
+     * @return Sql
      */
     public function processValues()
     {
@@ -420,125 +392,8 @@ class Sql
                 unset( $this->values[ $key ] );
             }
         }
-        return array_merge( $this->functions, $this->p( $this->values ) );
-    }
-
-    /**
-     * @return string
-     * @throws \RuntimeException
-     */
-    public function makeInsert()
-    {
-        if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
-        $values = $this->processValues();
-        $listV = implode( ', ', $values );
-        $listC = implode( ', ', array_keys( $values ) );
-        return "INSERT INTO {$this->table} ( {$listC} ) VALUES ( {$listV} )";
-    }
-
-    /**
-     * @return string
-     * @throws \RuntimeException
-     */
-    public function makeUpdate()
-    {
-        if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
-        $list   = array();
-        $values = $this->processValues();
-        foreach( $values as $col => $val ) {
-            $list[] = "{$col}={$val}";
-        }
-        $sql  = "UPDATE {$this->table} SET " . implode( ', ', $list );
-        $sql .= ( $where=$this->makeWhere() ) ? " WHERE {$where}" : '';
-        return $sql;
-    }
-
-    /**
-     * @return string
-     * @throws \RuntimeException
-     */
-    public function makeDelete()
-    {
-        if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
-        if( !$where = $this->makeWhere() ) {
-            throw new \RuntimeException( 'Cannot delete without where condition. ' );
-        }
-        return "DELETE FROM {$this->table} WHERE " . $where;
-    }
-
-    /**
-     * @return string
-     */
-    public function makeCount()
-    {
-        $column = $this->columns;
-        $update = $this->forUpdate;
-        $this->columns   = 'COUNT(*) AS wscore__count__';
-        $this->forUpdate = FALSE;
-        $select = $this->makeSelect();
-        $this->columns   = $column;
-        $this->forUpdate = $update;
-        return $select;
-    }
-
-    /**
-     * @return string
-     */
-    public function makeSelect()
-    {
-        $select  = 'SELECT ';
-        $select .= ( $this->distinct ) ? 'DISTINCT ': '';
-        $select .= $this->makeSelectBody();
-        $select .= ( $this->forUpdate ) ? ' FOR UPDATE': '';
-        return $select;
-    }
-
-    /**
-     * @return string
-     * @throws \RuntimeException
-     */
-    public function makeSelectBody()
-    {
-        if( !$this->table ) throw new \RuntimeException( 'table not set. ' );
-        $select  = $this->makeColumn();
-        $select .= ' FROM ' . $this->table;
-        $select .= $this->makeJoin();
-        $select .= ( $where = $this->makeWhere() ) ? ' WHERE '.$where: '';
-        $select .= ( $this->group  ) ? ' GROUP BY '   . $this->group: '';
-        $select .= ( $this->having ) ? ' HAVING '     . $this->having: '';
-        $select .= ( $this->order  ) ? ' ORDER BY '   . $this->order: '';
-        $select .= ( $this->misc   ) ? ' '            . $this->misc: '';
-        $select .= ( $this->limit  > 0 ) ? ' LIMIT '  . $this->limit: '';
-        $select .= ( $this->offset > 0 ) ? ' OFFSET ' . $this->offset: '';
-        return $select;
-    }
-
-    /**
-     * @return string
-     */
-    public function makeJoin() {
-        $joined = '';
-        if( !empty( $this->join ) )
-        foreach( $this->join as $join ) {
-            $joined .= $join . ' ';
-        }
-        return $joined;
-    }
-
-    /**
-     * @return string
-     */
-    public function makeColumn() {
-        if( empty( $this->columns ) ) {
-            $column = '*';
-        }
-        elseif( is_array( $this->columns ) ) {
-            $column = implode( ', ', $this->columns );
-        }
-        else {
-            $column = $this->columns;
-        }
-        return $column;
+        $this->rowData = array_merge( $this->functions, $this->p( $this->values ) );
+        return $this;
     }
 
     /**
