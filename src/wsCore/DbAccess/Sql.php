@@ -77,12 +77,11 @@ class Sql
      * executes SQL statement.
      *
      * @throws \RuntimeException
-     * @return \PdoStatement
+     * @return Dba
      */
     public function exec() {
         if( !$this->dba ) throw new \RuntimeException( 'DbAccess object not set to perform this method.' );
-        $this->dba->execSQL( $this->sql, $this->prepared_values );
-        return $this->dba->stmt();
+        return $this->dba->execSQL( $this->sql, $this->prepared_values );
     }
 
     /**
@@ -308,10 +307,11 @@ class Sql
 
     /**
      * @param array|null $column
+     * @return \wsCore\DbAccess\Dba
      */
     public function select( $column=NULL ) {
         if( $column ) $this->column( $column );
-        $this->makeSQL( 'SELECT' )
+        return $this->makeSQL( 'SELECT' )
             ->exec();
     }
 
@@ -321,7 +321,7 @@ class Sql
     public function count() {
         return $this->makeSQL( 'COUNT' )
             ->exec()
-            ->fetchColumn(0);
+            ->stmt()->fetchColumn(0);
     }
 
     /**
@@ -387,7 +387,7 @@ class Sql
         if( $rel == 'IN' ) { 
             $val = "( " . is_array( $val ) ? implode( ", ", $val ): "{$val}" . " )";
         }
-        elseif( $rel = 'BETWEEN' ) {
+        elseif( $rel == 'BETWEEN' ) {
             $val = "{$val{0}} AND {$val{1}}";
         }
         elseif( $col == '(' ) {
@@ -481,10 +481,10 @@ class Sql
      */
     public function makeSelect()
     {
-        $select = 'SELECT '
-            . ( $this->distinct ) ? 'DISTINCT ': ''
-            . $this->makeSelectBody()
-            . ( $this->forUpdate ) ? ' FOR UPDATE': '';
+        $select  = 'SELECT ';
+        $select .= ( $this->distinct ) ? 'DISTINCT ': '';
+        $select .= $this->makeSelectBody();
+        $select .= ( $this->forUpdate ) ? ' FOR UPDATE': '';
         return $select;
     }
 

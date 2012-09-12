@@ -56,6 +56,9 @@ class Dba implements InjectSqlInterface
         if( !$this->sql ) $this->sql = new Sql( $this );
         return $this->sql;
     }
+    public function table( $table ) {
+        return $this->sql()->table( $table );
+    }
 
     /**
      * @return \Pdo
@@ -107,7 +110,8 @@ class Dba implements InjectSqlInterface
         else {
             $this->pdoObj->exec( $sql );
         }
-        $this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass );
+        //$this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass );
+        //$this->pdoStmt->setFetchMode( $this->fetchMode );
         return $this;
     }
 

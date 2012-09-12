@@ -78,7 +78,33 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         );
         return $values;
     }
+    public function get_value_by_row( $row )
+    {
+        $column = $this->get_column_by_row( $row );
+        $values = array();
+        foreach( $column as $key => $val ) {
+            $values[ substr( $key, 1 ) ] = $val;
+        }
+        return $values;
+    }
     // +----------------------------------------------------------------------+
+    public function test_insert_data()
+    {
+        $this->setUp_TestTable_perm();
+        $data = $this->get_value_by_row( 21 );
+
+        // add some data
+        $return = $this->dba->table( $this->table )->insert( $data );
+        $this->assertEquals( 'wsCore\DbAccess\Dba', get_class( $return ) );
+        // last ID should be 1, since it is the first data.
+        $id = $this->dba->lastId();
+        $this->assertEquals( '1', $id );
+
+        // now check to see really added
+        $return2 = $this->dba->table( $this->table )
+            ->where( 'id', $id )->select();
+        $this->assertEquals( 'wsCore\DbAccess\Dba', get_class( $return2 ) );
+    }
     public function test_dbConnect_and_new()
     {
         // the original pdo object.
@@ -119,7 +145,6 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
     public function test_fetchRow()
     {
         $max = 12;
-        $this->setUp_TestTable_perm();
         $this->fill_columns( $max );
 
         // get all data
@@ -141,7 +166,6 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
     public function test_fetchAll()
     {
         $max = 12;
-        $this->setUp_TestTable_perm();
         $this->fill_columns( $max );
 
         // get all data
