@@ -16,7 +16,10 @@ class DataRecord
     
     /** @var array         stores error messages from validator */
     private $_errors_     = array();
-    
+
+    /** @var string|null */
+    private $_model_ = NULL;
+
     /** @var \wsCore\DbAccess\Dao                               */
     private $_dao_ = NULL;
     
@@ -27,9 +30,17 @@ class DataRecord
     private $_html_type_ = 'NAME';
     // +----------------------------------------------------------------------+
     /**
+     * @param array  $data
+     * @param string $type
      */
-    public function __construct() 
+    public function __construct( $data=array(), $type=self::TYPE_NEW )
     {
+        if( $type == self::TYPE_NEW ) {
+            $this->fresh( $data );
+        }
+        else {
+            $this->load( $data );
+        }
     }
 
     /**
@@ -38,35 +49,62 @@ class DataRecord
     public function injectDao( $dao ) {
         $this->_dao_ = $dao;
     }
+
     /**
      * create fresh/new record with or without id.
-     * 
+     *
      * @param null|string|array|int $data
+     * @throws \RuntimeException
      * @return DataRecord
      */
-    public function fresh( $data=NULL ) {
-        $id = NULL;
-        if( is_array( $data ) ) {
-            $this->_properties_ = $this->_originals_ = $data;
-            if( isset( $this->_properties_[ $this->_dao_->getIdName() ] ) ) {
-                $id = $this->_properties_[ $this->_dao_->getIdName() ];
-            }
+    public function fresh( $data=array() ) {
+        if( !is_array( $data ) ) {
+            throw new \RuntimeException( "data must be an array." );
         }
-        else {
-            $id = $data;
-        }
-        $this->_id_ = $id;
+        $this->_properties_ = $this->_originals_ = $data;
+        $this->resetId();
         $this->_type_ = self::TYPE_NEW;
         return $this;
     }
 
+    /**
+     * creates record from data for an existing data.
+     * @param array $data
+     * @return \wsCore\DbAccess\DataRecord
+     * @throws \RuntimeException
+     */
+    public function load( $data )
+    {
+        if( !is_array( $data ) ) {
+            throw new \RuntimeException( "data must be an array." );
+        }
+        $this->_originals_ = $this->_properties_ = $data;
+        $this->resetId();
+        $this->_type_ = self::TYPE_GET;
+        return $this;
+    }
+
+    /**
+     * sets id value from the property if dao is set (i.e. know which is id data).
+     *
+     * @return DataRecord
+     */
+    public function resetId()
+    {
+        if( isset( $this->_dao_ ) ) {
+            if( isset( $this->_properties_[ $this->_dao_->getIdName() ] ) ) {
+                $this->_id_ = $this->_properties_[ $this->_dao_->getIdName() ];
+            }
+        }
+        return $this;
+    }
     /**
      * get record from database. 
      * 
      * @param $id
      * @return DataRecord
      */
-    public function load( $id ) {
+    public function fetch( $id ) {
         $stmt = $this->_dao_->find( $id );
         $this->_properties_ = $this->_originals_  = $stmt[0];
         $this->_id_ = $id;
@@ -84,11 +122,11 @@ class DataRecord
     {
         if( $dao ) {
             $this->_dao_ = $dao;
-            $this->_id_ = $this->_properties_[ $this->_dao_->getIdName() ];
         }
         if( $this->_type_ == NULL && !empty( $this->_properties_ ) ) {
             $this->_originals_ = $this->_properties_;
             $this->_type_ = self::TYPE_GET;
+            $this->resetId();
         }
         return $this;
     }
@@ -113,7 +151,6 @@ class DataRecord
     public function getType() {
         return $this->_type_;
     }
-    
     public function validate() {}
     public function validationOK() {}
     public function resetValidation() {}
