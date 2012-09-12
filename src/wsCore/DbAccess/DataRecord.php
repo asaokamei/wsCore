@@ -1,12 +1,12 @@
 <?php
 namespace wsCore\DbAccess;
 
-class DataRecord implements InjectDaoInterface
+class DataRecord
 {
     const TYPE_NEW = 'new-record';  // new record. not saved to database, yet
     const TYPE_GET = 'get-record';  // record from database. 
-    const TYPE_IGNORE = 'ignored';  // non-operational record. 
-    
+    const TYPE_IGNORE = 'ignored';  // non-operational record.
+
     /** @var mixed         value of id. probably an integer     */
     private $_id_         = NULL;
     
