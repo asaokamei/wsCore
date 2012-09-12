@@ -26,8 +26,10 @@ class Dao implements InjectDbaInterface
     /** @var string */
     public  $classNameDba = '\wsCore\DbAccess\DbAccess';
 
-    /** @var \wsCore\DbAccess\Record */
-    private $recordClassName = '\wsCore\DbAccess\Record';
+    /** @var \wsCore\DbAccess\DataRecord */
+    private $recordClassName = '\wsCore\DbAccess\DataRecord';
+
+    private static $_self = NULL;
     
     // +----------------------------------------------------------------------+
     /**
@@ -35,6 +37,7 @@ class Dao implements InjectDbaInterface
      */
     public function __construct()
     {
+        static::$_self[ get_called_class() ] = $this;
     }
 
     /**
@@ -64,10 +67,10 @@ class Dao implements InjectDbaInterface
     }
 
     /**
-     * @return Record
+     * @return DataRecord
      */
     public function getRecord() {
-        /** @var $record \wsCore\DbAccess\Record */
+        /** @var $record \wsCore\DbAccess\DataRecord */
         $record = new $this->recordClassName();
         return $record;
     }
