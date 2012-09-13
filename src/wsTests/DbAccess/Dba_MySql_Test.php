@@ -90,7 +90,6 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     public function test_insert_data()
     {
-        $this->setUp_TestTable_perm();
         $data = $this->get_value_by_row( 21 );
 
         // add some data
@@ -134,8 +133,7 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
     {
         $sql = 'injected sql';
         $this->dba->injectSql( $sql );
-        $injectedSql = $this->dba->sql();
-        $this->assertEquals( $sql, $injectedSql );
+        $this->assertEquals( $sql, $this->dba->sql );
     }
     public function test_driver_name()
     {
@@ -144,6 +142,7 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
     }
     public function test_fetchRow()
     {
+        $this->setUp_TestTable_perm();
         $max = 12;
         $this->fill_columns( $max );
 

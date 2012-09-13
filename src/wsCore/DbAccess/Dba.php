@@ -8,7 +8,7 @@ class Dba implements InjectSqlInterface
     /** @var \PdoStatement               PDO statement obj   */
     var $pdoStmt = NULL;
     /** @var \wsCore\DbAccess\Sql        Sql builder obj     */
-    var $sql;
+    var $sql     = NULL;
 
     private $fetchMode;
     private $fetchClass = NULL;
@@ -53,7 +53,7 @@ class Dba implements InjectSqlInterface
      * @return Sql
      */
     public function sql() {
-        if( !$this->sql ) $this->sql = new Sql( $this );
+        $this->sql = ( $this->sql )? $this->sql->clear() : new Sql( $this );
         return $this->sql;
     }
     public function table( $table, $id_name='id' ) {
@@ -80,9 +80,6 @@ class Dba implements InjectSqlInterface
      */
     public function execSQL( $sql, $prepared=array() )
     {
-        if( strtoupper( substr( $sql, 0, 6 ) ) == 'SELECT' ) {
-            return $this->query( $sql );
-        }
         return $this->exec( $sql, $prepared );
     }
 
@@ -103,13 +100,8 @@ class Dba implements InjectSqlInterface
      */
     public function exec( $sql, $prepared=array() )
     {
-        if( !empty( $prepared ) ) {
-            $this->prepare( $sql, $prepared );
-            $this->execute( $prepared );
-        }
-        else {
-            $this->pdoObj->exec( $sql );
-        }
+        $this->prepare( $sql, $prepared );
+        $this->execute( $prepared );
         //$this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass );
         //$this->pdoStmt->setFetchMode( $this->fetchMode );
         return $this;
