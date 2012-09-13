@@ -3,6 +3,10 @@ namespace wsTests\DbAccess;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
+/*
+ * TODO: more test on Dba. and check the overall design as well.
+ */
+
 class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
