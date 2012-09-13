@@ -5,13 +5,19 @@ class Dba implements InjectSqlInterface
 {
     /** @var \Pdo                        PDO object          */
     var $pdoObj  = NULL;
+
     /** @var \PdoStatement               PDO statement obj   */
     var $pdoStmt = NULL;
+
     /** @var \wsCore\DbAccess\Sql        Sql builder obj     */
     var $sql     = NULL;
 
+    /** @var int                         fetch mode for PDO                */
     private $fetchMode;
+    /** @var string                      class name if fetch mode is Class */
     private $fetchClass = NULL;
+    // +----------------------------------------------------------------------+
+    //  Constructor and Managing Objects.
     // +----------------------------------------------------------------------+
     /**
      * inject Pdo object, or config name for Rdb::connect.
@@ -72,6 +78,8 @@ class Dba implements InjectSqlInterface
     public function stmt() {
         return $this->pdoStmt;
     }
+    // +----------------------------------------------------------------------+
+    //  Executing SQL. all methods returns Dba object.
     // +----------------------------------------------------------------------+
     /**
      * @param string $sql
@@ -144,6 +152,8 @@ class Dba implements InjectSqlInterface
         return $this;
     }
     // +----------------------------------------------------------------------+
+    //  fetching result from the database.
+    // +----------------------------------------------------------------------+
     /**
      * @return string
      */
@@ -195,7 +205,9 @@ class Dba implements InjectSqlInterface
         }
         return array();
     }
-
+    // +----------------------------------------------------------------------+
+    //  Miscellaneous methods.  
+    // +----------------------------------------------------------------------+
     /**
      * @param string $table
      * @return string
