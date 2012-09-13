@@ -134,9 +134,8 @@ class Sql
     public function prepare( &$val )
     {
         if( is_array( $val ) ) {
-            foreach( $val as $k => $v ) {
+            foreach( $val as &$v ) {
                 $this->prepare( $v );
-                $val[ $k ] = $v;
             }
         }
         else {
@@ -157,8 +156,8 @@ class Sql
         // try to get Pdo only once. false used only here... I think.
         if( $pdo === FALSE ) $pdo = $this->dba->pdo();
         if( is_array( $val ) ) {
-            foreach( $val as $k => $v ) {
-                $val[ $k ] = $this->quote( $v, $pdo );
+            foreach( $val as &$v ) {
+                $this->quote( $v, $pdo );
             }
         }
         elseif( $pdo ) {
