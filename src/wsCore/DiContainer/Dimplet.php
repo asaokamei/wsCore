@@ -79,17 +79,17 @@ class Dimplet
      */
     public function inject( $object )
     {
-        if( $interfaces = class_implements( $object ) )
-            foreach( $interfaces as $interface ) {
-                if( preg_match( '/^(.*)Inject([_a-zA-Z0-9]+)Interface$/i', $interface, $matches ) )
-                {
-                    $className = $matches[1] . $matches[2];
-                    $injector  = "inject" . $matches[2];
-                    // now inject an object.
-                    $injObj = $this->get( $className );
-                    $object->$injector( $injObj );
-                }
+        if( !$interfaces = class_implements( $object ) ) return;
+        foreach( $interfaces as $interface ) {
+            if( !preg_match( '/^(.*)Inject([_a-zA-Z0-9]+)Interface$/i', $interface, $matches ) ) {
+                continue;
             }
+            $className = $matches[1] . $matches[2];
+            $injector  = "inject" . $matches[2];
+            // now inject an object.
+            $injObj = $this->get( $className );
+            $object->$injector( $injObj );
+        }
     }
     /**
      * from Pimple!
