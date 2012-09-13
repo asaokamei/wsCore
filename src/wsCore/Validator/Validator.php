@@ -2,8 +2,8 @@
 namespace wsCore\Validator;
 
 /**
- * Validator class to validates a single value (not array).
- *
+ * Validator class to validates a single value, or an array of string
+ * with same set of filters.
  */
 
 class Validator
@@ -32,12 +32,10 @@ class Validator
             'mbConvert'   => 'standard', // done
             'trim'        => TRUE, // done
             'sanitize'    => FALSE, // done, kind of
-            'date'        => FALSE,
-            'time'        => FALSE,
-            'string'      => FALSE,
-            'default'     => FALSE,  // default should be at the end of filterOptions.
-            // validators (only checks the value).
+            'string'      => FALSE, // done
+            'default'     => '',   // 
             'required'    => FALSE,
+            // validators (only checks the value).
             'code'        => FALSE,
             'maxlength'   => FALSE,
             'pattern'     => FALSE, // done
@@ -254,6 +252,14 @@ class Validator
             $v = ucwords( $v );
         }
         return TRUE;
+    }
+    
+    public function filter_default( &$v, $p, &$loop=NULL ) {
+        if( !$v && "" == "$v" ) { // no value. set default...
+            $v = $p;
+            $loop = 'break'; // always break loop when default is set. 
+        }
+        return TRUE; // but it is not an error. 
     }
     // +----------------------------------------------------------------------+
 }
