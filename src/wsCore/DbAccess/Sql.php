@@ -61,6 +61,8 @@ class Sql
     /** @var Dba      DataBase Access object                 */
     private $dba;
 
+    public $prepQuoteUseType = NULL;
+    public static $pqDefault = 'prepare';
     // +----------------------------------------------------------------------+
     //  Construction and Managing Dba Object.
     // +----------------------------------------------------------------------+
@@ -109,6 +111,19 @@ class Sql
     // +----------------------------------------------------------------------+
     //  Quoting and Preparing Values for Prepared Statement.
     // +----------------------------------------------------------------------+
+    /**
+     * pre-process values with prepare or quote method.
+     *
+     * @param $val
+     * @throws \RuntimeException
+     * @return Sql
+     */
+    public function prepOrQuote( &$val )
+    {
+        $pqType = ( $this->prepQuoteUseType )?: static::$pqDefault;
+        $this->$pqType( $val );
+        return $this;
+    }
     /**
      * replaces value with holder for prepared statement. the value is kept
      * inside prepared_value array.
@@ -292,6 +307,7 @@ class Sql
      * @return Sql
      */
     public function where( $col, $val, $rel='=', $op='' ) {
+        $this->prepOrQuote( $val );
         $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => $op );
         $this->where[] = $where;
         return $this;
@@ -414,7 +430,9 @@ class Sql
                 unset( $this->values[ $key ] );
             }
         }
-        $this->rowData = array_merge( $this->functions, $this->p( $this->values ) );
+        $values = $this->values;
+        $this->prepOrQuote( $values );
+        $this->rowData = array_merge( $this->functions, $values );
         return $this;
     }
     // +----------------------------------------------------------------------+
