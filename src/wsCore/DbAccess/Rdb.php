@@ -125,11 +125,20 @@ class Rdb
             }
         }
         $class = static::$pdoClass;
+        $config[ 'dsn' ] = $dsn;
+        $pdoFunction = function() use ( $class, $config ) {
+            /** @var $pdo \PDO */
+            $pdo   = new $class(
+                $config[ 'dsn' ],
+                $config[ 'username' ], $config[ 'password' ],
+                $config[ 'attributes' ] );
+            if( isset( $config[ 'exec' ] ) ) {
+                $pdo->exec( $config[ 'exec' ] );
+            }
+            return $pdo;
+        };
         /** @var $pdo \PDO */
-        $pdo   = new $class( $dsn, $config[ 'username' ], $config[ 'password' ], $config[ 'attributes' ] );
-        if( isset( $config[ 'exec' ] ) ) {
-            $pdo->exec( $config[ 'exec' ] );
-        }
+        $pdo   = $pdoFunction();
         return $pdo;
     }
     // +----------------------------------------------------------------------+
