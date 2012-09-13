@@ -4,6 +4,8 @@ namespace wsCore\DbAccess;
 class SqlBuilder
 {
     // +----------------------------------------------------------------------+
+    //  Making SQL Statements.
+    // +----------------------------------------------------------------------+
     /**
      * @param Sql $sql
      * @throws \RuntimeException
@@ -52,6 +54,8 @@ class SqlBuilder
         return "DELETE FROM {$sql->table} WHERE " . $where;
     }
 
+    // +----------------------------------------------------------------------+
+    //  Making Clauses for SQL Statement.
     // +----------------------------------------------------------------------+
     /**
      * @param array|string $where
@@ -107,15 +111,10 @@ class SqlBuilder
     public static function makeCount( $sql )
     {
         if( is_array( $sql ) ) $sql = (object) $sql;
-        $column = $sql->columns;
-        $update = $sql->forUpdate;
-        
-        $sql->columns   = 'COUNT(*) AS wsCore__Count__';
-        $sql->forUpdate = FALSE;
-        $select = self::makeSelect( $sql );
-        
-        $sql->columns   = $column;
-        $sql->forUpdate = $update;
+        $count = clone $sql;
+        $count->columns   = 'COUNT(*) AS wsCore__Count__';
+        $count->forUpdate = FALSE;
+        $select = self::makeSelect( $count );
         return $select;
     }
 
@@ -184,5 +183,6 @@ class SqlBuilder
             $column = $columns;
         }
         return $column;
-    }    
+    }
+    // +----------------------------------------------------------------------+
 }
