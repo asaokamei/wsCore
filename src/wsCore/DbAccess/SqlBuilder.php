@@ -112,7 +112,7 @@ class SqlBuilder
         
         $sql->columns   = 'COUNT(*) AS wsCore__Count__';
         $sql->forUpdate = FALSE;
-        $select = $sql->makeSelect();
+        $select = self::makeSelect( $sql );
         
         $sql->columns   = $column;
         $sql->forUpdate = $update;
