@@ -56,9 +56,6 @@ class Dba_Sql_Test extends \PHPUnit_Framework_TestCase
 
         $this->checkUpdateContainsVal( $this->pdo->sql, 'col1', $values, $this->pdo->prep );
         $this->checkUpdateContainsVal( $this->pdo->sql, 'colZero', $values, $this->pdo->prep );
-
-        echo $this->pdo->sql;
-        var_dump( $this->pdo->prep );
     }
     // +----------------------------------------------------------------------+
     public function test_update()
