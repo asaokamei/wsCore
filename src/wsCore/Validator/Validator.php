@@ -86,9 +86,26 @@ class Validator
         $filters = $this->prepareFilter( $filters );
         $filters = array_merge( $this->filterOrder, $filterType, $filters );
 
-        return $this->_validate( $value, $filters, $err_msg );
+        return $this->validate( $value, $filters, $err_msg );
     }
 
+    public function validate( &$value, $filter=array(), &$err_msg=NULL )
+    {
+        $success = TRUE;
+        if( is_array( $value ) ) 
+        {
+            foreach( $value as $key => &$val ) {
+                $success |= $ok = $this->validate( $val, $filter, $err_msg );
+                if( !$ok ) {
+                    if( !is_array( $err_msg ) ) $err_msg = array();
+                    $err_msg[ $key ] = $err_msg;
+                }
+            }
+            return (bool) $success;
+        }
+        return $this->_validate( $value, $filter, $err_msg );
+    }
+    
     public function _validate( &$value, $filter=array(), &$err_msg=NULL )
     {
         $err_msg = NULL;
@@ -223,6 +240,20 @@ class Validator
         if( !isset( $option ) ) $option = array(
             'mail' => FILTER_SANITIZE_EMAIL,
         );
+        return TRUE;
+    }
+    
+    public function filter_string( &$v, $p ) {
+        if( $p == 'lower' ) {
+            $v = strtolower( $v );
+        }
+        elseif( $p == 'upper' ) {
+            $v = strtoupper( $v );
+        }
+        elseif( $p == 'capital' ) {
+            $v = ucwords( $v );
+        }
+        return TRUE;
     }
     // +----------------------------------------------------------------------+
 }

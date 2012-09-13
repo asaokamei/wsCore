@@ -13,6 +13,24 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
         $this->validator = new Validator();
     }
     // +----------------------------------------------------------------------+
+    public function test_validating_array_text()
+    {
+        // filter to upper letters. 
+        $texts = array(
+            'key1' => '1st text',
+            'key2' => '2nd text'
+        );
+        $text2 = $texts;
+        $filters = array(
+            'string' => 'upper'
+        );
+        $ok = $this->validator->validate( $text2, $filters );
+        $this->assertTrue( $ok );
+        
+        foreach( $texts as $key => $tx ) {
+            $this->assertEquals( strtoupper( $tx ), $text2[$key] );
+        }
+    }
     /**
      *
      */
@@ -35,6 +53,7 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
      */
     public function test_validating_text_with_filters()
     {
+        // run basic check. 
         $text = 'this is OK';
         $text2 = $text;
         $filters = array(
@@ -45,6 +64,15 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
         $ok = $this->validator->_validate( $text2, $filters );
         $this->assertTrue( $ok );
         $this->assertEquals( $text, $text2 );
+        
+        // filter to upper letters. 
+        $text3 = $text;
+        $filters = array(
+            'string' => 'upper'
+        );
+        $ok = $this->validator->_validate( $text2, $filters );
+        $this->assertTrue( $ok );
+        $this->assertEquals( strtoupper( $text ), $text2 );
     }
     // +----------------------------------------------------------------------+
 }
