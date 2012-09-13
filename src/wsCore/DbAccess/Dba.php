@@ -206,7 +206,7 @@ class Dba implements InjectSqlInterface
         return array();
     }
     // +----------------------------------------------------------------------+
-    //  Miscellaneous methods.  
+    //  Miscellaneous methods.
     // +----------------------------------------------------------------------+
     /**
      * @param string $table
