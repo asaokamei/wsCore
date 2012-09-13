@@ -62,6 +62,8 @@ class Sql
     private $dba;
 
     // +----------------------------------------------------------------------+
+    //  Construction and Managing Dba Object.
+    // +----------------------------------------------------------------------+
     /**
      * @param Dba $dba
      */
@@ -105,6 +107,8 @@ class Sql
         return $this->dba->stmt();
     }
     // +----------------------------------------------------------------------+
+    //  Quoting and Preparing Values for Prepared Statement.
+    // +----------------------------------------------------------------------+
     /**
      * replaces value with holder for prepared statement. the value is kept
      * inside prepared_value array.
@@ -112,11 +116,11 @@ class Sql
      * @param string|array $val
      * @return Sql
      */
-    public function prepValue( &$val )
+    public function prepare( &$val )
     {
         if( is_array( $val ) ) {
             foreach( $val as $k => $v ) {
-                $this->prepValue( $v );
+                $this->prepare( $v );
                 $val[ $k ] = $v;
             }
         }
@@ -131,9 +135,9 @@ class Sql
     /**
      * @param string|array $val
      * @param bool|\Pdo $pdo
-     * @return array|string
+     * @return Sql
      */
-    public function quote( $val, $pdo=FALSE )
+    public function quote( &$val, $pdo=FALSE )
     {
         // try to get Pdo only once. false used only here... I think.
         if( $pdo === FALSE ) $pdo = $this->dba->pdo();
@@ -148,7 +152,7 @@ class Sql
         else {
             $val = addslashes( $val );
         }
-        return $val;
+        return $this;
     }
 
     /**
@@ -156,7 +160,7 @@ class Sql
      * @return mixed
      */
     public function p( $val ) {
-        $this->prepValue( $val );
+        $this->prepare( $val );
         return $val;
     }
 
@@ -164,10 +168,13 @@ class Sql
      * @param string $val
      * @return string
      */
-    public function q( &$val ) {
-        $val = '\'' . $this->quote( $val ) . '\'';
+    public function q( $val ) {
+        $val = $this->quote( $val );
+        $val = '\'' . $val . '\'';
         return $val;
     }
+    // +----------------------------------------------------------------------+
+    //  Setting string, array, and data to build SQL statement.
     // +----------------------------------------------------------------------+
     /**
      * @param string $table
@@ -247,6 +254,17 @@ class Sql
         $this->forUpdate = TRUE;
         return $this;
     }
+
+    /**
+     * Building JOIN clause...
+     * TODO: should move this to SqlBuilder.
+     *
+     * @param $table
+     * @param $join
+     * @param null $by
+     * @param null $columns
+     * @return Sql
+     */
     public function join( $table, $join, $by=NULL, $columns=NULL ) {
         $this->join[] = "{$join} {$table}" . ($by)? " {$by}( {$columns} )": '';
         return $this;
@@ -263,6 +281,8 @@ class Sql
     public function joinLeftOn( $table, $columns ) {
         return $this->join( $table, 'LEFT JOIN', 'ON', $columns );
     }
+    // +----------------------------------------------------------------------+
+    //  Building WHERE clause.
     // +----------------------------------------------------------------------+
     /**
      * @param string $col
@@ -303,6 +323,8 @@ class Sql
         $this->where = NULL;
         return $this;
     }
+    // +----------------------------------------------------------------------+
+    //  constructing and executing SQL statement.
     // +----------------------------------------------------------------------+
     /**
      * @param array $values
@@ -395,7 +417,7 @@ class Sql
         $this->rowData = array_merge( $this->functions, $this->p( $this->values ) );
         return $this;
     }
-
+    // +----------------------------------------------------------------------+
     /**
      * magic method to access Dba's method. 
      * 
