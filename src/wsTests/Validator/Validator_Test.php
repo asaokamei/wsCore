@@ -13,6 +13,39 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
         $this->validator = new Validator();
     }
     // +----------------------------------------------------------------------+
+    public function test_basic_pattern()
+    {
+        $text_number = '123490';
+        $text = $text_number;
+        $filters = array(
+            'default' => 'set to default',
+        );
+
+    }
+    /**
+     *
+     */
+    public function test_isValid_with_textFilters()
+    {
+        // run basic check.
+        $text = 'this is OK';
+        $text2 = $text;
+        $filters = 'noNull|encoding:UTF-8|trim';
+        $ok = $this->validator->isValid( $text2, $filters );
+        $this->assertTrue( $ok );
+        $this->assertEquals( $text, $text2 );
+
+        // filter to upper letters.
+        $text3 = $text;
+        $filters = 'string:upper';
+        $ok = $this->validator->isValid( $text2, $filters );
+        $this->assertTrue( $ok );
+        $this->assertEquals( strtoupper( $text ), $text2 );
+    }
+
+    /**
+     * 
+     */
     public function test_default_value()
     {
         $text = '';
