@@ -50,11 +50,20 @@ class Validator
         $this->filterOptions = array(
             'noNull' => array( function( &$v ) { $v = str_replace( "\0", '', $v ); return TRUE; } ),
             'trim'   => array( function( &$v ) { $v = trim( $v );return TRUE;} ),
+            'sanitize' => array(
+                function( &$v, $p ) { $v = filter_var( $v, $p ); return !!$v; },
+                'mail'   => FILTER_SANITIZE_EMAIL,
+                'float'  => FILTER_SANITIZE_NUMBER_FLOAT,
+                'int'    => FILTER_SANITIZE_NUMBER_INT,
+                'url'    => FILTER_SANITIZE_URL,
+                'string' => FILTER_SANITIZE_STRING,
+            ),
             'pattern' => array( 'pattern',
                 'number' => '[0-9]+',
                 'int'    => '[-0-9]+',
                 'float'  => '[-.0-9]+',
                 'code'   => '[-_0-9a-zA-Z]+',
+                'mail'   => '[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z]+',
             ),
         );
         // setup error messages for each filter.
@@ -65,7 +74,7 @@ class Validator
         $this->filterTypes = array(
             'text' => array(),
             'mail' => array(
-                'mbConvert:hankaku|sanitize:email',
+                'mbConvert:hankaku|sanitize:email|pattern:mail',
                 'err_msg' => 'invalid email format'
             ),
         );
