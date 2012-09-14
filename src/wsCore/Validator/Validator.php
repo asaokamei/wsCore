@@ -35,8 +35,8 @@ class Validator
             'string'      => FALSE, // done
             'default'     => '',   // done
             // validators (only checks the value).
-            'required'    => FALSE,
-            'loopBreak'   => TRUE, // skip validations if value is empty.
+            'required'    => FALSE, // done
+            'loopBreak'   => TRUE, // done, skip validations if value is empty.
             'code'        => FALSE,
             'maxlength'   => FALSE,
             'pattern'     => FALSE, // done
@@ -208,13 +208,9 @@ class Validator
         return $filter_array;
     }
     // +----------------------------------------------------------------------+
-    //  filter definitions
+    //  filter definitions (filters that alters the value).
     // +----------------------------------------------------------------------+
 
-    public function filter_noNull( &$v ) {
-        $v = str_replace( "\0", '', $v );
-        return TRUE;
-    }
     public function filter_encoding( &$v, $p ) {
         $code = ( empty( $p ) ) ? static::$charCode: $p;
         if( mb_check_encoding( $v, $code ) ) {
@@ -222,10 +218,6 @@ class Validator
         }
         $v = ''; // overwrite invalid encode string.
         return FALSE;
-    }
-    public function filter_pattern( $v, $p ) {
-        $ok = preg_match( "/^{$p}\$/", $v );
-        return !!$ok;
     }
 
     public function filter_mbConvert( &$v, $p ) {
@@ -269,7 +261,7 @@ class Validator
         return TRUE; // but it is not an error. 
     }
     // +----------------------------------------------------------------------+
-    //  filter for validations. 
+    //  filter definitions (filters for validation).
     // +----------------------------------------------------------------------+
 
     public function filter_required( $v, $p, &$loop=NULL ) {
@@ -294,6 +286,11 @@ class Validator
             $loop = 'break'; // skip subsequent validations for empty values.
         }
         return TRUE;
+    }
+
+    public function filter_pattern( $v, $p ) {
+        $ok = preg_match( "/^{$p}\$/", $v );
+        return !!$ok;
     }
     // +----------------------------------------------------------------------+
 }
