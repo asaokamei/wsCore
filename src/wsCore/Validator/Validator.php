@@ -34,8 +34,9 @@ class Validator
             'sanitize'    => FALSE, // done, kind of
             'string'      => FALSE, // done
             'default'     => '',   // done
-            'required'    => FALSE,
             // validators (only checks the value).
+            'required'    => FALSE,
+            'loopBreak'   => TRUE, // skip validations if value is empty.
             'code'        => FALSE,
             'maxlength'   => FALSE,
             'pattern'     => FALSE, // done
@@ -264,10 +265,12 @@ class Validator
     public function filter_default( &$v, $p, &$loop=NULL ) {
         if( !$v && "" == "$v" ) { // no value. set default...
             $v = $p;
-            $loop = 'break'; // always break loop when default is set. 
         }
         return TRUE; // but it is not an error. 
     }
+    // +----------------------------------------------------------------------+
+    //  filter for validations. 
+    // +----------------------------------------------------------------------+
 
     public function filter_required( $v, $p, &$loop=NULL ) {
         if( "$v" != '' ) { // it has some value in it. OK.
@@ -275,6 +278,22 @@ class Validator
         }
         // now, the value is empty. check if it is "required".
         return FALSE;
+    }
+
+    /**
+     * breaks loop if value is empty by returning $loop='break'.
+     * validation is not necessary for empty value.
+     *
+     * @param $v
+     * @param $p
+     * @param $loop
+     * @return bool
+     */
+    public function filter_loopBreak( $v, $p, &$loop ) {
+        if( "$v" == '' ) { // value is really empty. break the loop.
+            $loop = 'break'; // skip subsequent validations for empty values.
+        }
+        return TRUE;
     }
     // +----------------------------------------------------------------------+
 }
