@@ -66,7 +66,7 @@ class AopInterceptor
                 $returned = call_user_func_array( $this->obj->method, $args );
             }
         }
-        catch( Exception $e ) {
+        catch( \Exception $e ) {
             // catch
             $joinPoint = array( $this->name, $method, 'catch' );
             $returned = $this->container->advice( $joinPoint, $args, $this->obj->method );
