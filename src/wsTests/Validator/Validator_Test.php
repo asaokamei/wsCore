@@ -52,6 +52,13 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
         $ok = $this->validator->isValid( $text2, $filters );
         $this->assertTrue( $ok );
         $this->assertEquals( strtoupper( $text ), $text2 );
+
+        // add spaces to filter.
+        $text3 = $text . ' ';
+        $filters = 'noNull | encoding:UTF-8 | trim | string:upper';
+        $ok = $this->validator->isValid( $text2, $filters );
+        $this->assertTrue( $ok );
+        $this->assertEquals( strtoupper( $text ), $text2 );
     }
 
     /**

@@ -207,6 +207,7 @@ class Validator
         $rules = explode( '|', $filter );
         foreach( $rules as $rule ) {
             $filter = explode( ':', $rule, 2 );
+            array_walk( $filter, function( &$v ) { $v = trim( $v ); } );
             if( isset( $filter[1] ) ) {
                 $filter_array[ $filter[0] ] = $filter[1];
             }
