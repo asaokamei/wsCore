@@ -7,13 +7,13 @@
  * you intercept an original method to another method.
  * AOP is just a lot more freedom...
  *
- * Aspect Mapper...
+ * Aspect Interceptor...
  *  1. wraps an object and intercepts a call.
- *  2. if the call is intercepted,
+ *  2. if the call has advice for it,
  *  3. invoke the advice object for the call.
  *  4. the advice object maybe invoke the original call.
  *
- * Need two classes.
+ * Need three classes.
  *  1. interceptor: wraps an object, and intercepts a call.
  *  2. container:   invoke advice for the intercepted call.
  *  3. adviser:     do advice.
@@ -149,12 +149,14 @@ class AopContainer
      * @param mixed $returned
      * @return mixed
      */
-    public function advice( $joinPoint, &$args, $invoke=NULL, $returned=NULL ) {
+    public function advice( $joinPoint, &$args, $invoke=NULL, $returned=NULL )
+    {
         $return = NULL;
         $joinPointJ = j( $joinPoint );
         if( !$this->checkPointCut( $joinPoint ) ) return $returned;
         $adviserList = $this->joinPoints[ $joinPointJ ];
-        foreach( $adviserList as $adviser ) {
+        foreach( $adviserList as $adviser )
+        {
             /** @var $adviceObj AopAdviserInterface */
             $adviceObj = $this->advisers[ $adviser ];
             $return = $adviceObj->invoke( $joinPoint, $args, $invoke, $returned );
