@@ -13,14 +13,25 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
         $this->validator = new Validator();
     }
     // +----------------------------------------------------------------------+
+    public function test_basic_pattern_with_empty_value()
+    {
+        $text_number = '';
+        $text = $text_number;
+        $filters = 'pattern:number';
+
+        $ok = $this->validator->isValid( $text, $filters );
+        $this->assertTrue( $ok );
+        $this->assertEquals( $text_number, $text );
+    }
     public function test_basic_pattern()
     {
         $text_number = '123490';
         $text = $text_number;
-        $filters = array(
-            'default' => 'set to default',
-        );
+        $filters = 'pattern:number';
 
+        $ok = $this->validator->isValid( $text, $filters );
+        $this->assertTrue( $ok );
+        $this->assertEquals( $text_number, $text );
     }
     /**
      *
@@ -44,7 +55,7 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * 
+     *
      */
     public function test_default_value()
     {

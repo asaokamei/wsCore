@@ -33,7 +33,7 @@ class Validator
             'trim'        => TRUE, // done
             'sanitize'    => FALSE, // done, kind of
             'string'      => FALSE, // done
-            'default'     => '',   // 
+            'default'     => '',   // done
             'required'    => FALSE,
             // validators (only checks the value).
             'code'        => FALSE,
@@ -50,8 +50,10 @@ class Validator
             'noNull' => array( function( &$v ) { $v = str_replace( "\0", '', $v ); return TRUE; } ),
             'trim'   => array( function( &$v ) { $v = trim( $v );return TRUE;} ),
             'pattern' => array( 'pattern',
-                'number' => '[0-9]',
-                'code'   => '[-_0-9a-zA-Z]',
+                'number' => '[0-9]+',
+                'int'    => '[-0-9]+',
+                'float'  => '[-.0-9]+',
+                'code'   => '[-_0-9a-zA-Z]+',
             ),
         );
         // setup error messages for each filter.
@@ -74,7 +76,7 @@ class Validator
         $filters = $this->prepareFilter( $filters );
         $filters = array_merge( $this->filterOrder, $filters );
 
-        return $this->_validate( $value, $filters, $err_msg );
+        return $this->validate( $value, $filters, $err_msg );
     }
 
     public function isValidType( $type, &$value, $filters='', &$err_msg=NULL )
@@ -195,7 +197,12 @@ class Validator
         $rules = explode( '|', $filter );
         foreach( $rules as $rule ) {
             $filter = explode( ':', $rule, 2 );
-            $filter_array[ $filter[0] ] = $filter[1];
+            if( isset( $filter[1] ) ) {
+                $filter_array[ $filter[0] ] = $filter[1];
+            }
+            else {
+                $filter_array[ $filter[0] ] = TRUE;
+            }
         }
         return $filter_array;
     }
@@ -260,6 +267,14 @@ class Validator
             $loop = 'break'; // always break loop when default is set. 
         }
         return TRUE; // but it is not an error. 
+    }
+
+    public function filter_required( $v, $p, &$loop=NULL ) {
+        if( "$v" != '' ) { // it has some value in it. OK.
+            return TRUE;
+        }
+        // now, the value is empty. check if it is "required".
+        return FALSE;
     }
     // +----------------------------------------------------------------------+
 }
