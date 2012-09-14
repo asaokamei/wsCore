@@ -80,6 +80,12 @@ class Validator
                 'mbConvert:hankaku|sanitize:email|pattern:mail',
                 'err_msg' => 'invalid email format'
             ),
+            'date' => array(),
+            'dateYM' => array(),
+            'time' => array(),
+            'datetime' => array(),
+            'tel' => array(),
+            'fax' => array(),
         );
     }
 
@@ -235,7 +241,7 @@ class Validator
 
     /**
      * prepares filter if it is in string; 'rule1:parameter1|rule2:parameter2'
-     * 
+     *
      * @param string|array $filter
      * @return array
      */
