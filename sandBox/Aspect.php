@@ -120,7 +120,7 @@ class AopContainer
 
     public function __construct() {}
     /**
-     * set joint point to an adviser.
+     * set join point to an adviser.
      */
     public function setJoinPoint( $joinPoint, $adviser ) {
         $this->joinPoints[ j( $joinPoint ) ][] = $adviser;
