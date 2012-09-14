@@ -1,5 +1,4 @@
 <?php
-namespace wsCore\Aspect;
 
 /*
  * Aspect Oriented Programming...
@@ -20,7 +19,13 @@ namespace wsCore\Aspect;
  *  3. adviser:     do advice.
  */
 
-class AopInterceptor
+interface InjectAopContainerInterface {}
+
+interface AopAdviserInterface {
+    public function invoke( $joinPoint, $args, $invoke, $returned );
+}
+
+class AopInterceptor implements InjectAopContainerInterface
 {
     /** @var string       */
     private $name = NULL;
@@ -53,6 +58,20 @@ class AopInterceptor
      */
     public function __call( $method, $args )
     {
+        if( isset( $this->container ) ) {
+            return $this->intercept( $method, $args );
+        }
+        return call_user_func_array( array( $this->obj, $method ), $args );
+    }
+    /**
+     * intercepts a call.
+     *
+     * @param $method
+     * @param $args
+     * @return mixed
+     */
+    public function intercept( $method, $args )
+    {
         // before
         $joinPoint = array( $this->name, $method, 'before' );
         $this->container->advice( $joinPoint, $args );
@@ -60,16 +79,16 @@ class AopInterceptor
         try {
             $joinPoint = array( $this->name, $method, 'around' );
             if( $this->container->checkPointCut( $joinPoint ) ) {
-                $returned = $this->container->advice( $joinPoint, $args, $this->obj->method );
+                $returned = $this->container->advice( $joinPoint, $args, array( $this->obj, $method ) );
             }
             else {
-                $returned = call_user_func_array( $this->obj->method, $args );
+                $returned = call_user_func_array( array( $this->obj, $method ), $args );
             }
         }
         catch( \Exception $e ) {
             // catch
             $joinPoint = array( $this->name, $method, 'catch' );
-            $returned = $this->container->advice( $joinPoint, $args, $this->obj->method );
+            $returned = $this->container->advice( $joinPoint, $args, array( $this->obj, $method ) );
         }
         // after
         $joinPoint = array( $this->name, $method, 'after' );
@@ -99,11 +118,12 @@ class AopContainer
     private $advisers = array();
     private $joinPoints = array();
 
+    public function __construct() {}
     /**
      * set joint point to an adviser.
      */
     public function setJoinPoint( $joinPoint, $adviser ) {
-        $this->joinPoints[ j( $joinPoint ) ] = $adviser;
+        $this->joinPoints[ j( $joinPoint ) ][] = $adviser;
     }
 
     /**
@@ -131,17 +151,16 @@ class AopContainer
      */
     public function advice( $joinPoint, &$args, $invoke=NULL, $returned=NULL ) {
         $return = NULL;
-        foreach( $this->joinPoints[ j( $joinPoint ) ] as $adviser ) {
+        $joinPointJ = j( $joinPoint );
+        if( !$this->checkPointCut( $joinPoint ) ) return $returned;
+        $adviserList = $this->joinPoints[ $joinPointJ ];
+        foreach( $adviserList as $adviser ) {
             /** @var $adviceObj AopAdviserInterface */
             $adviceObj = $this->advisers[ $adviser ];
             $return = $adviceObj->invoke( $joinPoint, $args, $invoke, $returned );
         }
         return $return;
     }
-}
-
-interface AopAdviserInterface {
-    public function invoke( $joinPoint, $args, $invoke, $returned );
 }
 
 class AopAdviser implements AopAdviserInterface
