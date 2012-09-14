@@ -2,8 +2,9 @@
 namespace wsCore\Validator;
 
 /**
- * Validator class to validates a single value, or an array of string
- * with same set of filters.
+ * Validator class to validates a single value, or an array of string,
+ * against same set of filters.
+ * TODO: separate code for Japanese character to another module?
  */
 
 class Validator
@@ -27,19 +28,19 @@ class Validator
         // if option is FALSE, the rule is skipped.
         $this->filterOrder = array(
             // filterOptions (modifies the value)
-            'noNull'      => TRUE, // done
-            'encoding'    => 'UTF-8', // done
-            'mbConvert'   => 'standard', // done
-            'trim'        => TRUE, // done
-            'sanitize'    => FALSE, // done, kind of
-            'string'      => FALSE, // done
-            'default'     => '',   // done
+            'noNull'      => TRUE,       // filters out NULL (\0) char from the value.
+            'encoding'    => 'UTF-8',    // checks the encoding of value.
+            'mbConvert'   => 'standard', // converts Kana set (Japanese)
+            'trim'        => TRUE,       // trims value.
+            'sanitize'    => FALSE,      // done, kind of
+            'string'      => FALSE,      // converts value to upper/lower/etc.
+            'default'     => '',         // sets default if value is empty.
             // validators (only checks the value).
-            'required'    => FALSE, // done
-            'loopBreak'   => TRUE, // done, skip validations if value is empty.
+            'required'    => FALSE,      // fails if value is empty.
+            'loopBreak'   => TRUE,       // done, skip validations if value is empty.
             'code'        => FALSE,
             'maxlength'   => FALSE,
-            'pattern'     => FALSE, // done
+            'pattern'     => FALSE,      // checks pattern with preg_match.
             'number'      => FALSE,
             'min'         => FALSE,
             'max'         => FALSE,
@@ -82,6 +83,15 @@ class Validator
         );
     }
 
+    /**
+     * validates a value or an array of values using standard set
+     * and the given extra $filters.
+     *
+     * @param string|array $value
+     * @param string|array $filters
+     * @param null|string $err_msg
+     * @return bool
+     */
     public function isValid( &$value, $filters='', &$err_msg=NULL )
     {
         // set up filterOptions with default filter.
@@ -91,6 +101,16 @@ class Validator
         return $this->validate( $value, $filters, $err_msg );
     }
 
+    /**
+     * validates a value or an array of values using standard set
+     * of filters for the $type, as well as the extra $filters.
+     *
+     * @param string $type
+     * @param string|array $value
+     * @param string|array $filters
+     * @param null|string $err_msg
+     * @return bool
+     */
     public function isValidType( $type, &$value, $filters='', &$err_msg=NULL )
     {
         // set up filterOptions with default filter.
@@ -101,6 +121,15 @@ class Validator
         return $this->validate( $value, $filters, $err_msg );
     }
 
+    /**
+     * validates a value or an array of values for a given filters.
+     * filter must be an array.
+     *
+     * @param string|array $value
+     * @param array $filter
+     * @param null|string $err_msg
+     * @return bool
+     */
     public function validate( &$value, $filter=array(), &$err_msg=NULL )
     {
         $success = TRUE;
@@ -117,7 +146,15 @@ class Validator
         }
         return $this->_validate( $value, $filter, $err_msg );
     }
-    
+
+    /**
+     * do the validation for a single value.
+     *
+     * @param string $value
+     * @param array $filter
+     * @param null|string $err_msg
+     * @return bool
+     */
     public function _validate( &$value, $filter=array(), &$err_msg=NULL )
     {
         $err_msg = NULL;
@@ -198,6 +235,7 @@ class Validator
 
     /**
      * prepares filter if it is in string; 'rule1:parameter1|rule2:parameter2'
+     * 
      * @param string|array $filter
      * @return array
      */
