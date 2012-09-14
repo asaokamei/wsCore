@@ -46,6 +46,7 @@ class Validator
             'range'       => FALSE,
             'checkdate'   => FALSE,
             'mbCheckKana' => FALSE,
+            'sameAs'      => FALSE,
         );
         $this->filterOptions = array(
             'noNull' => array( function( &$v ) { $v = str_replace( "\0", '', $v ); return TRUE; } ),
@@ -65,6 +66,7 @@ class Validator
                 'code'   => '[-_0-9a-zA-Z]+',
                 'mail'   => '[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z]+',
             ),
+            'sameAs' => array( function( $v, $p ) { return $v===$p; } ),
         );
         // setup error messages for each filter.
         $this->filterOptions[ 'encoding' ][ 'err_msg' ] = 'invalid encoding';
