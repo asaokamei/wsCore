@@ -1,6 +1,11 @@
 <?php
 namespace wsCore\Validator;
 
+/**
+ * Data Input Output, i.e. DIO module!
+ * input and output data validation and store.
+ *
+ */
 class DataIO
 {
     /** @var array                 source of data to read from     */
@@ -34,9 +39,6 @@ class DataIO
         $this->filterOptions = array(
             'sameEmpty' => array( 'err_msg' => 'missing value to compare' ),
         );
-        // setup error messages for each filter.
-        $this->filterOptions[ 'encoding' ][ 'err_msg' ] = 'invalid encoding';
-        $this->filterOptions[ 'required' ][ 'err_msg' ] = 'required field';
         $this->filterTypes = array(
             'date' => array(
                 'multiple' => array(
