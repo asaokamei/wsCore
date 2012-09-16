@@ -183,7 +183,7 @@ class Sql
      * @return string
      */
     public function q( $val ) {
-        $val = $this->quote( $val );
+        $this->quote( $val );
         $val = '\'' . $val . '\'';
         return $val;
     }
