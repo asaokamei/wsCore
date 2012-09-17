@@ -2,8 +2,10 @@
 namespace wsCore\DiContainer;
 
 /*
- * Simple Dependency Injection Manager inspired (?) by Pimple.
- * well, more like copy-and-pasted many codes from the Pimple.
+ * Simple Dependency Injection Manager, an extension of Pimple.
+ * - create an object if class name is given as id. 
+ * - auto inject dependencies based on interface. 
+ * - id will be chained, unless it is protected. 
  */
 
 class Dimplet
@@ -27,6 +29,10 @@ class Dimplet
     public function set($id, $value)
     {
         $this->values[$id] = $value;
+    }
+    
+    public function exists( $id ) {
+        return array_key_exists( $id, $this->values );
     }
 
     /**
@@ -58,8 +64,15 @@ class Dimplet
     {
         if( array_key_exists($id, $this->values) ) {
             $found = $this->values[$id];
-            /** @var $found callable */
-            $found = ( $found instanceof \Closure ) ? $found( $this ) : $found;
+            if( $found instanceof \Closure ) {
+                $found = $found( $this );
+            }
+            elseif( $this->exists( $found ) ) {
+                $found = $this->get( $found );
+            }
+            elseif( class_exists( $found ) ) {
+                $found = $this->get( $found );
+            }
         }
         elseif( class_exists( $id ) ) {
             // construct the class, and inject via interfaces.
@@ -113,16 +126,16 @@ class Dimplet
     }
     /**
      * from Pimple!
-     * Protects a callable from being interpreted as a service.
-     * This is useful when you want to store a callable as a parameter.
+     * Protects a callable from being interpreted as a service. This is useful
+     * when you want to store a callable or a class name as a parameter.
      *
-     * @param \Closure $callable A \Closure to protect from being evaluated
-     * @return \Closure The protected \Closure
+     * @param  mixed $value  value to protect from being evaluated
+     * @return mixed         The protected value
      */
-    public function protect( \Closure $callable)
+    public function protect( $value )
     {
-        return function ($c) use ($callable) {
-            return $callable;
+        return function () use ($value) {
+            return $value;
         };
     }
 
@@ -138,6 +151,18 @@ class Dimplet
         return array_key_exists($id, $this->values) ? $this->values[$id]: FALSE ;
     }
 
+    /**
+     * wraps $factory with $callable to extend the object. 
+     * @param callable $factory
+     * @param callable $callable
+     * @return callable
+     */
+    public function wrap( \Closure $factory, \Closure $callable )
+    {
+        return function ($c) use ($callable, $factory) {
+            return $callable($factory($c), $c);
+        };
+    }
     /**
      * from Pimple!
      * Extends an object definition.
@@ -162,8 +187,6 @@ class Dimplet
         }
 
         /** @var $factory \Closure */
-        return $this->values[$id] = function ($c) use ($callable, $factory) {
-            return $callable($factory($c), $c);
-        };
+        return $this->values[$id] = $this->wrap( $factory, $callable );
     }
 }
