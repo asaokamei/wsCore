@@ -27,6 +27,20 @@ class Dimple_Test extends \PHPUnit_Framework_TestCase
         };
     }
     // +----------------------------------------------------------------------+
+    public function test_extend_classes()
+    {
+        // just created an object. 
+        $mock1 = 'wsTests\DiContainer\DimpleMockBiz\Invoice';
+        $text = 'extended text';
+        $extend = function( $obj ) use( $text ) {
+            $obj->extended = $text;
+        };
+        $this->container->extend( $mock1, $extend );
+        $mock  = $this->container->get( $mock1 );
+        $this->assertTrue( is_object( $mock ) );
+        $this->assertEquals( $mock1, get_class( $mock ) );
+        $this->assertEquals( $text, $mock->extended );
+    }
     public function test_call_classes()
     {
         // call class1 -> class2 

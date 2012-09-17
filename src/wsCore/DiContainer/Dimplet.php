@@ -90,7 +90,7 @@ class Dimplet
         }
         if( array_key_exists( $id, $this->extends ) ) {
             $extender = $this->extends[ $id ];
-            $found = $extender( $found, $this );
+            $extender( $found, $this );
         }
         return $found;
     }
