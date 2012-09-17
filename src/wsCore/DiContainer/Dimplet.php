@@ -11,10 +11,15 @@ namespace wsCore\DiContainer;
 
 class Dimplet
 {
+    /** @var array      */
     private $values = array();
 
+    /** @var array      */
     private $objects = array();
     
+    /** @var array      */
+    private $extends = array();
+    // +----------------------------------------------------------------------+
     /**
      * Sets a parameter or an object.
      *
@@ -82,6 +87,10 @@ class Dimplet
         }
         else {
             throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
+        }
+        if( array_key_exists( $id, $this->extends ) ) {
+            $extender = $this->extends[ $id ];
+            $found = $extender( $found, $this );
         }
         return $found;
     }
@@ -153,81 +162,16 @@ class Dimplet
     }
 
     /**
-     * wraps $factory with $callable to extend the object. 
-     * @param callable $factory
-     * @param callable $callable
-     * @return callable
-     */
-    public function extender( \Closure $factory, \Closure $callable )
-    {
-        return function ($c) use ($callable, $factory) {
-            return $callable($factory($c), $c);
-        };
-    }
-    public function extenderAny( $id, $callable )
-    {
-        $found = ( $this->exists( $id ) ) ? $this->get( $id ) : $id;
-        if( $found instanceof \Closure ) {
-            $this->values[ $id ] =  function ($c) use ( $found, $callable ) {
-                return $callable( $found($c), $c );
-            };
-        }
-        elseif( class_exists( $found ) ) {
-            $this->values[ $id ] = function( $c ) use( $found, $callable ) {
-                /** @var $c Dimplet */
-                if( class_exists( $found ) ) {
-                    $found = new $found;
-                    $c->inject( $found );
-                    return $callable( $found, $c );
-                }
-                throw new \RuntimeException( "extender: not a class." );
-            };
-        }
-        else {
-            $this->values[ $id ] = function( $c ) use( $found, $callable ) {
-                return $callable( $found, $c );
-            };
-        }
-    }
-    public function getHiddenId() {
-        static $hiddenId = 1;
-        return"_hidden_".$id;
-    }
-    public function extendWrapper( $id, $wrapper )
-    {
-        /*
-         * in case idA -> idB :
-         *    idA -(extend)-> hid-1 -> idB :
-         * 
-         * if idA is not defined. 
-         *    idA -(extend)-> hid-1
-         * but you cannot chain idA anymore. 
-         */
-    }
-    /**
-     * from Pimple!
-     * Extends an object definition.
+     * Extends generated objects.
      * Useful when you want to extend an existing object definition,
      * without necessarily loading that object.
      *
-     * @param string  $id       The unique identifier for the object
+     * @param string   $id       The unique identifier for the object
      * @param \Closure $callable A \Closure to extend the original
-     * @throws \RuntimeException
-     * @return \Closure The wrapped \Closure
      */
     public function extend($id, \Closure $callable)
     {
-        if (!array_key_exists($id, $this->values)) {
-            throw new \RuntimeException( sprintf('Identifier "%s" is not defined.', $id ) );
-        }
-
-        $factory = $this->values[$id];
-
-        if (!($factory instanceof \Closure)) {
-            throw new \RuntimeException( sprintf('Identifier "%s" does not contain an object definition.', $id ) );
-        }
-
         /** @var $factory \Closure */
-        return $this->values[$id] = $this->extender( $factory, $callable );
+        $this->extends[$id] = $callable;
     }
 }
