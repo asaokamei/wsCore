@@ -7,7 +7,7 @@ Some of them are a wish list at this point.
 
 Call it a Document Driven Development... 
 
-##How to Start
+#How to Start
 
 Starting wsCore Framework. 
 
@@ -18,8 +18,9 @@ Set up Pdo for database access in easy mode.
     Core::goEasy();
     Core::setPdo( 'db=mysql dbname=test user=test passwd=test' );
     $dba = Core::get( 'DbAccess' );
+    $data = $dba->table( 'myTable' )->find( 'name', 'Mike' )->first();
 
-##More Contents
+#More Contents
 
 DataBase Access
 
