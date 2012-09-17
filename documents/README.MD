@@ -1,0 +1,37 @@
+wsCore Documents
+================
+
+API and how to use wsCore framework. 
+
+Some of them are a wish list at this point. 
+
+Call it a Document Driven Development... 
+
+##How to Start
+
+Starting wsCore Framework. 
+
+    Core::go();
+
+Set up Pdo for database access in easy mode.
+
+    Core::goEasy();
+    Core::setPdo( 'db=mysql dbname=test user=test passwd=test' );
+    $dba = Core::get( 'DbAccess' );
+
+##More Contents
+
+DataBase Access
+
+Validation
+
+HTML
+
+Web
+
+Dependency Injection
+
+Aspect Oriented Programming
+
+Logging
+
