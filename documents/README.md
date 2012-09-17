@@ -23,9 +23,9 @@ Set up Pdo for database access in easy mode.
 More Contents
 -------------
 
-DataBase Access
+[DataBase Access](DbAccess)
 
-Validation
+[Validation](Validator)
 
 HTML
 
