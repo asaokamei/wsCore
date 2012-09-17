@@ -17,8 +17,11 @@ $dba = Core::get( '\wsCore\DbAccess\Dba' );
 Getting data from myTable whose name contains 'Mike'.
 
     $data = $dba->table( 'myTable' )->find( 'name', '%Mike%', 'LIKE' );
-    $data = $dba->table( 'myTable' )->find( [ 'name', '%Mike%', 'LIKE' ], [ 'id', 10, '>=' ],  );
     $data = $dba->table( 'myTable' )->where( 'name', '%Mike%', 'LIKE' )->select()->fetchAll();
+
+Getting data whose name contains 'Mike' with id greater or equal to 10. 
+
+    $data = $dba->table( 'myTable' )->find( [ 'name', '%Mike%', 'LIKE' ], [ 'id', 10, '>=' ],  );
 
 use primary key to get a data. 
 
@@ -26,8 +29,23 @@ use primary key to get a data.
 
 find something is NULL. 
 
-    $data = $dba->table( 'myTable', 'id' )->find( 'name', Core::F('NULL') );
+    $data = $dba->table( 'myTable', 'id' )->find( 'name', Core::f('NULL') );
     $data = $dba->table( 'myTable', 'id' )->whereNull( 'name' )->select()->fetchAll();
+
+get only the first data. 
+
+    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->first();
+    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->select()->limit(1)->fetchAll();
+
+get only 10 data.
+
+    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->first(10);
+    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->limit(10)->select()->fetchAll();
+
+offset 10, limit 10. 
+
+    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->offset(10)->first(10);
+    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->limit(10)->offset(10)->select()->fetchAll();
 
 ##Insert data
 
@@ -46,7 +64,8 @@ insert data into table and get the last ID.
 
 #Prepared Statement
 
-All of the above examples uses prepared statement automatically. 
+As a default, wsCore uses prepared statement in the DbAccess library. 
+i.e. all of the above examples uses prepared statement internally as well. 
 
 ##Run Prepared Statement
 
@@ -59,7 +78,7 @@ To use explicitly prepared statement,
 ##Building Prepared Statement
 
     $data = array(
-        'name' => 'Eagles',
+        'name'  => 'Eagles',
         'music' => 'Pops',
     );
     $dba->prepare( $data );
