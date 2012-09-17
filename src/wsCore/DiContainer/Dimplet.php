@@ -2,7 +2,8 @@
 namespace wsCore\DiContainer;
 
 /*
- * Simple Dependency Injection Manager, an extension of Pimple.
+ * Simple Dependency Injection Manager.
+ * an extension of Pimple.
  * - create an object if class name is given as id. 
  * - auto inject dependencies based on interface. 
  * - id will be chained, unless it is protected. 
@@ -157,10 +158,30 @@ class Dimplet
      * @param callable $callable
      * @return callable
      */
-    public function wrap( \Closure $factory, \Closure $callable )
+    public function extender( \Closure $factory, \Closure $callable )
     {
         return function ($c) use ($callable, $factory) {
             return $callable($factory($c), $c);
+        };
+    }
+    public function extenderAny( $id, $callable )
+    {
+        $source = $this->values[ $id ];
+        if( $source instanceof \Closure ) {
+            $this->values[ $id ] = $this->extender( $source, $callable );
+        }
+        elseif() {
+            
+        }
+        return function( $c ) use( $source, $callable ) {
+            /** @var $c Dimplet */
+            if( $source instanceof \Closure ) {
+                $object = $source( $c );
+            }
+            elseif( $c->exists( $source ) ) {
+                
+            }
+            return $callable( $object, $c );
         };
     }
     /**
@@ -187,6 +208,6 @@ class Dimplet
         }
 
         /** @var $factory \Closure */
-        return $this->values[$id] = $this->wrap( $factory, $callable );
+        return $this->values[$id] = $this->extender( $factory, $callable );
     }
 }
