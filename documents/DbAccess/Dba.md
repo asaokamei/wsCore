@@ -3,16 +3,17 @@ Dba Class: DataBase Access
 
 Dba class is the center piece of DbAccess folder. 
 
-#Examples
+Examples
+--------
 
-## Setting Up PDO
+### Setting Up PDO
 
 Accesses MySql test database using Pdo. 
 
 Core::setPdo( 'db=mysql dbname=test user=test passwd=test' );
 $dba = Core::get( '\wsCore\DbAccess\Dba' );
 
-##Getting data
+###Getting data
 
 Getting data from myTable whose name contains 'Mike'.
 
@@ -47,27 +48,28 @@ offset 10, limit 10.
     $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->offset(10)->first(10);
     $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->limit(10)->offset(10)->select()->fetchAll();
 
-##Insert data
+###Insert data
 
 insert data into table and get the last ID.
 
     $id = $dba->table( 'myTable' )->values( array( 'name'=>'Alan Kay' ) )->insert()->lastId();
 
-##Update data
+###Update data
 
     $dba->table( 'myTable' )->values( array( 'name' => 'Bob Dylan' ) )->where( 'id', 10 )->update();
 
-##Deleting data
+###Deleting data
 
     $dba->table( 'myTable' )->where( 'id', 10 )->makeSQL( 'DELETE' )->exec();
 
 
-#Prepared Statement
+Prepared Statement
+------------------
 
 As a default, wsCore uses prepared statement in the DbAccess library. 
 i.e. all of the above examples uses prepared statement internally as well. 
 
-##Run Prepared Statement
+###Run Prepared Statement
 
 To use explicitly prepared statement, 
 
@@ -75,7 +77,7 @@ To use explicitly prepared statement,
     $pre = array( 'Mike' );
     $dba->exec( $sql, $pre );
 
-##Building Prepared Statement
+###Building Prepared Statement
 
     $data = array(
         'name'  => 'Eagles',
@@ -85,7 +87,7 @@ To use explicitly prepared statement,
     $sql = "INSERT INTO myMusic ( name, music ) VALUES( {$data{'name"}}, {$data{'music"}} )";
     $dba->exec( $sql, $data );
 
-##Using quotes
+###Using quotes
 
 To use quoted sql instead of prepared statement,
 

@@ -5,7 +5,8 @@ Dao, Database Access Object, is a famous design pattern to access database.
 This class packs all the information necessary to access tables in a database, 
 including table name, primary key and its type, etc. 
 
-#Creating Dao for Each Table
+Creating Dao for Each Table
+---------------------------
 
 Extend dao for each table to set up information about its table. 
 
@@ -22,7 +23,10 @@ Extend dao for each table to set up information about its table.
 
 Core module will automatically inject $dba object into $dao. 
 
-##Set Up Property
+Setting Dao
+-----------
+
+###Set Up Property
 
 set up its properties
 
@@ -44,7 +48,7 @@ set up its properties
     $dao = Core::get( '\path\to\MyTable' );
     echo $dao->propertyName( 'bdate' ); // shows 'Birthday'
 
-##Set Up Selectors
+###Set Up Selectors
 
 set up selectors for each property. 
 This will create HTML selector very easily. 
@@ -66,7 +70,7 @@ This will create HTML selector very easily.
     $dao = Core::get( '\path\to\MyTable' );
     echo $dao->popHtml( 'Edit', 'bdate', $value, $error ); // shows selector for editing bdate. 
 
-##Set Up Validators
+###Set Up Validators
 
 set up validation rules for each property. 
 it is also a nice idea to create a method for validation set ups. 
@@ -93,7 +97,7 @@ Please refer to Validator and DataIO class in \wsCore\Validator\ folder for vali
     echo $dao->validate( $dio, 'age'  );
     echo $dao->validate( $dio, 'bdate' );
 
-##Set Up Restrictions
+###Set Up Restrictions
 
 set up restriction to specify which properties can be saved to database. 
 
