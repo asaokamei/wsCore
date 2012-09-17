@@ -166,23 +166,43 @@ class Dimplet
     }
     public function extenderAny( $id, $callable )
     {
-        $source = $this->values[ $id ];
-        if( $source instanceof \Closure ) {
-            $this->values[ $id ] = $this->extender( $source, $callable );
+        $found = ( $this->exists( $id ) ) ? $this->get( $id ) : $id;
+        if( $found instanceof \Closure ) {
+            $this->values[ $id ] =  function ($c) use ( $found, $callable ) {
+                return $callable( $found($c), $c );
+            };
         }
-        elseif() {
-            
+        elseif( class_exists( $found ) ) {
+            $this->values[ $id ] = function( $c ) use( $found, $callable ) {
+                /** @var $c Dimplet */
+                if( class_exists( $found ) ) {
+                    $found = new $found;
+                    $c->inject( $found );
+                    return $callable( $found, $c );
+                }
+                throw new \RuntimeException( "extender: not a class." );
+            };
         }
-        return function( $c ) use( $source, $callable ) {
-            /** @var $c Dimplet */
-            if( $source instanceof \Closure ) {
-                $object = $source( $c );
-            }
-            elseif( $c->exists( $source ) ) {
-                
-            }
-            return $callable( $object, $c );
-        };
+        else {
+            $this->values[ $id ] = function( $c ) use( $found, $callable ) {
+                return $callable( $found, $c );
+            };
+        }
+    }
+    public function getHiddenId() {
+        static $hiddenId = 1;
+        return"_hidden_".$id;
+    }
+    public function extendWrapper( $id, $wrapper )
+    {
+        /*
+         * in case idA -> idB :
+         *    idA -(extend)-> hid-1 -> idB :
+         * 
+         * if idA is not defined. 
+         *    idA -(extend)-> hid-1
+         * but you cannot chain idA anymore. 
+         */
     }
     /**
      * from Pimple!
