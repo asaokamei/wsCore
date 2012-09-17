@@ -5,7 +5,8 @@ Core is a static class
 manages configurations and objects for wsCore framework. 
 uses DiContainer underneath. 
 
-#How to Start
+How to Start
+------------
 
 Starting wsCore Framework. 
 
@@ -26,9 +27,10 @@ Set up database access and get some data.
     $dba  = Core::get( 'DbAccess' );
     $data = $dba->table( 'myTest' )->where( 'id', 10 )->select();
 
-#Core's functionality
+Core's functionality
+--------------------
 
-##Object and Config Management
+###Object and Config Management
 
 Setting your object.
 
@@ -46,7 +48,7 @@ getting a new object (created just for you)
 
     Core::fresh( 'id' );
 
-##Tools and Utilities
+###Tools and Utilities
 
 Store configuration as closure. 
 
@@ -54,7 +56,7 @@ Store configuration as closure.
     $f = Core::get( 'closure' );
     echo $f(); // will echo 'put this in closure'
 
-##DiContainer
+###DiContainer
 
 Core class is a wrapper of Dimplet, a DiContainer based on Pimple. 
 There a lot of command that are similar to Pimple. Please refer to
