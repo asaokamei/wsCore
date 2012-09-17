@@ -1,11 +1,24 @@
 <?php
 namespace wsCore;
 
-class Core extends \wsCore\DiContainer\Dimplet
+class Core
 {
     /** @var null|self */
-    private static $_self = NULL;
+    private static $_container = NULL;
 
+    /** @var array      set easy mode */
+    public static $easy = array(
+        'DbAccess'  => '\wsCore\DbAccess\DbAccess',
+        'Validator' => '\wsCore\Validator\Validator',
+        'DataIO'    => '\wsCore\Validator\DataIO',
+        '' => '',
+    );
+
+    /** @var array      set development mode */
+    public static $dev = array(
+        '\wsCore\DbAccess\DbAccess'   => '\wsCore\Aspect\LogDba',
+        '\wsCore\Validator\Validator' => '\wsCore\Aspect\LogValidator',
+    );
     // +----------------------------------------------------------------------+
     /**
      *
@@ -14,27 +27,55 @@ class Core extends \wsCore\DiContainer\Dimplet
     }
 
     /**
+     * starts wsCore Framework
      * @static
      * @return Core
      */
-    public static function core() {
-        return ( static::$_self ) ?: static::$_self=new static();
+    public static function go() {
+        return ( static::$_container ) ?: static::$_container=new \wsCore\DiContainer\Dimplet();
     }
 
+    /**
+     * going easy mode. 
+     */
+    public static function goEasy() {
+        self::go();
+        self::_fill( self::$easy );
+    }
+
+    /**
+     * going developer's mode.
+     */
+    public static function goDev() {
+        self::go();
+        self::set( 'devMode', TRUE );
+        self::_fill( self::$dev );
+    }
+    
+    public static function _fill( $fill ) {
+        foreach( $fill as $id => $val ) {
+            self::set( $id, $val );
+        }
+    }
     /**
      * @static
-     *
      */
     public static function clear() {
-        static::$_self = NULL;
+        static::$_container = NULL;
     }
 
     /**
-     * @param $id
-     * @return mixed
+     * @param string $id
+     * @param mixed $val
      */
-    public function __get( $id ) {
-        return $this->get( $id );
+    public static function set( $id, $val ) {
+        self::$_container->set( $id, $val );
+    }
+    /**
+     * @param $id
+     */
+    public static function get( $id ) {
+        self::$_container->get( $id );
     }
     // +----------------------------------------------------------------------+
 }
