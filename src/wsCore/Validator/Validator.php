@@ -147,10 +147,11 @@ class Validator
         if( is_array( $value ) ) 
         {
             foreach( $value as $key => &$val ) {
-                $success |= $ok = $this->validate( $val, $filter, $err_msg );
+                $e_msg = FALSE;
+                $success &= $ok = $this->validate( $val, $filter, $e_msg );
                 if( !$ok ) {
                     if( !is_array( $err_msg ) ) $err_msg = array();
-                    $err_msg[ $key ] = $err_msg;
+                    $err_msg[ $key ] = $e_msg;
                 }
             }
             return (bool) $success;
