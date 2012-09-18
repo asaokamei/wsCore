@@ -7,6 +7,8 @@ namespace wsCore\Validator;
  * TODO: separate code for Japanese character to another module?
  *
  * TODO: implement more filters: code, maxlength, number, min, max, range, checkdate, mbCheckKana, sameAs, sameEmtpy
+ *
+ * TODO: more types with err_msg: text, code, mail, number, integer, float, date, time, etc.
  */
 
 class Validator
