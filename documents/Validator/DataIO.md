@@ -63,11 +63,76 @@ pushValue checks for a named value in the source with predefined filter type.
     $dio->push( $name, $type, $filters='', &$value=NULL );
 
 
+###validate( $name, &$value, $type=NULL, &$filters=array(), &$err_msg=NULL )
+
+semi-internal method, used by pushValue and push.
+Big difference is $filters must be an array.
+
+    $ok = $dio->validate( $name, $value, $type, $filters, $err_msg );
+
+
+###popData
+
+returns the imported data from source data.
+
+_IMPORTANT_: includes invalidated values.
+
+###popSafe
+
+returns _ONLY_ the validated data from source data.
+
+###popErrors
+
+returns number of errors, and error messages.
+
+    $isError = $dio->popErrors( $errors );
+
+the structure of $error is identical to that of data,
+but only filled at the invalidated column.
+
+    $dio->source( 'num' => array( '1', '2', 'bad', '4' ) );
+    $dio->pushValue( 'num' );
+    $dio->popErrors( $error );
+    var_dump( $error );
+        /*
+        array(1) {
+            ["num"]=> array(1) {
+                [2]=> string(12) "Not a Number"
+            }
+        }
+        */
+
 Available Filters
 -----------------
 
 Most of the filters are defined in Validator;
 only multiple and sameWith filters are in the DataIO.
+
+###noNull
+
+removes null character from data.
+this filter's default is ON.
+
+To turn off noNull filter, use either of:
+
+    $dio->pushValue( 'bin', 'noNull:FALSE' ); // or
+    $dio->push( 'bin', 'binary' );
+
+###encoding
+
+validates for broken encoding.
+default encoding is 'UTF-8'.
+
+if the validation fails, the value will be replaced with '' (empty string).
+
+###trim
+
+
+###sanitize
+
+
+###string
+
 
 ###required
 
@@ -80,6 +145,11 @@ when required data is missing, error will be recorded with
 a predefined error message. To change the error message;
 
     $dio->validator->filterOptions[ 'required' ][ 'err_msg' ] = 'required data';
+
+###loopBreak (filter control)
+
+
+
 
 ###multiple (in DataIO)
 
@@ -105,4 +175,33 @@ best is to use pre-defined multiple filters
 
 Predefined Types
 ----------------
+
+###binary
+
+
+###text
+
+
+###mail
+
+
+###url
+
+
+###number
+
+
+###alphabet
+
+
+###date
+
+
+###time
+
+
+###datetime
+
+
+###tel
 
