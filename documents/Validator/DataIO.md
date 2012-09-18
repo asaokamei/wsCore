@@ -160,11 +160,11 @@ for multiple filter because it has complex options
     $dio->pushValue( 'date', array(
         'multiple' => array( 'prefix' => 'year,month,day', 'connector' => '/' ) )
     );
+
 best is to use pre-defined multiple filters
 
-    $dio->push( 'user_bdate', 'date' );
-    $dio->push( 'user_tel', 'tel' );
-    $dio->push( 'user_fax', 'tel' );
+    $dio->pushValue( 'date', 'multiple:YM' ); // reads date_y, date_m => YYYY-MM
+
 
 ###sameWith (in DataIO)
 

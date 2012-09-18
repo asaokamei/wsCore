@@ -41,33 +41,31 @@ class DataIO
         );
         $this->filterOptions = array(
             'sameEmpty' => array( 'err_msg' => 'missing value to compare' ),
+            'multiple'  => array(
+                'date' => array( 'suffix' => 'y,m,d',  'connector' => '-', ),
+                'YMD'  => array( 'suffix' => 'y,m,d',  'connector' => '-', ),
+                'YM'   => array( 'suffix' => 'y,m',    'connector' => '-', ),
+                'time' => array( 'suffix' => 'h,i,s',  'connector' => ':', ),
+                'His'  => array( 'suffix' => 'h,i,s',  'connector' => ':', ),
+                'hi'   => array( 'suffix' => 'h,i',    'connector' => ':', ),
+                'datetime' => array( 'suffix' => 'y,m,d,h,i,s', 'format' => '%04d-%02d-%02d %02d:%02d:%02d', ),
+                'tel'    => array( 'suffix' => '1,2,3', 'connector' => '-', ),
+                'credit' => array( 'suffix' => '1,2,3,4', 'connector' => '', ),
+                'amex'   => array( 'suffix' => '1,2,3', 'connector' => '', ),
+            ),
         );
         $this->filterTypes = array(
             'date' => array(
-                'multiple' => array(
-                    'suffix' => 'y,m,d',
-                    'connector' => '-',
-                ),
-            ),
-            'dateYM' => array(
-                'suffix' => 'y,m',
-                'connector' => '-',
+                'multiple' => 'date',
             ),
             'time' => array(
-                'suffix' => 'h,i,s',
-                'connector' => ':',
+                'multiple' => 'time',
             ),
             'datetime' => array(
-                'suffix' => 'y,m,d,h,i,s',
-                'format' => '%04d-%02d-%02d %02d:%02d:%02d',
+                'multiple' => 'datetime',
             ),
             'tel' => array(
-                'suffix' => '1,2,3',
-                'connector' => '-',
-            ),
-            'fax' => array(
-                'suffix' => '1,2,3',
-                'connector' => '-',
+                'multiple' => 'tel',
             ),
         );
     }
