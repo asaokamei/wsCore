@@ -13,6 +13,25 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
         $this->validator = new Validator();
     }
     // +----------------------------------------------------------------------+
+    public function test_false_on_noNull()
+    {
+        $text_with_null   = "this is \0 with NULL";
+        $text_to_validate = $text_with_null;
+        $ok = $this->validator->isValid( $text_to_validate );
+
+        // null is quietly removed from text.
+        // this specification may change in the future, though.
+        $this->assertTrue( $ok );
+        $this->assertNotEquals( $text_with_null, $text_to_validate );
+        $text_removed = str_replace( "\0", '', $text_with_null );
+        $this->assertEquals( $text_removed, $text_to_validate );
+
+        // validate again, but not replacing nulls. 
+        $text_to_validate = $text_with_null;
+        $ok = $this->validator->isValid( $text_to_validate, 'noNull:FALSE' );
+        $this->assertTrue( $ok );
+        $this->assertEquals( $text_with_null, $text_to_validate );
+    }
     public function test_basic_pattern_with_empty_value()
     {
         $text_number = '';

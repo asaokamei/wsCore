@@ -77,6 +77,9 @@ class Validator
 
         // filters for various types of input.
         $this->filterTypes = array(
+            'binary' => array(
+                'noNull:FALSE | encoding:FALSE | mbConvert:FALSE | trim:FALSE '
+            ),
             'text' => array(),
             'mail' => array(
                 'mbConvert:hankaku|sanitize:email|pattern:mail',
@@ -257,7 +260,7 @@ class Validator
             $filter = explode( ':', $rule, 2 );
             array_walk( $filter, function( &$v ) { $v = trim( $v ); } );
             if( isset( $filter[1] ) ) {
-                $filter_array[ $filter[0] ] = $filter[1];
+                $filter_array[ $filter[0] ] = ( $filter[1]=='FALSE' )? FALSE: $filter[1];
             }
             else {
                 $filter_array[ $filter[0] ] = TRUE;
