@@ -177,6 +177,7 @@ class Validator
         {
             // prepare to apply filter.
             if( $parameter === FALSE ) continue; // skip rules with option as FALSE.
+            if( $rule == 'err_msg' ) continue;   // ignore error message.
             $success = $this->_applyRule( $value, $rule, $parameter, $loop );
             //echo "Rule: {$rule} ok={$success} loop=" . $loop . " \n";
             if( !$success ) {
