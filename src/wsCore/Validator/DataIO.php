@@ -72,6 +72,9 @@ class DataIO
         );
     }
 
+    /**
+     * @param $validator  Validator
+     */
     public function injectValidator( $validator ) {
         $this->validator = $validator;
     }
@@ -83,6 +86,12 @@ class DataIO
         $this->source = $data;
     }
     // +----------------------------------------------------------------------+
+    /**
+     * @param string $name
+     * @param string|array $filters
+     * @param mixed $value
+     * @return DataIO
+     */
     public function pushValue( $name, $filters='', &$value=NULL )
     {
         $filters = $this->validator->prepareFilter( $filters );
@@ -92,6 +101,14 @@ class DataIO
         if( !$ok ) $value = FALSE;
         return $this;
     }
+
+    /**
+     * @param string $name
+     * @param string $type
+     * @param string|array $filters
+     * @param mixed $value
+     * @return DataIO
+     */
     public function push( $name, $type, $filters='', &$value=NULL )
     {
         $filterType = $this->getFilterType( $type );
@@ -102,6 +119,15 @@ class DataIO
         if( !$ok ) $value = FALSE;
         return $this;
     }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @param null|string $type
+     * @param array $filters
+     * @param mixed $err_msg
+     * @return bool
+     */
     public function validate( $name, &$value, $type=NULL, &$filters=array(), &$err_msg=NULL )
     {
         $ok = $this->_find( $name, $value, $type, $filters, $err_msg );
@@ -112,17 +138,59 @@ class DataIO
         }
         return $ok;
     }
+
+    /**
+     * @param $type
+     * @return array
+     */
     public function getFilterType( $type )
     {
         $filter = isset( $this->filterTypes[ $type ][0] ) ? $this->filterTypes[ $type ][0] : '';
         return $this->validator->prepareFilter( $filter );
     }
+
+    /**
+     * @return array
+     */
     public function popData() {
         return $this->data;
     }
-    public function popSafe() {
 
+    /**
+     * @return array
+     */
+    public function popSafe() {
+        $safeData = $this->data;
+        $this->_findClean( $safeData, $this->errors );
+        return $safeData;
     }
+
+    /**
+     * @param array $data
+     * @param array|null $error
+     * @param bool $key
+     */
+    public function _findClean( &$data, $error, $key=FALSE ) {
+        if( empty( $error ) ) return; // no error at all.
+        if( is_array( $data ) ) {
+            foreach( $data as $key => $val ) {
+                if( !array_key_exists( $key, $error ) ) {
+                    continue; // no error.
+                }
+                if( is_array( $data[ $key ] ) ) {
+                    $this->_findClean( $data[$key], $error[$key], $key );
+                }
+                else {
+                    unset( $data[ $key ] );
+                }
+            }
+        }
+    }
+
+    /**
+     * @param array $errors
+     * @return int
+     */
     public function popErrors( &$errors=array() ) {
         $errors = $this->errors;
         return $this->err_num;
