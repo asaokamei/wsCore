@@ -6,7 +6,9 @@ namespace wsCore\DiContainer;
  * an extension of Pimple.
  * - create an object if class name is given as id. 
  * - auto inject dependencies based on interface. 
- * - id will be chained, unless it is protected. 
+ * - id will be chained, unless it is protected.
+ *
+ * TODO: is it new? or fresh? when constructing an object to inject.
  */
 
 class Dimplet
