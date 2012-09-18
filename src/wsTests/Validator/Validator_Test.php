@@ -26,7 +26,7 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
         $text_removed = str_replace( "\0", '', $text_with_null );
         $this->assertEquals( $text_removed, $text_to_validate );
 
-        // validate again, but not replacing nulls. 
+        // validate again, but not replacing nulls.
         $text_to_validate = $text_with_null;
         $ok = $this->validator->isValid( $text_to_validate, 'noNull:FALSE' );
         $this->assertTrue( $ok );
