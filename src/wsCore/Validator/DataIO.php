@@ -77,6 +77,58 @@ class DataIO
     }
 
     /**
+     * @param array $data
+     */
+    public function source( $data=array() ) {
+        $this->source = $data;
+    }
+    // +----------------------------------------------------------------------+
+    public function pushValue( $name, $filters, &$value=NULL )
+    {
+        $filters = $this->validator->prepareFilter( $filters );
+        $filters = array_merge( $this->filterOrder, $filters );
+        $value = NULL;
+        $ok = $this->validate( $name, $value, NULL, $filters );
+        if( !$ok ) $value = FALSE;
+        return $this;
+    }
+    public function push( $type, $name, $filters )
+    {
+        $filterType = $this->getFilterType( $type );
+        $filters = $this->validator->prepareFilter( $filters );
+        $filters = array_merge( $this->filterOrder, $filterType, $filters );
+        $value = NULL;
+        $ok = $this->validate( $name, $value, NULL, $filters );
+        if( !$ok ) $value = FALSE;
+        return $this;
+    }
+    public function validate( $name, &$value, $type=NULL, &$filters=array(), &$err_msg=NULL )
+    {
+        $ok = $this->_find( $name, $value, $type, $filters, $err_msg );
+        $this->data[ $name ] = $value;
+        if( !$ok ) {
+            $this->errors[ $name ] = $err_msg;
+            $this->err_num++;
+        }
+        return $ok;
+    }
+    public function getFilterType( $type )
+    {
+        $filter = isset( $this->filterTypes[ $type ][0] ) ? $this->filterTypes[ $type ][0] : '';
+        return $this->validator->prepareFilter( $filter );
+    }
+    public function popData() {
+        return $this->data;
+    }
+    public function popSafe() {
+
+    }
+    public function popErrors( &$errors=array() ) {
+        $errors = $this->errors;
+        return $this->err_num;
+    }
+    // +----------------------------------------------------------------------+
+    /**
      * finds value from $source, and stores the found value in $data, and 
      * error message in $errors. 
      * 
