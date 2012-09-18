@@ -71,6 +71,7 @@ class Dimplet
         if( array_key_exists($id, $this->values) ) {
             $found = $this->values[$id];
             if( $found instanceof \Closure ) {
+                /** @var $found \Closure */
                 $found = $found( $this );
             }
             elseif( $this->exists( $found ) ) {
@@ -89,6 +90,7 @@ class Dimplet
             throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
         }
         if( array_key_exists( $id, $this->extends ) ) {
+            /** @var $extender \Closure */
             $extender = $this->extends[ $id ];
             $extender( $found, $this );
         }
