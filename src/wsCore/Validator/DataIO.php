@@ -175,11 +175,6 @@ class DataIO
         }
         // now, validate this value.
         $ok = $this->validator->isValidType( $type, $value, $filters, $err_msg );
-        $this->data[ $name ] = $value;
-        if( !$ok ) {
-            $this->errors[ $name ] = $err_msg;
-            $this->err_num ++;
-        }
         return $ok;
     }
 
