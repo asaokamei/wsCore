@@ -92,7 +92,7 @@ class DataIO
         if( !$ok ) $value = FALSE;
         return $this;
     }
-    public function push( $type, $name, $filters )
+    public function push( $name, $type, $filters, &$value=NULL )
     {
         $filterType = $this->getFilterType( $type );
         $filters = $this->validator->prepareFilter( $filters );
