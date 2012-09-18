@@ -5,6 +5,8 @@ namespace wsCore\Validator;
  * Validator class to validates a single value, or an array of string,
  * against same set of filters.
  * TODO: separate code for Japanese character to another module?
+ *
+ * TODO: implement more filters: code, maxlength, number, min, max, range, checkdate, mbCheckKana, sameAs, sameEmtpy
  */
 
 class Validator
