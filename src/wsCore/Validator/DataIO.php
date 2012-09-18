@@ -83,7 +83,7 @@ class DataIO
         $this->source = $data;
     }
     // +----------------------------------------------------------------------+
-    public function pushValue( $name, $filters, &$value=NULL )
+    public function pushValue( $name, $filters='', &$value=NULL )
     {
         $filters = $this->validator->prepareFilter( $filters );
         $filters = array_merge( $this->filterOrder, $filters );
@@ -92,7 +92,7 @@ class DataIO
         if( !$ok ) $value = FALSE;
         return $this;
     }
-    public function push( $name, $type, $filters, &$value=NULL )
+    public function push( $name, $type, $filters='', &$value=NULL )
     {
         $filterType = $this->getFilterType( $type );
         $filters = $this->validator->prepareFilter( $filters );
