@@ -1,6 +1,14 @@
 <?php
 namespace wsCore\Html;
+/*
 
+$element->form(
+    $element->input( text, user_name, taro-san ),
+    $element->radio( gender, [ m=>male, f=>female ], m ),
+    $element->select( ages, [10=>teen, 20=>twenties, 30=>over], 20 )
+)->action( 'do.php' );
+
+ */
 class Element
 {
     /** @var null|string        overwrites name ex: name[1] */
@@ -21,7 +29,7 @@ class Element
      * @param $value
      * @param array $attributes
      */
-    public function input( $type, $name, $value, $attributes=array() ) {}
+    public function input( $type, $name, $value=NULL, $attributes=array() ) {}
 
     /**
      * creates textArea element.
@@ -30,14 +38,15 @@ class Element
      * @param $value
      * @param array $attributes
      */
-    public function textArea( $name, $value, $attributes=array() ) {}
+    public function textArea( $name, $value=NULL, $attributes=array() ) {}
 
     /**
      * @param $name
+     * @param $items
      * @param array $value
      * @param array $attributes
      */
-    public function select( $name, $value, $attributes=array() ) {}
+    public function select( $name, $items, $value=NULL, $attributes=array() ) {}
 
     /**
      * makes option list for Select box.
@@ -46,6 +55,11 @@ class Element
      * @param $checks
      */
     public function makeOptions( $option, $checks ) {}
+
+    public function radio( $name, $items, $value=NULL, $attributes=array() ) {}
+
+    public function check( $name, $items, $value=NULL, $attributes=array() ) {}
+
     /**
      * set up ime mode in style.
      *
@@ -78,11 +92,15 @@ class Element
      * @param string $value
      */
     public function show( $type='NAME', $value='' ) {}
+
     /**
      * returns $value.
      * for Select, Radio, and Checkbox, returns label name from $value.
      */
-    public function makeName( $type ) {}
+    public function makeName() {}
 
-    public function makeHtml( $type ) {}
+    /**
+     * returns html element.
+     */
+    public function makeHtml() {}
 }
