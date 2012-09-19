@@ -1,5 +1,6 @@
 <?php
 require( __DIR__ . '/../../wsCore/Html/Tags.php' );
+use wsCore\Html\Tags as Tags;
 
 $tags = new Tags();
 
