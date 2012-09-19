@@ -1,5 +1,5 @@
 <?php
-require( './Tags.php' );
+require( __DIR__ . '/../../wsCore/Html/Tags.php' );
 
 $tags = new Tags();
 
