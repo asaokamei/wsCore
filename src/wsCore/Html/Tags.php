@@ -278,10 +278,10 @@ class Tags
     {
         $html = $head;
         if( in_array( $this->tagName, static::$tag_no_body ) ) {
-            // create short tag, such as <tag attritutes... />
+            // create tag without content, such as <tag attritutes... />
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ' />';
         }
-        elseif( in_array( $this->tagName, static::$tag_span ) || count( $this->contents ) == 1 ) {
+        elseif( count( $this->contents ) == 1 ) {
             // short tag such as <tag>only one content</tag>
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ">";
             $html .= $this->toContents_();
@@ -293,7 +293,11 @@ class Tags
             $html .= $this->toContents_( $head . '  ' );
             $html .= $head . "</{$this->tagName}>";
         }
-        return $html ."\n";
+        if( !in_array( $this->tagName, static::$tag_span ) ) {
+            // add new-line, except for in-line tags.
+            $html .= "\n";
+        }
+        return $html;
     }
     /**
      * @return string
