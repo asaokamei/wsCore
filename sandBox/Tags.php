@@ -216,7 +216,10 @@ class Tags
         $html = '';
         if( !empty( $this->contents ) )
             foreach( $this->contents as $content ) {
-                $html .= $head . (string) $content . "\n";
+                if( $html && substr( $html, -1 ) != "\n" ) {
+                    $html .= "\n";
+                }
+                $html .= $head . (string) $content;
             }
         return $html;
     }
@@ -235,15 +238,15 @@ class Tags
             // create short tag. 
             $html = "<{$this->tagName}" . $this->_toAttribute() . ' />';
         }
-        elseif( in_array( $this->tagName, static::$tag_span ) ) {
+        elseif( in_array( $this->tagName, static::$tag_span ) || count( $this->contents ) == 1 ) {
             // create inline tag. 
             $html = "<{$this->tagName}" . $this->_toAttribute() . '>' 
-                . $this->_toContents_() . "</{$this->tagName}>";
+                . $this->_toContents_() . "</{$this->tagName}>\n";
         }
         else {
             // create tag. 
             $html = "<{$this->tagName}" . $this->_toAttribute() . ">\n" 
-                . $this->_toContents_("  ") . "</{$this->tagName}>\n";
+                . $this->_toContents_() . "</{$this->tagName}>\n";
         }
         return $html;
     }
