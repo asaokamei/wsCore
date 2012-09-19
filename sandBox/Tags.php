@@ -165,9 +165,6 @@ class Tags
                 $connector = static::$attribute_connectors[ $name ];
             }
         }
-        if( !isset( $value ) ) {
-            $value = $name;   // i.e. required, checked, etc. 
-        }
         // set attribute.
         if( !isset( $this->attributes[ $name ] ) // new attribute.
             || $connector === FALSE ) {          // replace with new value.
