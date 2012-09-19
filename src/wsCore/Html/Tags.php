@@ -1,4 +1,5 @@
 <?php
+namespace wsCore\Html;
 
 class Tags
 {
