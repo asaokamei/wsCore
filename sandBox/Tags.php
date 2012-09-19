@@ -1,22 +1,4 @@
 <?php
-/*
-
-Example of Usage:
-
-$tags()->tagName()->attr( value )->_contains( text, text2 )...
-$tags()->tagName( text, text2 )->attr( value )...
-$tags( tagName )->attr( value )->_contains( text, text2 )...
-$tags( tagName, text, text2 )->attr( value )...
-
-$tags( 'div' )->attribute( '...' )->_class( 'myClass' )->_id( 'myId' )
-    ->_contain(
-        $tags()->p( 'this is a paragraph, ' . $tags( 'b', 'with bold.' ) ),
-        $tags()->div(
-            $tags()->a( 'a link' )->href( 'pop.html' )
-        ),
-    );
-
- */
 
 class Tags
 {
