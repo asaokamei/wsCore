@@ -259,7 +259,7 @@ class Tags
             if( $html && substr( $html, -1 ) != "\n" ) {
                 $html .= "\n";
             }
-            if( is_object( $content ) && get_class( $content ) == get_called_class() ) {
+            if( is_object( $content ) && method_exists( $content, 'toString_' ) ) {
                 $html .= $content->toString_( $head );
             }
             else {
