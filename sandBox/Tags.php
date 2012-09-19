@@ -158,7 +158,7 @@ class Tags
         return $name;
     }
     // +----------------------------------------------------------------------+
-    //  non-static methods.
+    //  methods for setting tags, attributes, and contents.
     // +----------------------------------------------------------------------+
     /**
      * set contents.
@@ -194,7 +194,7 @@ class Tags
     }
 
     /**
-     * attribute or tag if not set.
+     * set attribute, or tagName if tagName is not set.
      * 
      * @param string $name
      * @param array  $args
@@ -212,6 +212,13 @@ class Tags
         }
         return $this;
     }
+    // +----------------------------------------------------------------------+
+    //  convert Tags to a string.
+    // +----------------------------------------------------------------------+
+    /**
+     * @param string $head
+     * @return string
+     */
     public function _toContents_( $head="" ) {
         $html = '';
         if( !empty( $this->contents ) )
@@ -223,6 +230,10 @@ class Tags
             }
         return $html;
     }
+
+    /**
+     * @return string
+     */
     public function _toAttribute() {
         $attr = '';
         if( !empty( $this->attributes ) )
@@ -231,22 +242,26 @@ class Tags
             }
         return $attr;
     }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         $html = '';
         if( in_array( $this->tagName, static::$tag_no_body ) ) {
             // create short tag. 
-            $html = "<{$this->tagName}" . $this->_toAttribute() . ' />';
+            $html .= "<{$this->tagName}" . $this->_toAttribute() . ' />';
         }
         elseif( in_array( $this->tagName, static::$tag_span ) || count( $this->contents ) == 1 ) {
             // create inline tag. 
-            $html = "<{$this->tagName}" . $this->_toAttribute() . '>' 
+            $html .= "<{$this->tagName}" . $this->_toAttribute() . '>'
                 . $this->_toContents_() . "</{$this->tagName}>\n";
         }
         else {
             // create tag. 
-            $html = "<{$this->tagName}" . $this->_toAttribute() . ">\n" 
-                . $this->_toContents_() . "</{$this->tagName}>\n";
+            $html .= "<{$this->tagName}" . $this->_toAttribute() . ">\n";
+            $html .= $this->_toContents_() . "</{$this->tagName}>\n";
         }
         return $html;
     }
