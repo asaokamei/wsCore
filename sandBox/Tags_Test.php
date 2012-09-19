@@ -18,7 +18,7 @@ echo $tags()->div(
     $tags()->a( 'a link' )->href( 'do2.php' )->target( '_blank' )
 );
 
-echo $tags()->div(
+echo $tags()->div()->_contain(
     'this is a text',
     $tags()->div(
         $tags()->a( 'a link' )->href( 'do.php' )->target( '_blank' ),
