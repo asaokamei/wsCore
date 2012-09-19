@@ -39,16 +39,21 @@ class Tags
         'order'   => 'ol',
         'number'  => 'nl',
     );
+    /** @var array                  tags without contents */
     public static $tag_no_body = array(
         'br', 'img', 'input',
     );
+    /** @var array                  in-line tags   */
     public static $tag_span = array(
         'span', 'p', 'strong', 'i', 'sub', ''
     );
+    /** @var array                  how to connect attribute values */
     public static $attribute_connectors = array(
         'class' => ' ',
         'style' => '; ',
     );
+    /** @var string                 encoding */
+    public static $encoding = 'UTF-8';
     // +----------------------------------------------------------------------+
     //  constructions
     // +----------------------------------------------------------------------+
@@ -131,8 +136,9 @@ class Tags
             return $this;
         }
         $name = $this->_normalize_( $name );
+        // set connector if it is not set.
         if( $connector === NULL ) {
-            $connector = FALSE;
+            $connector = FALSE; // default is to replace value.
             if( array_key_exists( $name, static::$attribute_connectors ) ) {
                 $connector = static::$attribute_connectors[ $name ];
             }
