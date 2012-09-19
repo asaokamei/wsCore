@@ -226,7 +226,12 @@ class Tags
                 if( $html && substr( $html, -1 ) != "\n" ) {
                     $html .= "\n";
                 }
-                $html .= $head . (string) $content;
+                if( is_object( $content ) && get_class( $content ) == get_called_class() ) {
+                    $html .= $content->_toString_( $head );
+                }
+                else {
+                    $html .= $head . (string) $content;
+                }
             }
         return $html;
     }
@@ -243,12 +248,9 @@ class Tags
         return $attr;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function _toString_( $head='' )
     {
-        $html = '';
+        $html = $head;
         if( in_array( $this->tagName, static::$tag_no_body ) ) {
             // create short tag.
             $html .= "<{$this->tagName}" . $this->_toAttribute() . ' />';
@@ -258,10 +260,22 @@ class Tags
             $html .= "<{$this->tagName}" . $this->_toAttribute() . ">";
             if( !in_array( $this->tagName, static::$tag_span ) && count( $this->contents ) != 1 ) {
                 $html .= "\n";
+                $html .= $this->_toContents_( $head . '  ' );
+                $html .= $head . "</{$this->tagName}>\n";
             }
-            $html .= $this->_toContents_() . "</{$this->tagName}>\n";
+            else {
+                $html .= $this->_toContents_();
+                $html .= "</{$this->tagName}>\n";
+            }
         }
         return $html;
+    }
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->_toString_();
     }
     // +----------------------------------------------------------------------+
 }
