@@ -126,14 +126,14 @@ class Tags
      */
     public function _setAttribute_( $name, $value, $connector=NULL )
     {
-        if( is_array( $value ) ) {
+        if( is_array( $value ) && !empty( $value ) ) {
             foreach( $value as $val ) {
                 $this->_setAttribute_( $name, $val, $connector );
             }
             return $this;
         }
-        if( empty( $value ) ) {
-            return $this;
+        if( empty( $value ) ) { // value is not set.
+            $value = $name;     // i.e. required='required'
         }
         $name = $this->_normalize_( $name );
         // set connector if it is not set.
@@ -146,7 +146,7 @@ class Tags
         if( !isset( $value ) ) {
             $value = $name;   // i.e. required, checked, etc. 
         }
-        // set attribute. 
+        // set attribute.
         if( !isset( $this->attributes[ $name ] ) ) {
             // new attribute. just set value to it. 
             $this->attributes[ $name ] = $value;
