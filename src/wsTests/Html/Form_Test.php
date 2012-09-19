@@ -1,9 +1,9 @@
 <?php
 require( __DIR__ . '/../../wsCore/Html/Tags.php' );
-require( __DIR__ . '/../../wsCore/Html/Element.php' );
-use wsCore\Html\Element as Element;
+require( __DIR__ . '/../../wsCore/Html/Form.php' );
+use wsCore\Html\Form as Element;
 
-$element = new Element();
+$element = new Form();
 
 echo $element()->input( 'text', 'user_name', 'taro-san', array( 'class' => 'myClass' ) );
 echo $element()->input( 'date', 'user_bdate', '1989-01-01' );
