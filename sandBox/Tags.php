@@ -45,6 +45,10 @@ class Tags
     public static $tag_span = array(
         'span', 'p', 'strong', 'i', 'sub', ''
     );
+    public static $attribute_connectors = array(
+        'class' => ' ',
+        'style' => '; ',
+    );
     // +----------------------------------------------------------------------+
     //  constructions
     // +----------------------------------------------------------------------+
@@ -115,7 +119,7 @@ class Tags
      * @param bool|string  $connector
      * @return Tags
      */
-    public function _setAttribute_( $name, $value, $connector=FALSE ) 
+    public function _setAttribute_( $name, $value, $connector=NULL )
     {
         if( is_array( $value ) ) {
             foreach( $value as $val ) {
@@ -127,6 +131,12 @@ class Tags
             return $this;
         }
         $name = $this->_normalize_( $name );
+        if( $connector === NULL ) {
+            $connector = FALSE;
+            if( array_key_exists( $name, static::$attribute_connectors ) ) {
+                $connector = static::$attribute_connectors[ $name ];
+            }
+        }
         if( !isset( $value ) ) {
             $value = $name;   // i.e. required, checked, etc. 
         }
@@ -174,23 +184,25 @@ class Tags
     }
 
     /**
-     * set class name. adds to the existing class. 
-     * 
+     * set class name. adds to the existing class.
+     *
      * @param $class
+     * @param string $connector    set FALSE to reset class.
      * @return Tags
      */
-    public function _class( $class ) {
-        return $this->_setAttribute_( 'class', $class, ' ' );
+    public function _class( $class, $connector=' ' ) {
+        return $this->_setAttribute_( 'class', $class, $connector );
     }
 
     /**
      * set style. adds to the existing style.
-     * 
+     *
      * @param $style
+     * @param string $connector    set FALSE to reset style.
      * @return Tags
      */
-    public function _style( $style ) {
-        return $this->_setAttribute_( 'style', $style, '; ' );
+    public function _style( $style, $connector='; ' ) {
+        return $this->_setAttribute_( 'style', $style, $connector );
     }
 
     /**
