@@ -4,13 +4,13 @@ namespace wsCore\Html;
 class Tags
 {
     /** @var null                  name of tag, such as span */
-    private $tagName    = NULL;
+    protected  $tagName    = NULL;
     
     /** @var array                 array of contents         */
-    private $contents   = array();
+    protected $contents   = array();
     
     /** @var array                 array of attributes       */
-    private $attributes = array();
+    protected $attributes = array();
 
     /** @var array                 normalize tag name  */
     public static $normalize_tag = array(
@@ -28,7 +28,7 @@ class Tags
     );
     /** @var array                  in-line tags   */
     public static $tag_span = array(
-        'span', 'p', 'strong', 'i', 'sub', ''
+        'span', 'p', 'strong', 'i', 'sub', 'textarea', '',
     );
     /** @var array                  how to connect attribute values */
     public static $attribute_connectors = array(
