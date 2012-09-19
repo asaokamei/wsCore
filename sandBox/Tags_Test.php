@@ -20,7 +20,7 @@ echo $tags()->div(
     $tags()->a( 'a link' )->href( 'do2.php' )->target( '_blank' )
 );
 
-echo $tags()->div()->_class( 'divClass' )->_contain(
+echo $tags()->div()->_class( 'divClass' )->contain_(
     'this is a text',
     $tags()->div(
         $tags()->a( 'a link' )->href( 'do.php' )->target( '_blank' ),
@@ -33,4 +33,4 @@ echo $tags()->input()->required();
 
 $unsafe = 'unsafe" string';
 echo $tags()->input()->value( $unsafe );
-echo $tags()->input()->value( Tags::wrap__( $unsafe ) );
+echo $tags()->input()->value( Tags::wrap_( $unsafe ) );

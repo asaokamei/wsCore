@@ -78,8 +78,8 @@ class Tags
      */
     public function __construct( $tagName=NULL, $contents=NULL ) 
     {
-        $this->_setTagName_( $tagName );
-        $this->_setContents_( $contents );
+        $this->setTagName_( $tagName );
+        $this->setContents_( $contents );
     }
 
     /**
@@ -88,7 +88,7 @@ class Tags
      * @param $value
      * @return string
      */
-    public static function safe__( $value ) {
+    public static function safe_( $value ) {
         return htmlentities( $value, ENT_QUOTES, static::$encoding );
     }
 
@@ -98,7 +98,7 @@ class Tags
      * @param $value
      * @return callable
      */
-    public static function wrap__( $value ) {
+    public static function wrap_( $value ) {
         return function() use( $value ) { return $value; };
     }
     // +----------------------------------------------------------------------+
@@ -110,10 +110,10 @@ class Tags
      * @param string $tagName
      * @return Tags
      */
-    public function _setTagName_( $tagName )
+    public function setTagName_( $tagName )
     {
         if( empty( $tagName ) ) return $this;
-        $tagName = $this->_normalize_( $tagName );
+        $tagName = $this->normalize_( $tagName );
         if( array_key_exists( $tagName, static::$normalize_tag ) ) {
             $tagName = static::$normalize_tag[ $tagName ];
         }
@@ -127,7 +127,7 @@ class Tags
      * @param string|array|Tags $contents
      * @return Tags
      */
-    public function _setContents_( $contents ) {
+    public function setContents_( $contents ) {
         if( empty( $contents ) ) return $this;
         if( is_array( $contents ) ) {
             $this->contents = array_merge( $this->contents, $contents );
@@ -146,18 +146,18 @@ class Tags
      * @param bool|string  $connector
      * @return Tags
      */
-    public function _setAttribute_( $name, $value, $connector=NULL )
+    public function setAttribute_( $name, $value, $connector=NULL )
     {
         if( is_array( $value ) && !empty( $value ) ) {
             foreach( $value as $val ) {
-                $this->_setAttribute_( $name, $val, $connector );
+                $this->setAttribute_( $name, $val, $connector );
             }
             return $this;
         }
         if( empty( $value ) ) { // value is not set.
             $value = $name;     // i.e. required='required'
         }
-        $name = $this->_normalize_( $name );
+        $name = $this->normalize_( $name );
         // set connector if it is not set.
         if( $connector === NULL ) {
             $connector = FALSE; // default is to replace value.
@@ -190,7 +190,7 @@ class Tags
      * @param $name
      * @return string
      */
-    public function _normalize_( $name ) {
+    public function normalize_( $name ) {
         $name = strtolower( $name );
         $name = ( $name[0]=='_') ? substr( $name, 1 ) : $name;
         return $name;
@@ -204,11 +204,11 @@ class Tags
      * @internal param array|string|Tags $contents
      * @return Tags
      */
-    public function _contain() 
+    public function contain_()
     {
         /** @var $args array */
         $args = func_get_args();
-        return $this->_setContents_( $args );
+        return $this->setContents_( $args );
     }
 
     /**
@@ -219,7 +219,7 @@ class Tags
      * @return Tags
      */
     public function _class( $class, $connector=' ' ) {
-        return $this->_setAttribute_( 'class', $class, $connector );
+        return $this->setAttribute_( 'class', $class, $connector );
     }
 
     /**
@@ -230,7 +230,7 @@ class Tags
      * @return Tags
      */
     public function _style( $style, $connector='; ' ) {
-        return $this->_setAttribute_( 'style', $style, $connector );
+        return $this->setAttribute_( 'style', $style, $connector );
     }
 
     /**
@@ -244,11 +244,11 @@ class Tags
     {
         // attribute or tag if not set. 
         if( is_null( $this->tagName ) ) { // set it as a tag name
-            $this->_setTagName_( $name );
-            $this->_setContents_( $args );
+            $this->setTagName_( $name );
+            $this->setContents_( $args );
         }
         else {
-            $this->_setAttribute_( $name, $args );
+            $this->setAttribute_( $name, $args );
         }
         return $this;
     }
@@ -259,7 +259,7 @@ class Tags
      * @param string $head
      * @return string
      */
-    public function _toContents_( $head="" ) {
+    public function toContents_( $head="" ) {
         $html = '';
         if( empty( $this->contents ) ) return $html;
         foreach( $this->contents as $content ) {
@@ -279,7 +279,7 @@ class Tags
     /**
      * @return string
      */
-    public function _toAttribute() {
+    public function toAttribute_() {
         $attr = '';
         if( !empty( $this->attributes ) )
             foreach( $this->attributes as $name => $value ) {
@@ -287,7 +287,7 @@ class Tags
                     $value = $value(); // wrapped by closure. use it as is.
                 }
                 else {
-                    $value = static::safe__( $value ); // make it very safe.
+                    $value = static::safe_( $value ); // make it very safe.
                 }
                 $attr .= " {$name}=\"{$value}\"";
             }
@@ -298,23 +298,23 @@ class Tags
      * @param string $head
      * @return string
      */
-    public function _toString_( $head='' )
+    public function toString_( $head='' )
     {
         $html = $head;
         if( in_array( $this->tagName, static::$tag_no_body ) ) {
             // create short tag, such as <tag attritutes... />
-            $html .= "<{$this->tagName}" . $this->_toAttribute() . ' />';
+            $html .= "<{$this->tagName}" . $this->toAttribute_() . ' />';
         }
         elseif( in_array( $this->tagName, static::$tag_span ) || count( $this->contents ) == 1 ) {
             // short tag such as <tag>only one content</tag>
-            $html .= "<{$this->tagName}" . $this->_toAttribute() . ">";
-            $html .= $this->_toContents_();
+            $html .= "<{$this->tagName}" . $this->toAttribute_() . ">";
+            $html .= $this->toContents_();
             $html .= "</{$this->tagName}>";
         }
         else { // create tag with contents inside.
-            $html .= "<{$this->tagName}" . $this->_toAttribute() . ">";
+            $html .= "<{$this->tagName}" . $this->toAttribute_() . ">";
             $html .= "\n";
-            $html .= $this->_toContents_( $head . '  ' );
+            $html .= $this->toContents_( $head . '  ' );
             $html .= $head . "</{$this->tagName}>";
         }
         return $html ."\n";
@@ -324,7 +324,7 @@ class Tags
      */
     public function __toString()
     {
-        return $this->_toString_();
+        return $this->toString_();
     }
     // +----------------------------------------------------------------------+
 }
