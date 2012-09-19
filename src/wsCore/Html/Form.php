@@ -9,7 +9,7 @@ $element->form(
 )->action( 'do.php' );
 
  */
-class Element extends Tags
+class Form extends Tags
 {
     /** @var null|string        overwrites name ex: name[1] */
     static $var_format = NULL;
@@ -34,7 +34,7 @@ class Element extends Tags
      * @param string $name
      * @param null|string $value
      * @param array $attributes
-     * @return \wsCore\Html\Element
+     * @return \wsCore\Html\Form
      */
     public function input( $type, $name, $value=NULL, $attributes=array() ) 
     {
@@ -53,7 +53,7 @@ class Element extends Tags
      * @param string $name
      * @param null|string $value
      * @param array $attributes
-     * @return \wsCore\Html\Element
+     * @return \wsCore\Html\Form
      */
     public function textArea( $name, $value=NULL, $attributes=array() ) 
     {
@@ -73,7 +73,7 @@ class Element extends Tags
      * @param array $checked
      * @param array $attributes
      * @internal param array $value
-     * @return \wsCore\Html\Element
+     * @return \wsCore\Html\Form
      */
     public function select( $name, $items, $checked=NULL, $attributes=array() ) 
     {
@@ -127,7 +127,7 @@ class Element extends Tags
      * @param string $name
      * @param string $value
      * @param array $attributes
-     * @return Element
+     * @return Form
      */
     public function radio( $name, $value, $attributes=array() ) 
     {
@@ -142,7 +142,7 @@ class Element extends Tags
      * @param string $name
      * @param string $value
      * @param array $attributes
-     * @return Element
+     * @return Form
      */
     public function check( $name, $value, $attributes=array() ) 
     {
@@ -232,7 +232,7 @@ class Element extends Tags
     // +----------------------------------------------------------------------+
     /**
      * @param  array $attribute
-     * @return Element
+     * @return Form
      */
     public function applyAttributes( $attribute )
     {
@@ -246,7 +246,7 @@ class Element extends Tags
      * set up ime mode in style.
      *
      * @param $ime
-     * @return \wsCore\Html\Element
+     * @return \wsCore\Html\Form
      */
     public function ime( $ime ) {
         return $this;
@@ -261,7 +261,7 @@ class Element extends Tags
      * set type for input.
      * 
      * @param  string $type
-     * @return Element
+     * @return Form
      */
     public function setType( $type )
     {
@@ -273,7 +273,7 @@ class Element extends Tags
      * set id attribute; id is generated from name.
      *
      * @param string|null $id
-     * @return \wsCore\Html\Element
+     * @return \wsCore\Html\Form
      */
     public function setId( $id=NULL ) {
         return $this;
@@ -283,7 +283,7 @@ class Element extends Tags
      * set name attribute. name may be changed (name[1]) for checkbox etc.
      *
      * @param string $name
-     * @return \wsCore\Html\Element
+     * @return \wsCore\Html\Form
      */
     public function setName( $name ) {
         $this->name = $name;
@@ -301,7 +301,7 @@ class Element extends Tags
      *
      * @param string $type
      * @param string $value
-     * @return \wsCore\Html\Element
+     * @return \wsCore\Html\Form
      */
     public function show( $type='NAME', $value='' ) {
         return $this;

@@ -1,18 +1,19 @@
 <?php
 require( __DIR__ . '/../../wsCore/Html/Tags.php' );
 require( __DIR__ . '/../../wsCore/Html/Form.php' );
-use wsCore\Html\Form as Element;
+use wsCore\Html\Form as Form;
 
-$element = new Form();
+$form = new Form();
 
-echo $element()->input( 'text', 'user_name', 'taro-san', array( 'class' => 'myClass' ) );
-echo $element()->input( 'date', 'user_bdate', '1989-01-01' );
-echo $element()->textArea( 'user_memo', 'memo memo meeemo' )->contain_( 'moremoremore');
-echo $element()->radio( 'user_OK', 'YES' );
-echo $element()->check( 'user_OK', 'YES' );
+/** @var $form Form */
+echo $form()->input( 'text', 'user_name', 'taro-san', array( 'class' => 'myClass' ) );
+echo $form()->input( 'date', 'user_bdate', '1989-01-01' );
+echo $form()->textArea( 'user_memo', 'memo memo meMeMeMo' )->contain_( 'more more more');
+echo $form()->radio( 'user_OK', 'YES' );
+echo $form()->check( 'user_OK', 'YES' );
 
-echo $element()->radioLabel( 'user_OK', 'YES', 'are you OK?' );
-echo $element()->checkLabel( 'user_OK', 'YES', 'are you OK?' );
+echo $form()->radioLabel( 'user_OK', 'YES', 'are you OK?' );
+echo $form()->checkLabel( 'user_OK', 'YES', 'are you OK?' );
 
 
 $ages = array(
@@ -22,9 +23,9 @@ $ages = array(
 );
 
 echo "\n----\n";
-echo $element->radioBox( 'user_age', $ages, '20' );
+echo $form->radioBox( 'user_age', $ages, '20' );
 echo "\n----\n";
-echo $element->checkBox( 'user_age', $ages, '30' );
+echo $form->checkBox( 'user_age', $ages, '30' );
 echo "\n----\n";
 
 $lang = array(
@@ -36,4 +37,4 @@ $lang = array(
     array( 'zhi', 'chinese', 'asia' ),
     array( 'kor', 'korean', 'asia' ),
 );
-echo $element()->select( 'user_lang', $lang, 'ger', array( 'multiple' => '' ) );
+echo $form()->select( 'user_lang', $lang, 'ger', array( 'multiple' => '' ) );
