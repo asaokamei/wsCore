@@ -34,7 +34,7 @@ class Form extends Tags
      * @param string $name
      * @param null|string $value
      * @param array $attributes
-     * @return \wsCore\Html\Form
+     * @return Form|Tags
      */
     public function input( $type, $name, $value=NULL, $attributes=array() ) 
     {
@@ -53,7 +53,7 @@ class Form extends Tags
      * @param string $name
      * @param null|string $value
      * @param array $attributes
-     * @return \wsCore\Html\Form
+     * @return Form|Tags
      */
     public function textArea( $name, $value=NULL, $attributes=array() ) 
     {
@@ -73,7 +73,7 @@ class Form extends Tags
      * @param array $checked
      * @param array $attributes
      * @internal param array $value
-     * @return \wsCore\Html\Form
+     * @return Form|Tags
      */
     public function select( $name, $items, $checked=NULL, $attributes=array() ) 
     {
@@ -127,7 +127,7 @@ class Form extends Tags
      * @param string $name
      * @param string $value
      * @param array $attributes
-     * @return Form
+     * @return Form|Tags
      */
     public function radio( $name, $value, $attributes=array() ) 
     {
@@ -142,7 +142,7 @@ class Form extends Tags
      * @param string $name
      * @param string $value
      * @param array $attributes
-     * @return Form
+     * @return Form|Tags
      */
     public function check( $name, $value, $attributes=array() ) 
     {
@@ -158,7 +158,7 @@ class Form extends Tags
      * @param       $value
      * @param       $label
      * @param array $attributes
-     * @return mixed
+     * @return Form|Tags
      */
     public function radioLabel( $name, $value, $label, $attributes=array() ) {
         return $this()->label( $this->radio( $name, $value, $attributes ) . $label );
@@ -170,7 +170,7 @@ class Form extends Tags
      * @param       $value
      * @param       $label
      * @param array $attributes
-     * @return mixed
+     * @return Form|Tags
      */
     public function checkLabel( $name, $value, $label, $attributes=array() ) {
         return $this()->label( $this->check( $name, $value, $attributes ) . $label );
@@ -183,7 +183,7 @@ class Form extends Tags
      * @param array $items
      * @param array $checked
      * @param array $attributes
-     * @return mixed
+     * @return Form|Tags
      */
     public function radioBox( $name, $items, $checked=array(), $attributes=array() ) {
         return $this->doBox( 'radio', $name, $items, $checked, $attributes );
@@ -196,7 +196,7 @@ class Form extends Tags
      * @param array $items
      * @param array $checked
      * @param array $attributes
-     * @return mixed
+     * @return Form|Tags
      */
     public function checkBox( $name, $items, $checked=array(), $attributes=array() ) {
         return $this->doBox( 'check', $name, $items, $checked, $attributes );
@@ -210,7 +210,7 @@ class Form extends Tags
      * @param array $items
      * @param array $checked
      * @param array $attributes
-     * @return mixed
+     * @return Form|Tags
      */
     public function doBox( $style, $name, $items, $checked=array(), $attributes=array() )
     {
@@ -232,7 +232,7 @@ class Form extends Tags
     // +----------------------------------------------------------------------+
     /**
      * @param  array $attribute
-     * @return Form
+     * @return Form|Tags
      */
     public function applyAttributes( $attribute )
     {
@@ -246,7 +246,7 @@ class Form extends Tags
      * set up ime mode in style.
      *
      * @param $ime
-     * @return \wsCore\Html\Form
+     * @return Form|Tags
      */
     public function ime( $ime ) {
         return $this;
@@ -261,7 +261,7 @@ class Form extends Tags
      * set type for input.
      * 
      * @param  string $type
-     * @return Form
+     * @return Form|Tags
      */
     public function setType( $type )
     {
@@ -273,7 +273,7 @@ class Form extends Tags
      * set id attribute; id is generated from name.
      *
      * @param string|null $id
-     * @return \wsCore\Html\Form
+     * @return Form|Tags
      */
     public function setId( $id=NULL ) {
         return $this;
@@ -283,7 +283,7 @@ class Form extends Tags
      * set name attribute. name may be changed (name[1]) for checkbox etc.
      *
      * @param string $name
-     * @return \wsCore\Html\Form
+     * @return Form|Tags
      */
     public function setName( $name ) {
         $this->name = $name;
@@ -301,7 +301,7 @@ class Form extends Tags
      *
      * @param string $type
      * @param string $value
-     * @return \wsCore\Html\Form
+     * @return Form|Tags
      */
     public function show( $type='NAME', $value='' ) {
         return $this;
