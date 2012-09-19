@@ -28,3 +28,4 @@ echo $tags()->div()->_class( 'divClass' )->_contain(
     ),
     $tags()->a( 'a link' )->href( 'do2.php' )->target( '_blank' )
 );
+
