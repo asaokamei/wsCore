@@ -62,7 +62,7 @@ class Tags
      * 
      * @param null $tagName
      * @param null $contents
-     * @return mixed
+     * @return Tags
      */
     public function __invoke( $tagName=NULL, $contents=NULL ) 
     {
@@ -267,7 +267,7 @@ class Tags
                 $html .= "\n";
             }
             if( is_object( $content ) && get_class( $content ) == get_called_class() ) {
-                $html .= $content->_toString_( $head );
+                $html .= $content->toString_( $head );
             }
             else {
                 $html .= $head . (string) $content;
