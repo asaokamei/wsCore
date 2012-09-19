@@ -64,24 +64,63 @@ class Element extends Tags
         return $this->contain_( $value );
     }
 
+    // +----------------------------------------------------------------------+
     /**
-     * @param $name
-     * @param $items
-     * @param array $value
+     * make select list.
+     * 
+     * @param string $name
+     * @param array $items
+     * @param array $checked
      * @param array $attributes
+     * @internal param array $value
      * @return \wsCore\Html\Element
      */
-    public function select( $name, $items, $value=NULL, $attributes=array() ) 
+    public function select( $name, $items, $checked=NULL, $attributes=array() ) 
     {
+        if( array_key_exists( 'multiple', $attributes ) ) $this->multiple = TRUE;
         $this->style = 'select';
         $this->setTagName_( 'select' );
-        $this->applyAttributes( $attributes );
         $this->setName( $name );
         $this->items = $items;
-        $this->setValue( $value );
+        $this->applyAttributes( $attributes );
+        $this-> makeOptions( $this, $items, $checked );
         return $this;
     }
 
+    /**
+     * makes option list for Select box.
+     *
+     * @param $select
+     * @param $items
+     * @param $checked
+     * @return void
+     */
+    public function makeOptions( $select, $items, $checked ) 
+    {
+        if( $checked && !is_array( $checked ) ) $checked = array( $checked );
+        $prev_group = NULL;
+        foreach( $items as $item ) 
+        {
+            $value = $item[0];
+            $label = $item[1];
+            $option = $this()->option( $label )->value( $value );
+            if( in_array( $value, $checked ) ) $option->checked();
+            if( isset( $item[2] ) ) 
+            {
+                $group = $item[2];
+                if( $prev_group != $group ) {
+                    $optGroup = $this()->optgroup()->label( $group );
+                    $select->contain_( $optGroup );
+                    $prev_group = $group;
+                }
+                if( isset( $optGroup ) ) $optGroup->contain_( $option );
+            }
+            else {
+                $select->contain_( $option );
+            }
+        }
+    }
+    // +----------------------------------------------------------------------+
     /**
      * make single radio button element. 
      * 
@@ -113,19 +152,66 @@ class Element extends Tags
         return $this;
     }
 
+    /**
+     * make single radio button inside label tag with $label as description.
+     * @param string $name
+     * @param       $value
+     * @param       $label
+     * @param array $attributes
+     * @return mixed
+     */
     public function radioLabel( $name, $value, $label, $attributes=array() ) {
         return $this()->label( $this->radio( $name, $value, $attributes ) . $label );
     }
+
+    /**
+     * make single checkbox button inside label tag with $label as description.
+     * @param string $name
+     * @param       $value
+     * @param       $label
+     * @param array $attributes
+     * @return mixed
+     */
     public function checkLabel( $name, $value, $label, $attributes=array() ) {
         return $this()->label( $this->check( $name, $value, $attributes ) . $label );
     }
 
+    /**
+     * make list of radio button div > nl > li > label > input:type=radio.
+     *
+     * @param string $name
+     * @param array $items
+     * @param array $checked
+     * @param array $attributes
+     * @return mixed
+     */
     public function radioBox( $name, $items, $checked=array(), $attributes=array() ) {
         return $this->doBox( 'radio', $name, $items, $checked, $attributes );
     }
+
+    /**
+     * make list of check button div > nl > li > label > input:type=check.
+     *
+     * @param string $name
+     * @param array $items
+     * @param array $checked
+     * @param array $attributes
+     * @return mixed
+     */
     public function checkBox( $name, $items, $checked=array(), $attributes=array() ) {
         return $this->doBox( 'check', $name, $items, $checked, $attributes );
     }
+
+    /**
+     * the body routine for radioBox and checkBox. 
+     * 
+     * @param string $style
+     * @param string $name
+     * @param array $items
+     * @param array $checked
+     * @param array $attributes
+     * @return mixed
+     */
     public function doBox( $style, $name, $items, $checked=array(), $attributes=array() )
     {
         if( $checked && !is_array( $checked ) ) $checked = array( $checked ); 
@@ -227,15 +313,6 @@ class Element extends Tags
      */
     public function makeName() {
         return $this;
-    }
-
-    /**
-     * makes option list for Select box.
-     *
-     * @param $option
-     * @param $checks
-     */
-    public function makeOptions( $option, $checks ) {
     }
     // +----------------------------------------------------------------------+
 }

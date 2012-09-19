@@ -26,3 +26,14 @@ echo $element->radioBox( 'user_age', $ages, '20' );
 echo "\n----\n";
 echo $element->checkBox( 'user_age', $ages, '30' );
 echo "\n----\n";
+
+$lang = array(
+    array( 'eng', 'english' ),
+    array( 'ger', 'german', 'europe' ),
+    array( 'fra', 'french', 'europe' ),
+    array( 'spa', 'spanish', 'europe' ),
+    array( 'jpn', 'japanese' ),
+    array( 'zhi', 'chinese', 'asia' ),
+    array( 'kor', 'korean', 'asia' ),
+);
+echo $element()->select( 'user_lang', $lang, 'ger', array( 'multiple' => '' ) );
