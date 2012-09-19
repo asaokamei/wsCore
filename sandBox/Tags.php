@@ -221,18 +221,18 @@ class Tags
      */
     public function _toContents_( $head="" ) {
         $html = '';
-        if( !empty( $this->contents ) )
-            foreach( $this->contents as $content ) {
-                if( $html && substr( $html, -1 ) != "\n" ) {
-                    $html .= "\n";
-                }
-                if( is_object( $content ) && get_class( $content ) == get_called_class() ) {
-                    $html .= $content->_toString_( $head );
-                }
-                else {
-                    $html .= $head . (string) $content;
-                }
+        if( empty( $this->contents ) ) return $html;
+        foreach( $this->contents as $content ) {
+            if( $html && substr( $html, -1 ) != "\n" ) {
+                $html .= "\n";
             }
+            if( is_object( $content ) && get_class( $content ) == get_called_class() ) {
+                $html .= $content->_toString_( $head );
+            }
+            else {
+                $html .= $head . (string) $content;
+            }
+        }
         return $html;
     }
 
@@ -248,27 +248,30 @@ class Tags
         return $attr;
     }
 
+    /**
+     * @param string $head
+     * @return string
+     */
     public function _toString_( $head='' )
     {
         $html = $head;
         if( in_array( $this->tagName, static::$tag_no_body ) ) {
-            // create short tag.
+            // create short tag, such as <tag attritutes... />
             $html .= "<{$this->tagName}" . $this->_toAttribute() . ' />';
         }
-        else {
-            // create tag.
+        elseif( in_array( $this->tagName, static::$tag_span ) || count( $this->contents ) == 1 ) {
+            // short tag such as <tag>only one content</tag>
             $html .= "<{$this->tagName}" . $this->_toAttribute() . ">";
-            if( !in_array( $this->tagName, static::$tag_span ) && count( $this->contents ) != 1 ) {
-                $html .= "\n";
-                $html .= $this->_toContents_( $head . '  ' );
-                $html .= $head . "</{$this->tagName}>\n";
-            }
-            else {
-                $html .= $this->_toContents_();
-                $html .= "</{$this->tagName}>\n";
-            }
+            $html .= $this->_toContents_();
+            $html .= "</{$this->tagName}>";
         }
-        return $html;
+        else { // create tag with contents inside.
+            $html .= "<{$this->tagName}" . $this->_toAttribute() . ">";
+            $html .= "\n";
+            $html .= $this->_toContents_( $head . '  ' );
+            $html .= $head . "</{$this->tagName}>";
+        }
+        return $html ."\n";
     }
     /**
      * @return string
