@@ -55,7 +55,7 @@ class Tags
     /** @var string                 encoding */
     public static $encoding = 'UTF-8';
     // +----------------------------------------------------------------------+
-    //  constructions
+    //  constructions and static methods
     // +----------------------------------------------------------------------+
     /**
      * Start Tag object, with or without tag name.
@@ -82,6 +82,28 @@ class Tags
         $this->_setContents_( $contents );
     }
 
+    /**
+     * make string VERY safe for html.
+     *
+     * @param $value
+     * @return string
+     */
+    public static function safe__( $value ) {
+        return htmlentities( $value, ENT_QUOTES, static::$encoding );
+    }
+
+    /**
+     * wrap value with closure. use this to avoid encoding attribute values.
+     *
+     * @param $value
+     * @return callable
+     */
+    public static function wrap__( $value ) {
+        return function() use( $value ) { return $value; };
+    }
+    // +----------------------------------------------------------------------+
+    //  mostly internal functions
+    // +----------------------------------------------------------------------+
     /**
      * set tag name.
      * 
@@ -261,6 +283,12 @@ class Tags
         $attr = '';
         if( !empty( $this->attributes ) )
             foreach( $this->attributes as $name => $value ) {
+                if( $value instanceof \Closure ) {
+                    $value = $value(); // wrapped by closure. use it as is.
+                }
+                else {
+                    $value = static::safe__( $value ); // make it very safe.
+                }
                 $attr .= " {$name}=\"{$value}\"";
             }
         return $attr;

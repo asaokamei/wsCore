@@ -31,3 +31,6 @@ echo $tags()->div()->_class( 'divClass' )->_contain(
 
 echo $tags()->input()->required();
 
+$unsafe = 'unsafe" string';
+echo $tags()->input()->value( $unsafe );
+echo $tags()->input()->value( Tags::wrap__( $unsafe ) );
