@@ -169,12 +169,8 @@ class Tags
             $value = $name;   // i.e. required, checked, etc. 
         }
         // set attribute.
-        if( !isset( $this->attributes[ $name ] ) ) {
-            // new attribute. just set value to it. 
-            $this->attributes[ $name ] = $value;
-        }
-        elseif( $connector === FALSE ) {
-            // attribute is replaced with new value. 
+        if( !isset( $this->attributes[ $name ] ) // new attribute.
+            || $connector === FALSE ) {          // replace with new value.
             $this->attributes[ $name ] = $value;
         }
         else {
