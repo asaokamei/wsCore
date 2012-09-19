@@ -250,17 +250,15 @@ class Tags
     {
         $html = '';
         if( in_array( $this->tagName, static::$tag_no_body ) ) {
-            // create short tag. 
+            // create short tag.
             $html .= "<{$this->tagName}" . $this->_toAttribute() . ' />';
         }
-        elseif( in_array( $this->tagName, static::$tag_span ) || count( $this->contents ) == 1 ) {
-            // create inline tag. 
-            $html .= "<{$this->tagName}" . $this->_toAttribute() . '>'
-                . $this->_toContents_() . "</{$this->tagName}>\n";
-        }
         else {
-            // create tag. 
-            $html .= "<{$this->tagName}" . $this->_toAttribute() . ">\n";
+            // create tag.
+            $html .= "<{$this->tagName}" . $this->_toAttribute() . ">";
+            if( !in_array( $this->tagName, static::$tag_span ) && count( $this->contents ) != 1 ) {
+                $html .= "\n";
+            }
             $html .= $this->_toContents_() . "</{$this->tagName}>\n";
         }
         return $html;
