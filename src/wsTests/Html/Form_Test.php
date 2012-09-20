@@ -1,6 +1,6 @@
 <?php
-require( __DIR__ . '/../../wsCore/Html/Tags.php' );
-require( __DIR__ . '/../../wsCore/Html/Form.php' );
+namespace wsTests\Html;
+require( __DIR__ . '/../../autoloader.php' );
 use wsCore\Html\Form as Form;
 
 $form = new Form();

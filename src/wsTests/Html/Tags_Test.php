@@ -1,6 +1,7 @@
 <?php
-require( __DIR__ . '/../../wsCore/Html/Tags.php' );
-use wsCore\Html\Tags as Tags;
+namespace wsTests\Html;
+require( __DIR__ . '/../../autoloader.php' );
+use \wsCore\Html\Tags as Tags;
 
 $tags = new Tags();
 
