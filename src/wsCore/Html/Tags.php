@@ -54,10 +54,11 @@ class Tags
     }
 
     /**
-     * construction of Tag object. 
-     * 
+     * construction of Tag object.
+     *
      * @param string|null  $tagName
-     * @param string|null  $contents
+     * @param null|string $contents
+     * @return \wsCore\Html\Tags
      */
     public function __construct( $tagName=NULL, $contents=NULL ) 
     {
