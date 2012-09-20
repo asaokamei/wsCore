@@ -28,7 +28,7 @@ class Tags
     );
     /** @var array                  in-line tags   */
     public static $tag_span = array(
-        'span', 'p', 'strong', 'i', 'sub', 'textarea', 'li', '',
+        'span', 'p', 'strong', 'i', 'sub', 'li', '',
     );
     /** @var array                  how to connect attribute values */
     public static $attribute_connectors = array(
