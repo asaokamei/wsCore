@@ -8,7 +8,7 @@ $form = new Form();
 /** @var $form Form */
 echo $form()->input( 'text', 'user_name', 'taro-san', array( 'class' => 'myClass', 'ime' => 'ON' ) );
 echo $form()->input( 'date', 'user_bdate', '1989-01-01' )->_ime( 'OFF' );
-echo $form()->textArea( 'user_memo', 'memo memo meMeMeMo' )->contain_( 'more more more');
+echo $form()->textArea( 'user_memo', 'memo memo meMeMeMo' )->contain_( $form()->input( 'time', 'user_time' ) );
 echo $form()->radio( 'user_OK', 'YES' );
 echo $form()->check( 'user_OK', 'YES' );
 

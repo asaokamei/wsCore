@@ -61,9 +61,23 @@ class Form extends Tags
         $this->setTagName_( 'textarea' );
         $this->applyAttributes( $attributes );
         $this->setName( $name );
+        $this->contents[0] = '';
         return $this->contain_( $value );
     }
 
+    public function setContents_( $contents )
+    {
+        // for textarea special.
+        if( $this->tagName == 'textarea' ) {
+            if( is_array( $contents ) ) {
+                $contents = implode( '', $contents ); // to string.
+            }
+            $contents = $this->safe_( $contents );
+            $this->contents[0] .= $contents;
+            return $this;
+        }
+        return parent::setContents_( $contents );
+    }
     // +----------------------------------------------------------------------+
     /**
      * make select list.
