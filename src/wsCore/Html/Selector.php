@@ -41,6 +41,9 @@ class Selector
     public $add_head_option = '';
     public $attributes      = array( 'class' => 'FormSelector' );
 
+    /** @var callable|null */
+    public $htmlFilter      = NULL;
+
     /** @var Form */
     protected $form;
     protected static $types = array(
@@ -66,6 +69,16 @@ class Selector
     public function __construct( $style, $name ) {
         $this->style = $style;
         $this->name  = $name;
+        // setup filter for html safe value.
+        $this->htmlFilter = function( &$v ) {
+            $v = htmlentities( $v, ENT_QUOTES, 'UTF-8');
+        };
+        if( $this->style == 'textarea' ) {
+            $this->htmlFilter = function( &$v ) {
+                $v = htmlentities( $v, ENT_QUOTES, 'UTF-8');
+                $v = nl2br( $v );
+            };
+        }
     }
 
     /**
@@ -111,11 +124,11 @@ class Selector
         }
         elseif( is_array( $value ) ) {
             // input is an array. make all safely encode.
-            array_walk( $value, function(&$v) { $v=htmlentities( $v, ENT_QUOTES, 'UTF-8' );} );
+            array_walk( $value, $this->htmlFilter );
         }
         else {
             // encode input value for safety.
-            $value = htmlentities( $value, ENT_QUOTES, static::$encoding );
+            $this->htmlFilter( $value );
         }
         return $this->makeRaw( $value );
     }
@@ -162,8 +175,17 @@ class Selector
      * @param $value
      * @return mixed
      */
-    public function makeForm( $value ) {
-        if( !isset( $value ) ) $value = $this->default_items;
+    public function makeForm( $value )
+    {
+        if( !is_null( $value ) ) { // use default value if value is not set.
+            $value = $this->default_items;
+        }
+        if( $this->add_head_option && !empty( $this->item_data ) ) {
+            $this->item_data = array_merge(
+                array( array( '', $this->add_head_option ) ), // first item with empty value.
+                $this->item_data
+            );
+        }
         $style = strtolower( $this->style );
         $formStyle = ( isset( static::$formStyle[ $style ] ) ) ? static::$formStyle[ $style ]: 'input';
         $method = 'make' . $formStyle; // select, textarea, radioBox, checkBox
