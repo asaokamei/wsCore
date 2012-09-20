@@ -17,8 +17,8 @@ $dba = Core::get( '\wsCore\DbAccess\Dba' );
 
 Getting data from myTable whose name contains 'Mike'.
 
-    $data = $dba->table( 'myTable' )->find( 'name', '%Mike%', 'LIKE' );
-    $data = $dba->table( 'myTable' )->where( 'name', '%Mike%', 'LIKE' )->select()->fetchAll();
+    $data = $dba->table( 'myTable' )->find( 'name', 'Mike' );
+    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->select()->fetchAll();
 
 Getting data whose name contains 'Mike' with id greater or equal to 10. 
 
@@ -28,25 +28,28 @@ use primary key to get a data.
 
     $data = $dba->table( 'myTable', 'id' )->findById( 10 );
 
-find something is NULL. 
-
-    $data = $dba->table( 'myTable', 'id' )->find( 'name', Core::f('NULL') );
-    $data = $dba->table( 'myTable', 'id' )->whereNull( 'name' )->select()->fetchAll();
-
-get only the first data. 
+get only the first data.
 
     $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->first();
-    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->select()->limit(1)->fetchAll();
 
 get only 10 data.
 
     $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->first(10);
-    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->limit(10)->select()->fetchAll();
 
 offset 10, limit 10. 
 
-    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->offset(10)->first(10);
+    $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->first( 10, 10 );
     $data = $dba->table( 'myTable' )->where( 'name', 'Mike' )->limit(10)->offset(10)->select()->fetchAll();
+
+###More About Where
+
+find name contains Mike who is age >= 20
+
+    $data = $dba->table( 'myTable' )->like( 'name', '%Mike%' )->gt( 'age', 20 )->select();
+
+find something is NULL.
+
+    $data = $dba->table( 'myTable', 'id' )->isNull( 'name' )->select()->fetchAll();
 
 ###Insert data
 
