@@ -66,6 +66,11 @@ class Selector
     );
     public static $encoding = 'UTF-8';
 
+    // +----------------------------------------------------------------------+
+    /**
+     * @param $style
+     * @param $name
+     */
     public function __construct( $style, $name ) {
         $this->style = $style;
         $this->name  = $name;
@@ -80,7 +85,7 @@ class Selector
             };
         }
     }
-
+    // +----------------------------------------------------------------------+
     /**
      * pops HTML/FORM/RAW ($type) of the Selector for a given $value.
      *
@@ -97,6 +102,15 @@ class Selector
     }
 
     /**
+     * @param $type
+     * @param $value
+     * @return mixed
+     */
+    public function show( $type, $value=NULL ) {
+        return $this->popHtml( $type, $value );
+    }
+
+    /**
      * makes RAW type of a value.
      * returns as is for single value, returns as 'div > nl > li' for arrays.
      *
@@ -109,7 +123,7 @@ class Selector
         }
         return $value;
     }
-
+    // +----------------------------------------------------------------------+
     /**
      * makes HTML safe value.
      *
@@ -167,7 +181,7 @@ class Selector
         }
         return FALSE;
     }
-
+    // +----------------------------------------------------------------------+
     /**
      * make FORM type of value.
      * create HTML Form element based on style.
@@ -192,36 +206,53 @@ class Selector
         return $this->$method( $value );
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     */
     public function formInput( $value ) {
         return $this->form()->input( $this->style, $this->name, $value, $this->attributes );
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     */
     public function formTextarea( $value ) {
         return $this->form()->textArea( $this->name, $value, $this->attributes );
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     */
     public function formSelect( $value ) {
         $form = $this->form();
         if( $this->style == 'mult_select' ) $form->multiple = TRUE;
         return $form->select( $this->name, $this->item_data, $value, $this->attributes );
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     */
     public function formRadio( $value ) {
         return $this->form()->radioBox( $this->name, $this->item_data, $value, $this->attributes );
     }
 
+    /**
+     * @param $value
+     * @return mixed
+     */
     public function formCheck( $value ) {
         return $this->form()->checkBox( $this->name, $this->item_data, $value, $this->attributes );
     }
-
-    public function show( $type, $value ) {}
-
+    // +----------------------------------------------------------------------+
+    /**
+     * @param $class
+     */
     public function addClass( $class ) {
         $this->attributes[ 'class' ] .= " $class";
     }
-
-    public function __set( $name, $value ) {
-        $this->attributes[ $name ] = $value;
-        return $this;
-    }
+    // +----------------------------------------------------------------------+
 }
