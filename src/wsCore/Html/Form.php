@@ -306,28 +306,5 @@ class Form extends Tags
         $this->setAttribute_( 'name', $name );
         return $this;
     }
-
-    /**
-     * returns Selector based on $type.
-     * $types are:
-     *   - NAME      : returns value (html encoded for safety).
-     *   - EDIT, NEW : returns HTML form.
-     *   - RAW:      : returns value without encoded.
-     *
-     * @param string $type
-     * @param string $value
-     * @return Form|Tags
-     */
-    public function show( $type='NAME', $value='' ) {
-        return $this;
-    }
-
-    /**
-     * returns $value.
-     * for Select, Radio, and Checkbox, returns label name from $value.
-     */
-    public function makeName() {
-        return $this;
-    }
     // +----------------------------------------------------------------------+
 }
