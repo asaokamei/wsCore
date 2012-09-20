@@ -238,7 +238,8 @@ class Form extends Tags
     {
         if( empty( $attribute ) ) return $this;
         foreach( $attribute as $name => $value ) {
-            $this->setAttribute_( $name, $value );
+            $method = '_' . $name;
+            $this->$method( $value );
         }
         return $this;
     }
@@ -248,7 +249,21 @@ class Form extends Tags
      * @param $ime
      * @return Form|Tags
      */
-    public function ime( $ime ) {
+    public function _ime( $ime ) {
+        static $ime_style;
+        if( !isset( $ime_style ) ) {
+            $ime_style = array(
+                'ON'  => 'ime-mode:active',
+                'OFF' => 'ime-mode:inactive',
+                'I1'  => 'istyle:1',
+                'I2'  => 'istyle:2',
+                'I3'  => 'istyle:3',
+                'I4'  => 'istyle:4',
+            );
+        }
+        if( isset( $ime_style[ strtoupper( $ime ) ] ) ) {
+            $this->_style( $ime_style[ strtoupper( $ime ) ] );
+        }
         return $this;
     }
 
