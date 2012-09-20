@@ -38,3 +38,6 @@ $lang = array(
     array( 'kor', 'korean', 'asia' ),
 );
 echo $form()->select( 'user_lang', $lang, 'ger', array( 'multiple' => '' ) );
+
+$list = array( 'item1', 'more', 'another' );
+echo $form()->listBox( $list );

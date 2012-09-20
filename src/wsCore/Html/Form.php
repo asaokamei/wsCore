@@ -243,6 +243,15 @@ class Form extends Tags
         return $div;
     }
 
+    public function listBox( $items, $name=NULL )
+    {
+        $list = $this()->nl();
+        $div = $this()->div( $list )->class( 'formListBox' . $name );
+        foreach( $items as $item ) {
+            $list->contain_( $this()->li( $item ) );
+        }
+        return $div;
+    }
     // +----------------------------------------------------------------------+
     /**
      * @param  array $attribute
