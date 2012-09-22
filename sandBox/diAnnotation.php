@@ -69,25 +69,32 @@ function prepareDim( $dimList )
     $dimInjection = array();
     foreach( $dimList as $dimInfo ) 
     {
-        $inj = array(
+        $dimInjection[] = doParse( $dimInfo );
+    }
+    return $dimInjection;
+}
+
+function doParse( $dimInfo, $injection=array() )
+{
+    if( empty( $injection ) ) {
+        $injection = array(
             'by' => 'fresh',
             'ob' => 'obj',
             'id' => NULL,
         );
-        foreach( $dimInfo as $info ) {
-            $info = strtolower( $info );
-            switch( strtolower( $info ) ) {
-                case 'none':   $inj[ 'by' ] = NULL;      break;
-                case 'get':    $inj[ 'by' ] = 'get';     break;
-                case 'fresh':  $inj[ 'by' ] = 'fresh';     break;
-                case 'raw':    $inj[ 'ob' ] = 'raw';     break;
-                case 'obj':    $inj[ 'ob' ] = 'obj';     break;
-                default:       $inj[ 'ob' ] = $info;     break;
-            }
-        }
-        $dimInjection[] = $inj;
     }
-    return $dimInjection;
+    foreach( $dimInfo as $info ) {
+        $info = strtolower( $info );
+        switch( strtolower( $info ) ) {
+            case 'none':   $injection[ 'by' ] = NULL;      break;
+            case 'get':    $injection[ 'by' ] = 'get';     break;
+            case 'fresh':  $injection[ 'by' ] = 'fresh';   break;
+            case 'raw':    $injection[ 'ob' ] = 'raw';     break;
+            case 'obj':    $injection[ 'ob' ] = 'obj';     break;
+            default:       $injection[ 'id' ] = $info;     break;
+        }
+    }
+    return $injection;    
 }
 
 function parseDimDoc( $comments ) 
