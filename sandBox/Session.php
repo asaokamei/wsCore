@@ -102,6 +102,12 @@ class Session
         }
         return FALSE;
     }
+    function pop( $name )
+    {
+        $val = $this->get( $name );
+        $this->del( $name );
+        return $val;
+    }
     // +-------------------------------------------------------------+
     //  managing token for CSRF.
     // +-------------------------------------------------------------+
