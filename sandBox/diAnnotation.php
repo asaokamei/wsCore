@@ -4,6 +4,8 @@
 
 // think about Constructor injection.
 
+interface InterfaceDInjectionSample {}
+
 class Sample
 {
     protected $service;
@@ -25,18 +27,18 @@ class Sample
     }
 }
 
-class Sample2 extends Sample
+class Sample2 extends Sample implements InterfaceDInjectionSample
 {
     /**
      * @param $service
-     * @inject Service
+     * @DInjection Service
      */
     public function __construct( $service ) {
         $this->service = $service;
     }
     /**
      * @param $service
-     * @InterfaceInjection none
+     * @DInjection none
      */
     public function setService( $service ) {
         $this->service = $service;
