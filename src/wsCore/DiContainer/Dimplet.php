@@ -155,14 +155,23 @@ class Dimplet
 
     /**
      * from Pimple!
-     * Gets a parameter or the \Closure defining an object.
+     * Gets a \Closure returning an object for id.
      *
-     * @param string $id The unique identifier for the parameter or object
-     * @return mixed The value of the parameter or the \Closure defining an object
+     * @param string $id   The unique identifier for the parameter or object
+     * @param string $by   get or fresh. indicates how you obtain the id. 
+     * @return mixed The   value of the parameter or the \Closure defining an object
      */
-    public function raw($id)
+    public function raw( $id, $by='get' )
     {
-        return array_key_exists($id, $this->values) ? $this->values[$id]: FALSE ;
+        if( array_key_exists($id, $this->values) && 
+            $this->values[$id] instanceof \Closure ) {
+            return $this->values[$id];
+        }
+        $c = $this;
+        return function() use( $c, $id, $by ) {
+            /** @var $c Dimplet */
+            return $c->$by( $id );
+        };
     }
 
     /**
