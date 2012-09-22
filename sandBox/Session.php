@@ -57,7 +57,7 @@ class Session
     /**
      * @return bool
      */
-    function start()
+    public function start()
     {
         if( !$this->session_start ) {
             session_start();
@@ -73,7 +73,7 @@ class Session
      * @param $value
      * @return bool
      */
-    function set( $name, $value )
+    public function set( $name, $value )
     {
         $this->_session[ $name ] = $value;
         return $value;
@@ -83,7 +83,7 @@ class Session
      * @param $name
      * @return bool
      */
-    function del( $name )
+    public function del( $name )
     {
         if( array_key_exists( $name,  $this->_session ) ) {
             unset( $this->_session[ $name ] );
@@ -95,14 +95,14 @@ class Session
      * @param $name
      * @return bool
      */
-    function get( $name )
+    public function get( $name )
     {
         if( array_key_exists( $name,  $this->_session ) ) {
             return $this->_session[ $name ];
         }
         return FALSE;
     }
-    function pop( $name )
+    public function pop( $name )
     {
         $val = $this->get( $name );
         $this->del( $name );
@@ -114,7 +114,7 @@ class Session
     /**
      * @return string
      */
-    function pushToken()
+    public function pushToken()
     {
         $token = md5( 'session.dumb' . time() . mt_rand(1,100*100) . __DIR__ );
         $this->_pushToken( $token );
@@ -125,7 +125,7 @@ class Session
     /**
      * @param $token
      */
-    function _pushToken( $token )
+    protected function _pushToken( $token )
     {
         static::start();
         if( !isset( $this->_session[ static::TOKEN_ID ] ) ) {
@@ -150,7 +150,7 @@ class Session
     /**
      * @return string
      */
-    function popTokenTag()
+    public function popTokenTag()
     {
         $name  = static::TOKEN_NAME;
         $value = $this->session_token;
@@ -160,7 +160,7 @@ class Session
     /**
      * @return bool
      */
-    function verifyToken()
+    public function verifyToken()
     {
         $token = $_POST[ static::TOKEN_NAME ];
         if( $token && !empty( $this->_session[ static::TOKEN_ID ] ) ) {
