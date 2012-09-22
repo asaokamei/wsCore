@@ -91,7 +91,7 @@ class time {
     }
 }
 
-$repeat = 10000;
+$repeat = 100000;
 test_annot( 'small', $repeat );
 test_annot( 'medium', $repeat );
 
@@ -105,7 +105,7 @@ function test_annot( $class, $repeat )
 
     $time->start();
     for( $i = 0; $i < $repeat; $i++ ) {
-        $obj = new small();
+        $obj = new $class();
         unset( $obj );
     }
     $time->stamp( 'Simple Object', TRUE );
