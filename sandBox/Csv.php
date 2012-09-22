@@ -2,17 +2,23 @@
 
 class Csv
 {
+    /** @var string          PHP's internal encoding  */
     public static $toEncoding = 'UTF-8';
 
-    private $fromEncoding = 'SJIS-win';
+    /** @var null|string     source CSV file's encoding. assume Japanese windows */
+    protected $fromEncoding = 'SJIS-win';
 
-    private $filename = NULL;
+    /** @var null            file name of CSV.  */
+    protected $filename = NULL;
 
-    private $filePointer = NULL;
+    /** @var null            file pointer from fopen.  */
+    protected $filePointer = NULL;
 
-    private $header = array();
+    /** @var array           header data.  */
+    protected $header = array();
 
-    private $useHeader = FALSE;
+    /** @var bool            associate with header column if true.  */
+    protected $useHeader = FALSE;
 
     /**
      * set
