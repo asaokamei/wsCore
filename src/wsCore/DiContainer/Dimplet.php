@@ -85,8 +85,9 @@ class Dimplet
         }
         elseif( class_exists( $id ) ) {
             // construct the class, and inject via interfaces.
-            $found = new $id;
-            $this->inject( $found );
+            $found = $this->injectConstruction( $id );
+            // $found = new $id;
+            // $this->injectSetter( $found );
         }
         else {
             throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
@@ -100,11 +101,109 @@ class Dimplet
     }
 
     /**
+     * DI by constructor. uses annotation @DimInjection 
+     * 
+     * @param $className
+     * @return object
+     */
+    public function injectConstruction( $className )
+    {
+        $refClass  = new \ReflectionClass( $className );
+        $injectList   = $this->getConstructorDoc( $refClass );
+        if( empty( $injectList ) ) {
+            $object = $refClass->newInstance();
+        }
+        else {
+            $args = array();
+            foreach( $injectList as $injectInfo ) {
+                $args[] = $this->forgeObject( $injectInfo );
+            }
+            $object = $refClass->newInstanceArgs( $args );
+        }
+        return $object;
+    }
+
+    public function forgeObject( $injectInfo )
+    {
+        extract( $injectInfo ); // gets $by, $ob, and $id.
+        /** @var $by string   type of object fresh/get   */
+        /** @var $ob string   type of construct obj/raw  */
+        /** @var $id string   look for id to generate    */
+        $object = NULL;
+        if( $by && $ob && $id ) {
+            if( $ob == 'raw' ) {
+                $object = $this->raw( $id, $by );
+            }
+            else {
+                $object = $this->$by( $id );
+            }
+        }
+        return $object;
+    }
+    /**
+     * @param \ReflectionClass $refClass
+     * @return array
+     */
+    public function getConstructorDoc( $refClass ) 
+    {
+        $refConst   = $refClass->getConstructor();
+        $comments   = $refConst->getDocComment();
+        $injectList = $this->parseDimDoc( $comments );
+        return $injectList;
+    }
+
+    /**
+     * parse phpDoc comments for DimInjection.
+     *
+     * @param string $comments
+     * @param array  $injectInfo
+     * @return array
+     */
+    function parseDimDoc( $comments, $injectInfo=array() )
+    {
+        if( !preg_match_all( "/(@.*)$/mU", $comments, $matches ) ) return array();
+        $injectList = array();
+        foreach( $matches[1] as $comment ) {
+            if( !preg_match( '/@DimInjection[ \t]+(.*)$/', $comment, $comMatch ) ) continue;
+            $dimInfo = preg_split( '/[ \t]+/', trim( $comMatch[1] ) );
+            $injectList[] = $this->parseDimInjection( $dimInfo, $injectInfo );
+        }
+        return $injectList;
+    }
+
+    /**
+     * parse @DimInjection comment into injection information. 
+     * @param array $dimInfo
+     * @param array $injectInfo
+     * @return array
+     */
+    function parseDimInjection( $dimInfo, $injectInfo=array() )
+    {
+        if( empty( $injectInfo ) ) {
+            $injectInfo = array(
+                'by' => 'fresh',
+                'ob' => 'obj',
+                'id' => NULL,
+            );
+        }
+        foreach( $dimInfo as $info ) {
+            switch( strtolower( $info ) ) {
+                case 'none':   $injectInfo[ 'by' ] = NULL;      break;
+                case 'get':    $injectInfo[ 'by' ] = 'get';     break;
+                case 'fresh':  $injectInfo[ 'by' ] = 'fresh';   break;
+                case 'raw':    $injectInfo[ 'ob' ] = 'raw';     break;
+                case 'obj':    $injectInfo[ 'ob' ] = 'obj';     break;
+                default:       $injectInfo[ 'id' ] = $info;     break;
+            }
+        }
+        return $injectInfo;
+    }
+    /**
      * injects object using interfaces.
      *
      * @param $object
      */
-    public function inject( $object )
+    public function injectSetter( $object )
     {
         if( !$interfaces = class_implements( $object ) ) return;
         foreach( $interfaces as $interface ) {

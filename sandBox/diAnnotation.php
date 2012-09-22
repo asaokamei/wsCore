@@ -12,10 +12,8 @@ class Sample
 
     /**
      * @param Sample $service
-     * @DimInjection None Service
-     * @DimInjection None 
      */
-    public function __construct( $service ) {
+    public function __construct( $service=NULL ) {
         $this->service = $service;
     }
 
@@ -31,13 +29,14 @@ class Sample
 class Sample2 extends Sample implements InterfaceDInjectionSample
 {
     /**
-     * @param $service
-     * @DimInjection Fresh Raw Sample
-     * @DimInjection Fresh Raw Sample None
-     * @DimInjection Fresh Raw Sample baka
+     * @param \Sample $service
+     * @param         $service2
+     * @DimInjection Get Sample
+     * @DimInjection Get Raw Sample
      */
-    public function __construct( $service ) {
-        $this->service = $service;
+    public function __construct( $service, $service2 ) {
+        $this->service  = $service;
+        $this->service2 = $service2();
     }
     /**
      * @param $service
@@ -47,6 +46,16 @@ class Sample2 extends Sample implements InterfaceDInjectionSample
         $this->service = $service;
     }
 }
+
+require( __DIR__ . '/../src/wsCore/DiContainer/Dimplet.php' );
+
+$container = new \wsCore\DiContainer\Dimplet();
+$sample = $container->get( 'Sample2' );
+
+var_dump( $sample );
+
+die( 'end of process' );
+
 
 injectConstruct( 'Sample' );
 injectConstruct( 'Sample2' );
