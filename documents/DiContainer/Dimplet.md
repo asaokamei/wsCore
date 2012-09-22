@@ -54,20 +54,17 @@ class name is chained as well.
     $obj = $container->get( $className );
     echo get_class( $obj ); // same as $className2...
 
-the object's dependencies are automatically injected
-if the object implements an "injection" interface
-as described in the subsequent section.
+###Setting Closure for Construction
 
-to create object exactly the way you wanted, use closure.
+set closure for an id just like Pimple.
 
-    $container->set( $id, function($c) {
-        $obj = new AnyClass();
-        $obj->service = new SomeService();
-        return $obj;
+    $container->set( 'id', function( $c ) {
+        return new \some\Class(
+            new \a\service(),
+            new \b\service()
+        );
     } );
-    $value = $container->get( $id );
-    echo get_class( $obj ); // same as "AnyClass"...
-    echo get_class( $obj->service ); // same as "SomeService"...
+    $obj = $container->get( 'id' ); // get \some\Class object.
 
 ###get and fresh methods
 
@@ -94,40 +91,47 @@ It is possible to modify a value after creation, just like Pimple.
     $obj = $container->get( $className );
     echo get_class( $obj->service ); // same as "OtherService"...
 
-note: although the API reamins the same as Pimple's, the
-implementation has been widely changed. So... it is more
-powerful and the behavior is hopefully more intuitive...
+If id's are chained, all the extension for the all the chained 
+id's are applied to the object. 
 
-    $container->extend( $className, function( $obj, $c ) {
+    $container->extend( 'classA', function( $obj, $c ) {
         $obj->service = new SomeService();
     } );
-    $container->extend( $className2, function( $obj, $c ) {
+    $container->extend( 'classB', function( $obj, $c ) {
         $obj->service2 = new OtherService();
     } );
-    $container->set( $className, $className2 );
+    $container->set( 'classA', 'classB' );
     $obj = $container->get( $className );
-    echo get_class( $obj ); // same as $className2...
-    echo get_class( $obj->service ); // same as "SomeService"...
+    echo get_class( $obj );           // same as 'classB'...
+    echo get_class( $obj->service );  // same as "SomeService"...
     echo get_class( $obj->service2 ); // same as "OtherService"...
 
 
 Automated Dependency Injection Based on Interface
 -------------------------------------------------
 
-Prepare an injection interface for a service.
+Constructor type automated dependency injection is available 
+using PHP Annotation. 
 
-    namespace Goodies;
-    interface injectServiceInterface {};
-    class Service {}
-
-implement the injection interface for the service to inject into your object.
-
-    namespace my;
-    class object implements \Goodies\injectServiceInterface {
-        function injectService( $service ) {
+    class Sample {
+        /**
+         * @DimInjection New Service
+         */
+        public function __construct( $service ) {
             $this->service = $service;
         }
     }
+    $obj = $container->get( 'Sample' ); // 
+    $obj->service;
 
-that's it.
+The basic format of @DimInjection annotation is
+
+    @DimInjection [ [Fresh|Get] | [Obj|Raw] | None ] $id
+    
+    $id  : an id of a named service or a class name. 
+    Fresh: gets an object as fresh. (default)
+    Get  : gets reusable object. 
+    Obj  : gets object. (default)
+    Raw  : gets a closure to get object. 
+    None : gets NULL. 
 
