@@ -28,15 +28,32 @@ class Session
     function __construct( $config=NULL )
     {
         $this->start();
-        if( !empty( $config ) && is_array( $config ) ) {
-            $this->_session = $config;
+        $this->config( $config );
+    }
+
+    /**
+     * configures which data storage to use. 
+     * uses $storage if an array, uses $_SESSION[ $storage ] if string is given as $storage. 
+     * 
+     * @param null|string|array $storage
+     * @return Session
+     */
+    public function config( $storage=NULL )
+    {
+        if( !empty( $storage ) && is_array( $storage ) ) {
+            $this->_session = $storage;
+        }
+        elseif( is_string( $storage ) ) {
+            if( !isset( $_SESSION[ $storage ] ) ) $_SESSION[ $storage ] = array();
+            $this->_session = &$_SESSION[ $storage ];
         }
         else {
             if( !isset( $_SESSION[ self::SESSION_ID ] ) ) $_SESSION[ self::SESSION_ID ] = array();
             $this->_session = &$_SESSION[ self::SESSION_ID ];
         }
+        return $this;
     }
-
+    
     /**
      * @return bool
      */
@@ -48,7 +65,9 @@ class Session
         }
         return TRUE;
     }
-
+    // +-------------------------------------------------------------+
+    //  set/get/del variables to Session. 
+    // +-------------------------------------------------------------+
     /**
      * @param $name
      * @param $value
@@ -118,7 +137,14 @@ class Session
     /**
      * @return string
      */
-    function popToken()
+    public function popToken() {
+        return $this->session_token;
+    }
+    
+    /**
+     * @return string
+     */
+    function popTokenTag()
     {
         $name  = static::TOKEN_NAME;
         $value = $this->session_token;
