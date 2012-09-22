@@ -32,11 +32,11 @@ class Sample2 extends Sample implements InterfaceDInjectionSample
      * @param \Sample $service
      * @param         $service2
      * @DimInjection Get Sample
-     * @DimInjection Get Raw Sample
+     * @DimInjection Get None Sample
      */
     public function __construct( $service, $service2 ) {
         $this->service  = $service;
-        $this->service2 = $service2();
+        $this->service2 = $service2;
     }
     /**
      * @param $service
