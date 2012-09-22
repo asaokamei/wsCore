@@ -4,6 +4,20 @@ class AppException extends Exception {}
 
 class ExampleController
 {
+    public $titles = array(
+        'index' => array(
+            'title' => '入力フォーム',
+            'button' => '入力フォームの表示',
+        ),
+        'check' => array(
+            'title' => '確認画面',
+            'button' => '入力内容の確認',
+        ),
+        'post' => array(
+            'title' => '登録完了画面',
+            'button' => '入力内容を登録',
+        ),
+    );
     /**
      * @actionTitle   入力フォーム
      * @submitAction  入力フォームの表示
