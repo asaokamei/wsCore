@@ -147,7 +147,9 @@ class Dimplet
     public function getConstructorDoc( $refClass ) 
     {
         $refConst   = $refClass->getConstructor();
+        if( !$refConst ) return array();
         $comments   = $refConst->getDocComment();
+        if( empty( $comments ) ) return array();
         $injectList = $this->parseDimDoc( $comments );
         return $injectList;
     }
