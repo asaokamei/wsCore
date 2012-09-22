@@ -128,55 +128,46 @@ function test_annot( $class, $repeat )
     }
     $time->stamp( 'ReflectionClass' );
 
-    // create only reflection class, see % differs a lot. 
-
-    $time->start();
-    for( $i = 0; $i < $repeat; $i++ ) {
-        $ref = new ReflectionClass( $class );
-        $doc = $ref->getDocComment();
-        unset( $ref );
-        unset( $doc );
-    }
-    $time->stamp( 'Reflect Class & Doc' );
-
     // instance using reflection
 
     $time->start();
     for( $i = 0; $i < $repeat; $i++ ) {
         $ref = new ReflectionClass( $class );
-        $obj = $ref->newInstance();
+        $obj = $ref->newInstance(); // ++++++
         unset( $ref );
         unset( $obj );
     }
-    $time->stamp( 'Reflect Create Object' );
+    $time->stamp( 'Reflect newInstance' );
 
     // get phpDocs
 
     $time->start();
     for( $i = 0; $i < $repeat; $i++ ) {
         $ref = new ReflectionClass( $class );
-        $con = $ref->getConstructor();
-        $doc = $con->getDocComment();
+        $con = $ref->getConstructor(); // ++++++
+        $doc = $con->getDocComment(); // ++++++
         $obj = $ref->newInstance();
         unset( $ref );
         unset( $con );
         unset( $doc );
         unset( $obj );
     }
-    $time->stamp( 'Reflect Get Const\'s Doc' );
+    $time->stamp( 'Reflect getConst&Doc' );
 
     // instance using reflection
 
     $time->start();
     for( $i = 0; $i < $repeat; $i++ ) {
         $ref = new ReflectionClass( $class );
-        $all = $ref->getMethods();
+        $con = $ref->getConstructor();
+        $doc = $con->getDocComment();
+        $all = $ref->getMethods(); // ++++++
         $obj = $ref->newInstance();
         unset( $ref );
         unset( $all );
         unset( $obj );
     }
-    $time->stamp( 'Reflect getMethods Only' );
+    $time->stamp( 'Reflect getMethods' );
 
     // instance using reflection
 
@@ -185,7 +176,7 @@ function test_annot( $class, $repeat )
         $ref = new ReflectionClass( $class );
         $all = $ref->getMethods();
         foreach( $all as $con ) {
-            $doc = $con->getDocComment();
+            $doc = $con->getDocComment(); // ++++++
         }
         $obj = $ref->newInstance();
         unset( $ref );
