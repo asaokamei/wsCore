@@ -124,6 +124,8 @@ using PHP Annotation.
     $obj = $container->get( 'Sample' ); // 
     $obj->service;
 
+### DimInjection Format
+
 The basic format of @DimInjection annotation is
 
     @DimInjection [ [Fresh|Get] | [Obj|Raw] | None ] $id
@@ -135,3 +137,33 @@ The basic format of @DimInjection annotation is
     Raw  : gets a closure to get object. 
     None : gets NULL. 
 
+### Multiple Parameters
+
+list all the parameters to the constructor. 
+
+    class Sample {
+        /**
+         * @DimInjection New Service
+         * @DimInjection Raw Service2
+         */
+        public function __construct( $service, $serviceGenerator ) {
+            $this->service = $service;
+            $this->service2 = $serviceGenerator;
+        }
+    }
+
+### Injecting Null
+
+If one of the parameter is not used, set DimInjection to None. 
+In the case below, the $service2 is set to NULL. 
+
+    class Sample {
+        /**
+         * @DimInjection New Service
+         * @DimInjection None Service2
+         */
+        public function __construct( $service, $service2 ) {
+            $this->service = $service;
+            $this->service2 = $service2;
+        }
+    }
