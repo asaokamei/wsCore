@@ -7,32 +7,60 @@ require_once( __DIR__ . '/../../autoloader.php' );
 class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
+    /** @var \wsCore\DbAccess\Rdb */
+    var $rdb;
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->config = array(
-            'dsn' => 'db=mysql dbname=test_wsCore username=admin password=admin'
-        );
-        Rdb::set( 'config', $this->config );
+        $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
+        $this->rdb    = new Rdb();
     }
     // +----------------------------------------------------------------------+
-    public function test_returning_2_pdo()
+    public function test_create_table_insert_and_select()
     {
-        Rdb::set( 'con2nd', $this->config );
-        $pdo1 = Rdb::connect( 'config' );
-        $pdo2 = Rdb::connect( 'con2nd' );
+        // test through all sqls.
+        $pdo = $this->rdb->connect( $this->config );
+        
+        $test = "CREATE TABLE IF NOT EXISTS test ( id int, text text );";
+        $pdo->query( $test );
+        
+        // insert and select
+        $id = 12;
+        $text = 'iso8859-1 text';
+        $insert = "INSERT INTO test VALUES ( $id, '{$text}' )";
+        $pdo->query( $insert );
+        
+        $select = "SELECT * FROM test;";
+        $stmt = $pdo->query( $select );
+        $row = $stmt->fetch();
+        
+        $this->assertEquals( $id, $row['id'] );
+        $this->assertEquals( $text, $row['text'] );
 
-        // two PDO has the same attributes
-        $this->assertEquals( $pdo1, $pdo2 );
-        // but references different PDO object.
-        $this->assertNotSame( $pdo1, $pdo2 );
+        // delete 
+        $pdo->query( "DELETE FROM test;" );
+        
+        $id = 14;
+        $text = '日本語（Japanese）';
+        $insert = "INSERT INTO test VALUES ( $id, '{$text}' )";
+        $pdo->query( $insert );
+
+        $select = "SELECT * FROM test;";
+        $stmt = $pdo->query( $select );
+        $row = $stmt->fetch();
+
+        $this->assertEquals( $id, $row['id'] );
+        $this->assertEquals( $text, $row['text'] );
+
+        $test = "DROP TABLE test;";
+        $pdo->query( $test );
     }
     /**
      * @expectedException PDOException
      */
     public function test_bad_sql_statement()
     {
-        $pdo = Rdb::connect( 'config' );
+        $pdo = $this->rdb->connect( $this->config );
         $test = "CREATE TABLE test ( id int ) is a bad sql ;";
         $pdo->query( $test );
     }
@@ -43,7 +71,7 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
     public function test_connection_to_wsCore_db()
     {
         // should not throw any exceptions.
-        $pdo = Rdb::connect( 'config' );
+        $pdo = $this->rdb->connect( $this->config );
     }
 
     /**
@@ -51,7 +79,7 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
      */
     public function test_mysql_driver_name()
     {
-        $pdo = Rdb::connect( 'config' );
+        $pdo = $this->rdb->connect( $this->config );
         $db  = $pdo->getAttribute( \PDO::ATTR_DRIVER_NAME );
         $this->assertEquals( 'mysql', $db );
     }
@@ -64,8 +92,7 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
         $badDsn = array(
             'dsn' => 'db=noDb dbname=test username=admin password=admin'
         );
-        Rdb::set( 'badDsn', $badDsn );
-        $pdo = Rdb::connect( 'badDsn' );
+        $pdo = $this->rdb->connect( $badDsn );
     }
     // +----------------------------------------------------------------------+
 }
