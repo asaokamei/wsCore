@@ -124,9 +124,10 @@ class Sql
      *
      * @param      $val
      * @param null $type    data type
+     * @param null $col     column name. used to find data type
      * @return Sql
      */
-    public function prepOrQuote( &$val, $type=NULL )
+    public function prepOrQuote( &$val, $type=NULL, $col=NULL )
     {
         $pqType = ( $this->prepQuoteUseType )?: static::$pqDefault;
         $this->$pqType( $val, $type );
@@ -142,26 +143,26 @@ class Sql
      *
      * @param string|array $val
      * @param null|int     $type    data type
+     * @param null $col     column name. used to find data type
      * @return Sql
      */
-    public function prepare( &$val, $type=NULL )
+    public function prepare( &$val, $type=NULL, $col=NULL )
     {
         if( is_array( $val ) ) {
-            foreach( $val as $col => &$v ) {
-                // check if data type is set for this column. 
-                if( !$type && array_key_exists( $col, $this->col_data_types ) ) {
-                    $this->prepare( $v, $this->col_data_types[ $col ] );
-                }
-                else {
-                    $this->prepare( $v, $type );
-                }
+            foreach( $val as &$v ) {
+                $this->prepare( $v, $type, $col );
             }
         }
         else {
             $holder = ':db_prep_' . count( $this->prepared_values );
             $this->prepared_values[ $holder ] = $val;
             $val = $holder;
-            if( $type ) $this->prepared_types[ $holder ] = $type;
+            if( $type ) {
+                $this->prepared_types[ $holder ] = $type;
+            }
+            elseif( !$type && array_key_exists( $col, $this->col_data_types ) ) {
+                $this->prepared_types[ $holder ] = $this->col_data_types[ $col ];
+            }
         }
         return $this;
     }
@@ -327,7 +328,7 @@ class Sql
      * @return Sql
      */
     public function where( $col, $val, $rel='=', $type=NULL ) {
-        $this->prepOrQuote( $val, $type );
+        $this->prepOrQuote( $val, $type, $col );
         return $this->whereRaw( $col, $val, $rel, $type );
     }
 
@@ -509,7 +510,9 @@ class Sql
             }
         }
         $values = $this->values;
-        $this->prepOrQuote( $values );
+        foreach( $values as $col => &$val ) {
+            $this->prepOrQuote( $val, NULL, $col );
+        }
         $this->rowData = array_merge( $this->functions, $values );
         return $this;
     }
