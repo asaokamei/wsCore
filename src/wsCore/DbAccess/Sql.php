@@ -54,6 +54,9 @@ class Sql
 
     /** @var array    stores prepared values and holder name */
     var $prepared_values = array();
+    
+    /** @var array    stores data types of place holders */
+    var $prepared_types = array();
 
     /** @var string   SQL Statement created by this class    */
     var $sql = '';
@@ -114,53 +117,56 @@ class Sql
     /**
      * pre-process values with prepare or quote method.
      *
-     * @param $val
-     * @throws \RuntimeException
+     * @param      $val
+     * @param null $type    data type
      * @return Sql
      */
-    public function prepOrQuote( &$val )
+    public function prepOrQuote( &$val, $type=NULL )
     {
         $pqType = ( $this->prepQuoteUseType )?: static::$pqDefault;
-        $this->$pqType( $val );
+        $this->$pqType( $val, $type );
         return $this;
     }
+
     /**
      * replaces value with holder for prepared statement. the value is kept
      * inside prepared_value array.
      *
      * @param string|array $val
+     * @param null|int     $type    data type
      * @return Sql
      */
-    public function prepare( &$val )
+    public function prepare( &$val, $type=NULL )
     {
         if( is_array( $val ) ) {
             foreach( $val as &$v ) {
-                $this->prepare( $v );
+                $this->prepare( $v, $type );
             }
         }
         else {
             $holder = ':db_prep_' . count( $this->prepared_values );
             $this->prepared_values[ $holder ] = $val;
             $val = $holder;
+            if( $type ) $this->prepared_types[ $holder ] = $type;
         }
         return $this;
     }
 
     /**
      * @param string|array $val
-     * @param bool|\Pdo $pdo
+     * @param null|int     $type    data type
      * @return Sql
      */
-    public function quote( &$val, $pdo=FALSE )
+    public function quote( &$val, $type=NULL )
     {
-        // try to get Pdo only once. false used only here... I think.
-        if( $pdo === FALSE ) $pdo = $this->dba->pdo();
         if( is_array( $val ) ) {
             foreach( $val as &$v ) {
-                $this->quote( $v, $pdo );
+                $this->quote( $v, $type );
             }
         }
-        elseif( $pdo ) {
+        elseif( isset( $this->dba ) ) {
+            /** @var $pdo \Pdo */
+            $pdo = $this->dba->pdo();
             $val = $pdo->quote( $val );
         }
         else {
@@ -184,7 +190,6 @@ class Sql
      */
     public function q( $val ) {
         $this->quote( $val );
-        $val = '\'' . $val . '\'';
         return $val;
     }
     // +----------------------------------------------------------------------+
