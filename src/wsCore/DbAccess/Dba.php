@@ -82,6 +82,8 @@ class Dba implements InjectSqlInterface
     //  Executing SQL. all methods returns Dba object.
     // +----------------------------------------------------------------------+
     /**
+     * executes an SQL statement using prepare statement. 
+     * 
      * @param string $sql
      * @param array  $prepared     place holders for prepared statement.
      * @param array  $dataTypes    data types for the place holders.
@@ -89,7 +91,21 @@ class Dba implements InjectSqlInterface
      */
     public function execSQL( $sql, $prepared=array(), $dataTypes=array() )
     {
-        return $this->exec( $sql, $prepared, $dataTypes );
+        $this->prepare( $sql, $prepared );
+        $this->execute( $prepared, $dataTypes );
+        //$this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass );
+        //$this->pdoStmt->setFetchMode( $this->fetchMode );
+        return $this;
+    }
+
+    /**
+     * executes Dba sql statement. 
+     * 
+     * @return Dba
+     */
+    public function exec()
+    {
+        return $this->execSQL( $this->sql->sql, $this->sql->prepared_values, $this->sql->prepared_types );
     }
 
     /**
@@ -99,21 +115,6 @@ class Dba implements InjectSqlInterface
     public function query( $sql )
     {
         $this->pdoStmt = $this->pdoObj->query( $sql );
-        return $this;
-    }
-
-    /**
-     * @param string $sql
-     * @param array  $prepared     place holders for prepared statement.
-     * @param array  $dataTypes    data types for the place holders. 
-     * @return Dba
-     */
-    public function exec( $sql, $prepared=array(), $dataTypes=array() )
-    {
-        $this->prepare( $sql, $prepared );
-        $this->execute( $prepared, $dataTypes );
-        //$this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass );
-        //$this->pdoStmt->setFetchMode( $this->fetchMode );
         return $this;
     }
 
