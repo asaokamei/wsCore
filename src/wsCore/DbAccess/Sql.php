@@ -307,16 +307,25 @@ class Sql
      * @param string $col
      * @param string $val
      * @param string $rel
-     * @param string $op
+     * @param null|string   $type
      * @return Sql
      */
-    public function where( $col, $val, $rel='=', $op='' ) {
-        $this->prepOrQuote( $val );
-        $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => $op );
+    public function where( $col, $val, $rel='=', $type=NULL ) {
+        $this->prepOrQuote( $val, $type );
+        $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => 'AND' );
         $this->where[] = $where;
         return $this;
     }
 
+    public function setOr() {
+        $last = array_pop( $this->where );
+        if( $last ) {
+            $last[ 'op' ] = 'OR';
+            array_push( $this->where, $last );
+        }
+        return $this;
+    }
+    
     /**
      * sets where. replaces where data as is.
      * @param string $where
@@ -329,11 +338,10 @@ class Sql
 
     /**
      * @param string $where
-     * @param string $op
      * @return Sql
      */
-    public function addWhere( $where, $op='AND' ) {
-        return $this->where( $where, '', '', $op );
+    public function addWhere( $where ) {
+        return $this->where( $where, '', '' );
     }
 
     /**
