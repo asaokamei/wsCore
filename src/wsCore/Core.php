@@ -77,5 +77,22 @@ class Core
     public static function get( $id ) {
         self::$_container->get( $id );
     }
+
+    /**
+     * set up for Pdo construction.
+     * 
+     * @param      $config
+     * @param      $id
+     * @param null $class
+     */
+    public static function setPdo( $config, $id='Pdo', $class=NULL )
+    {
+        if( !$class ) $class = '\wsCore\DbAccess\Rdb';
+        Core::set( $id, function( $c ) use( $config, $class ) {
+            /** @var $c  \wsCore\DiContainer\Dimplet */
+            $rdb = $c->get( $class );
+            return $rdb->connect( $c->get( $config ) );
+        } );
+    }
     // +----------------------------------------------------------------------+
 }

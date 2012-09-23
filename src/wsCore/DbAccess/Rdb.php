@@ -1,51 +1,50 @@
 <?php
 namespace wsCore\DbAccess;
 
+/*
+
+Sample usage with Core
+
+Core::set( 'db.config', 'connection string' );
+Core::setPdo( 'db.config' ); // will create 'Pdo' using db.config
+Core::setPdo( 'db.config', 'Pdo2' ); // will create Pdo2 using db.config.
+
+*/
+
+
 class Rdb
 {
-    /** @var array   stores configs for PDO construction */
-    private static $configs = array();
-
-    /** @var string  use the configs name as defaultName */
-    private static $defaultName = NULL;
-
     /** @var array   default attributes for PDO driver  */
-    private static $defaultAttr = array(
+    public $defaultAttr = array(
         \PDO::ATTR_ERRMODE      => \PDO::ERRMODE_EXCEPTION,
         \PDO::ATTR_CASE         => \PDO::CASE_LOWER,
         \PDO::ATTR_ORACLE_NULLS => \PDO::NULL_NATURAL,
     );
-
-    /** @var array   list of constructed PDO drivers    */
-    private static $drivers = array();
-
-    private static $pdoClass = '\PDO';
     
-    public static function _init() {
-        static::$configs = array();
-        static::$defaultName = NULL;
-        static::$drivers = array();
-        static::$pdoClass = '\PDO';
-    }
+    /** @var string    Pdo class name to generate */
+    public $pdoClass = '\PDO';
+
+    /** @var string    charset to use. default is utf-8. */
+    public $charset = 'utf8';
+    
     // +----------------------------------------------------------------------+
+    public function __construct() {
+    }
+
     /**
-     * set a named configs for database connection.
-     * the first config name is used as default if no default name is set.
+     * returns Pdo connection which is pooled by config name.
      *
-     * @static
-     * @param $name
      * @param $config
+     * @return \Pdo
      */
-    public static function set( $name, $config )
+    public function connect( $config )
     {
-        if( is_array( $config ) && isset( $config[ 'dsn' ] ) ) {
-            $config = array_merge( $config, static::parseDbCon( $config[ 'dsn' ] ) );
-        }
-        elseif( is_string( $config ) ) {
-            $config = static::parseDbCon( $config );
+        if( is_string( $config ) ) {
+            // convert db connection string to array of config.
+            $config = $this->parseDbCon( $config );
         }
         if( !isset( $config[ 'attributes' ] ) ) {
-            $config[ 'attributes' ] = static::$defaultAttr;
+            $config[ 'attributes' ] = $this->defaultAttr;
         }
         if( !isset( $config[ 'username' ] ) ) {
             $config[ 'username' ] = NULL;
@@ -53,70 +52,17 @@ class Rdb
         if( !isset( $config[ 'password' ] ) ) {
             $config[ 'password' ] = NULL;
         }
-        static::$configs[ $name ] = $config;
-        if( !isset( static::$defaultName ) ) {
-            static::$defaultName = $name;
-        }
-    }
-
-    /**
-     * set a configs name as a defaultName
-     *
-     * @static
-     * @param $name
-     */
-    public static function useConfig( $name ) {
-        static::$defaultName = $name;
-    }
-
-    /**
-     * returns Pdo connection which is pooled by config name.
-     *
-     * @static
-     * @param string|null $name
-     * @param bool $new
-     * @return \Pdo
-     */
-    public static function connect( $name=NULL, $new=FALSE )
-    {
-        if( $new ) return Rdb::connectNew( $name );
-
-        $name = ( $name )?: static::$defaultName;
-        if( isset( static::$drivers[ $name ] ) ) {
-            return static::$drivers[ $name ];
-        }
-        return static::$drivers[ $name ] = static::connectNew( $name );
-    }
-
-    /**
-     * always created brand new Pdo connection.
-     *
-     * @static
-     * @param $name
-     * @return \Pdo
-     * @throws \RuntimeException
-     */
-    public static function connectNew( $name ) {
-        $name = ( $name )? $name : static::$defaultName;
-        if( !$name ) {
-            throw new \RuntimeException( "PDO Config name is not set.'" );
-        }
-        if( !isset( static::$configs[ $name ] ) ) {
-            throw new \RuntimeException( "PDO Config '{$name}' is missing.'" );
-        }
-        return static::connectPdo( static::$configs[ $name ] );
+        return $this->connectPdo( $config );
     }
 
     /**
      * connect to database by PDO using $configs setting.
      *
-     * @static
      * @param array $config
      * @return \Pdo
      */
-    public static function connectPdo( $config )
+    public function connectPdo( $config )
     {
-        //extract( $config );
         $dsn = "{$config{'db'}}:";
         $list = array( 'host', 'dbname', 'port' );
         foreach( $list as $item ) {
@@ -124,52 +70,36 @@ class Rdb
                 $dsn .= "{$item}=" . $config[$item] . "; ";
             }
         }
-        $class = static::$pdoClass;
+        $class = $this->pdoClass;
         $config[ 'dsn' ] = $dsn;
-        $pdoFunction = function() use ( $class, $config ) {
-            /** @var $pdo \PDO */
-            $pdo   = new $class(
-                $config[ 'dsn' ],
-                $config[ 'username' ], $config[ 'password' ],
-                $config[ 'attributes' ] );
-            if( isset( $config[ 'exec' ] ) ) {
-                $pdo->exec( $config[ 'exec' ] );
-            }
-            return $pdo;
-        };
         /** @var $pdo \PDO */
-        $pdo   = $pdoFunction();
+        $pdo = new $class( $dsn, $config[ 'username' ], $config[ 'password' ], $config[ 'attributes' ] );
+        if( isset( $config[ 'exec' ] ) ) {
+            $pdo->exec( $config[ 'exec' ] );
+        }
         return $pdo;
     }
     // +----------------------------------------------------------------------+
     /**
-     * @static
-     * @param $db_con
+     * parses db connection string to config array.
+     * 
+     * @param string $db_con
      * @return array
      */
-    private static function parseDbCon( $db_con )
+    private function parseDbCon( $db_con )
     {
-        $conn_str = array( 'db', 'dbname', 'port', 'host', 'username', 'password' );
+        $conn_str = array( 'db', 'dbname', 'port', 'host', 'username', 'password', 'charset' );
         $return_array = array();
-        foreach( $conn_str as $parameter ) {
+        foreach( $conn_str as $parameter ) 
+        {
             $pattern = "/{$parameter}\s*=\s*(\S+)/";
-            if( preg_match( $pattern, $db_con, $matches ) )
-            {
+            if( preg_match( $pattern, $db_con, $matches ) ) {
                 $return_array[ "{$parameter}" ] = $matches[1];
             }
         }
+        // charset is for PHP5.3.6 or above
+        if( !isset( $return_array[ 'charset' ] ) ) $return_array[ 'charset' ] = $this->charset;
         return $return_array;
     }
-
-    /**
-     * sets PDO class name for testing, for example.
-     * @static
-     * @param $class
-     */
-    public static function setPdoClass( $class )
-    {
-        static::$pdoClass = $class;
-    }
-
     // +----------------------------------------------------------------------+
 }
