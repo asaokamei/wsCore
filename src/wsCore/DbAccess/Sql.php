@@ -55,7 +55,7 @@ class Sql
     /** @var array    stores prepared values and holder name */
     var $prepared_values = array();
     
-    /** @var array    stores data types of place holders */
+    /** @var array    stores data types of place holders     */
     var $prepared_types = array();
 
     /** @var array    stores data types of columns           */
@@ -132,8 +132,11 @@ class Sql
     }
 
     /**
-     * replaces value with holder for prepared statement. the value is kept
-     * inside prepared_value array.
+     * replaces value with place holder for prepared statement. 
+     * the value is kept in prepared_value array.
+     * 
+     * if $type is specified, or column data type is set in col_data_types, 
+     * types for the place holder is kept in prepared_types array.
      *
      * @param string|array $val
      * @param null|int     $type    data type
@@ -313,6 +316,8 @@ class Sql
     //  Building WHERE clause.
     // +----------------------------------------------------------------------+
     /**
+     * set where statement with values properly prepared/quoted. 
+     * 
      * @param string $col
      * @param string $val
      * @param string $rel
@@ -325,18 +330,24 @@ class Sql
     }
 
     /**
+     * set where statement as is. 
+     * 
      * @param        $col
      * @param        $val
      * @param string $rel
-     * @param null   $type
      * @return Sql
      */
-    public function whereRaw( $col, $val, $rel='=', $type=NULL ) {
+    public function whereRaw( $col, $val, $rel='=' ) {
         $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => 'AND' );
         $this->where[] = $where;
         return $this;
     }
 
+    /**
+     * sets OR operation for the last where statement data. 
+     * 
+     * @return Sql
+     */
     public function or_() {
         $last = array_pop( $this->where );
         if( $last ) {
