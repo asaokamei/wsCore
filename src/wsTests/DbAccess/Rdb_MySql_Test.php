@@ -36,7 +36,10 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals( $id, $row['id'] );
         $this->assertEquals( $text, $row['text'] );
-
+        
+        // default is FETCH_ASSOC
+        $this->assertFalse( isset( $row[0] ) );
+        
         // delete 
         $pdo->query( "DELETE FROM test;" );
         
