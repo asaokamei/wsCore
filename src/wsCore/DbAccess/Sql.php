@@ -317,7 +317,7 @@ class Sql
         return $this;
     }
 
-    public function setOr() {
+    public function or_() {
         $last = array_pop( $this->where );
         if( $last ) {
             $last[ 'op' ] = 'OR';
