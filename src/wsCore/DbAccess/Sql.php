@@ -307,11 +307,22 @@ class Sql
      * @param string $col
      * @param string $val
      * @param string $rel
-     * @param null|string   $type
+     * @param null|string|bool   $type
      * @return Sql
      */
     public function where( $col, $val, $rel='=', $type=NULL ) {
         $this->prepOrQuote( $val, $type );
+        return $this->whereRaw( $col, $val, $rel, $type );
+    }
+
+    /**
+     * @param        $col
+     * @param        $val
+     * @param string $rel
+     * @param null   $type
+     * @return Sql
+     */
+    public function whereRaw( $col, $val, $rel='=', $type=NULL ) {
         $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => 'AND' );
         $this->where[] = $where;
         return $this;
@@ -326,6 +337,39 @@ class Sql
         return $this;
     }
     
+    public function eq( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val, '=', $type );
+    }
+    public function ne( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val, '!=', $type );
+    }
+    public function lt( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val, '<', $type );
+    }
+    public function le( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val, '<=', $type );
+    }
+    public function gt( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val, '>', $type );
+    }
+    public function ge( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val, '>=', $type );
+    }
+    public function isNull( $col ) {
+        return $this->whereRaw( $col, '', 'IS NULL' );
+    }
+    public function notNull( $col ) {
+        return $this->whereRaw( $col, '', 'NOT NULL' );
+    }
+    public function like( $col, $val, $type=NULL ) {
+        return $this->where( $col, "%{$val}%", 'LIKE', $type );
+    }
+    public function startWith( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val.'%', 'LIKE', $type );
+    }
+    public function endWith( $col, $val, $type=NULL ) {
+        return $this->where( $col, '%'.$val, 'LIKE', $type );
+    }
     /**
      * sets where. replaces where data as is.
      * @param string $where
