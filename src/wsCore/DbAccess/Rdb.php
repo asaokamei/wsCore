@@ -9,6 +9,18 @@ Core::set( 'db.config', 'connection string' );
 Core::setPdo( 'db.config' ); // will create 'Pdo' using db.config
 Core::setPdo( 'db.config', 'Pdo2' ); // will create Pdo2 using db.config.
 
+config = array(
+    'dsn'  => 'db:dbname=dbname; host=host; port=port; charset=utf8',
+    'username' => 'user name',
+    'password' => 'password',
+    'execute'  => 'sql to execute',
+    'attributes' => [ attr => val, ... ]
+);
+
+OR
+
+config = 'db=database dbname=dbname host=host port=port username=user password=pswd';
+
 */
 
 
@@ -35,13 +47,19 @@ class Rdb
      * returns Pdo connection which is pooled by config name.
      *
      * @param $config
+     * @throws \RuntimeException
      * @return \Pdo
      */
     public function connect( $config )
     {
+        if( empty( $config ) ) {
+            throw new \RuntimeException( 'empty config for Pdo.' );
+        }
         if( is_string( $config ) ) {
-            // convert db connection string to array of config.
             $config = $this->parseDbCon( $config );
+        }
+        if( !isset( $config[ 'dsn' ] ) || empty( $config[ 'dsn' ] ) ) {
+            throw new \RuntimeException( 'dsn not set for Pdo.' );
         }
         if( !isset( $config[ 'attributes' ] ) ) {
             $config[ 'attributes' ] = $this->defaultAttr;
@@ -63,17 +81,9 @@ class Rdb
      */
     public function connectPdo( $config )
     {
-        $dsn = "{$config{'db'}}:";
-        $list = array( 'host', 'dbname', 'port' );
-        foreach( $list as $item ) {
-            if( isset( $config[ $item ] ) ) {
-                $dsn .= "{$item}=" . $config[$item] . "; ";
-            }
-        }
         $class = $this->pdoClass;
-        $config[ 'dsn' ] = $dsn;
         /** @var $pdo \PDO */
-        $pdo = new $class( $dsn, $config[ 'username' ], $config[ 'password' ], $config[ 'attributes' ] );
+        $pdo = new $class( $config[ 'dsn' ], $config[ 'username' ], $config[ 'password' ], $config[ 'attributes' ] );
         if( isset( $config[ 'exec' ] ) ) {
             $pdo->exec( $config[ 'exec' ] );
         }
@@ -89,17 +99,25 @@ class Rdb
     private function parseDbCon( $db_con )
     {
         $conn_str = array( 'db', 'dbname', 'port', 'host', 'username', 'password', 'charset' );
-        $return_array = array();
+        $config = array();
         foreach( $conn_str as $parameter ) 
         {
             $pattern = "/{$parameter}\s*=\s*(\S+)/";
             if( preg_match( $pattern, $db_con, $matches ) ) {
-                $return_array[ "{$parameter}" ] = $matches[1];
+                $config[ "{$parameter}" ] = $matches[1];
             }
         }
         // charset is for PHP5.3.6 or above
-        if( !isset( $return_array[ 'charset' ] ) ) $return_array[ 'charset' ] = $this->charset;
-        return $return_array;
+        if( !isset( $config[ 'charset' ] ) ) $config[ 'charset' ] = $this->charset;
+        $dsn = "{$config{'db'}}:";
+        $list = array( 'host', 'dbname', 'port', 'charset' );
+        foreach( $list as $item ) {
+            if( isset( $config[ $item ] ) ) {
+                $dsn .= "{$item}=" . $config[$item] . "; ";
+            }
+        }
+        $config[ 'dsn' ] = $dsn;
+        return $config;
     }
     // +----------------------------------------------------------------------+
 }
