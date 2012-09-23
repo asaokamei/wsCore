@@ -82,7 +82,7 @@ class Dimplet
             }
             ***/
             elseif( class_exists( $found ) ) {
-                $found = $this->get( $found );
+                $found = $this->fresh( $found );
             }
         }
         elseif( class_exists( $id ) ) {
