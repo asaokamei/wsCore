@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Dba implements InjectSqlInterface
+class Dba 
 {
     /** @var \Pdo                        PDO object          */
     var $pdoObj  = NULL;
@@ -14,54 +14,54 @@ class Dba implements InjectSqlInterface
 
     /** @var int                         fetch mode for PDO                */
     private $fetchMode;
+    
     /** @var string                      class name if fetch mode is Class */
     private $fetchClass = NULL;
     // +----------------------------------------------------------------------+
     //  Constructor and Managing Objects.
     // +----------------------------------------------------------------------+
     /**
-     * inject Pdo object, or config name for Rdb::connect.
-     * set $new=TRUE with config name to use brand-new Pdo object.
+     * inject Pdo and Sql object.
      *
-     * @param NULL|string|\Pdo $pdoObj
-     * @param bool $new
+     * @param \Pdo $pdoObj
+     * @param Sql  $sql
+     * @DimInjection Get   Pdo
+     * @DimInjection Fresh \wsCore\DbAccess\Sql
      */
-    public function __construct( $pdoObj=NULL, $new=FALSE )
+    public function __construct( $pdoObj, $sql )
     {
-        $this->pdoObj = ( is_object( $pdoObj ) ) ?: Rdb::connect( $pdoObj, $new );
+        $this->pdoObj = $pdoObj;
+        $this->sql = $sql;
+        $this->sql->setDba( $this );
         $this->fetchMode = \PDO::FETCH_ASSOC;
     }
 
     /**
-     * @param \wsCore\DbAccess\Sql $sql
-     */
-    public function injectSql( $sql ) {
-        $this->sql = $sql;
-    }
-
-    /**
-     * connect to database. $conn maybe \Pdo object,
-     * or connection string for Rdb::connect.
+     * set Pdo. kind of for backward compatibility. 
      *
-     * @param \Pdo|string|null $conn
-     * @param bool $new
+     * @param \Pdo $pdo
+     * @return \wsCore\DbAccess\Dba
      */
-    public function dbConnect( $conn=NULL, $new=FALSE ) {
-        if( is_object( $conn ) ) {
-            $this->pdoObj = $conn;
-        }
-        else {
-            $this->pdoObj = Rdb::connect( $conn, $new );
-        }
+    public function dbConnect( $pdo ) {
+        $this->pdoObj = $pdo;
+        return $this;
     }
 
     /**
+     * returns Sql, that is fresh. for starting new sql statement. 
      * @return Sql
      */
     public function sql() {
-        $this->sql = ( $this->sql )? $this->sql->clear() : new Sql( $this );
+        $this->sql = $this->sql->clear();
         return $this->sql;
     }
+
+    /**
+     * returns Sql, that is fresh and table and id_name is set. 
+     * @param        $table
+     * @param string $id_name
+     * @return Sql
+     */
     public function table( $table, $id_name='id' ) {
         return $this->sql()->table( $table, $id_name );
     }
@@ -99,7 +99,7 @@ class Dba implements InjectSqlInterface
     }
 
     /**
-     * executes Dba sql statement. 
+     * executes sql in Sql object. 
      * 
      * @return Dba
      */

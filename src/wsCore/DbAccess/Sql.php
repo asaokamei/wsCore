@@ -79,6 +79,9 @@ class Sql
         $this->dba = ( $dba ) ?: NULL;
     }
 
+    public function setDba( $dba ) {
+        $this->dba = $dba;
+    }
     /**
      * clear returns brand new Sql object, instead of using
      * the same object and reset all variables.
@@ -164,6 +167,9 @@ class Sql
     }
 
     /**
+     * Quote string using Pdo's quote (or just add-slashes if Pdo not present). 
+     * TODO: what if Pdo is not present? should create Dba::quote and use it. 
+     * 
      * @param string|array $val
      * @param null|int     $type    data type
      * @return Sql
@@ -238,7 +244,7 @@ class Sql
 
     /**
      * set SQL functions for INSERT or UPDATE. The functions are not 'prepared'.
-     * TODO: find better name than functions???
+     * TODO: find better name than functions??? how about rawValue?
      * @param $func
      * @return Sql
      */
@@ -513,6 +519,7 @@ class Sql
     // +----------------------------------------------------------------------+
     /**
      * magic method to access Dba's method. 
+     * TODO: should not call each other this tightly. remove this method!
      * 
      * @param $name
      * @param $args
