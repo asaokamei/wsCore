@@ -251,6 +251,29 @@ class Dba
     }
 
     /**
+     * Quote string using Pdo's quote (or just add-slashes if Pdo not present).
+     *
+     * @param string|array $val
+     * @param null|int     $type    data type
+     * @return Sql
+     */
+    public function quote( &$val, $type=NULL )
+    {
+        if( is_array( $val ) ) {
+            foreach( $val as &$v ) {
+                $this->quote( $v, $type );
+            }
+        }
+        elseif( isset( $this->pdoObj ) ) {
+            $val = $this->pdoObj->quote( $val );
+        }
+        else {
+            $val = addslashes( $val );
+        }
+        return $this;
+    }
+
+    /**
      * magic method to access Sql's method.
      *
      * @param $name

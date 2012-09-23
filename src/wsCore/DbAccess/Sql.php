@@ -168,7 +168,6 @@ class Sql
 
     /**
      * Quote string using Pdo's quote (or just add-slashes if Pdo not present). 
-     * TODO: what if Pdo is not present? should create Dba::quote and use it. 
      * 
      * @param string|array $val
      * @param null|int     $type    data type
@@ -182,9 +181,7 @@ class Sql
             }
         }
         elseif( isset( $this->dba ) ) {
-            /** @var $pdo \Pdo */
-            $pdo = $this->dba->pdo();
-            $val = $pdo->quote( $val );
+            $val = $this->dba->quote( $val );
         }
         else {
             $val = addslashes( $val );
