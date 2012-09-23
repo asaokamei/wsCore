@@ -27,6 +27,21 @@ class Dimple_Test extends \PHPUnit_Framework_TestCase
         };
     }
     // +----------------------------------------------------------------------+
+    public function test_id_chain_is_not_implemented()
+    {
+        // id chain is disabled as of 2012/09/23.
+        $id1 = 'id1';
+        $id2 = 'id2';
+        $id3 = 'id3';
+        $this->container->set( $id1, $id2 );
+        $this->container->set( $id2, $id3 );
+        $got = $this->container->get( $id1 );
+        
+        // id is NOT chained. so id1 -> id2 only. 
+        $this->assertEquals( $id2, $got );
+        // certainly not id3...
+        $this->assertNotEquals( $id3, $got );
+    }
     public function test_extend_many_classes()
     {
         // call class1 -> class2 

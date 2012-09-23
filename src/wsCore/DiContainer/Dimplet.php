@@ -76,9 +76,11 @@ class Dimplet
                 /** @var $found \Closure */
                 $found = $found( $this );
             }
+            /*** not to chain id's. turn off by comments!? 
             elseif( $this->exists( $found ) ) {
                 $found = $this->get( $found );
             }
+            ***/
             elseif( class_exists( $found ) ) {
                 $found = $this->get( $found );
             }
