@@ -83,12 +83,13 @@ class Dba implements InjectSqlInterface
     // +----------------------------------------------------------------------+
     /**
      * @param string $sql
-     * @param array $prepared
+     * @param array  $prepared     place holders for prepared statement.
+     * @param array  $dataTypes    data types for the place holders.
      * @return Dba
      */
-    public function execSQL( $sql, $prepared=array() )
+    public function execSQL( $sql, $prepared=array(), $dataTypes=array() )
     {
-        return $this->exec( $sql, $prepared );
+        return $this->exec( $sql, $prepared, $dataTypes );
     }
 
     /**
@@ -103,13 +104,14 @@ class Dba implements InjectSqlInterface
 
     /**
      * @param string $sql
-     * @param array $prepared
+     * @param array  $prepared     place holders for prepared statement.
+     * @param array  $dataTypes    data types for the place holders. 
      * @return Dba
      */
-    public function exec( $sql, $prepared=array() )
+    public function exec( $sql, $prepared=array(), $dataTypes=array() )
     {
         $this->prepare( $sql, $prepared );
-        $this->execute( $prepared );
+        $this->execute( $prepared, $dataTypes );
         //$this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass );
         //$this->pdoStmt->setFetchMode( $this->fetchMode );
         return $this;
@@ -130,11 +132,28 @@ class Dba implements InjectSqlInterface
     }
 
     /**
-     * @param array $prepared
+     * @param array  $prepared     place holders for prepared statement.
+     * @param array  $dataTypes    data types for the place holders.
      * @return Dba
      */
-    public function execute( $prepared ) {
-        $this->pdoStmt->execute( $prepared );
+    public function execute( $prepared, $dataTypes=array() ) 
+    {
+        if( empty( $dataTypes ) ) {
+            // data types are not specified. just execute the statement. 
+            $this->pdoStmt->execute( $prepared );
+        }
+        else {
+            // bind value for each holder/value.
+            foreach( $prepared as $holder => $value ) {
+                if( array_key_exists( $holder, $dataTypes ) ) {
+                    // data types for the holder specified. 
+                    $this->pdoStmt->bindValue( $holder, $value, $dataTypes[ $holder ] );
+                }
+                else {
+                    $this->pdoStmt->bindValue( $holder, $value );
+                }
+            }
+        }
         return $this;
     }
 
