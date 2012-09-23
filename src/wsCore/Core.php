@@ -79,20 +79,22 @@ class Core
     }
 
     /**
-     * set up for Pdo construction.
+     * set up for Pdo object.
      * 
-     * @param      $config
-     * @param      $id
-     * @param null $class
+     * @param string|array  $config
+     * @param string        $id
+     * @param null|string   $class
+     * @param null|string   $method
      */
-    public static function setPdo( $config, $id='Pdo', $class=NULL )
+    public static function setPdo( $config, $id='Pdo', $class=NULL, $method= NULL )
     {
-        if( !$class ) $class = '\wsCore\DbAccess\Rdb';
-        Core::set( $id, function( $c ) use( $config, $class ) {
+        if( !$class  ) $class  = '\wsCore\DbAccess\Rdb';
+        if( !$method ) $method = 'connect';
+        Static::set( $id, function($c) use( $config, $class, $method ) {
             /** @var $c  \wsCore\DiContainer\Dimplet */
             $rdb = $c->get( $class );
-            return $rdb->connect( $c->get( $config ) );
-        } );
+            return $rdb->$method( $config );
+        });
     }
     // +----------------------------------------------------------------------+
 }
