@@ -58,6 +58,9 @@ class Sql
     /** @var array    stores data types of place holders */
     var $prepared_types = array();
 
+    /** @var array    stores data types of columns           */
+    var $col_data_types = array();
+    
     /** @var string   SQL Statement created by this class    */
     var $sql = '';
 
@@ -139,8 +142,14 @@ class Sql
     public function prepare( &$val, $type=NULL )
     {
         if( is_array( $val ) ) {
-            foreach( $val as &$v ) {
-                $this->prepare( $v, $type );
+            foreach( $val as $col => &$v ) {
+                // check if data type is set for this column. 
+                if( !$type && array_key_exists( $col, $this->col_data_types ) ) {
+                    $this->prepare( $v, $this->col_data_types[ $col ] );
+                }
+                else {
+                    $this->prepare( $v, $type );
+                }
             }
         }
         else {
