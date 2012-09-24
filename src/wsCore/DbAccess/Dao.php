@@ -141,6 +141,13 @@ class Dao
         return $id;
     }
 
+    /**
+     * inserts a data. select insertId or insertValue to use.
+     * default is to insertId.
+     *
+     * @param $values
+     * @return string                 id of the inserted data
+     */
     public function insert( &$values )
     {
         return $this->insertId( $values );
