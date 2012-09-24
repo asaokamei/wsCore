@@ -62,7 +62,7 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
         $pdo->query( $test );
     }
     /**
-     * @expectedException PDOException
+     * @expectedException \PDOException
      */
     public function test_bad_sql_statement()
     {
@@ -91,7 +91,7 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException PDOException
+     * @expectedException \PDOException
      */
     public function test_bad_database_connection()
     {
