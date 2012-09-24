@@ -73,7 +73,7 @@ class SqlBuilder
             $where_str = $where;
         }
         $where_str = trim( $where_str );
-        preg_replace( '/^(AND|OR)/i', '', $where_str );
+        $where_str = preg_replace( '/^(and|or) /i', '', $where_str );
         return $where_str;
     }
 
