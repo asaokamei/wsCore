@@ -32,15 +32,9 @@ class Core
      * @return Core
      */
     public static function go() {
-        return ( static::$_container ) ?: static::$_container=new \wsCore\DiContainer\Dimplet();
-    }
-
-    /**
-     * going easy mode. 
-     */
-    public static function goEasy() {
-        self::go();
+        ( static::$_container ) ?: static::$_container=new \wsCore\DiContainer\Dimplet();
         self::_fill( self::$easy );
+        return static::$_container;
     }
 
     /**

@@ -12,18 +12,14 @@ Starting wsCore Framework.
 
     Core::go();
 
-Using easy mode; uses short name instead of full class name with name space to get objects. 
-
-    Core::goEasy();
-
-Using development mode; Sql and Validators are logged, and Debug object is activated. 
+Using development mode; Sql and Validators are logged, and Debug object is activated.
 
     Core::goDev();
 
 Set up database access and get some data.
 
     Core::goEasy();
-    Core::setPdo( Rdb::setup( 'db=mysql dbname=test user=test passwd=test' ) );
+    Core::setPdo( 'db=mysql dbname=test user=test passwd=test' );
     $dba  = Core::get( 'DbAccess' );
     $data = $dba->table( 'myTest' )->where( 'id', 10 )->select();
 
