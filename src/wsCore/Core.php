@@ -73,9 +73,10 @@ class Core
     }
     /**
      * @param $id
+     * @return mixed
      */
     public static function get( $id ) {
-        self::$_container->get( $id );
+        return self::$_container->get( $id );
     }
 
     /**
