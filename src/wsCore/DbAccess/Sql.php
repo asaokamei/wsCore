@@ -379,6 +379,15 @@ class Sql
     public function ge( $col, $val, $type=NULL ) {
         return $this->where( $col, $val, '>=', $type );
     }
+    public function in( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val, 'IN', $type );
+    }
+    public function notIn( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val, 'NOT IN', $type );
+    }
+    public function between( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val, 'BETWEEN', $type );
+    }
     public function isNull( $col ) {
         return $this->whereRaw( $col, '', 'IS NULL' );
     }
