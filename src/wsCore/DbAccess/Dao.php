@@ -89,7 +89,7 @@ class Dao
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
         $this->restrict( $values );
-        return $this->dba()->clearWhere()
+        return $this->dba()
             ->where( $this->id_name, $id )
             ->update( $values )
         ;
