@@ -8,34 +8,31 @@ namespace wsCore\DbAccess;
 class Dao
 {
     /** @var string     name of database table     */
-    private $table;
+    protected $table;
 
     /** @var string     name of primary key        */
-    private $id_name;
+    protected $id_name;
 
     /** @var array      property names as key => name  */
-    private $properties = array();
+    protected $properties = array();
 
     /** @var array      restricted keys in properties  */
-    private $restricts  = array();
+    protected $restricts  = array();
 
     /** @var array      for selector construction      */
-    private $selectors  = array();
+    protected $selectors  = array();
 
     /** @var array      for validation of inputs       */
-    private $validators = array();
+    protected $validators = array();
 
     /** @var \wsCore\DbAccess\Dba */
-    private $dba;
+    protected $dba;
 
     /** @var \wsCore\DiContainer\Dimplet */
     protected $container;
 
-    /** @var string */
-    public  $classNameDba = '\wsCore\DbAccess\DbAccess';
-
     /** @var \wsCore\DbAccess\DataRecord */
-    private $recordClassName = '\wsCore\DbAccess\DataRecord';
+    protected $recordClassName = '\wsCore\DbAccess\DataRecord';
 
     // +----------------------------------------------------------------------+
     /**
