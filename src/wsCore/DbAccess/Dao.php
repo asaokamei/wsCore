@@ -73,7 +73,6 @@ class Dao
      */
     public function find( $id ) {
         return $this->dba()
-            ->table( $this->table, $this->id_name )
             ->where( $this->id_name, $id )
             ->limit(1)
             ->exec();
@@ -91,7 +90,6 @@ class Dao
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
         $this->restrict( $values );
         return $this->dba()->clearWhere()
-            ->table( $this->table, $this->id_name )
             ->where( $this->id_name, $id )
             ->update( $values )
         ;
@@ -100,15 +98,21 @@ class Dao
     /**
      * insert data into database. 
      *
-     * @param string $values
-     * @return \PdoStatement
+     * @param array $values
+     * @return string|bool             id of the inserted data or true if id not exist.
      */
-    public function insert( $values )
+    public function insertValue( &$values )
     {
         $this->restrict( $values );
-        return $this->dba()
-            ->table( $this->table, $this->id_name )
+        $this->dba()
             ->insert( $values );
+        if( isset( $values[ $this->id_name ] ) ) {
+            $id = $values[ $this->id_name ];
+        }
+        else {
+            $id = TRUE;
+        }
+        return $id;
     }
 
     /**
@@ -118,7 +122,6 @@ class Dao
     public function delete( $id )
     {
         return $this->dba()->clearWhere()
-            ->table( $this->table, $this->id_name )
             ->where( $this->id_name, $id )
             ->limit(1)
             ->makeSQL( 'DELETE' )
@@ -126,16 +129,22 @@ class Dao
     }
 
     /**
-     * todo: merge with insert method. 
-     * @param string $values
+     * @param array $values
      * @return string                 id of the inserted data
      */
-    public function insertId( $values )
+    public function insertId( &$values )
     {
-        if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
+        if( isset( $values[ $this->id_name ] ) ) { unset(  $values[ $this->id_name ] ); }
         $this->restrict( $values );
-        $this->insert( $values );
-        return $this->dba->lastId();
+        $this->insertValue( $values );
+        $id = $this->dba->lastId();
+        if( isset( $values[ $this->id_name ] ) ) { $values[ $this->id_name ] = $id; }
+        return $id;
+    }
+
+    public function insert( &$values )
+    {
+        return $this->insertId( $values );
     }
     // +----------------------------------------------------------------------+
     /**
