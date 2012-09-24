@@ -478,28 +478,29 @@ class Sql
      */
     public function makeSQL( $type )
     {
-        $type = strtoupper( $type );
-        switch( $type ) {
-            case 'INSERT':
-                $this->processValues();
-                $sql = SqlBuilder::makeInsert( $this );
-                break;
-            case 'UPDATE':
-                $this->processValues();
-                $sql = SqlBuilder::makeUpdate( $this );
-                break;
-            case 'DELETE':
-                $sql = SqlBuilder::makeDelete( $this );
-                break;
-            case 'COUNT':
-                $sql = SqlBuilder::makeCount( $this );
-                break;
-            default:
-            case 'SELECT':
-                $sql = SqlBuilder::makeSelect( $this );
-                break;
-        }
-        $this->sql = $sql;
+        $type = 'make' . strtoupper( $type );
+        return $this->$type( $this );
+    }
+    public function makeSelect() {
+        $this->sql = SqlBuilder::makeSelect( $this );
+        return $this;
+    }
+    public function makeCount() {
+        $this->sql = SqlBuilder::makeCount( $this );
+        return $this;
+    }
+    public function makeDelete() {
+        $this->sql = SqlBuilder::makeDelete( $this );
+        return $this;
+    }
+    public function makeInsert() {
+        $this->processValues();
+        $this->sql = SqlBuilder::makeInsert( $this );
+        return $this;
+    }
+    public function makeUpdate() {
+        $this->processValues();
+        $this->sql = SqlBuilder::makeUpdate( $this );
         return $this;
     }
 
