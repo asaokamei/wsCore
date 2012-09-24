@@ -109,12 +109,12 @@ class Sql
      * @param array $prepared
      * @param array $dataType
      * @throws \RuntimeException
-     * @return \PdoStatement
+     * @return Dba
      */
     public function execSQL( $sql=NULL, $prepared=array(), $dataType=array() ) {
         if( !$this->dba ) throw new \RuntimeException( 'DbAccess object not set to perform this method.' );
         $this->dba->execSQL( $sql, $prepared, $dataType );
-        return $this->dba->stmt();
+        return $this->dba;
     }
     // +----------------------------------------------------------------------+
     //  Quoting and Preparing Values for Prepared Statement.
