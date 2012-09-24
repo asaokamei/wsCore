@@ -4,23 +4,27 @@ namespace wsCore\DbAccess;
 class DataRecord
 {
     /** @var mixed         value of id. probably an integer     */
-    private $_id_         = NULL;
+    protected $_id_         = NULL;
     
     /** @var array         stores property of the record        */
-    private $_properties_ = array();
-    private $_originals_  = array(); // stores original data from db  
-    
+    protected $_properties_ = array();
+    protected $_originals_  = array(); // stores original data from db
+
+    /** @var bool          validation result.                   */
+    protected $_is_valid_ = FALSE;
+
     /** @var array         stores error messages from validator */
-    private $_errors_     = array();
+    protected $_errors_     = array();
 
     /** @var string|null */
-    private $_model_ = NULL;
+    protected $_model_ = NULL;
 
     /** @var \wsCore\DbAccess\Dao                               */
-    private $_dao_ = NULL;
+    protected $_dao_ = NULL;
     
     /** @var string         html type to show                   */
-    private $_html_type_ = 'NAME';
+    protected $_html_type_ = 'NAME';
+    
     // +----------------------------------------------------------------------+
     /**
      * @param \wsCore\DbAccess\Dao $dao
