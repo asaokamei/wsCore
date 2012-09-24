@@ -19,6 +19,7 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
+        Core::clear();
         Core::go();
         Core::setPdo( $this->config );
         $this->dba = Core::get( '\wsCore\DbAccess\Dba');
@@ -112,17 +113,12 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         // the original pdo object.
         $pdo = $this->dba->pdo();
         // reconnect with the same config. should reuse the $pdo.
-        $this->dba->dbConnect( NULL );
-        $pdo1 = $this->dba->pdo();
-        // now reconnect with new pdo.
-        $this->dba->dbConnect( NULL, TRUE );
+        $pdoText = "just a text";
+        $this->dba->dbConnect( $pdoText );
         $pdo2 = $this->dba->pdo();
 
-        $this->assertEquals( $pdo, $pdo1 );
-        $this->assertSame( $pdo, $pdo1 );
-
-        $this->assertEquals( $pdo1, $pdo2 );
-        $this->assertNotSame( $pdo1, $pdo2 );
+        $this->assertNotEquals( $pdo, $pdo2 );
+        $this->assertEquals( $pdoText, $pdo2 );
     }
     public function test_inject_dbConnect()
     {
@@ -131,12 +127,6 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         $injectedPdo = $this->dba->pdo();
         $this->assertEquals( $this, $injectedPdo );
         $this->assertSame( $this, $injectedPdo );
-    }
-    public function test_inject_sql()
-    {
-        $sql = 'injected sql';
-        $this->dba->injectSql( $sql );
-        $this->assertEquals( $sql, $this->dba->sql );
     }
     public function test_driver_name()
     {
