@@ -20,7 +20,10 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
     {
         // test through all sqls.
         $pdo = $this->rdb->connect( $this->config );
-        
+
+        $test = "DROP TABLE IF EXISTS test;";
+        $pdo->query( $test );
+
         $test = "CREATE TABLE IF NOT EXISTS test ( id int, text text );";
         $pdo->query( $test );
         
