@@ -154,6 +154,7 @@ class Sql
             }
         }
         else {
+            // TODO: fix holder's id calculation.
             $holder = ':db_prep_' . count( $this->prepared_values );
             $this->prepared_values[ $holder ] = $val;
             $val = $holder;
