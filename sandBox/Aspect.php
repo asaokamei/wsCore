@@ -19,6 +19,29 @@
  *  3. adviser:     do advice.
  */
 
+/*
+ * memo (2012/09/24)
+ *
+ * I thought about this a while ago;
+ * do not need before/after/catch type as long as around type
+ * is available, and methods chain is implemented. 
+ *
+ * memo (2012/09/24)
+ *
+ * using interface of a class will affect all the inherited class,
+ * and that maybe too strongly coupled.
+ *
+ * using annotation for methods maybe too costly.
+ *
+ * so, use annotation for class to AOP independent class/methods,
+ * such as:
+ *
+ *     @DimAspect   Adviser   methods1, methods2, ...
+ *
+ * this could be an acceptable, except that aspect for methods
+ * are described at the top of the class. which is not obvious.
+ *
+ */
 interface InjectAopContainerInterface {}
 
 interface AopAdviserInterface {
