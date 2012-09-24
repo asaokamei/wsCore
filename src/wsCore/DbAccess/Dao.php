@@ -37,8 +37,6 @@ class Dao
     /** @var \wsCore\DbAccess\DataRecord */
     private $recordClassName = '\wsCore\DbAccess\DataRecord';
 
-    private static $_self = NULL;
-    
     // +----------------------------------------------------------------------+
     /**
      * @param $dba \wsCore\DbAccess\Dba
@@ -53,7 +51,6 @@ class Dao
         // TODO: set data types for prepared statement.
         $this->dba->table( $this->table, $this->id_name );
         $this->container= $container;
-        static::$_self[ get_called_class() ] = $this;
     }
 
     /**
