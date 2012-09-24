@@ -5,24 +5,32 @@ namespace wsCore\DbAccess;
  * base class for dao's for database tables.
  * a Table Data Gateway pattern.
  */
-class Dao implements InjectDbaInterface
+class Dao
 {
     /** @var string     name of database table     */
     private $table;
+
     /** @var string     name of primary key        */
     private $id_name;
 
     /** @var array      property names as key => name  */
     private $properties = array();
-    /** @var array      list of accessible keys        */
+
+    /** @var array      restricted keys in properties  */
     private $restricts  = array();
+
     /** @var array      for selector construction      */
     private $selectors  = array();
+
     /** @var array      for validation of inputs       */
     private $validators = array();
 
     /** @var \wsCore\DbAccess\Dba */
     private $dba;
+
+    /** @var \wsCore\DiContainer\Dimplet */
+    protected $container;
+
     /** @var string */
     public  $classNameDba = '\wsCore\DbAccess\DbAccess';
 
@@ -33,36 +41,25 @@ class Dao implements InjectDbaInterface
     
     // +----------------------------------------------------------------------+
     /**
-     * 
+     * @param $dba \wsCore\DbAccess\Dba
+     * @param $container \wsCore\DiContainer\Dimplet
+     * @DimInjection Fresh DbAccess
+     * @DimInjection Get   Container
      */
-    public function __construct()
+    public function __construct( $dba, $container )
     {
+        $this->dba = $dba;
+        // TODO FIX: table is stored in Sql which is recreated all the time.
+        // TODO: set data types for prepared statement.
+        $this->dba->table( $this->table, $this->id_name );
+        $this->container= $container;
         static::$_self[ get_called_class() ] = $this;
-    }
-
-    /**
-     * injects DbAccess object for accessing database.
-     * if the injected $dba is a string, it is used to construct DbAccess object.
-     *
-     * @param $dba
-     */
-    public function injectDba( $dba )
-    {
-        if( is_object( $dba ) ) {
-            $this->dba = $dba;
-        }
-        elseif( is_string( $dba ) ) {
-            $this->dba = new $this->classNameDba( $dba );
-        }
     }
 
     /**
      * @return \wsCore\DbAccess\Dba
      */
     public function dba() {
-        if( !isset( $this->dba ) ) {
-            $this->dba = new $this->classNameDba;
-        }
         return $this->dba;
     }
 
@@ -72,7 +69,7 @@ class Dao implements InjectDbaInterface
     public function getRecord() {
         /** @var $record \wsCore\DbAccess\DataRecord */
         $record = new $this->recordClassName();
-        $record->injectDao( $this );
+        $record->reconstruct( $this );
         return $record;
     }
     // +----------------------------------------------------------------------+
@@ -99,6 +96,7 @@ class Dao implements InjectDbaInterface
     public function update( $id, $values )
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
+        $this->restrict( $values );
         return $this->dba()->sql()->clearWhere()
             ->table( $this->table, $this->id_name )
             ->where( $this->id_name, $id )
@@ -115,6 +113,7 @@ class Dao implements InjectDbaInterface
      */
     public function insert( $values )
     {
+        $this->restrict( $values );
         return $this->dba()->sql()
             ->table( $this->table, $this->id_name )
             ->insert( $values );
@@ -142,6 +141,7 @@ class Dao implements InjectDbaInterface
     public function insertId( $values )
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
+        $this->restrict( $values );
         $this->insert( $values );
         return $this->dba()->lastId();
     }
@@ -179,6 +179,7 @@ class Dao implements InjectDbaInterface
      *     args  => [ arg2, arg3, arg4 ],
      *     call  => function( &$sel ){ $sel->do_something(); },
      *   ]
+     * TODO: use container for construct and singleton!?
      *
      * @param string $var_name
      * @return null|object
