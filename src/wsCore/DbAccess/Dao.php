@@ -46,15 +46,15 @@ class Dao
         $this->dba = $dba;
         // TODO FIX: table is stored in Sql which is recreated all the time.
         // TODO: set data types for prepared statement.
-        $this->dba->table( $this->table, $this->id_name );
+        $this->dba;
         $this->container= $container;
     }
 
     /**
-     * @return \wsCore\DbAccess\Dba
+     * @return \wsCore\DbAccess\Sql
      */
     public function dba() {
-        return $this->dba;
+        return $this->dba->table( $this->table, $this->id_name );
     }
 
     /**
@@ -72,7 +72,7 @@ class Dao
      * @return \PdoStatement
      */
     public function find( $id ) {
-        return $this->dba()->sql()
+        return $this->dba()
             ->table( $this->table, $this->id_name )
             ->where( $this->id_name, $id )
             ->limit(1)
@@ -81,8 +81,7 @@ class Dao
 
     /**
      * update data of primary key of $id.
-     * TODO: check accessible data. 
-     * 
+     *
      * @param string $id
      * @param array $values
      * @return \PdoStatement
@@ -91,7 +90,7 @@ class Dao
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
         $this->restrict( $values );
-        return $this->dba()->sql()->clearWhere()
+        return $this->dba()->clearWhere()
             ->table( $this->table, $this->id_name )
             ->where( $this->id_name, $id )
             ->update( $values )
@@ -100,15 +99,14 @@ class Dao
 
     /**
      * insert data into database. 
-     * TODO: check accessible data, return id of insert data. 
-     * 
+     *
      * @param string $values
      * @return \PdoStatement
      */
     public function insert( $values )
     {
         $this->restrict( $values );
-        return $this->dba()->sql()
+        return $this->dba()
             ->table( $this->table, $this->id_name )
             ->insert( $values );
     }
@@ -119,7 +117,7 @@ class Dao
      */
     public function delete( $id )
     {
-        return $this->dba()->sql()->clearWhere()
+        return $this->dba()->clearWhere()
             ->table( $this->table, $this->id_name )
             ->where( $this->id_name, $id )
             ->limit(1)
@@ -137,7 +135,7 @@ class Dao
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
         $this->restrict( $values );
         $this->insert( $values );
-        return $this->dba()->lastId();
+        return $this->dba->lastId();
     }
     // +----------------------------------------------------------------------+
     /**
