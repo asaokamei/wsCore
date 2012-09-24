@@ -24,7 +24,7 @@
  *
  * I thought about this a while ago;
  * do not need before/after/catch type as long as around type
- * is available, and methods chain is implemented. 
+ * is available, and methods chain is implemented.
  *
  * memo (2012/09/24)
  *
