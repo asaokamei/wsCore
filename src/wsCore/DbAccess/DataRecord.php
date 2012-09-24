@@ -24,7 +24,7 @@ class DataRecord
     
     /** @var string         html type to show                   */
     protected $_html_type_ = 'NAME';
-    
+
     // +----------------------------------------------------------------------+
     /**
      * @param \wsCore\DbAccess\Dao $dao
