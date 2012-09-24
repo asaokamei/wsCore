@@ -135,7 +135,6 @@ class Dao
     public function insertId( &$values )
     {
         if( isset( $values[ $this->id_name ] ) ) { unset(  $values[ $this->id_name ] ); }
-        $this->restrict( $values );
         $this->insertValue( $values );
         $id = $this->dba->lastId();
         if( isset( $values[ $this->id_name ] ) ) { $values[ $this->id_name ] = $id; }
