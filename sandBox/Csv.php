@@ -11,7 +11,7 @@ class Csv
     /** @var null            file name of CSV.  */
     protected $filename = NULL;
 
-    /** @var null            file pointer from fopen.  */
+    /** @var resource            file pointer from fopen.  */
     protected $filePointer = NULL;
 
     /** @var array           header data.  */
