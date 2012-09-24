@@ -1,5 +1,6 @@
 <?php
 namespace wsTests\DbAccess;
+use \wsCore\Core;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
@@ -17,12 +18,10 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->config = array(
-            'dsn' => 'db=mysql dbname=test_wsCore username=admin password=admin'
-        );
-        \wsCore\DbAccess\Rdb::_init();
-        \wsCore\DbAccess\Rdb::set( 'config', $this->config );
-        $this->dba = new \wsCore\DbAccess\Dba();
+        $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
+        Core::go();
+        Core::setPdo( $this->config );
+        $this->dba = Core::get( '\wsCore\DbAccess\Dba');
         $this->column_list = '
             id int NOT NULL AUTO_INCREMENT,
             name CHAR(30),
