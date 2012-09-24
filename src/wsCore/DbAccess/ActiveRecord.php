@@ -3,15 +3,22 @@ namespace wsCore\DbAccess;
 
 class ActiveRecord extends DataRecord
 {
+    const TYPE_NEW = 'new-record';  // new record. not saved to database, yet
+    const TYPE_GET = 'get-record';  // record from database.
+    const TYPE_IGNORE = 'ignored';  // non-operational record.
+
     const EXEC_NONE = 'exec-none';
     const EXEC_SAVE = 'exec-save';
     const EXEC_DEL  = 'exec-delete';
 
     /** @var array         stores relations */
-    private $_relations_  = array();
+    protected $_relations_  = array();
+
+    /** @var null          type of record: new, get, or ignore.  */
+    protected $_type_ = NULL;
 
     /** @var string      set execution type                  */
-    private $_exec_ = self::EXEC_NONE;
+    protected $_exec_ = self::EXEC_NONE;
     // +----------------------------------------------------------------------+
     /**
      */

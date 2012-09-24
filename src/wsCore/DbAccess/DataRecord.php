@@ -3,10 +3,6 @@ namespace wsCore\DbAccess;
 
 class DataRecord
 {
-    const TYPE_NEW = 'new-record';  // new record. not saved to database, yet
-    const TYPE_GET = 'get-record';  // record from database. 
-    const TYPE_IGNORE = 'ignored';  // non-operational record.
-
     /** @var mixed         value of id. probably an integer     */
     private $_id_         = NULL;
     
@@ -23,48 +19,18 @@ class DataRecord
     /** @var \wsCore\DbAccess\Dao                               */
     private $_dao_ = NULL;
     
-    /** @var string         set type of record. default is get  */
-    private $_type_ = NULL;
-    
     /** @var string         html type to show                   */
     private $_html_type_ = 'NAME';
     // +----------------------------------------------------------------------+
     /**
-     * @param array  $data
-     * @param string $type
-     */
-    public function __construct( $data=array(), $type=self::TYPE_NEW )
-    {
-        if( $type == self::TYPE_NEW ) {
-            $this->fresh( $data );
-        }
-        else {
-            $this->load( $data );
-        }
-    }
-
-    /**
      * @param \wsCore\DbAccess\Dao $dao
+     * @param array  $data
+     * @DimInject  Get \wsCore\DbAccess\Dao
      */
-    public function injectDao( $dao ) {
+    public function __construct( $dao=NULL, $data=array() )
+    {
         $this->_dao_ = $dao;
-    }
-
-    /**
-     * create fresh/new record with or without id.
-     *
-     * @param null|string|array|int $data
-     * @throws \RuntimeException
-     * @return DataRecord
-     */
-    public function fresh( $data=array() ) {
-        if( !is_array( $data ) ) {
-            throw new \RuntimeException( "data must be an array." );
-        }
-        $this->_properties_ = $this->_originals_ = $data;
-        $this->resetId();
-        $this->_type_ = self::TYPE_NEW;
-        return $this;
+        $this->load( $data );
     }
 
     /**
@@ -80,7 +46,6 @@ class DataRecord
         }
         $this->_originals_ = $this->_properties_ = $data;
         $this->resetId();
-        $this->_type_ = self::TYPE_GET;
         return $this;
     }
 
@@ -98,20 +63,6 @@ class DataRecord
         }
         return $this;
     }
-    /**
-     * get record from database. 
-     * 
-     * @param $id
-     * @return DataRecord
-     */
-    public function fetch( $id ) {
-        $stmt = $this->_dao_->find( $id );
-        $this->_properties_ = $this->_originals_
-            = is_array( $stmt[0] ) ? $stmt[0] : $stmt[0]->get();
-        $this->_id_ = $id;
-        $this->_type_ = self::TYPE_GET;
-        return $this;
-    }
 
     /**
      * re-populates id. use this after Pdo's fetch as class.
@@ -121,14 +72,9 @@ class DataRecord
      */
     public function reconstruct( $dao=NULL ) 
     {
-        if( $dao ) {
-            $this->_dao_ = $dao;
-        }
-        if( $this->_type_ == NULL && !empty( $this->_properties_ ) ) {
-            $this->_originals_ = $this->_properties_;
-            $this->_type_ = self::TYPE_GET;
-            $this->resetId();
-        }
+        $this->_dao_ = $dao;
+        $this->_originals_ = $this->_properties_;
+        $this->resetId();
         return $this;
     }
 
@@ -146,16 +92,8 @@ class DataRecord
         return $this->_id_;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getType() {
-        return $this->_type_;
-    }
-    public function validate() {}
-    public function validationOK() {}
-    public function resetValidation() {}
-    public function isValid() {}
+    // +----------------------------------------------------------------------+
+    //  get/set properties
     // +----------------------------------------------------------------------+
     /**
      * store properties. for Pdo's fetch as class method. 
@@ -197,6 +135,9 @@ class DataRecord
         return $this;
     }
 
+    // +----------------------------------------------------------------------+
+    //  getting Html Forms.
+    // +----------------------------------------------------------------------+
     /**
      * setter/getter for html_type to show html elements. 
      * 
@@ -231,5 +172,12 @@ class DataRecord
     public function popName( $name ) {
         $this->_dao_->propertyName( $name );
     }
+    // +----------------------------------------------------------------------+
+    //  Validating data.
+    // +----------------------------------------------------------------------+
+    public function validate() {}
+    public function validationOK() {}
+    public function resetValidation() {}
+    public function isValid() {}
     // +----------------------------------------------------------------------+
 }
