@@ -44,7 +44,7 @@ class Dba_Sql_Test extends \PHPUnit_Framework_TestCase
 
         // check SQL statement
         $this->assertContains( "UPDATE {$table} SET ", $this->sql->sql );
-        foreach( $this->sql->prepared_values as $key => $val ) {
+        foreach( $this->sql->sqlObj->prepared_values as $key => $val ) {
             $this->assertContains( $key, $this->sql->sql );
             $this->assertContains( $val, $values );
         }
@@ -73,7 +73,7 @@ class Dba_Sql_Test extends \PHPUnit_Framework_TestCase
 
         // check SQL statement
         $this->assertContains( "UPDATE {$table} SET ", $this->sql->sql );
-        foreach( $this->sql->prepared_values as $key => $val ) {
+        foreach( $this->sql->sqlObj->prepared_values as $key => $val ) {
             $this->assertContains( $key, $this->sql->sql );
             $this->assertContains( $val, $values );
         }
@@ -99,7 +99,7 @@ class Dba_Sql_Test extends \PHPUnit_Framework_TestCase
 
         // check SQL statement
         $this->assertContains( "INSERT INTO {$table} ( col1, col2 ) VALUES (", $this->sql->sql );
-        foreach( $this->sql->prepared_values as $key => $val ) {
+        foreach( $this->sql->sqlObj->prepared_values as $key => $val ) {
             $this->assertContains( $key, $this->sql->sql );
             $this->assertContains( $val, $values );
         }

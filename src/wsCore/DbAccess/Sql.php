@@ -22,14 +22,8 @@ class Sql
     /** @var string           name of id (primary key)  */
     var $id_name = 'id';
 
-    protected $sqlObj = NULL;
+    public $sqlObj = NULL;
     
-    /** @var array    stores prepared values and holder name */
-    var $prepared_values = array();
-    
-    /** @var array    stores data types of place holders     */
-    var $prepared_types = array();
-
     /** @var array    stores data types of columns           */
     var $col_data_types = array();
     
@@ -63,6 +57,8 @@ class Sql
      */
     public function clear() {
         $this->sqlObj = new SqlObject();
+        $this->sqlObj->pdoObj = $this->dba->pdoObj;
+        $this->sqlObj->prepQuoteUseType = ( $this->prepQuoteUseType ) ?: static::$pqDefault;
         return $this;
     }
 
@@ -73,7 +69,7 @@ class Sql
      * @return Dba
      */
     public function exec() {
-        return $this->dba->execSQL( $this->sql, $this->prepared_values, $this->prepared_types );
+        return $this->dba->execSQL( $this->sql, $this->sqlObj->prepared_values, $this->sqlObj->prepared_types );
     }
 
     /**
@@ -93,84 +89,13 @@ class Sql
     // +----------------------------------------------------------------------+
     //  Quoting and Preparing Values for Prepared Statement.
     // +----------------------------------------------------------------------+
-    /**
-     * pre-process values with prepare or quote method.
-     *
-     * @param      $val
-     * @param null $type    data type
-     * @param null $col     column name. used to find data type
-     * @return Sql
-     */
-    public function prepOrQuote( &$val, $type=NULL, $col=NULL )
-    {
-        $pqType = ( $this->prepQuoteUseType )?: static::$pqDefault;
-        $this->$pqType( $val, $type, $col );
-        return $this;
-    }
-
-    /**
-     * replaces value with place holder for prepared statement. 
-     * the value is kept in prepared_value array.
-     * 
-     * if $type is specified, or column data type is set in col_data_types, 
-     * types for the place holder is kept in prepared_types array.
-     *
-     * @param string|array $val
-     * @param null|int     $type    data type
-     * @param null $col     column name. used to find data type
-     * @return Sql
-     */
-    public function prepare( &$val, $type=NULL, $col=NULL )
-    {
-        if( is_array( $val ) ) {
-            foreach( $val as &$v ) {
-                $this->prepare( $v, $type, $col );
-            }
-        }
-        else {
-            // TODO: fix holder's id calculation.
-            $holder = ':db_prep_' . count( $this->prepared_values );
-            $this->prepared_values[ $holder ] = $val;
-            $val = $holder;
-            if( $type ) {
-                $this->prepared_types[ $holder ] = $type;
-            }
-            elseif( !$type && array_key_exists( $col, $this->col_data_types ) ) {
-                $this->prepared_types[ $holder ] = $this->col_data_types[ $col ];
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * Quote string using Pdo's quote (or just add-slashes if Pdo not present). 
-     * 
-     * @param string|array $val
-     * @param null|int     $type    data type
-     * @return Sql
-     */
-    public function quote( &$val, $type=NULL )
-    {
-        if( is_array( $val ) ) {
-            foreach( $val as &$v ) {
-                $this->quote( $v, $type );
-            }
-        }
-        elseif( isset( $this->dba ) ) {
-            $val = $this->dba->quote( $val );
-        }
-        else {
-            $val = addslashes( $val );
-        }
-        return $this;
-    }
-
+    
     /**
      * @param string $val
      * @return mixed
      */
     public function p( $val ) {
-        $this->prepare( $val );
+        $this->sqlObj->prepare( $val );
         return $val;
     }
 
@@ -179,7 +104,7 @@ class Sql
      * @return string
      */
     public function q( $val ) {
-        $this->quote( $val );
+        $this->sqlObj->quote( $val );
         return $val;
     }
     // +----------------------------------------------------------------------+
@@ -303,7 +228,7 @@ class Sql
      * @return Sql
      */
     public function where( $col, $val, $rel='=', $type=NULL ) {
-        $this->prepOrQuote( $val, $type, $col );
+        $this->sqlObj->prepOrQuote( $val, $type, $col );
         return $this->whereRaw( $col, $val, $rel, $type );
     }
 
@@ -490,18 +415,7 @@ class Sql
      */
     public function processValues()
     {
-        if( !empty( $this->sqlObj->values ) )
-        foreach( $this->sqlObj->values as $key => $val ) {
-            if( $val === NULL ) {
-                $this->sqlObj->functions[ $key ] = 'NULL';
-                unset( $this->sqlObj->values[ $key ] );
-            }
-        }
-        $values = $this->sqlObj->values;
-        foreach( $values as $col => &$val ) {
-            $this->prepOrQuote( $val, NULL, $col );
-        }
-        $this->sqlObj->rowData = array_merge( $this->sqlObj->functions, $values );
+        $this->sqlObj->processValues();
         return $this;
     }
     // +----------------------------------------------------------------------+

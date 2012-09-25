@@ -52,4 +52,153 @@ class SqlObject
     /** @var bool */
     public $forUpdate = FALSE;
 
+    /** @var string */
+    public $prepQuoteUseType = 'prepare';
+    
+    /** @var int */
+    public $prepared_counter = 1;
+        
+    /** @var array    stores prepared values and holder name */
+    public $prepared_values = array();
+
+    /** @var array    stores data types of place holders     */
+    public $prepared_types = array();
+
+    /** @var array    stores data types of columns           */
+    public $col_data_types = array();
+
+    /** @var \Pdo */
+    public $pdoObj = NULL;
+
+    // +----------------------------------------------------------------------+
+    //  building where clause. 
+    // +----------------------------------------------------------------------+
+    /**
+     * @param string $col
+     */
+    public function col( $col ) {
+        $this->where[] = array( 'col' => $col, 'val'=> NULL, 'rel' => NULL, 'op' => 'AND' );
+    }
+
+    public function mod( $where, $type=NULL ) {
+        $last = array_pop( $this->where );
+        if( $last ) {
+            if( isset( $where[ 'val' ] ) ) {
+                $this->prepOrQuote( $where[ 'val' ], $type, $last[ 'col' ] );
+            }
+            $last = array_merge( $last, $where );
+            array_push( $this->where, $last );
+        }
+    }
+    /**
+     * @param array $where
+     */
+    public function modRaw( $where ) {
+        $last = array_pop( $this->where );
+        if( $last ) {
+            $last = array_merge( $last, $where );
+            array_push( $this->where, $last );
+        }
+    }
+
+    // +----------------------------------------------------------------------+
+    //  preparing for Insert and Update statement. 
+    // +----------------------------------------------------------------------+
+    /**
+     * prepares value for prepared statement. if value is NULL,
+     * it will not be treated as prepared value, instead it is
+     * set to SQL's NULL value.
+     *
+     * @return Sql
+     */
+    public function processValues()
+    {
+        if( !empty( $this->values ) )
+            foreach( $this->values as $key => $val ) {
+                if( $val === NULL ) {
+                    $this->functions[ $key ] = 'NULL';
+                    unset( $this->values[ $key ] );
+                }
+            }
+        $values = $this->values;
+        foreach( $values as $col => &$val ) {
+            $this->prepOrQuote( $val, NULL, $col );
+        }
+        $this->rowData = array_merge( $this->functions, $values );
+        return $this;
+    }
+    // +----------------------------------------------------------------------+
+    //  Quoting and Preparing Values for Prepared Statement.
+    // +----------------------------------------------------------------------+
+    /**
+     * pre-process values with prepare or quote method.
+     *
+     * @param      $val
+     * @param null $type    data type
+     * @param null $col     column name. used to find data type
+     * @return Sql
+     */
+    public function prepOrQuote( &$val, $type=NULL, $col=NULL )
+    {
+        $pqType = $this->prepQuoteUseType;
+        $this->$pqType( $val, $type, $col );
+        return $this;
+    }
+
+    /**
+     * replaces value with place holder for prepared statement.
+     * the value is kept in prepared_value array.
+     *
+     * if $type is specified, or column data type is set in col_data_types,
+     * types for the place holder is kept in prepared_types array.
+     *
+     * @param string|array $val
+     * @param null|int     $type    data type
+     * @param null $col     column name. used to find data type
+     * @return Sql
+     */
+    public function prepare( &$val, $type=NULL, $col=NULL )
+    {
+        if( is_array( $val ) ) {
+            foreach( $val as &$v ) {
+                $this->prepare( $v, $type, $col );
+            }
+        }
+        else {
+            $holder = ':db_prep_' . $this->prepared_counter++;
+            $this->prepared_values[ $holder ] = $val;
+            $val = $holder;
+            if( $type ) {
+                $this->prepared_types[ $holder ] = $type;
+            }
+            elseif( !$type && array_key_exists( $col, $this->col_data_types ) ) {
+                $this->prepared_types[ $holder ] = $this->col_data_types[ $col ];
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Quote string using Pdo's quote (or just add-slashes if Pdo not present).
+     *
+     * @param string|array $val
+     * @param null|int     $type    data type
+     * @return Sql
+     */
+    public function quote( &$val, $type=NULL )
+    {
+        if( is_array( $val ) ) {
+            foreach( $val as &$v ) {
+                $this->quote( $v, $type );
+            }
+        }
+        elseif( isset( $this->pdoObj ) ) {
+            $val = $this->pdoObj->quote( $val );
+        }
+        else {
+            $val = addslashes( $val );
+        }
+        return $this;
+    }
+    // +----------------------------------------------------------------------+
 }
