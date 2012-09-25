@@ -347,9 +347,7 @@ class Sql
      * @return \PdoStatement
      */
     public function update( $values ) {
-        return $this->values( $values )
-            ->makeSQL( 'UPDATE' )
-            ->exec();
+        return $this->values( $values )->makeUpdate()->exec();
     }
 
     /**
@@ -357,9 +355,7 @@ class Sql
      * @return \PdoStatement
      */
     public function insert( $values ) {
-        return $this->values( $values )
-            ->makeSQL( 'INSERT' )
-            ->exec();
+        return $this->values( $values )->makeInsert()->exec();
     }
 
     /**
@@ -368,17 +364,14 @@ class Sql
      */
     public function select( $column=NULL ) {
         if( $column ) $this->column( $column );
-        return $this->makeSQL( 'SELECT' )
-            ->exec();
+        return $this->makeSelect()->exec();
     }
 
     /**
      * @return string
      */
     public function count() {
-        return $this->makeSQL( 'COUNT' )
-            ->exec()
-            ->stmt()->fetchColumn(0);
+        return $this->makeCount()->exec()->stmt()->fetchColumn(0);
     }
 
     /**
