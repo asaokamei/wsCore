@@ -74,6 +74,34 @@ class SqlObject
     //  building where clause. 
     // +----------------------------------------------------------------------+
     /**
+     * set where statement with values properly prepared/quoted.
+     *
+     * @param string $col
+     * @param string $val
+     * @param string $rel
+     * @param null|string|bool   $type
+     * @return Sql
+     */
+    public function where( $col, $val, $rel='=', $type=NULL ) {
+        $this->prepOrQuote( $val, $type, $col );
+        return $this->whereRaw( $col, $val, $rel );
+    }
+
+    /**
+     * set where statement as is.
+     *
+     * @param        $col
+     * @param        $val
+     * @param string $rel
+     * @return Sql
+     */
+    public function whereRaw( $col, $val, $rel='=' ) {
+        $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => 'AND' );
+        $this->where[] = $where;
+        return $this;
+    }
+
+    /**
      * @param string $col
      */
     public function col( $col ) {

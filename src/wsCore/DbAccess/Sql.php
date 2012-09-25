@@ -59,6 +59,7 @@ class Sql
         $this->sqlObj = new SqlObject();
         $this->sqlObj->pdoObj = $this->dba->pdoObj;
         $this->sqlObj->prepQuoteUseType = ( $this->prepQuoteUseType ) ?: static::$pqDefault;
+        $this->sqlObj->col_data_types = $this->col_data_types;
         return $this;
     }
 
@@ -228,8 +229,8 @@ class Sql
      * @return Sql
      */
     public function where( $col, $val, $rel='=', $type=NULL ) {
-        $this->sqlObj->prepOrQuote( $val, $type, $col );
-        return $this->whereRaw( $col, $val, $rel, $type );
+        $this->sqlObj->where( $col, $val, $rel, $type );
+        return $this;
     }
 
     /**
@@ -241,8 +242,7 @@ class Sql
      * @return Sql
      */
     public function whereRaw( $col, $val, $rel='=' ) {
-        $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => 'AND' );
-        $this->sqlObj->where[] = $where;
+        $this->sqlObj->whereRaw( $col, $val, $rel );
         return $this;
     }
 
@@ -252,58 +252,67 @@ class Sql
      * @return Sql
      */
     public function or_() {
-        $last = array_pop( $this->sqlObj->where );
-        if( $last ) {
-            $last[ 'op' ] = 'OR';
-            array_push( $this->sqlObj->where, $last );
-        }
+        $this->sqlObj->modRaw( array( 'op' => 'OR' ) );
         return $this;
     }
-    
-    public function eq( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val, '=', $type );
+    public function w( $col ) {
+        $this->sqlObj->col( $col );
+        return $this;
     }
-    public function ne( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val, '!=', $type );
+    public function mod( $val, $rel, $type=NULL ) {
+        $mod = array( 'val' => $val, 'rel' => $rel );
+        $this->sqlObj->mod( $mod, $type );
+        return $this;
     }
-    public function lt( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val, '<', $type );
+    public function modRaw( $val, $rel ) {
+        $mod = array( 'val' => $val, 'rel' => $rel );
+        $this->sqlObj->modRaw( $mod );
+        return $this;
     }
-    public function le( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val, '<=', $type );
+    public function eq( $val, $type=NULL ) {
+        return $this->mod( $val, '=', $type );
     }
-    public function gt( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val, '>', $type );
+    public function ne( $val, $type=NULL ) {
+        return $this->mod( $val, '!=', $type );
     }
-    public function ge( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val, '>=', $type );
+    public function lt( $val, $type=NULL ) {
+        return $this->mod( $val, '<', $type );
     }
-    public function in( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val, 'IN', $type );
+    public function le( $val, $type=NULL ) {
+        return $this->mod( $val, '<=', $type );
     }
-    public function notIn( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val, 'NOT IN', $type );
+    public function gt( $val, $type=NULL ) {
+        return $this->mod( $val, '>', $type );
     }
-    public function between( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val, 'BETWEEN', $type );
+    public function ge( $val, $type=NULL ) {
+        return $this->mod( $val, '>=', $type );
     }
-    public function isNull( $col ) {
-        return $this->whereRaw( $col, '', 'IS NULL' );
+    public function in( $val, $type=NULL ) {
+        return $this->mod( $val, 'IN', $type );
     }
-    public function notNull( $col ) {
-        return $this->whereRaw( $col, '', 'NOT NULL' );
+    public function notIn( $val, $type=NULL ) {
+        return $this->mod( $val, 'NOT IN', $type );
     }
-    public function like( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val, 'LIKE', $type );
+    public function between( $val, $type=NULL ) {
+        return $this->mod( $val, 'BETWEEN', $type );
     }
-    public function contain( $col, $val, $type=NULL ) {
-        return $this->where( $col, "%{$val}%", 'LIKE', $type );
+    public function isNull() {
+        return $this->modRaw( NULL, 'IS NULL' );
     }
-    public function startWith( $col, $val, $type=NULL ) {
-        return $this->where( $col, $val.'%', 'LIKE', $type );
+    public function notNull() {
+        return $this->modRaw( NULL, 'NOT NULL' );
     }
-    public function endWith( $col, $val, $type=NULL ) {
-        return $this->where( $col, '%'.$val, 'LIKE', $type );
+    public function like( $val, $type=NULL ) {
+        return $this->mod( $val, 'LIKE', $type );
+    }
+    public function contain( $val, $type=NULL ) {
+        return $this->mod( "%{$val}%", 'LIKE', $type );
+    }
+    public function startWith( $val, $type=NULL ) {
+        return $this->mod( $val.'%', 'LIKE', $type );
+    }
+    public function endWith( $val, $type=NULL ) {
+        return $this->mod( '%'.$val, 'LIKE', $type );
     }
     /**
      * sets where. replaces where data as is.
@@ -320,7 +329,7 @@ class Sql
      * @return Sql
      */
     public function addWhere( $where ) {
-        return $this->where( $where, '', '' );
+        return $this->whereRaw( $where, '', '' );
     }
 
     /**
