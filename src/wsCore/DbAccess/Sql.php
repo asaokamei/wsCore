@@ -369,6 +369,9 @@ class Sql
         return $this->whereRaw( $col, '', 'NOT NULL' );
     }
     public function like( $col, $val, $type=NULL ) {
+        return $this->where( $col, $val, 'LIKE', $type );
+    }
+    public function contain( $col, $val, $type=NULL ) {
         return $this->where( $col, "%{$val}%", 'LIKE', $type );
     }
     public function startWith( $col, $val, $type=NULL ) {
