@@ -133,7 +133,7 @@ class SqlBuilder
     }
 
     /**
-     * @param Sql $sql
+     * @param SqlObject $sql
      * @return string
      * @throws \RuntimeException
      */
