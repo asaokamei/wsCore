@@ -66,7 +66,7 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->dba->execPrepare( $prepare );
         for( $i = 0; $i < $max; $i ++ ) {
             $values = $this->get_column_by_row( $i );
-            $this->dba->execExceute( $values );
+            $this->dba->execExecute( $values );
         }
     }
 
@@ -191,11 +191,11 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
             ':no_null' => 'never null',
         );
         $this->dba->execPrepare( $prepare );
-        $this->dba->execExceute( $values );
+        $this->dba->execExecute( $values );
         $id1 = $this->dba->lastId();
         $this->assertTrue( $id1 > 0 );
 
-        $this->dba->execExceute( $values );
+        $this->dba->execExecute( $values );
         $id2 = $this->dba->lastId();
         $this->assertNotEquals( $id2, $id1 );
         $this->assertEquals( $id2, $id1 + 1 );

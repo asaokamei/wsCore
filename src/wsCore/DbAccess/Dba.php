@@ -92,7 +92,7 @@ class Dba
     public function execSQL( $sql, $prepared=array(), $dataTypes=array() )
     {
         $this->execPrepare( $sql, $prepared );
-        $this->execExceute( $prepared, $dataTypes );
+        $this->execExecute( $prepared, $dataTypes );
         //$this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass );
         //$this->pdoStmt->setFetchMode( $this->fetchMode );
         return $this;
@@ -137,7 +137,7 @@ class Dba
      * @param array  $dataTypes    data types for the place holders.
      * @return Dba
      */
-    public function execExceute( $prepared, $dataTypes=array() ) 
+    public function execExecute( $prepared, $dataTypes=array() ) 
     {
         if( empty( $dataTypes ) ) {
             // data types are not specified. just execute the statement. 
