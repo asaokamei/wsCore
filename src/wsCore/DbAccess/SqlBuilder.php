@@ -7,7 +7,7 @@ class SqlBuilder
     //  Making SQL Statements.
     // +----------------------------------------------------------------------+
     /**
-     * @param Sql $sql
+     * @param SqlObject $sql
      * @throws \RuntimeException
      * @return string
      */
@@ -22,7 +22,7 @@ class SqlBuilder
     }
 
     /**
-     * @param Sql $sql
+     * @param SqlObject $sql
      * @return string
      * @throws \RuntimeException
      */
@@ -40,7 +40,7 @@ class SqlBuilder
     }
 
     /**
-     * @param Sql $sql
+     * @param SqlObject $sql
      * @return string
      * @throws \RuntimeException
      */
@@ -105,7 +105,7 @@ class SqlBuilder
     }
     
     /**
-     * @param Sql $sql
+     * @param SqlObject $sql
      * @return string
      */
     public static function makeCount( $sql )
@@ -119,7 +119,7 @@ class SqlBuilder
     }
 
     /**
-     * @param Sql $sql
+     * @param SqlObject $sql
      * @return string
      */
     public static function makeSelect( $sql )

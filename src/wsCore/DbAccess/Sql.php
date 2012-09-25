@@ -1,6 +1,18 @@
 <?php
 namespace wsCore\DbAccess;
 
+/*
+which is more cool?
+
+$sql->table( 'table' )->where( 'id', 10 )->select();
+
+$sql->table( 'table' )->w( 'id' )->eq( 10 )->select();
+$sql->table( 'table' )->w( 'id' )->le( 10 )->select();
+$sql->table( 'table' )->w( 'name' )->startWith( 'WScore' )->select();
+$sql->table( 'table' )->w( 'name' )->isNull()->select();
+
+
+*/
 class Sql
 {
     // public variables to represent sql statement.
@@ -10,48 +22,8 @@ class Sql
     /** @var string           name of id (primary key)  */
     var $id_name = 'id';
 
-    /** @var array            join for table            */
-    var $join = array();
-
-    /** @var string|array     columns to select in array or string     */
-    var $columns;
-
-    /** @var array            values for insert/update in array        */
-    var $values = array();
-
-    /** @var array            sql functions for insert/update          */
-    var $functions = array();
-
-    /** @var array            data to insert/update. from $values and $functions */
-    var $rowData   = array();
-
-    /** @var string */
-    var $order;
-
-    /** @var array|string */
-    var $where;
-
-    /** @var string */
-    var $group;
-
-    /** @var string */
-    var $having;
-
-    /** @var string */
-    var $misc;
-
-    /** @var bool|int */
-    var $limit = FALSE;
-
-    /** @var int */
-    var $offset = 0;
-
-    /** @var bool */
-    var $distinct = FALSE;
-
-    /** @var bool */
-    var $forUpdate = FALSE;
-
+    protected $sqlObj = NULL;
+    
     /** @var array    stores prepared values and holder name */
     var $prepared_values = array();
     
@@ -77,6 +49,7 @@ class Sql
      */
     public function __construct( $dba=NULL ) {
         $this->dba = ( $dba ) ?: NULL;
+        $this->sqlObj = new SqlObject();
     }
 
     public function setDba( $dba ) {
@@ -89,7 +62,8 @@ class Sql
      * @return Sql
      */
     public function clear() {
-        return new self( $this->dba );
+        $this->sqlObj = new SqlObject();
+        return $this;
     }
 
     /**
@@ -130,7 +104,7 @@ class Sql
     public function prepOrQuote( &$val, $type=NULL, $col=NULL )
     {
         $pqType = ( $this->prepQuoteUseType )?: static::$pqDefault;
-        $this->$pqType( $val, $type );
+        $this->$pqType( $val, $type, $col );
         return $this;
     }
 
@@ -217,8 +191,8 @@ class Sql
      * @return Sql
      */
     public function table( $table, $id_name='id' ) {
-        $this->table = $table;
-        $this->id_name = $id_name;
+        $this->table = $this->sqlObj->table = $table;
+        $this->id_name = $this->sqlObj->id_name = $id_name;
         return $this;
     }
 
@@ -227,7 +201,7 @@ class Sql
      * @return Sql
      */
     public function column( $column ) {
-        $this->columns = $column;
+        $this->sqlObj->columns = $column;
         return $this;
     }
 
@@ -237,7 +211,7 @@ class Sql
      * @return Sql
      */
     public function values( $values ) {
-        $this->values = $values;
+        $this->sqlObj->values = $values;
         return $this;
     }
 
@@ -248,27 +222,27 @@ class Sql
      * @return Sql
      */
     public function functions( $func ) {
-        $this->functions = $func;
+        $this->sqlObj->functions = $func;
         return $this;
     }
     public function order( $order ) {
-        $this->order = $order;
+        $this->sqlObj->order = $order;
         return $this;
     }
     public function group( $group ) {
-        $this->group = $group;
+        $this->sqlObj->group = $group;
         return $this;
     }
     public function misc( $misc ) {
-        $this->misc = $misc;
+        $this->sqlObj->misc = $misc;
         return $this;
     }
     public function limit( $limit ) {
-        $this->limit  = ( $limit  ) ? $limit : FALSE;
+        $this->sqlObj->limit  = ( $limit  ) ? $limit : FALSE;
         return $this;
     }
     public function offset( $offset ) {
-        $this->offset = ( is_numeric( $offset ) ) ? $offset: 0;
+        $this->sqlObj->offset = ( is_numeric( $offset ) ) ? $offset: 0;
         return $this;
     }
 
@@ -277,7 +251,7 @@ class Sql
      * @return Sql
      */
     public function distinct(){
-        $this->distinct = TRUE;
+        $this->sqlObj->distinct = TRUE;
         return $this;
     }
 
@@ -286,7 +260,7 @@ class Sql
      * @return Sql
      */
     public function forUpdate() {
-        $this->forUpdate = TRUE;
+        $this->sqlObj->forUpdate = TRUE;
         return $this;
     }
 
@@ -301,7 +275,7 @@ class Sql
      * @return Sql
      */
     public function join( $table, $join, $by=NULL, $columns=NULL ) {
-        $this->join[] = "{$join} {$table}" . ($by)? " {$by}( {$columns} )": '';
+        $this->sqlObj->join[] = "{$join} {$table}" . ($by)? " {$by}( {$columns} )": '';
         return $this;
     }
     public function joinUsing( $table, $columns ) {
@@ -343,7 +317,7 @@ class Sql
      */
     public function whereRaw( $col, $val, $rel='=' ) {
         $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => 'AND' );
-        $this->where[] = $where;
+        $this->sqlObj->where[] = $where;
         return $this;
     }
 
@@ -353,10 +327,10 @@ class Sql
      * @return Sql
      */
     public function or_() {
-        $last = array_pop( $this->where );
+        $last = array_pop( $this->sqlObj->where );
         if( $last ) {
             $last[ 'op' ] = 'OR';
-            array_push( $this->where, $last );
+            array_push( $this->sqlObj->where, $last );
         }
         return $this;
     }
@@ -409,7 +383,7 @@ class Sql
      * @return Sql
      */
     public function setWhere( $where ) {
-        $this->where = $where;
+        $this->sqlObj->where = $where;
         return $this;
     }
 
@@ -425,7 +399,7 @@ class Sql
      * @return Sql
      */
     public function clearWhere() {
-        $this->where = NULL;
+        $this->sqlObj->where = array();
         return $this;
     }
     // +----------------------------------------------------------------------+
@@ -479,28 +453,28 @@ class Sql
     public function makeSQL( $type )
     {
         $type = 'make' . strtoupper( $type );
-        return $this->$type( $this );
+        return $this->$type();
     }
     public function makeSelect() {
-        $this->sql = SqlBuilder::makeSelect( $this );
+        $this->sql = SqlBuilder::makeSelect( $this->sqlObj );
         return $this;
     }
     public function makeCount() {
-        $this->sql = SqlBuilder::makeCount( $this );
+        $this->sql = SqlBuilder::makeCount( $this->sqlObj );
         return $this;
     }
     public function makeDelete() {
-        $this->sql = SqlBuilder::makeDelete( $this );
+        $this->sql = SqlBuilder::makeDelete( $this->sqlObj );
         return $this;
     }
     public function makeInsert() {
         $this->processValues();
-        $this->sql = SqlBuilder::makeInsert( $this );
+        $this->sql = SqlBuilder::makeInsert( $this->sqlObj );
         return $this;
     }
     public function makeUpdate() {
         $this->processValues();
-        $this->sql = SqlBuilder::makeUpdate( $this );
+        $this->sql = SqlBuilder::makeUpdate( $this->sqlObj );
         return $this;
     }
 
@@ -513,18 +487,18 @@ class Sql
      */
     public function processValues()
     {
-        if( !empty( $this->values ) )
-        foreach( $this->values as $key => $val ) {
+        if( !empty( $this->sqlObj->values ) )
+        foreach( $this->sqlObj->values as $key => $val ) {
             if( $val === NULL ) {
-                $this->functions[ $key ] = 'NULL';
-                unset( $this->values[ $key ] );
+                $this->sqlObj->functions[ $key ] = 'NULL';
+                unset( $this->sqlObj->values[ $key ] );
             }
         }
-        $values = $this->values;
+        $values = $this->sqlObj->values;
         foreach( $values as $col => &$val ) {
             $this->prepOrQuote( $val, NULL, $col );
         }
-        $this->rowData = array_merge( $this->functions, $values );
+        $this->sqlObj->rowData = array_merge( $this->sqlObj->functions, $values );
         return $this;
     }
     // +----------------------------------------------------------------------+
