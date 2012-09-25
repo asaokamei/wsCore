@@ -105,7 +105,7 @@ class Dba
      */
     public function exec()
     {
-        return $this->execSQL( $this->sql->sql, $this->sql->prepared_values, $this->sql->prepared_types );
+        return $this->execSQL( $this->sql->sql, $this->sql->sqlObj->prepared_values, $this->sql->sqlObj->prepared_types );
     }
 
     /**
