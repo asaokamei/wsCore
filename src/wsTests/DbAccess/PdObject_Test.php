@@ -9,9 +9,12 @@ class PdObjectData extends \stdClass {}
 class PdObject_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
+    
     /** @var \wsCore\DbAccess\PdObject */
     var $pdo = NULL;
+    
     var $table = 'test_wsCore';
+    
     var $column_list = '';
     // +----------------------------------------------------------------------+
     public function setUp()
@@ -97,6 +100,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
         $class = 'wsTests\DbAccess\PdObjectData';
         $this->fill_columns( $max );
         $this->pdo->setFetchMode( \PDO::FETCH_CLASS, $class );
+        /** @var $ret \PdoStatement */
         $ret = $this->pdo->exec( "SELECT * FROM {$this->table};" );
         
         $fetched = $ret->fetch();
@@ -113,6 +117,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     {
         $max = 1;
         $this->fill_columns( $max );
+        /** @var $ret \PdoStatement */
         $ret = $this->pdo->exec( "SELECT * FROM {$this->table};" );
 
         $fetched = $ret->fetch( \PDO::FETCH_OBJ );
@@ -130,6 +135,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
         $this->fill_columns( $max );
 
         // get all data
+        /** @var $ret \PdoStatement */
         $ret = $this->pdo->exec( "SELECT * FROM {$this->table};" );
 
         // check fetchNumRow
@@ -148,6 +154,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
         $this->fill_columns( $max );
 
         // get all data
+        /** @var $ret \PdoStatement */
         $ret = $this->pdo->exec( "SELECT * FROM {$this->table};" );
 
         // check fetchNumRow
@@ -182,6 +189,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue( $id1 > 0 );
         
         $select = "SELECT * FROM {$this->table} WHERE id='{$id1}'";
+        /** @var $ret \PdoStatement */
         $ret = $this->pdo->exec( $select );
         $result = $ret->fetch();
         foreach( $values as $key => $val ) {
@@ -200,6 +208,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( '1', $id );
         
         $select = "SELECT * FROM {$this->table} WHERE id='{$id}'";
+        /** @var $ret \PdoStatement */
         $ret = $this->pdo->exec( $select );
         $result = $ret->fetch();
         $data[ ':id' ] = $id;
