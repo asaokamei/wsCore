@@ -63,6 +63,61 @@ class Query_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( "SELECT * FROM {$table} OFFSET 5", $this->pdo->sql );
     }
     // +----------------------------------------------------------------------+
+    public function test_where_w_and_like()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->like( '%val%' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a LIKE :db_prep_1", $this->pdo->sql );
+        // add one more where clause
+        $this->query->table( $table )->w( 'x' )->like( '%string%' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a LIKE :db_prep_1 "
+            . "AND x LIKE :db_prep_2", $this->pdo->sql );
+    }
+    public function test_where_w_and_notNull()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->notNull( array('b','c') )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a IS NOT NULL", $this->pdo->sql );
+        // add one more where clause
+        $this->query->table( $table )->w( 'x' )->notNull( array( 'y', 'z' ) )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a IS NOT NULL "
+            . "AND x IS NOT NULL", $this->pdo->sql );
+    }
+    public function test_where_w_and_isNull()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->isNull( array('b','c') )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a IS NULL", $this->pdo->sql );
+        // add one more where clause
+        $this->query->table( $table )->w( 'x' )->isNull( array( 'y', 'z' ) )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a IS NULL "
+            . "AND x IS NULL", $this->pdo->sql );
+    }
+    public function test_where_w_and_between()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->between( array('b','c') )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a BETWEEN :db_prep_1 AND :db_prep_2", $this->pdo->sql );
+        // add one more where clause
+        $this->query->table( $table )->w( 'x' )->between( array( 'y', 'z' ) )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a BETWEEN :db_prep_1 AND :db_prep_2 "
+            . "AND x BETWEEN :db_prep_3 AND :db_prep_4", $this->pdo->sql );
+    }
+    public function test_where_w_and_notIn()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->notIn( array('b') )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a NOT IN ( :db_prep_1 )", $this->pdo->sql );
+        // add one more where clause
+        $this->query->table( $table )->w( 'x' )->notIn( array( 'y', 'z' ) )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a NOT IN ( :db_prep_1 ) "
+            . "AND x NOT IN ( :db_prep_2, :db_prep_3 )", $this->pdo->sql );
+    }
     public function test_where_w_and_in()
     {
         // test setting column in select

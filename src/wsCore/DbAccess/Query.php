@@ -384,7 +384,7 @@ class Query
         return $this->modRaw( NULL, 'IS NULL' );
     }
     public function notNull() {
-        return $this->modRaw( NULL, 'NOT NULL' );
+        return $this->modRaw( NULL, 'IS NOT NULL' );
     }
     public function like( $val, $type=NULL ) {
         return $this->mod( $val, 'LIKE', $type );

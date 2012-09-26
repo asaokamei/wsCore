@@ -88,7 +88,7 @@ class SqlBuilder
     {
         $where = '';
         $rel = strtoupper( $rel );
-        if( $rel == 'IN' ) {
+        if( $rel == 'IN' || $rel == 'NOT IN' ) {
             $tmp = is_array( $val ) ? implode( ", ", $val ): "{$val}";
             $val = "( " . $tmp . " )";
         }
