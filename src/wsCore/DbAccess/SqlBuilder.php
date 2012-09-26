@@ -89,7 +89,8 @@ class SqlBuilder
         $where = '';
         $rel = strtoupper( $rel );
         if( $rel == 'IN' ) {
-            $val = "( " . is_array( $val ) ? implode( ", ", $val ): "{$val}" . " )";
+            $tmp = is_array( $val ) ? implode( ", ", $val ): "{$val}";
+            $val = "( " . $tmp . " )";
         }
         elseif( $rel == 'BETWEEN' ) {
             $val = "{$val{0}} AND {$val{1}}";

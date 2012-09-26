@@ -26,6 +26,104 @@ class Query_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $values[ $name ], $val1 );
     }
     // +----------------------------------------------------------------------+
+    public function test_select_with_many_option()
+    {
+        $table = 'testTable';
+        $this->query->table( $table )->select();
+        $this->assertEquals( "SELECT * FROM {$table}", $this->pdo->sql );
+    }
+    public function test_select_with_order()
+    {
+        $table = 'testTable';
+        $this->query->table( $table )->order( 'test order' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} ORDER BY test order", $this->pdo->sql );
+    }
+    public function test_select_with_group()
+    {
+        $table = 'testTable';
+        $this->query->table( $table )->group( 'test group' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} GROUP BY test group", $this->pdo->sql );
+    }
+    public function test_select_with_misc()
+    {
+        $table = 'testTable';
+        $this->query->table( $table )->misc( 'test misc' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} test misc", $this->pdo->sql );
+    }
+    public function test_select_with_limit()
+    {
+        $table = 'testTable';
+        $this->query->table( $table )->limit(10)->select();
+        $this->assertEquals( "SELECT * FROM {$table} LIMIT 10", $this->pdo->sql );
+    }
+    public function test_select_with_offset()
+    {
+        $table = 'testTable';
+        $this->query->table( $table )->offset(5)->select();
+        $this->assertEquals( "SELECT * FROM {$table} OFFSET 5", $this->pdo->sql );
+    }
+    // +----------------------------------------------------------------------+
+    public function test_where_w_and_in()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->in( array('b') )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a IN ( :db_prep_1 )", $this->pdo->sql );
+        // add one more where clause
+        $this->query->table( $table )->w( 'x' )->in( array( 'y', 'z' ) )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a IN ( :db_prep_1 ) " 
+            . "AND x IN ( :db_prep_2, :db_prep_3 )", $this->pdo->sql );
+    }
+    public function test_where_w_and_ge()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->ge( 'b' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a >= :db_prep_1", $this->pdo->sql );
+        // add one more where clause
+        $this->query->table( $table )->w( 'x' )->ge( 'z' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a >= :db_prep_1 AND x >= :db_prep_2", $this->pdo->sql );
+    }
+    public function test_where_w_and_gt()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->gt( 'b' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a > :db_prep_1", $this->pdo->sql );
+        // add one more where clause
+        $this->query->w( 'x' )->gt( 'z' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a > :db_prep_1 AND x > :db_prep_2", $this->pdo->sql );
+    }
+    public function test_where_w_and_le()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->le( 'b' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a <= :db_prep_1", $this->pdo->sql );
+        // add one more where clause
+        $this->query->table( $table )->w( 'x' )->le( 'z' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a <= :db_prep_1 AND x <= :db_prep_2", $this->pdo->sql );
+    }
+    public function test_where_w_and_lt()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->lt( 'b' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a < :db_prep_1", $this->pdo->sql );
+        // add one more where clause
+        $this->query->table( $table )->w( 'x' )->lt( 'z' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a < :db_prep_1 AND x < :db_prep_2", $this->pdo->sql );
+    }
+    public function test_where_w_and_ne()
+    {
+        // test setting column in select
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'a' )->ne( 'b' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a != :db_prep_1", $this->pdo->sql );
+        // add one more where clause
+        $this->query->table( $table )->w( 'x' )->ne( 'z' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE a != :db_prep_1 AND x != :db_prep_2", $this->pdo->sql );
+    }
     public function test_where_clause_where()
     {
         // check setting table name
