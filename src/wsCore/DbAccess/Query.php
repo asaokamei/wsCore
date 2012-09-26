@@ -11,7 +11,7 @@ class Query
     /** @var \PdoStatement               PDO statement obj   */
     protected $pdoStmt = NULL;
 
-    // variables to build sql statement.
+    // variables to build SQL statement.
 
     /** @var null|\wsCore\DbAccess\SqlObject                 */
     protected $sqlObj = NULL;
@@ -45,7 +45,7 @@ class Query
      */
     public function __construct( $pdoObj=NULL ) {
         $this->pdoObj = $pdoObj;
-        $this->sqlObj = $this->clear();
+        $this->clear();
     }
 
     /**
