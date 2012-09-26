@@ -31,8 +31,8 @@ with different id.
 The id for the Pdo can be used for automated dependency injection
 as indicated in the constructor annotation.
 
-Dba, Object for DataBase Access
--------------------------------
+Query Class
+-----------
 
 DataBase Access class; a core object for the DbAccess family.
 
@@ -57,11 +57,33 @@ Active Record design pattern implementation added to DataRecord object.
 Other Classes
 -------------
 
+###PdObject
+
+A thin layer of Pdo wrapper. 
+
+its responsibilities are:
+*   easily executing prepared statement, 
+*   use bindValue if parameter type is present, 
+*   manage fetch mode, 
+
+and some more. 
+
+And for future, PdObject will have PdoLogger class wrapped in 
+development mode. 
+
+###SqlObject
+
+A small class to keep SQL statement information, such as table, where 
+clause, etc. as its properties. 
+
+SqlObject is constructed inside Query object, and passed to SqlBuilder 
+to build SQL statements. 
+
 ###SqlBuilder
 
-static class to build SQL statement from Sql object. 
+A static class to build SQL statement from SqlObject. 
 
-    $sqlStatement = SqlBuilder::makeSelect( $sql );
+    $sqlStatement = SqlBuilder::makeSelect( $sqlObj );
 
 accepts array as well.
 
@@ -71,13 +93,6 @@ accepts array as well.
         'distinct' => TRUE
     );
     $sqlStatement = SqlBuilder::makeSelect( $sql );
-
-###Sql
-
-a class to create SQL statement dynamically. 
-uses SqlBuilder to create SQL statement.
-
-This class goes intertingle with Dba object.
 
 ###Rdb
 
