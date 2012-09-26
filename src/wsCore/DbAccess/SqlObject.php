@@ -70,6 +70,9 @@ class SqlObject
     /** @var \Pdo */
     public $pdoObj = NULL;
 
+    public function __construct( $pdoObj=NULL ) {
+        $this->pdoObj = $pdoObj;
+    }
     // +----------------------------------------------------------------------+
     //  building where clause. 
     // +----------------------------------------------------------------------+

@@ -33,6 +33,9 @@ class Query
 
     /** @var string           default prepare/quote          */
     public static $pqDefault = 'prepare';
+
+    /** @var SqlObject   SqlObject class    */
+    public $sqlObject = '\wsCore\DbAccess\SqlObject';
     // +----------------------------------------------------------------------+
     //  Construction and Managing Dba Object.
     // +----------------------------------------------------------------------+
@@ -42,7 +45,7 @@ class Query
      */
     public function __construct( $pdoObj=NULL ) {
         $this->pdoObj = $pdoObj;
-        $this->sqlObj = new SqlObject();
+        $this->sqlObj = $this->clear();
     }
 
     /**
@@ -52,8 +55,8 @@ class Query
      * @return Query
      */
     public function clear() {
-        $this->sqlObj = new SqlObject();
-        $this->sqlObj->pdoObj = $this->pdoObj;
+        $class = $this->sqlObject;
+        $this->sqlObj = new $class( $this->pdoObj );
         $this->sqlObj->prepQuoteUseType = ( $this->prepQuoteUseType ) ?: static::$pqDefault;
         $this->sqlObj->col_data_types = $this->col_data_types;
         return $this;
