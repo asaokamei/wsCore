@@ -1,76 +1,111 @@
 <?php
 namespace wsCore\DbAccess;
 
-/*
-which is more cool?
-
-$sql->table( 'table' )->where( 'id', 10 )->select();
-
-$sql->table( 'table' )->w( 'id' )->eq( 10 )->select();
-$sql->table( 'table' )->w( 'id' )->le( 10 )->select();
-$sql->table( 'table' )->w( 'name' )->startWith( 'WScore' )->select();
-$sql->table( 'table' )->w( 'name' )->isNull()->select();
-
-
-*/
-class Sql
+class Query
 {
-    // public variables to represent sql statement.
-    /** @var string           name of database table    */
-    var $table;
-    
-    /** @var string           name of id (primary key)  */
-    var $id_name = 'id';
+    // PdObject for executing and fetching result from DB.
 
-    public $sqlObj = NULL;
-    
-    /** @var array    stores data types of columns           */
-    var $col_data_types = array();
-    
+    /** @var PdObject                   PDO object           */
+    protected $pdoObj  = NULL;
+
+    /** @var \PdoStatement               PDO statement obj   */
+    protected $pdoStmt = NULL;
+
+    // variables to build sql statement.
+
+    /** @var null|\wsCore\DbAccess\SqlObject                 */
+    protected $sqlObj = NULL;
+
     /** @var string   SQL Statement created by this class    */
-    var $sql = '';
+    protected $sql = '';
 
-    /** @var Dba      DataBase Access object                 */
-    private $dba;
+    /** @var string           name of database table         */
+    protected $table;
+    
+    /** @var string           name of id (primary key)       */
+    protected $id_name = 'id';
 
+    /** @var array            stores data types of columns   */
+    var $col_data_types = array();
+
+    /** @var null             prepare/quote? null default    */
     public $prepQuoteUseType = NULL;
+
+    /** @var string           default prepare/quote          */
     public static $pqDefault = 'prepare';
     // +----------------------------------------------------------------------+
     //  Construction and Managing Dba Object.
     // +----------------------------------------------------------------------+
     /**
-     * @param Dba $dba
+     * @param PdObject $pdoObj
+     * @DimInjection  Get   PdObject
      */
-    public function __construct( $dba=NULL ) {
-        $this->dba = ( $dba ) ?: NULL;
+    public function __construct( $pdoObj=NULL ) {
+        $this->pdoObj = $pdoObj;
         $this->sqlObj = new SqlObject();
     }
 
-    public function setDba( $dba ) {
-        $this->dba = $dba;
-    }
     /**
      * clear returns brand new Sql object, instead of using
      * the same object and reset all variables.
      *
-     * @return Sql
+     * @return Query
      */
     public function clear() {
         $this->sqlObj = new SqlObject();
-        $this->sqlObj->pdoObj = $this->dba->pdoObj;
+        $this->sqlObj->pdoObj = $this->pdoObj;
         $this->sqlObj->prepQuoteUseType = ( $this->prepQuoteUseType ) ?: static::$pqDefault;
         $this->sqlObj->col_data_types = $this->col_data_types;
         return $this;
+    }
+
+    // +----------------------------------------------------------------------+
+    //  executing with PdObject
+    // +----------------------------------------------------------------------+
+    /**
+     * @param $mode
+     * @param null $class
+     * @return Query
+     */
+    public function setFetchMode( $mode, $class=NULL ) {
+        $this->pdoObj->setFetchMode( $mode, $class );
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function lastId() {
+        return $this->pdoObj->lastId();
+    }
+
+    /**
+     * @param string $table
+     * @return Query
+     */
+    public function lockTable( $table=NULL ) {
+        $table = ( $table )?: $this->table;
+        $this->pdoObj->lockTable( $table );
+        return $this;
+    }
+
+    /**
+     * get driver name, such as mysql, sqlite, pgsql.
+     * @return string
+     */
+    public function getDriverName() {
+        return $this->pdoObj->getDriverName();
     }
 
     /**
      * executes SQL statement.
      *
      * @throws \RuntimeException
-     * @return Dba
+     * @return Query
      */
     public function exec() {
-        return $this->dba->execSQL( $this->sql, $this->sqlObj->prepared_values, $this->sqlObj->prepared_types );
+        $this->execSQL( $this->sql, $this->sqlObj->prepared_values, $this->sqlObj->prepared_types );
+        return $this;
     }
 
     /**
@@ -80,17 +115,63 @@ class Sql
      * @param array $prepared
      * @param array $dataType
      * @throws \RuntimeException
-     * @return Dba
+     * @return Query
      */
     public function execSQL( $sql=NULL, $prepared=array(), $dataType=array() ) {
-        if( !$this->dba ) throw new \RuntimeException( 'DbAccess object not set to perform this method.' );
-        $this->dba->execSQL( $sql, $prepared, $dataType );
-        return $this->dba;
+        if( !$this->pdoObj ) throw new \RuntimeException( 'Pdo Object not set.' );
+        $this->pdoStmt = $this->pdoObj->exec( $sql, $prepared, $dataType );
+        return $this;
+    }
+    // +----------------------------------------------------------------------+
+    //  Getting result from PdoStatement.
+    // +----------------------------------------------------------------------+
+    /**
+     * @return int|null
+     */
+    public function numRows() {
+        if( is_numeric( $this->pdoStmt ) ) {
+            return $this->pdoStmt;
+        }
+        return $this->pdoStmt->rowCount();
+    }
+
+    /**
+     * @return int|null
+     */
+    public function fetchNumRow() {
+        return $this->numRows();
+    }
+
+    /**
+     * @return array
+     */
+    public function fetchAll() {
+        if( is_object( $this->pdoStmt ) ) {
+            return $this->pdoStmt;
+        }
+        return array();
+    }
+
+    /**
+     * @param int $row
+     * @throws \RuntimeException
+     * @return array|mixed
+     */
+    public function fetchRow( $row=0 ) {
+        if( is_object( $this->pdoStmt ) ) {
+            if( $row > 0 ) {
+                $driver = $this->getDriverName();
+                if( $driver == 'mysql' || $driver == 'sqlite' ) {
+                    throw new \RuntimeException( "Cannot fetch with offset for ".$driver );
+                }
+            }
+            return $this->pdoStmt->fetch( \PDO::FETCH_ASSOC, \PDO::FETCH_ORI_ABS, $row );
+        }
+        return array();
     }
     // +----------------------------------------------------------------------+
     //  Quoting and Preparing Values for Prepared Statement.
     // +----------------------------------------------------------------------+
-    
     /**
      * @param string $val
      * @return mixed
@@ -114,7 +195,7 @@ class Sql
     /**
      * @param string $table
      * @param string $id_name
-     * @return Sql
+     * @return Query
      */
     public function table( $table, $id_name='id' ) {
         $this->table = $this->sqlObj->table = $table;
@@ -124,7 +205,7 @@ class Sql
 
     /**
      * @param string|array $column
-     * @return Sql
+     * @return Query
      */
     public function column( $column ) {
         $this->sqlObj->columns = $column;
@@ -134,7 +215,7 @@ class Sql
     /**
      * set values for INSERT or UPDATE.
      * @param array $values
-     * @return Sql
+     * @return Query
      */
     public function values( $values ) {
         $this->sqlObj->values = $values;
@@ -145,7 +226,7 @@ class Sql
      * set SQL functions for INSERT or UPDATE. The functions are not 'prepared'.
      * TODO: find better name than functions??? how about rawValue?
      * @param $func
-     * @return Sql
+     * @return Query
      */
     public function functions( $func ) {
         $this->sqlObj->functions = $func;
@@ -174,7 +255,7 @@ class Sql
 
     /**
      * creates SELECT DISTINCT statement.
-     * @return Sql
+     * @return Query
      */
     public function distinct(){
         $this->sqlObj->distinct = TRUE;
@@ -183,7 +264,7 @@ class Sql
 
     /**
      * creates SELECT for UPDATE statement.
-     * @return Sql
+     * @return Query
      */
     public function forUpdate() {
         $this->sqlObj->forUpdate = TRUE;
@@ -198,7 +279,7 @@ class Sql
      * @param $join
      * @param null $by
      * @param null $columns
-     * @return Sql
+     * @return Query
      */
     public function join( $table, $join, $by=NULL, $columns=NULL ) {
         $this->sqlObj->join[] = "{$join} {$table}" . ($by)? " {$by}( {$columns} )": '';
@@ -226,7 +307,7 @@ class Sql
      * @param string $val
      * @param string $rel
      * @param null|string|bool   $type
-     * @return Sql
+     * @return Query
      */
     public function where( $col, $val, $rel='=', $type=NULL ) {
         $this->sqlObj->where( $col, $val, $rel, $type );
@@ -239,7 +320,7 @@ class Sql
      * @param        $col
      * @param        $val
      * @param string $rel
-     * @return Sql
+     * @return Query
      */
     public function whereRaw( $col, $val, $rel='=' ) {
         $this->sqlObj->whereRaw( $col, $val, $rel );
@@ -249,7 +330,7 @@ class Sql
     /**
      * sets OR operation for the last where statement data. 
      * 
-     * @return Sql
+     * @return Query
      */
     public function or_() {
         $this->sqlObj->modRaw( array( 'op' => 'OR' ) );
@@ -317,7 +398,7 @@ class Sql
     /**
      * sets where. replaces where data as is.
      * @param string $where
-     * @return Sql
+     * @return Query
      */
     public function setWhere( $where ) {
         $this->sqlObj->where = $where;
@@ -326,14 +407,14 @@ class Sql
 
     /**
      * @param string $where
-     * @return Sql
+     * @return Query
      */
     public function addWhere( $where ) {
         return $this->whereRaw( $where, '', '' );
     }
 
     /**
-     * @return Sql
+     * @return Query
      */
     public function clearWhere() {
         $this->sqlObj->where = array();
@@ -378,7 +459,7 @@ class Sql
      * makes SQL statement. $types are:
      * INSERT, UPDATE, DELETE, COUNT, SELECT.
      * @param $type
-     * @return Sql
+     * @return Query
      */
     public function makeSQL( $type )
     {
@@ -413,7 +494,7 @@ class Sql
      * it will not be treated as prepared value, instead it is
      * set to SQL's NULL value.
      *
-     * @return Sql
+     * @return Query
      */
     public function processValues()
     {
