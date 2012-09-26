@@ -452,7 +452,7 @@ class Query
      * @return string
      */
     public function count() {
-        return $this->makeCount()->exec()->stmt()->fetchColumn(0);
+        return $this->makeCount()->exec()->pdoStmt->fetchColumn(0);
     }
 
     /**
