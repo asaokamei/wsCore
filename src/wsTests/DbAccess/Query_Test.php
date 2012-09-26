@@ -73,6 +73,24 @@ class Query_Test extends \PHPUnit_Framework_TestCase
         $this->checkUpdateContainsVal( $this->pdo->sql, 'col1', $values, $this->pdo->prep );
         $this->checkUpdateContainsVal( $this->pdo->sql, 'colZero', $values, $this->pdo->prep );
     }
+    // +----------------------------------------------------------------------+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function test_simple_delete_no_where()
+    {
+        // check setting table name
+        $table = 'testTable';
+        $this->query->table( $table )->makeDelete()->exec();
+    }
+    public function test_simple_delete()
+    {
+        // check setting table name
+        $table = 'testTable';
+        $this->query->table( $table )->w( 'id' )->eq(10)->makeDelete()->exec();
+        $this->assertContains( $table, $this->pdo->sql );
+        $this->assertEquals( "DELETE FROM {$table} WHERE id = :db_prep_1", $this->pdo->sql );
+    }
     public function test_simple_update_statement()
     {
         // check setting table name
@@ -89,15 +107,44 @@ class Query_Test extends \PHPUnit_Framework_TestCase
         $this->assertContains( "col1=:db_prep_1", $this->pdo->sql );
         $this->assertContains( "col2=:db_prep_2", $this->pdo->sql );
     }
+    public function test_simple_update_statement2()
+    {
+        // check setting table name
+        $table = 'testTable';
+        $values = array( 'col1' => 'val1', 'col2' => 'val2' );
+        $this->query->table( $table )->update( $values );
+
+        // check SQL statement
+        $this->assertContains( "UPDATE {$table} SET ", $this->pdo->sql );
+        foreach( $this->pdo->prep as $key => $val ) {
+            $this->assertContains( $key, $this->pdo->sql );
+            $this->assertContains( $val, $values );
+        }
+        $this->assertContains( "col1=:db_prep_1", $this->pdo->sql );
+        $this->assertContains( "col2=:db_prep_2", $this->pdo->sql );
+    }
     public function test_simple_insert_statement()
     {
         $table = 'testTable';
         $this->query->table( $table );
         // check INSERT
         $values = array( 'col1' => 'val1', 'col2' => 'val2' );
-        $this->query->values( $values );
-        $this->query->makeInsert();
-        $this->query->exec();
+        $this->query->values( $values )->makeInsert()->exec();
+
+        // check SQL statement
+        $this->assertContains( "INSERT INTO {$table} ( col1, col2 ) VALUES (", $this->pdo->sql );
+        foreach( $this->pdo->prep as $key => $val ) {
+            $this->assertContains( $key, $this->pdo->sql );
+            $this->assertContains( $val, $values );
+        }
+    }
+    public function test_simple_insert_statement2()
+    {
+        $table = 'testTable';
+        $this->query->table( $table );
+        // check INSERT
+        $values = array( 'col1' => 'val1', 'col2' => 'val2' );
+        $this->query->insert( $values );
 
         // check SQL statement
         $this->assertContains( "INSERT INTO {$table} ( col1, col2 ) VALUES (", $this->pdo->sql );
@@ -107,6 +154,19 @@ class Query_Test extends \PHPUnit_Framework_TestCase
         }
     }
     // +----------------------------------------------------------------------+
+    public function test_make_simple_count_statement()
+    {
+        // check setting table name
+        $table = 'testTable';
+        $this->query->table( $table );
+        $this->query->makeCount()->exec();
+        $this->assertContains( $table, $this->pdo->sql );
+        $this->assertEquals( "SELECT COUNT(*) AS wsCore__Count__ FROM {$table}", $this->pdo->sql );
+
+        // test setting column in select
+        $this->query->column( 'colA' )->makeCount()->exec();
+        $this->assertEquals( "SELECT COUNT(*) AS wsCore__Count__ FROM {$table}", $this->pdo->sql );
+    }
     public function test_make_simple_select_statement()
     {
         // check setting table name
@@ -123,6 +183,40 @@ class Query_Test extends \PHPUnit_Framework_TestCase
         // test quick select method with column
         $this->query->select( 'colX' );
         $this->assertEquals( "SELECT colX FROM {$table}", $this->pdo->sql );
+    }
+    public function test_select_for_update()
+    {
+        // check setting table name
+        $table = 'testTable';
+        $this->query->table( $table );
+        $this->query->forUpdate()->makeSelect()->exec();
+        $this->assertContains( $table, $this->pdo->sql );
+        $this->assertEquals( "SELECT * FROM {$table} FOR UPDATE", $this->pdo->sql );
+
+        // test setting column in select
+        $this->query->column( 'colA' )->makeSelect()->exec();
+        $this->assertEquals( "SELECT colA FROM {$table} FOR UPDATE", $this->pdo->sql );
+
+        // test quick select method with column
+        $this->query->select( 'colX' );
+        $this->assertEquals( "SELECT colX FROM {$table} FOR UPDATE", $this->pdo->sql );
+    }
+    public function test_select_distinct()
+    {
+        // check setting table name
+        $table = 'testTable';
+        $this->query->table( $table );
+        $this->query->distinct()->makeSelect()->exec();
+        $this->assertContains( $table, $this->pdo->sql );
+        $this->assertEquals( "SELECT DISTINCT * FROM {$table}", $this->pdo->sql );
+
+        // test setting column in select
+        $this->query->column( 'colA' )->makeSelect()->exec();
+        $this->assertEquals( "SELECT DISTINCT colA FROM {$table}", $this->pdo->sql );
+
+        // test quick select method with column
+        $this->query->select( 'colX' );
+        $this->assertEquals( "SELECT DISTINCT colX FROM {$table}", $this->pdo->sql );
     }
     // +----------------------------------------------------------------------+
 }
