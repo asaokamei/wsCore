@@ -444,7 +444,7 @@ class Query
 
     /**
      * @param array|null $column
-     * @return \wsCore\DbAccess\Dba
+     * @return \wsCore\DbAccess\Query
      */
     public function select( $column=NULL ) {
         if( $column ) $this->column( $column );

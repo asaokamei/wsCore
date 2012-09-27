@@ -25,8 +25,8 @@ class Dao
     /** @var array      for validation of inputs       */
     protected $validators = array();
 
-    /** @var \wsCore\DbAccess\Dba */
-    protected $dba;
+    /** @var Query */
+    protected $query;
 
     /** @var \wsCore\DiContainer\Dimplet */
     protected $container;
@@ -36,14 +36,14 @@ class Dao
 
     // +----------------------------------------------------------------------+
     /**
-     * @param $dba \wsCore\DbAccess\Dba
+     * @param $query Query
      * @param $container \wsCore\DiContainer\Dimplet
-     * @DimInjection Fresh DbAccess
+     * @DimInjection Fresh Query
      * @DimInjection Get   Container
      */
-    public function __construct( $dba, $container )
+    public function __construct( $query, $container )
     {
-        $this->dba = $dba;
+        $this->query = $query;
         // TODO FIX: table is stored in Sql which is recreated all the time.
         // TODO: set data types for prepared statement.
         $this->dba;
@@ -53,8 +53,8 @@ class Dao
     /**
      * @return \wsCore\DbAccess\Sql
      */
-    public function dba() {
-        return $this->dba->table( $this->table, $this->id_name );
+    public function query() {
+        return $this->query->table( $this->table, $this->id_name );
     }
 
     /**
@@ -72,7 +72,7 @@ class Dao
      * @return \PdoStatement
      */
     public function find( $id ) {
-        return $this->dba()
+        return $this->query()
             ->where( $this->id_name, $id )
             ->limit(1)
             ->exec();
@@ -89,7 +89,7 @@ class Dao
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
         $this->restrict( $values );
-        return $this->dba()
+        return $this->query()
             ->where( $this->id_name, $id )
             ->update( $values )
         ;
@@ -104,7 +104,7 @@ class Dao
     public function insertValue( &$values )
     {
         $this->restrict( $values );
-        $this->dba()
+        $this->query()
             ->insert( $values );
         if( isset( $values[ $this->id_name ] ) ) {
             $id = $values[ $this->id_name ];
@@ -121,7 +121,7 @@ class Dao
      */
     public function delete( $id )
     {
-        return $this->dba()->clearWhere()
+        return $this->query()->clearWhere()
             ->where( $this->id_name, $id )
             ->limit(1)
             ->makeSQL( 'DELETE' )
@@ -136,7 +136,7 @@ class Dao
     {
         if( isset( $values[ $this->id_name ] ) ) { unset(  $values[ $this->id_name ] ); }
         $this->insertValue( $values );
-        $id = $this->dba->lastId();
+        $id = $this->query->lastId();
         if( isset( $values[ $this->id_name ] ) ) { $values[ $this->id_name ] = $id; }
         return $id;
     }
