@@ -57,7 +57,7 @@ class PdObject
     public function exec( $sql, $prepared=array(), $dataTypes=array() )
     {
         if( !$sql ) throw new \RuntimeException( "missing Sql statement." );
-        $this->execPrepare( $sql, $prepared );
+        $this->execPrepare( $sql );
         $this->execExecute( $prepared, $dataTypes );
         return $this->pdoStmt;
     }
