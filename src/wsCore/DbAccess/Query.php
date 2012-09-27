@@ -41,7 +41,7 @@ class Query
     // +----------------------------------------------------------------------+
     /**
      * @param PdObject $pdoObj
-     * @DimInjection  Get   PdObject
+     * @DimInjection  Get   \wsCore\DbAccess\PdObject
      */
     public function __construct( $pdoObj=NULL ) {
         $this->pdoObj = $pdoObj;
@@ -125,6 +125,14 @@ class Query
         $this->pdoStmt = $this->pdoObj->exec( $sql, $prepared, $dataType );
         return $this;
     }
+    public function execPrepare( $sql ) {
+        $this->pdoObj->execPrepare( $sql );
+        return $this;
+    }
+    public function execExecute( $prepared, $dataType=array() ) {
+        $this->pdoObj->execExecute( $prepared, $dataType );
+        return $this;
+    }
     // +----------------------------------------------------------------------+
     //  Getting result from PdoStatement.
     // +----------------------------------------------------------------------+
@@ -150,7 +158,7 @@ class Query
      */
     public function fetchAll() {
         if( is_object( $this->pdoStmt ) ) {
-            return $this->pdoStmt;
+            return $this->pdoStmt->fetchAll();
         }
         return array();
     }
@@ -201,6 +209,7 @@ class Query
      * @return Query
      */
     public function table( $table, $id_name='id' ) {
+        $this->clear();
         $this->table = $this->sqlObj->table = $table;
         $this->id_name = $this->sqlObj->id_name = $id_name;
         return $this;
@@ -428,7 +437,7 @@ class Query
     // +----------------------------------------------------------------------+
     /**
      * @param array $values
-     * @return \PdoStatement
+     * @return Query
      */
     public function update( $values ) {
         return $this->values( $values )->makeUpdate()->exec();
@@ -436,7 +445,7 @@ class Query
 
     /**
      * @param array $values
-     * @return \PdoStatement
+     * @return Query
      */
     public function insert( $values ) {
         return $this->values( $values )->makeInsert()->exec();
@@ -444,7 +453,7 @@ class Query
 
     /**
      * @param array|null $column
-     * @return \wsCore\DbAccess\Query
+     * @return Query
      */
     public function select( $column=NULL ) {
         if( $column ) $this->column( $column );
