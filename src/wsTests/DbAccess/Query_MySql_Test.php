@@ -5,14 +5,14 @@ use \wsCore\Core;
 require_once( __DIR__ . '/../../autoloader.php' );
 
 /*
- * TODO: more test on Dba. and check the overall design as well.
+ * TODO: more test on Query. and check the overall design as well.
  */
 
 class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
-    /** @var \wsCore\DbAccess\Dba */
-    var $dba = NULL;
+    /** @var \wsCore\DbAccess\Query */
+    var $query = NULL;
     var $table = 'test_wsCore';
     var $column_list = '';
     // +----------------------------------------------------------------------+
@@ -22,7 +22,8 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
-        $this->dba = Core::get( '\wsCore\DbAccess\Dba');
+        /** @var \wsCore\DbAccess\Query */
+        $this->query = Core::get( 'Query');
         $this->column_list = '
             id int NOT NULL AUTO_INCREMENT,
             name CHAR(30),
@@ -49,8 +50,8 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
      */
     public function setUp_TestTable()
     {
-        $this->dba->query( "DROP TABLE IF EXISTS {$this->table};" );
-        $this->dba->query( "
+        $this->query->execSQL( "DROP TABLE IF EXISTS {$this->table};" );
+        $this->query->execSQL( "
         CREATE TABLE {$this->table} ( {$this->column_list} );
         " );
     }
@@ -63,10 +64,10 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
             VALUES
                 ( :name, :age, :bdate, :no_null );
         ";
-        $this->dba->execPrepare( $prepare );
+        $this->query->execPrepare( $prepare );
         for( $i = 0; $i < $max; $i ++ ) {
             $values = $this->get_column_by_row( $i );
-            $this->dba->execExecute( $values );
+            $this->query->execExecute( $values );
         }
     }
 
@@ -97,40 +98,20 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         $data = $this->get_value_by_row( 21 );
 
         // add some data
-        $return = $this->dba->table( $this->table )->insert( $data );
-        $this->assertEquals( 'wsCore\DbAccess\Dba', get_class( $return ) );
+        $return = $this->query->table( $this->table )->insert( $data );
+        $this->assertEquals( 'wsCore\DbAccess\Query', get_class( $return ) );
         // last ID should be 1, since it is the first data.
-        $id = $this->dba->lastId();
+        $id = $this->query->lastId();
         $this->assertEquals( '1', $id );
 
         // now check to see really added
-        $return2 = $this->dba->table( $this->table )
+        $return2 = $this->query->table( $this->table )
             ->where( 'id', $id )->select();
-        $this->assertEquals( 'wsCore\DbAccess\Dba', get_class( $return2 ) );
-    }
-    public function test_dbConnect_and_new()
-    {
-        // the original pdo object.
-        $pdo = $this->dba->pdo();
-        // reconnect with the same config. should reuse the $pdo.
-        $pdoText = "just a text";
-        $this->dba->dbConnect( $pdoText );
-        $pdo2 = $this->dba->pdo();
-
-        $this->assertNotEquals( $pdo, $pdo2 );
-        $this->assertEquals( $pdoText, $pdo2 );
-    }
-    public function test_inject_dbConnect()
-    {
-        // clude test.
-        $this->dba->dbConnect( $this );
-        $injectedPdo = $this->dba->pdo();
-        $this->assertEquals( $this, $injectedPdo );
-        $this->assertSame( $this, $injectedPdo );
+        $this->assertEquals( 'wsCore\DbAccess\Query', get_class( $return2 ) );
     }
     public function test_driver_name()
     {
-        $driver = $this->dba->getDriverName();
+        $driver = $this->query->getDriverName();
         $this->assertEquals( 'mysql', $driver );
     }
     public function test_fetchRow()
@@ -140,16 +121,16 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->fill_columns( $max );
 
         // get all data
-        $this->dba->execSQL( "SELECT * FROM {$this->table};" );
+        $this->query->execSQL( "SELECT * FROM {$this->table};" );
 
         // check fetchNumRow
-        $numRows = $this->dba->fetchNumRow();
+        $numRows = $this->query->fetchNumRow();
         $this->assertEquals( $max, $numRows );
 
         $columns = array( 'name', 'age', 'bdate', 'no_null' );
         for( $row = 0; $row < $max; $row ++ ) {
             $rowData = $this->get_column_by_row($row);
-            $fetched = $this->dba->fetchRow();
+            $fetched = $this->query->fetchRow();
             foreach( $columns as $colName ) {
                 $this->assertEquals( $fetched[$colName], $rowData[':'.$colName] );
             }
@@ -161,14 +142,14 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->fill_columns( $max );
 
         // get all data
-        $this->dba->execSQL( "SELECT * FROM {$this->table};" );
+        $this->query->execSQL( "SELECT * FROM {$this->table};" );
 
         // check fetchNumRow
-        $numRows = $this->dba->fetchNumRow();
+        $numRows = $this->query->fetchNumRow();
         $this->assertEquals( $max, $numRows );
 
         $columns = array( 'name', 'age', 'bdate', 'no_null' );
-        $allData = $this->dba->fetchAll();
+        $allData = $this->query->fetchAll();
         for( $row = 0; $row < $max; $row ++ ) {
             $rowData = $this->get_column_by_row($row);
             foreach( $columns as $colName ) {
@@ -190,13 +171,13 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
             ':bdate' => '1980-02-03',
             ':no_null' => 'never null',
         );
-        $this->dba->execPrepare( $prepare );
-        $this->dba->execExecute( $values );
-        $id1 = $this->dba->lastId();
+        $this->query->execPrepare( $prepare );
+        $this->query->execExecute( $values );
+        $id1 = $this->query->lastId();
         $this->assertTrue( $id1 > 0 );
 
-        $this->dba->execExecute( $values );
-        $id2 = $this->dba->lastId();
+        $this->query->execExecute( $values );
+        $id2 = $this->query->lastId();
         $this->assertNotEquals( $id2, $id1 );
         $this->assertEquals( $id2, $id1 + 1 );
     }
@@ -206,14 +187,14 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
             INSERT {$this->table}
                 ( name, age, bdate, no_null )
             VALUES
-                ( 'test dba', 40, '1990-01-02', 'not null' );
+                ( 'test query', 40, '1990-01-02', 'not null' );
         ";
-        $this->dba->query( $insert );
-        $id1 = $this->dba->lastId();
+        $this->query->execSQL( $insert );
+        $id1 = $this->query->lastId();
         $this->assertTrue( $id1 > 0 );
 
-        $this->dba->query( $insert );
-        $id2 = $this->dba->lastId();
+        $this->query->execSQL( $insert );
+        $id2 = $this->query->lastId();
         $this->assertNotEquals( $id2, $id1 );
         $this->assertEquals( $id2, $id1 + 1 );
     }
