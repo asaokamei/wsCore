@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class DataRecord
+class DataRecord implements \ArrayAccess
 {
     /** @var mixed         value of id. probably an integer     */
     protected $_id_         = NULL;
@@ -97,7 +97,7 @@ class DataRecord
     }
 
     // +----------------------------------------------------------------------+
-    //  get/set properties
+    //  get/set properties, and ArrayAccess
     // +----------------------------------------------------------------------+
     /**
      * store properties. for Pdo's fetch as class method. 
@@ -139,6 +139,42 @@ class DataRecord
         return $this;
     }
 
+    /**
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists( $offset ) {
+        return array_key_exists( $offset, $this->_properties_ );
+    }
+
+    /**
+     * @param mixed $offset
+     * @return mixed|null
+     */
+    public function offsetGet( $offset ) {
+        return ( array_key_exists( $offset, $this->_properties_ ) )? $this->_properties_[$offset]:NULL;
+    }
+
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet( $offset, $value )
+    {
+        if( is_null( $offset ) ) {
+            $this->_properties_ = $value;
+        }
+        else {
+            $this->_properties_[ $offset ] = $value;
+        }
+    }
+
+    /**
+     * @param mixed $offset
+     */
+    public function offsetUnset( $offset ) {
+        unset( $this->_properties_[ $offset ] );
+    }
     // +----------------------------------------------------------------------+
     //  getting Html Forms.
     // +----------------------------------------------------------------------+
