@@ -46,7 +46,7 @@ class Dao
         $this->query = $query;
         // TODO FIX: table is stored in Sql which is recreated all the time.
         // TODO: set data types for prepared statement.
-        $this->dba;
+        $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this ) );
         $this->container= $container;
     }
 
