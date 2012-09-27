@@ -5,23 +5,31 @@ Dao, Database Access Object, is a famous design pattern to access database.
 This class packs all the information necessary to access tables in a database, 
 including table name, primary key and its type, etc. 
 
-Creating Dao for Each Table
----------------------------
+Dao for Table
+-------------
 
 Extend dao for each table to set up information about its table. 
 
     MyTable extends \wsCore\DbAccess\Dao
     {
-        public function __construct() {
-            parent::__construct();
+        public function __construct( $dao=NULL ) {
+            parent::__construct( $dao );
             $this->table = 'myTable';
             $this->id_name = 'data_id';
         }
     }
     $dao = Core::get( '\path\to\MyTable' );
-    $data = $dao->dba()->findById( 10 );
 
 Core module will automatically inject $dba object into $dao. 
+
+###Dao and DataRecords
+
+the DataRecord object is used when retrieving data from dao. 
+
+    $dao  = Core::get( '\path\to\MyTable' );
+    $data = $dao->find( 10 ); // DataRecord object. 
+    $data->get( 'name' );     // will get name data
+    $data[ 'name' ];          // DataRecord implements ArrayAccess
 
 Setting Dao
 -----------
@@ -46,9 +54,9 @@ set up its properties
         }
     }
     $dao = Core::get( '\path\to\MyTable' );
-    echo $dao->propertyName( 'bdate' ); // shows 'Birthday'
+    echo $dao->popName( 'bdate' ); // shows 'Birthday'
 
-###Set Up Selectors
+###Set Up Html Selectors
 
 set up selectors for each property. 
 This will create HTML selector very easily. 
@@ -62,13 +70,17 @@ This will create HTML selector very easily.
             
             $this->selectors = array(
                 'name'     => [ 'selText', 30, 0, 'ON' ], // old style
-                'age'      => [ 'class:selText | length:5 | max:3 | ime:OFF' ], // new style
-                'bdate'    => [ 'class:selDate | starts:1942 | style:drop | default:1980-01-01' ],
+                'age'      => [ 'int',   'class:selText | length:5 | max:3 | ime:OFF' ], // new style
+                'bdate'    => [ 'date',  'class:selDate | starts:1942 | style:drop | default:1980-01-01' ],
             );
         }
     }
     $dao = Core::get( '\path\to\MyTable' );
     echo $dao->popHtml( 'Edit', 'bdate', $value, $error ); // shows selector for editing bdate. 
+    // use DataRecord
+    $data = $dao->find( 10 );
+    $data->setHtmlType( 'Edit' );
+    $data->popHtml( 'bdate' );                        // also shows selector for editing bdate. 
 
 ###Set Up Validators
 
