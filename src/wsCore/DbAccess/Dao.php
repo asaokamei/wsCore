@@ -73,9 +73,7 @@ class Dao
      */
     public function find( $id ) {
         return $this->query()
-            ->where( $this->id_name, $id )
-            ->limit(1)
-            ->exec();
+            ->where( $this->id_name, $id )->limit(1)->select();
     }
 
     /**
@@ -89,10 +87,7 @@ class Dao
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
         $this->restrict( $values );
-        return $this->query()
-            ->where( $this->id_name, $id )
-            ->update( $values )
-        ;
+        return $this->query()->where( $this->id_name, $id )->update( $values );
     }
 
     /**
@@ -104,8 +99,7 @@ class Dao
     public function insertValue( $values )
     {
         $this->restrict( $values );
-        $this->query()
-            ->insert( $values );
+        $this->query()->insert( $values );
         if( isset( $values[ $this->id_name ] ) ) {
             $id = $values[ $this->id_name ];
         }
@@ -122,10 +116,7 @@ class Dao
     public function delete( $id )
     {
         return $this->query()->clearWhere()
-            ->where( $this->id_name, $id )
-            ->limit(1)
-            ->makeSQL( 'DELETE' )
-            ->exec();
+            ->where( $this->id_name, $id )->limit(1)->makeDelete()->exec();
     }
 
     /**
@@ -182,6 +173,7 @@ class Dao
      * creates selector object based on selectors array.
      * $selector[ var_name ] = [
      *     class => className,
+     *     type  => typeName, 
      *     args  => [ arg2, arg3, arg4 ],
      *     call  => function( &$sel ){ $sel->do_something(); },
      *   ]
@@ -209,21 +201,21 @@ class Dao
     /**
      * checks input data using pggCheck.
      * $validators[ $var_name ] = [
-     *     type  => method_name,
+     *     type  => dataType or methodName,
      *     args  => [ arg2, arg3, arg4...],
      *   ]
-     * @param $pgg
+     * @param \wsCore\Validator\DataIo $dio
      * @param $var_name
      * @return mixed|null
      */
-    public function checkPgg( $pgg, $var_name )
+    public function validate( $dio, $var_name )
     {
         $return = NULL;
         if( isset( $this->validators[ $var_name ] ) ) {
             $info   = $this->validators[ $var_name ];
             $method = $info[ 'type' ];
             $args   = $info[ 'args' ];
-            $return = call_user_func_array( array( $pgg, $method ), $args );
+            $return = $dio->validate( $var_name, $method, $args );
         }
         return $return;
     }
