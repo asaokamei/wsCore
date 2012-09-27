@@ -51,7 +51,7 @@ class Dao
     }
 
     /**
-     * @return \wsCore\DbAccess\Sql
+     * @return \wsCore\DbAccess\Query
      */
     public function query() {
         return $this->query->table( $this->table, $this->id_name );
