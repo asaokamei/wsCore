@@ -31,7 +31,7 @@ class DataRecord implements \ArrayAccess
     // +----------------------------------------------------------------------+
     /**
      * @param \wsCore\DbAccess\Dao $dao
-     * @DimInject  Get \wsCore\DbAccess\Dao
+     * @DimInject  Get  Dao
      */
     public function __construct( $dao=NULL )
     {
