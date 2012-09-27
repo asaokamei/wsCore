@@ -8,7 +8,7 @@ class Core
 
     /** @var array      set easy mode */
     public static $easy = array(
-        'DbAccess'  => '\wsCore\DbAccess\DbAccess',
+        'Query'     => '\wsCore\DbAccess\Query',
         'Validator' => '\wsCore\Validator\Validator',
         'DataIO'    => '\wsCore\Validator\DataIO',
         '' => '',
