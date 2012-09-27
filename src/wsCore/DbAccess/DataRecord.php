@@ -4,26 +4,26 @@ namespace wsCore\DbAccess;
 class DataRecord implements \ArrayAccess
 {
     /** @var mixed         value of id. probably an integer     */
-    protected $_id_         = NULL;
+    protected $id         = NULL;
     
     /** @var array         stores property of the record        */
-    protected $_properties_ = array();
-    protected $_originals_  = array(); // stores original data from db
+    protected $properties = array();
+    protected $originals  = array(); // stores original data from db
 
     /** @var bool          validation result.                   */
-    protected $_is_valid_ = FALSE;
+    protected $is_valid = FALSE;
 
     /** @var array         stores error messages from validator */
-    protected $_errors_     = array();
+    protected $errors     = array();
 
     /** @var string|null */
-    protected $_model_ = NULL;
+    protected $model = NULL;
 
     /** @var \wsCore\DbAccess\Dao                               */
-    protected $_dao_ = NULL;
+    protected $dao = NULL;
     
     /** @var string         html type to show                   */
-    protected $_html_type_ = 'NAME';
+    protected $html_type = 'NAME';
 
     // +----------------------------------------------------------------------+
     /**
@@ -33,7 +33,7 @@ class DataRecord implements \ArrayAccess
      */
     public function __construct( $dao=NULL, $data=array() )
     {
-        $this->_dao_ = $dao;
+        $this->dao = $dao;
         $this->load( $data );
     }
 
@@ -48,7 +48,7 @@ class DataRecord implements \ArrayAccess
         if( !is_array( $data ) ) {
             throw new \RuntimeException( "data must be an array." );
         }
-        $this->_originals_ = $this->_properties_ = $data;
+        $this->originals = $this->properties = $data;
         $this->resetId();
         return $this;
     }
@@ -60,9 +60,9 @@ class DataRecord implements \ArrayAccess
      */
     public function resetId()
     {
-        if( isset( $this->_dao_ ) ) {
-            if( isset( $this->_properties_[ $this->_dao_->getIdName() ] ) ) {
-                $this->_id_ = $this->_properties_[ $this->_dao_->getIdName() ];
+        if( isset( $this->dao ) ) {
+            if( isset( $this->properties[ $this->dao->getIdName() ] ) ) {
+                $this->id = $this->properties[ $this->dao->getIdName() ];
             }
         }
         return $this;
@@ -76,8 +76,8 @@ class DataRecord implements \ArrayAccess
      */
     public function reconstruct( $dao=NULL ) 
     {
-        $this->_dao_ = $dao;
-        $this->_originals_ = $this->_properties_;
+        $this->dao = $dao;
+        $this->originals = $this->properties;
         $this->resetId();
         return $this;
     }
@@ -86,14 +86,14 @@ class DataRecord implements \ArrayAccess
      * @return string
      */
     public function getModel() {
-        return $this->_dao_->getModelName();
+        return $this->dao->getModelName();
     }
 
     /**
      * @return mixed|null
      */
     public function getId() {
-        return $this->_id_;
+        return $this->id;
     }
 
     // +----------------------------------------------------------------------+
@@ -117,9 +117,9 @@ class DataRecord implements \ArrayAccess
      */
     public function get( $name=NULL ) {
         if( $name ) {
-            return ( isset( $this->_properties_[ $name ] ) ) ? $this->_properties_[ $name ]: FALSE;
+            return ( isset( $this->properties[ $name ] ) ) ? $this->properties[ $name ]: FALSE;
         }
-        return $this->_properties_;
+        return $this->properties;
     }
 
     /**
@@ -131,10 +131,10 @@ class DataRecord implements \ArrayAccess
      */
     public function set( $name, $value=NULL ) {
         if( is_array( $name ) ) {
-            $this->_properties_ = array_merge( $this->_properties_, $name );
+            $this->properties = array_merge( $this->properties, $name );
         }
         else {
-            $this->_properties_[ $name ] = $value;
+            $this->properties[ $name ] = $value;
         }
         return $this;
     }
@@ -144,7 +144,7 @@ class DataRecord implements \ArrayAccess
      * @return bool
      */
     public function offsetExists( $offset ) {
-        return array_key_exists( $offset, $this->_properties_ );
+        return array_key_exists( $offset, $this->properties );
     }
 
     /**
@@ -152,7 +152,7 @@ class DataRecord implements \ArrayAccess
      * @return mixed|null
      */
     public function offsetGet( $offset ) {
-        return ( array_key_exists( $offset, $this->_properties_ ) )? $this->_properties_[$offset]:NULL;
+        return ( array_key_exists( $offset, $this->properties ) )? $this->properties[$offset]:NULL;
     }
 
     /**
@@ -162,10 +162,10 @@ class DataRecord implements \ArrayAccess
     public function offsetSet( $offset, $value )
     {
         if( is_null( $offset ) ) {
-            $this->_properties_ = $value;
+            $this->properties = $value;
         }
         else {
-            $this->_properties_[ $offset ] = $value;
+            $this->properties[ $offset ] = $value;
         }
     }
 
@@ -173,7 +173,7 @@ class DataRecord implements \ArrayAccess
      * @param mixed $offset
      */
     public function offsetUnset( $offset ) {
-        unset( $this->_properties_[ $offset ] );
+        unset( $this->properties[ $offset ] );
     }
     // +----------------------------------------------------------------------+
     //  getting Html Forms.
@@ -185,8 +185,8 @@ class DataRecord implements \ArrayAccess
      * @return string
      */
     public function setHtmlType( $html_type=NULL ) {
-        if( $html_type ) $this->_html_type_ = $html_type;
-        return $this->_html_type_;
+        if( $html_type ) $this->html_type = $html_type;
+        return $this->html_type;
     }
     /**
      * @param string $name
@@ -194,8 +194,8 @@ class DataRecord implements \ArrayAccess
      * @return mixed
      */
     public function popHtml( $name, $html_type=NULL ) {
-        $html_type = ( $html_type ) ?: $this->_html_type_;
-        return $this->_dao_->popHtml( $html_type, $name, $this->_properties_[ $name ] );
+        $html_type = ( $html_type ) ?: $this->html_type;
+        return $this->dao->popHtml( $html_type, $name, $this->properties[ $name ] );
     }
 
     /**
@@ -203,14 +203,14 @@ class DataRecord implements \ArrayAccess
      * @return mixed
      */
     public function popError( $name ) {
-        return $this->_errors_[ $name ];
+        return $this->errors[ $name ];
     }
 
     /**
      * @param $name
      */
     public function popName( $name ) {
-        $this->_dao_->propertyName( $name );
+        $this->dao->propertyName( $name );
     }
     // +----------------------------------------------------------------------+
     //  Validating data.
