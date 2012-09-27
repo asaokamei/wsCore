@@ -6,13 +6,13 @@ require_once( __DIR__ . '/../../autoloader.php' );
 
 class PdObjectData extends \stdClass {}
 
-class PdObjectDao extends \stdClass {
+class PdObjectDao {
     protected $data = array();
     protected $constructed = FALSE;
     protected $id_name = NULL;
     protected $id = NULL;
-    public function __construct() {
-        $this->constructed = new PdObjectData();
+    public function __construct( $arg1 ) {
+        $this->constructed = $arg1;
         $this->id_name = 'id';
     }
     public function __set( $name, $value ) {
@@ -22,6 +22,9 @@ class PdObjectDao extends \stdClass {
         else {
             $this->data[ $name ] = $value;
         }
+    }
+    public function getConstructed() {
+        return $this->constructed;
     }
 }
 
@@ -116,15 +119,18 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     public function test_fetch_data_record_class()
     {
         $max = 1;
+        $arg = new PdObjectData();
         $class = 'wsTests\DbAccess\PdObjectDao';
         $this->fill_columns( $max );
-        $this->pdo->setFetchMode( \PDO::FETCH_CLASS, $class );
+        $this->pdo->setFetchMode( \PDO::FETCH_CLASS, $class, array( $arg ) );
         /** @var $ret \PdoStatement */
         $ret = $this->pdo->exec( "SELECT * FROM {$this->table};" );
 
         $fetched = $ret->fetch();
         $this->assertTrue( is_object( $fetched ) );
         $this->assertEquals( $class, get_class( $fetched ) );
+        $this->assertEquals( $arg, $fetched->getConstructed() );
+        $this->assertSame( $arg, $fetched->getConstructed() );
     }
     public function test_fetch_mode_class()
     {

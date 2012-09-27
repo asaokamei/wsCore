@@ -14,6 +14,9 @@ class PdObject
     
     /** @var string                      class name if fetch mode is Class */
     protected $fetchClass = NULL;
+
+    /** @var array                       arguments for fetch_class object  */
+    protected $fetchConstArg = array();
     // +----------------------------------------------------------------------+
     //  Constructor and Managing Objects.
     // +----------------------------------------------------------------------+
@@ -82,7 +85,7 @@ class PdObject
     {
         if( $this->fetchMode ) {
             if( $this->fetchMode === \PDO::FETCH_CLASS ) {
-                $this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass );
+                $this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass, $this->fetchConstArg );
             }
             else {
                 $this->pdoStmt->setFetchMode( $this->fetchMode );
@@ -110,11 +113,13 @@ class PdObject
     /**
      * @param integer $mode     \PDO's fetch mode
      * @param string $class       class name if mode is fetch_class
+     * @param array $constArg
      * @return PdObject
      */
-    public function setFetchMode( $mode, $class=NULL ) {
+    public function setFetchMode( $mode, $class=NULL, $constArg=array() ) {
         $this->fetchMode  = $mode;
         $this->fetchClass = $class;
+        $this->fetchConstArg = (is_array( $constArg ))? $constArg: array($constArg);
         return $this;
     }
     // +----------------------------------------------------------------------+
