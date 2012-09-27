@@ -31,14 +31,13 @@ class DataRecord implements \ArrayAccess
     // +----------------------------------------------------------------------+
     /**
      * @param \wsCore\DbAccess\Dao $dao
-     * @param array  $data
      * @DimInject  Get \wsCore\DbAccess\Dao
      */
-    public function __construct( $dao=NULL, $data=array() )
+    public function __construct( $dao=NULL )
     {
-        $this->dao = $dao;
+        $this->dao     = $dao;
         $this->id_name = $dao->getIdName();
-        $this->load( $data );
+        $this->model   = $dao->getModelName();
     }
 
     /**
@@ -64,25 +63,9 @@ class DataRecord implements \ArrayAccess
      */
     public function resetId()
     {
-        if( isset( $this->dao ) ) {
-            if( isset( $this->properties[ $this->dao->getIdName() ] ) ) {
-                $this->id = $this->properties[ $this->dao->getIdName() ];
-            }
+        if( isset( $this->id_name ) && array_key_exists( $this->id_name, $this->properties ) ) {
+            $this->id = $this->properties[ $this->id_name ];
         }
-        return $this;
-    }
-
-    /**
-     * re-populates id. use this after Pdo's fetch as class.
-     *
-     * @param null|\wsCore\DbAccess\Dao $dao
-     * @return DataRecord
-     */
-    public function reconstruct( $dao=NULL ) 
-    {
-        $this->dao = $dao;
-        $this->originals = $this->properties;
-        $this->resetId();
         return $this;
     }
 
@@ -90,7 +73,7 @@ class DataRecord implements \ArrayAccess
      * @return string
      */
     public function getModel() {
-        return $this->dao->getModelName();
+        return $this->model;
     }
 
     /**
