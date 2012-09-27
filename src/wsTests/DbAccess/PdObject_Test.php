@@ -6,6 +6,25 @@ require_once( __DIR__ . '/../../autoloader.php' );
 
 class PdObjectData extends \stdClass {}
 
+class PdObjectDao extends \stdClass {
+    protected $data = array();
+    protected $constructed = FALSE;
+    protected $id_name = NULL;
+    protected $id = NULL;
+    public function __construct() {
+        $this->constructed = new PdObjectData();
+        $this->id_name = 'id';
+    }
+    public function __set( $name, $value ) {
+        if( $name == $this->id_name ) {
+            $this->id = $value;
+        }
+        else {
+            $this->data[ $name ] = $value;
+        }
+    }
+}
+
 class PdObject_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
@@ -94,6 +113,19 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
         return $values;
     }
     // +----------------------------------------------------------------------+
+    public function test_fetch_data_record_class()
+    {
+        $max = 1;
+        $class = 'wsTests\DbAccess\PdObjectDao';
+        $this->fill_columns( $max );
+        $this->pdo->setFetchMode( \PDO::FETCH_CLASS, $class );
+        /** @var $ret \PdoStatement */
+        $ret = $this->pdo->exec( "SELECT * FROM {$this->table};" );
+
+        $fetched = $ret->fetch();
+        $this->assertTrue( is_object( $fetched ) );
+        $this->assertEquals( $class, get_class( $fetched ) );
+    }
     public function test_fetch_mode_class()
     {
         $max = 1;
