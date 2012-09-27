@@ -14,19 +14,19 @@ class DataRecord implements \ArrayAccess
     protected $originals  = array(); // stores original data from db
 
     /** @var bool          validation result.                   */
-    protected $is_valid = FALSE;
+    protected $is_valid   = FALSE;
 
     /** @var array         stores error messages from validator */
     protected $errors     = array();
 
     /** @var string|null */
-    protected $model = NULL;
+    protected $model      = NULL;
 
     /** @var \wsCore\DbAccess\Dao                               */
-    protected $dao = NULL;
+    protected $dao        = NULL;
     
     /** @var string         html type to show                   */
-    protected $html_type = 'NAME';
+    protected $html_type  = 'NAME';
 
     // +----------------------------------------------------------------------+
     /**
@@ -36,10 +36,18 @@ class DataRecord implements \ArrayAccess
     public function __construct( $dao=NULL )
     {
         $this->dao     = $dao;
-        $this->id_name = $dao->getIdName();
-        $this->model   = $dao->getModelName();
+        $this->setDao( $dao );
     }
 
+    /**
+     * @param $dao  Dao
+     */
+    public function setDao( $dao ) {
+        if( $dao ) {
+            $this->id_name = $dao->getIdName();
+            $this->model   = $dao->getModelName();
+        }
+    }
     /**
      * creates record from data for an existing data.
      * @param array $data
