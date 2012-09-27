@@ -6,6 +6,9 @@ class DataRecord implements \ArrayAccess
     /** @var mixed         value of id. probably an integer     */
     protected $id         = NULL;
     
+    /** @var string        name of primary key                  */
+    protected $id_name    = NULL;
+    
     /** @var array         stores property of the record        */
     protected $properties = array();
     protected $originals  = array(); // stores original data from db
@@ -34,6 +37,7 @@ class DataRecord implements \ArrayAccess
     public function __construct( $dao=NULL, $data=array() )
     {
         $this->dao = $dao;
+        $this->id_name = $dao->getIdName();
         $this->load( $data );
     }
 
@@ -134,6 +138,9 @@ class DataRecord implements \ArrayAccess
             $this->properties = array_merge( $this->properties, $name );
         }
         else {
+            if( $name == $this->id_name ) {
+                $this->id = $value;
+            }
             $this->properties[ $name ] = $value;
         }
         return $this;
