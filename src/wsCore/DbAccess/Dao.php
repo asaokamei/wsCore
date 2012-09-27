@@ -63,7 +63,7 @@ class Dao
     public function getRecord() {
         /** @var $record \wsCore\DbAccess\DataRecord */
         $record = new $this->recordClassName();
-        $record->reconstruct( $this );
+        $record->setDao( $this );
         return $record;
     }
     // +----------------------------------------------------------------------+
@@ -101,7 +101,7 @@ class Dao
      * @param array $values
      * @return string|bool             id of the inserted data or true if id not exist.
      */
-    public function insertValue( &$values )
+    public function insertValue( $values )
     {
         $this->restrict( $values );
         $this->query()
@@ -132,12 +132,11 @@ class Dao
      * @param array $values
      * @return string                 id of the inserted data
      */
-    public function insertId( &$values )
+    public function insertId( $values )
     {
         if( isset( $values[ $this->id_name ] ) ) { unset(  $values[ $this->id_name ] ); }
         $this->insertValue( $values );
         $id = $this->query->lastId();
-        if( isset( $values[ $this->id_name ] ) ) { $values[ $this->id_name ] = $id; }
         return $id;
     }
 
@@ -148,7 +147,7 @@ class Dao
      * @param $values
      * @return string                 id of the inserted data
      */
-    public function insert( &$values )
+    public function insert( $values )
     {
         return $this->insertId( $values );
     }
