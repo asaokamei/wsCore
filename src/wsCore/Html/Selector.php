@@ -47,8 +47,10 @@ class Selector
     /** @var Form */
     protected $form;
     protected static $types = array(
+        'form' => 'form',
         'edit' => 'form',
         'new'  => 'form',
+        'html' => 'html',
         'disp' => 'html',
         'name' => 'html',
         'raw'  => 'raw'
@@ -69,7 +71,7 @@ class Selector
     // +----------------------------------------------------------------------+
     /**
      * @param Form $form
-     * @DimInject \wsCore\Html\Form
+     * @DimInjection Fresh \wsCore\Html\Form
      */
     public function __construct( $form )
     {
@@ -229,7 +231,7 @@ class Selector
      */
     public function makeForm( $value )
     {
-        if( !is_null( $value ) ) { // use default value if value is not set.
+        if( is_null( $value ) ) { // use default value if value is not set.
             $value = $this->default_items;
         }
         if( $this->add_head_option && !empty( $this->item_data ) ) {
@@ -240,7 +242,7 @@ class Selector
         }
         $style = strtolower( $this->style );
         $formStyle = ( isset( static::$formStyle[ $style ] ) ) ? static::$formStyle[ $style ]: 'input';
-        $method = 'make' . $formStyle; // select, textarea, radioBox, checkBox
+        $method = 'form' . ucwords( $formStyle ); // select, textarea, radioBox, checkBox
         return $this->$method( $value );
     }
 
