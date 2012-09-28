@@ -119,7 +119,7 @@ class Selector
      */
     public function popHtml( $type, $value=NULL )
     {
-        $type = \strtoupper( $type );
+        $type = \strtolower( $type );
         $type = ( isset( static::$types[ $type ] ) ) ? ucwords( static::$types[ $type ] ) : 'Html';
         $method = 'make' . $type;
         return $this->$method( $value );
