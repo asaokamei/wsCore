@@ -90,14 +90,15 @@ class Selector
             $this->htmlFilter = $htmlFilter;
         }
         elseif( $this->style == 'textarea' ) {
-            $this->htmlFilter = function( &$v ) {
+            $this->htmlFilter = function( $v ) {
                 $v = htmlentities( $v, ENT_QUOTES, 'UTF-8');
                 $v = nl2br( $v );
+                return $v;
             };
         }
         else {
-            $this->htmlFilter = function( &$v ) {
-                $v = htmlentities( $v, ENT_QUOTES, 'UTF-8');
+            $this->htmlFilter = function( $v ) {
+                return htmlentities( $v, ENT_QUOTES, 'UTF-8');
             };
         }
     }
@@ -143,7 +144,7 @@ class Selector
      */
     public function makeRaw( $value ) {
         if( is_array( $value ) ) {
-            return $this->form()->listBox( $value );
+            return $this->form->listBox( $value );
         }
         return $value;
     }
@@ -166,7 +167,7 @@ class Selector
         }
         else {
             // encode input value for safety.
-            $this->htmlFilter( $value );
+            $value = call_user_func( $this->htmlFilter, $value );
         }
         return $this->makeRaw( $value );
     }
@@ -235,7 +236,7 @@ class Selector
      * @return mixed
      */
     public function formInput( $value ) {
-        return $this->form()->input( $this->style, $this->name, $value, $this->attributes );
+        return $this->form->input( $this->style, $this->name, $value, $this->attributes );
     }
 
     /**
@@ -243,7 +244,7 @@ class Selector
      * @return mixed
      */
     public function formTextarea( $value ) {
-        return $this->form()->textArea( $this->name, $value, $this->attributes );
+        return $this->form->textArea( $this->name, $value, $this->attributes );
     }
 
     /**
@@ -251,7 +252,7 @@ class Selector
      * @return mixed
      */
     public function formSelect( $value ) {
-        $form = $this->form();
+        $form = $this->form;
         if( $this->style == 'mult_select' ) $form->multiple = TRUE;
         return $form->select( $this->name, $this->item_data, $value, $this->attributes );
     }
@@ -261,7 +262,7 @@ class Selector
      * @return mixed
      */
     public function formRadio( $value ) {
-        return $this->form()->radioBox( $this->name, $this->item_data, $value, $this->attributes );
+        return $this->form->radioBox( $this->name, $this->item_data, $value, $this->attributes );
     }
 
     /**
@@ -269,7 +270,7 @@ class Selector
      * @return mixed
      */
     public function formCheck( $value ) {
-        return $this->form()->checkBox( $this->name, $this->item_data, $value, $this->attributes );
+        return $this->form->checkBox( $this->name, $this->item_data, $value, $this->attributes );
     }
     // +----------------------------------------------------------------------+
     /**

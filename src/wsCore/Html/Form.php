@@ -24,7 +24,7 @@ class Form extends Tags
 
     protected $items = array();
 
-    protected $multiple = FALSE;
+    public $multiple = FALSE;
     
     // +----------------------------------------------------------------------+
     /**
