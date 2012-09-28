@@ -1,17 +1,20 @@
 <?php
 namespace wsCore\Html;
 
-class selYear extends Selector
+class Selector_selYear extends Selector
 {
-    public function __construct( $name='year', $start_y=NULL, $end_y=NULL )
+    public function __construct( $form, $name='year', $start_y=NULL, $end_y=NULL )
     {
-        $this->name   = $name;
+        parent::__construct( $form );
         $this->style  = 'SELECT';
 
-        if( !$start_y ) $start_y = date( 'Y' ) - 10;
-        if( !$end_y   ) $end_y   = date( 'Y' ) + 1;
-        $this->default_items   = date( 'Y' );
-        $this->add_head_option = "";
+    }
+    public function set( $name, $option=array(), $htmlFilter=NULL )
+    {
+        $this->name            = $name;
+        $this->add_head_option = $this->arrGet( $option, 'add_head', '' );
+        $start_y               = $this->arrGet( $option, 'start_y', date( 'Y' ) - 10 );
+        $end_y                 = $this->arrGet( $option, 'end_y',   date( 'Y' ) + 1 );
         for( $year = $start_y; $year <= $end_y; $year ++ ) {
             $this->item_data[] = array(
                 sprintf( '%4d', $year ),

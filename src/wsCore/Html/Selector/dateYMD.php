@@ -1,17 +1,41 @@
 <?php
 namespace wsCore\Html;
 
-class dateYMD extends SelectDiv
+class Selector_dateYMD extends SelectDiv
 {
-    public function __construct( $name='date', $start_y=NULL, $end_y=NULL )
+    public function __construct( $form )
     {
-        $this->name = $name;
+        parent::__construct( $form );
         $this->implode_with_div = FALSE;
         $this->divider = '-';
+
+        // shows date like 2012/01/23.
+        $this->htmlFilter = function( $val ) {
+            return str_replace( '-', '/', $val );
+        };
+    }
+    public function set( $name, $option, $filter )
+    {
+        $this->name              = $name;
+        $this->implode_with_div  = $this->arrGet( $option, 'implode_with_div', FALSE );
+        $this->divider           = $this->arrGet( $option, 'divider', '-' );
+        $this->add_head_option   = $this->arrGet( $option, 'add_head', '' );
+        if( $this->add_head_option ) {     // if head is set, set default to '' 
+            $this->default_items = '';     // so that the head is selected. 
+        }
+        else {
+            $this->default_items = $this->arrGet( $option, 'default', date( 'Y-m-d' ) );
+        }
+        // do not pass default to sub-forms. Default in dateYMD are passed to each of sub-forms. 
+        if( array_key_exists( 'default', $option ) ) unset( $option[ 'default' ] );
+        
         $this->num_div = 3;
-        $this->d_forms[] = new selYear(  "{$this->name}_y", $start_y, $end_y );
-        $this->d_forms[] = new selMonth( "{$this->name}_m" );
-        $this->d_forms[] = new selDay(   "{$this->name}_d" );
+        $selY = new Selector_selYear(  $this->form );        $selY->set( "{$this->name}_y", $option );
+        $selM = new Selector_selMonth( $this->form );        $selM->set( "{$this->name}_m", $option );
+        $selD = new Selector_selDay(   $this->form );        $selD->set( "{$this->name}_d", $option );
+        $this->d_forms[] = $selY;
+        $this->d_forms[] = $selM;
+        $this->d_forms[] = $selD;
 
         // shows date like 2012/01/23.
         $this->htmlFilter = function( $val ) {

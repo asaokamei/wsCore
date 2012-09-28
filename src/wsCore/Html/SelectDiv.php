@@ -21,6 +21,11 @@ class SelectDiv
     /** @var \Closure */
     public $htmlFilter = NULL;
 
+    /** @var Form */
+    protected $form; 
+    
+    /** @var string  */
+    public $name;
     /**
      * same as Selector's $types.
      * @var array
@@ -33,8 +38,25 @@ class SelectDiv
         'raw'  => 'raw'
     );
 
-    public function __construct( $name ) {
-        $this->name = $name;
+    public function __construct( $form ) {
+        $this->form = $form;
+    }
+
+    /**
+     * set up Selector. make sure to overload this function.
+     *
+     * @param string        $name
+     * @param array         $option
+     * @param callable|null $htmlFilter
+     */
+    public function set( $name, $option=array(), $htmlFilter=NULL )
+    {
+    }
+    public function arrGet( $arr, $key, $default=NULL ) {
+        if( array_key_exists( $key, $arr ) ) {
+            return $arr[ $key ];
+        }
+        return $default;
     }
     public function popHtml( $type, $value )
     {
