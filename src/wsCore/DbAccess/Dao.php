@@ -175,7 +175,7 @@ class Dao
      *     [ arg2, arg3, arg4 ],
      *     function( &$val ){ doSomething( $val ); },
      *   ]
-     * TODO: This works for basic Selectors, not for select/checkbox selector.
+     * TODO: think about how to get Selector/multiples.
      *
      * @param string $var_name
      * @return null|object
