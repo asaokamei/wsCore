@@ -32,7 +32,7 @@ class Core
      * @return Core
      */
     public static function go() {
-        ( static::$_container ) ?: static::$_container=new \wsCore\DiContainer\Dimplet();
+        ( static::$_container ) ?: static::$_container = new \wsCore\DiContainer\Dimplet();
         self::_fill( self::$easy );
         static::$_container->set( 'Container', static::$_container );
         return static::$_container;
