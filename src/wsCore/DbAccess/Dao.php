@@ -185,8 +185,14 @@ class Dao
         $sel = NULL;
         if( isset( $this->selectors[ $var_name ] ) ) {
             $info  = $this->selectors[ $var_name ];
-            $selector = ( $this->selector instanceof \Closure ) ? $this->selector() : $this->selector;
-            $sel = $selector->getInstance( $info[0], $var_name, $info[1], $info[2] );
+            if( $info[0] == 'Selector' ) {
+                $selector = ( $this->selector instanceof \Closure ) ? $this->selector() : $this->selector;
+                $sel = $selector->getInstance( $info[1], $var_name, $info[2], $info[3] );
+            }
+            else {
+                $class = $info[0];
+                $sel = new $class( $var_name, $info[2][0], $info[2][1], $info[2][2] );
+            }
         }
         return $sel;
     }
