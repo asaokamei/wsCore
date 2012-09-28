@@ -3,7 +3,7 @@ namespace wsCore\Html;
 
 class Selector_selMonth extends Selector
 {
-    public function __construct( $form, $name='year', $start_y=NULL, $end_y=NULL )
+    public function __construct( $form )
     {
         parent::__construct( $form );
         $this->style  = 'SELECT';
