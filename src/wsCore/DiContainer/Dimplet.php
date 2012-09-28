@@ -19,6 +19,11 @@ class Dimplet
     
     /** @var array      */
     private $extends = array();
+
+    /**
+     * 
+     */
+    public function __construct() {}
     // +----------------------------------------------------------------------+
     /**
      * Sets a parameter or an object.
