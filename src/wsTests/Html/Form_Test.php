@@ -6,14 +6,14 @@ use wsCore\Html\Form as Form;
 $form = new Form();
 
 /** @var $form Form */
-echo $form()->input( 'text', 'user_name', 'taro-san', array( 'class' => 'myClass', 'ime' => 'ON' ) );
-echo $form()->input( 'date', 'user_bdate', '1989-01-01' )->_ime( 'OFF' );
-echo $form()->textArea( 'user_memo', 'memo memo meMeMeMo' )->contain_( $form()->input( 'time', 'user_time' ) );
-echo $form()->radio( 'user_OK', 'YES' );
-echo $form()->check( 'user_OK', 'YES' );
+echo $form->input( 'text', 'user_name', 'taro-san', array( 'class' => 'myClass', 'ime' => 'ON' ) );
+echo $form->input( 'date', 'user_bdate', '1989-01-01' )->_ime( 'OFF' );
+echo $form->textArea( 'user_memo', 'memo memo meMeMeMo' )->contain_( $form()->input( 'time', 'user_time' ) );
+echo $form->radio( 'user_OK', 'YES' );
+echo $form->check( 'user_OK', 'YES' );
 
-echo $form()->radioLabel( 'user_OK', 'YES', 'are you OK?' );
-echo $form()->checkLabel( 'user_OK', 'YES', 'are you OK?' );
+echo $form->radioLabel( 'user_OK', 'YES', 'are you OK?' );
+echo $form->checkLabel( 'user_OK', 'YES', 'are you OK?' );
 
 
 $ages = array(
@@ -37,7 +37,7 @@ $lang = array(
     array( 'zhi', 'chinese', 'asia' ),
     array( 'kor', 'korean', 'asia' ),
 );
-echo $form()->select( 'user_lang', $lang, 'ger', array( 'multiple' => '' ) );
+echo $form->select( 'user_lang', $lang, 'ger', array( 'multiple' => '' ) );
 
 $list = array( 'item1', 'more', 'another' );
-echo $form()->listBox( $list );
+echo $form->listBox( $list );
