@@ -76,14 +76,14 @@ class Selector
     }
 
     /**
-     * @param string      $style
+     * TODO: use option, just like Validator.
+     *
      * @param string      $name
      * @param null|string $option
      * @param null|\closure $htmlFilter
      */
-    public function set( $style, $name, $option=NULL, $htmlFilter=NULL )
+    public function set( $name, $option=NULL, $htmlFilter=NULL )
     {
-        $this->style = $style;
         $this->name  = $name;
         // setup filter for html safe value.
         if( $htmlFilter ) {
@@ -101,12 +101,12 @@ class Selector
             };
         }
     }
-    public function getInstance( $style, $name, $option )
+    public function getInstance( $style, $name, $option=NULL, $htmlFilter=NULL )
     {
         $class = 'Selector_' . ucwords( $style );
         /** @var $selector Selector */
         $selector = new $class( $this->form );
-        $selector->set( $style, $name, $option );
+        $selector->set( $style, $name, $option, $htmlFilter );
         return $selector;
     }
     // +----------------------------------------------------------------------+
