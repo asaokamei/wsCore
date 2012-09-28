@@ -1,6 +1,20 @@
 <?php
 namespace wsCore\Html;
 
+/** 
+ * @method \wsCore\Html\Tags a()
+ * @method \wsCore\Html\Tags href()
+ * @method \wsCore\Html\Tags target()
+ * @method \wsCore\Html\Tags style()
+ * @method \wsCore\Html\Tags div()
+ * @method \wsCore\Html\Tags input()
+ * @method \wsCore\Html\Tags value()
+ * @method \wsCore\Html\Tags required()
+ * @method \wsCore\Html\Tags p()
+ * @method \wsCore\Html\Tags bold()
+ * @method \wsCore\Html\Tags i()
+ * @method \wsCore\Html\Tags em()
+ */
 class Tags
 {
     /** @var null                  name of tag, such as span */
