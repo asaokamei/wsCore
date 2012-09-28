@@ -80,19 +80,20 @@ class Selector
     }
 
     /**
-     * TODO: use option, just like Validator.
+     * set up Selector. make sure to overload this function. 
      *
      * @param string      $name
-     * @param null|string $option
+     * @param array $option
      * @param null|\closure $htmlFilter
      */
-    public function set( $name, $option=NULL, $htmlFilter=NULL )
+    public function set( $name, $option=array(), $htmlFilter=NULL )
     {
         $this->name  = $name;
         // setup filter for html safe value.
         if( $htmlFilter ) {
             $this->htmlFilter = $htmlFilter;
         }
+        $this->attributes = array_merge( $this->attributes, $option );
     }
 
     /**
@@ -117,6 +118,7 @@ class Selector
             throw new \RuntimeException( "$style not found." );
         }
         /** @var $selector Selector */
+        $option   = $this->prepareFilter( $option );
         $selector = new $class( $this->form );
         $selector->set( $name, $option, $htmlFilter );
         return $selector;
@@ -289,6 +291,38 @@ class Selector
      */
     public function addClass( $class ) {
         $this->attributes[ 'class' ] .= " $class";
+    }
+    
+    /**
+     * prepares filter if it is in string; 'rule1:parameter1|rule2:parameter2'
+     * This is copied from Validator. DRY!
+     *
+     * @param string|array $filter
+     * @return array
+     */
+    public function prepareFilter( $filter )
+    {
+        if( empty( $filter ) ) return array();
+        if( is_array( $filter ) ) return $filter;
+        $filter_array = array();
+        $rules = explode( '|', $filter );
+        foreach( $rules as $rule ) {
+            $filter = explode( ':', $rule, 2 );
+            array_walk( $filter, function( &$v ) { $v = trim( $v ); } );
+            if( isset( $filter[1] ) ) {
+                $filter_array[ $filter[0] ] = ( $filter[1]=='FALSE' )? FALSE: $filter[1];
+            }
+            else {
+                $filter_array[ $filter[0] ] = TRUE;
+            }
+        }
+        return $filter_array;
+    }
+    public function arrGet( $arr, $key, $default=NULL ) {
+        if( array_key_exists( $key, $arr ) ) {
+            return $arr[ $key ];
+        }
+        return $default;
     }
     // +----------------------------------------------------------------------+
 }
