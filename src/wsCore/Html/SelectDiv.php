@@ -41,7 +41,7 @@ class SelectDiv
     );
 
     public function __construct( $form ) {
-        $this->form = $form;
+        $this->form = clone $form;
     }
 
     /**
