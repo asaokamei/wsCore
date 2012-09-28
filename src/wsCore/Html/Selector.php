@@ -69,10 +69,14 @@ class Selector
     // +----------------------------------------------------------------------+
     /**
      * @param Form $form
+     * @DimInject \wsCore\Html\Form
      */
     public function __construct( $form )
     {
         $this->form = $form;
+        $this->htmlFilter = function( $v ) {
+            return htmlentities( $v, ENT_QUOTES, 'UTF-8');
+        };
     }
 
     /**
@@ -89,25 +93,32 @@ class Selector
         if( $htmlFilter ) {
             $this->htmlFilter = $htmlFilter;
         }
-        elseif( $this->style == 'textarea' ) {
-            $this->htmlFilter = function( $v ) {
-                $v = htmlentities( $v, ENT_QUOTES, 'UTF-8');
-                $v = nl2br( $v );
-                return $v;
-            };
-        }
-        else {
-            $this->htmlFilter = function( $v ) {
-                return htmlentities( $v, ENT_QUOTES, 'UTF-8');
-            };
-        }
     }
+
+    /**
+     * get instances of Selector for various styles in Selector_*. 
+     * 
+     * @param string   $style
+     * @param string   $name
+     * @param string   $option
+     * @param \Closure $htmlFilter
+     * @return Selector
+     * @throws \RuntimeException
+     */
     public function getInstance( $style, $name, $option=NULL, $htmlFilter=NULL )
     {
-        $class = 'Selector_' . ucwords( $style );
+        if( class_exists( $class = '\wsCore\Html\Selector_' . ucwords( $style ) ) ) {
+            $class = '\wsCore\Html\Selector_' . ucwords( $style );
+        }        
+        elseif( class_exists( $style ) ) {
+            $class = $style;
+        }
+        else {
+            throw new \RuntimeException( "$style not found." );
+        }
         /** @var $selector Selector */
         $selector = new $class( $this->form );
-        $selector->set( $style, $name, $option, $htmlFilter );
+        $selector->set( $name, $option, $htmlFilter );
         return $selector;
     }
     // +----------------------------------------------------------------------+

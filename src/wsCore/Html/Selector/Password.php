@@ -1,14 +1,14 @@
 <?php
 namespace wsCore\Html;
 
-class Password extends Selector
+class Selector_Password extends Selector
 {
     /**
      * @param Form $form
      */
     public function __construct( $form )
     {
-        $this->form = $form;
+        parent::__construct( $form );
         $this->style = 'password';
     }
 }
