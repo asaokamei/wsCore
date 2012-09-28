@@ -31,8 +31,10 @@ class SelectDiv
      * @var array
      */
     protected static $types = array(
+        'form' => 'form',
         'edit' => 'form',
         'new'  => 'form',
+        'html' => 'html',
         'disp' => 'html',
         'name' => 'html',
         'raw'  => 'raw'
@@ -130,7 +132,7 @@ class SelectDiv
      */
     public function makeName( $value ) {
         if( isset( $this->htmlFilter ) ) {
-            $value = $this->htmlFilter( $value );
+            $value = call_user_func( $this->htmlFilter, $value );
         }
         return $value;
     }

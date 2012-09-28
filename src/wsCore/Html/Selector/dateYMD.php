@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\Html;
 
-class Selector_dateYMD extends SelectDiv
+class Selector_DateYMD extends SelectDiv
 {
     public function __construct( $form )
     {
