@@ -28,8 +28,8 @@ class Dao
     /** @var Query */
     protected $query;
 
-    /** @var \wsCore\DiContainer\Dimplet */
-    protected $container;
+    /** @var \wsCore\Html\Selector */
+    protected $selector;
 
     /** @var \wsCore\DbAccess\DataRecord */
     protected $recordClassName = '\wsCore\DbAccess\DataRecord';
@@ -37,17 +37,15 @@ class Dao
     // +----------------------------------------------------------------------+
     /**
      * @param $query Query
-     * @param $container \wsCore\DiContainer\Dimplet
-     * @DimInjection Fresh Query
-     * @DimInjection Get   Container
+     * @param $selector \wsCore\DiContainer\Dimplet
+     * @DimInjection Fresh    Query
+     * @DimInjection Get Raw  Selector
      */
-    public function __construct( $query, $container )
+    public function __construct( $query, $selector )
     {
         $this->query = $query;
-        // TODO FIX: table is stored in Sql which is recreated all the time.
-        // TODO: set data types for prepared statement.
         $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this ) );
-        $this->container= $container;
+        $this->selector= $selector;
     }
 
     /**
@@ -172,12 +170,12 @@ class Dao
     /**
      * creates selector object based on selectors array.
      * $selector[ var_name ] = [
-     *     class => className,
-     *     type  => typeName, 
-     *     args  => [ arg2, arg3, arg4 ],
-     *     call  => function( &$sel ){ $sel->do_something(); },
+     *     className,
+     *     styleName,
+     *     [ arg2, arg3, arg4 ],
+     *     function( &$val ){ doSomething( $val ); },
      *   ]
-     * TODO: use container for construct and singleton!?
+     * TODO: This works for basic Selectors, not for select/checkbox selector.
      *
      * @param string $var_name
      * @return null|object
@@ -187,13 +185,8 @@ class Dao
         $sel = NULL;
         if( isset( $this->selectors[ $var_name ] ) ) {
             $info  = $this->selectors[ $var_name ];
-            $args  = array( $var_name ) + $info[ 'args' ];
-            $class = new \ReflectionClass( $info[ 'class' ] );
-            $sel   = $class->newInstanceArgs( $args );
-            if( isset( $info[ 'call' ] ) && is_callable( $info[ 'call' ] ) ) {
-                $function = $info[ 'call' ];
-                call_user_func( $function, $sel );
-            }
+            $selector = ( $this->selector instanceof \Closure ) ? $this->selector() : $this->selector;
+            $sel = $selector->getInstance( $info[0], $var_name, $info[1], $info[2] );
         }
         return $sel;
     }

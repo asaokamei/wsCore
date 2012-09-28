@@ -68,22 +68,46 @@ class Selector
 
     // +----------------------------------------------------------------------+
     /**
-     * @param $style
-     * @param $name
+     * @param Form $form
      */
-    public function __construct( $style, $name ) {
+    public function __construct( $form )
+    {
+        $this->form = $form;
+    }
+
+    /**
+     * @param string      $style
+     * @param string      $name
+     * @param null|string $option
+     * @param null|\closure $htmlFilter
+     */
+    public function set( $style, $name, $option=NULL, $htmlFilter=NULL )
+    {
         $this->style = $style;
         $this->name  = $name;
         // setup filter for html safe value.
-        $this->htmlFilter = function( &$v ) {
-            $v = htmlentities( $v, ENT_QUOTES, 'UTF-8');
-        };
-        if( $this->style == 'textarea' ) {
+        if( $htmlFilter ) {
+            $this->htmlFilter = $htmlFilter;
+        }
+        elseif( $this->style == 'textarea' ) {
             $this->htmlFilter = function( &$v ) {
                 $v = htmlentities( $v, ENT_QUOTES, 'UTF-8');
                 $v = nl2br( $v );
             };
         }
+        else {
+            $this->htmlFilter = function( &$v ) {
+                $v = htmlentities( $v, ENT_QUOTES, 'UTF-8');
+            };
+        }
+    }
+    public function getInstance( $style, $name, $option )
+    {
+        $class = 'Selector_' . ucwords( $style );
+        /** @var $selector Selector */
+        $selector = new $class( $this->form );
+        $selector->set( $style, $name, $option );
+        return $selector;
     }
     // +----------------------------------------------------------------------+
     /**
