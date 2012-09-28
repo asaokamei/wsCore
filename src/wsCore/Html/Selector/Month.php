@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\Html;
 
-class Selector_SelMonth extends Selector
+class Selector_Month extends Selector
 {
     public function __construct( $form )
     {
