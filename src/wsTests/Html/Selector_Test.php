@@ -41,7 +41,7 @@ echo 'form: ' . $sel->popHtml( 'form', "text <b>bold</b>\n output" ) . "\n";
 
 // test Selector_SelYMD
 
-$sel = $selector->getInstance( 'dateYMD', 'test' );
+$sel = $selector->getInstance( 'dateYMD', 'test', 'start_y:1980' );
 
 echo 'class: ' . get_class( $sel ) . "\n";
 echo 'html: ' . $sel->popHtml( 'name', "1984-03-31" ) . "\n";

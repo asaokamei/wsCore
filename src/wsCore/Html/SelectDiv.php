@@ -102,11 +102,13 @@ class SelectDiv
         $values = $this->splitValue( $value );
         $forms  = array();
         for( $i = 0; $i < $this->num_div ; $i++ ) {
+            /** @var $d_form Selector */
+            $d_form = $this->d_forms[$i];
             if( isset( $values[$i] ) ) {
-                $forms[] = $this->d_forms[$i]->popHtml( 'form', $values[$i] );
+                $forms[] = $d_form->popHtml( 'form', $values[$i] );
             }
             else {
-                $forms[] = $this->d_forms[$i]->popHtml( 'form' );
+                $forms[] = $d_form->popHtml( 'form' );
             }
         }
         return implode( $this->dividerForm, $forms );
