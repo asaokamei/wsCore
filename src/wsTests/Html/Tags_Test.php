@@ -3,16 +3,6 @@ namespace wsTests\Html;
 require( __DIR__ . '/../../autoloader.php' );
 use \wsCore\Html\Tags as Tags;
 
-/**
- * todo: make PHPUnit tests
- */
-
-$tags = new Tags();
-
-echo "\n--- inline tags ---\n";
-
-echo $tags->p( 'this is ' . $tags()->bold( 'bold text' ) . '.' );
-
 class Tags_Test extends \PHPUnit_Framework_TestCase
 {
     /** @var Tags */
