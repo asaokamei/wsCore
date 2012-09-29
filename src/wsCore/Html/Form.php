@@ -331,7 +331,6 @@ class Form extends Tags
      */
     public function setName( $name ) {
         $this->name = $name;
-        if( $this->multiple ) $name .= '[]';
         $this->setAttribute_( 'name', $name );
         return $this;
     }

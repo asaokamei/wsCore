@@ -31,6 +31,9 @@ class Tags
     
     /** @var array                 array of attributes       */
     protected $attributes = array();
+    
+    /** @var bool                  for form element's name   */
+    protected $multiple = FALSE;
 
     /** @var array                 normalize tag name  */
     public static $normalize_tag = array(
@@ -295,6 +298,10 @@ class Tags
                 }
                 else {
                     $value = static::safe_( $value ); // make it very safe.
+                }
+                // add [] for names for form elements such as checkbox. 
+                if( $name == 'name' && $this->multiple ) {
+                    $value .= '[]';
                 }
                 $attr .= " {$name}=\"{$value}\"";
             }
