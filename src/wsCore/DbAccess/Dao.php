@@ -64,6 +64,13 @@ class Dao
         $record->setDao( $this );
         return $record;
     }
+
+    /**
+     * @return \wsCore\Html\Selector
+     */
+    public function selector() {
+        return ( $this->selector instanceof \Closure ) ? $this->selector() : $this->selector;
+    }
     // +----------------------------------------------------------------------+
     /**
      * @param string $id
@@ -175,7 +182,6 @@ class Dao
      *     [ arg2, arg3, arg4 ],
      *     function( &$val ){ doSomething( $val ); },
      *   ]
-     * TODO: think about how to get Selector/multiples.
      *
      * @param string $var_name
      * @return null|object
@@ -186,8 +192,7 @@ class Dao
         if( isset( $this->selectors[ $var_name ] ) ) {
             $info  = $this->selectors[ $var_name ];
             if( $info[0] == 'Selector' ) {
-                $selector = ( $this->selector instanceof \Closure ) ? $this->selector() : $this->selector;
-                $sel = $selector->getInstance( $info[1], $var_name, $info[2], $info[3] );
+                $sel = $this->selector()->getInstance( $info[1], $var_name, $info[2], $info[3] );
             }
             else {
                 $class = $info[0];
