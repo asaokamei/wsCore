@@ -9,10 +9,6 @@ use \wsCore\Html\Tags as Tags;
 
 $tags = new Tags();
 
-$unsafe = 'unsafe" string';
-echo $tags->input()->value( $unsafe );
-echo $tags->input()->value( Tags::wrap_( $unsafe ) );
-
 echo "\n--- inline tags ---\n";
 
 echo $tags->p( 'this is ' . $tags()->bold( 'bold text' ) . '.' );
@@ -26,6 +22,20 @@ class Tags_Test extends \PHPUnit_Framework_TestCase
         $this->tags = new Tags();
     }
     // +----------------------------------------------------------------------+
+    public function test_quote_safe()
+    {
+        $unsafe = 'unsafe" string';
+        $text = (string)  $this->tags->input()->value( $unsafe );
+        $this->assertContains( htmlentities( $unsafe ), $text );
+        
+        $text = (string)  $this->tags->input()->value( Tags::wrap_( $unsafe ) );
+        $this->assertContains( $unsafe, $text );
+    }
+    public function test_inline()
+    {
+        $text = (string)  $this->tags->p( 'this is ' . $text = (string)  $this->tags->bold( 'bold text' ) . '.' );
+        $this->assertContains( '<strong>bold text</strong>.</p>', $text );
+    }
     public function test_input_required()
     {
         $text = (string)  $this->tags->input()->required();
