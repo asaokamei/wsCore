@@ -41,3 +41,9 @@ echo $form->select( 'user_lang', $lang, 'ger', array( 'multiple' => '' ) );
 
 $list = array( 'item1', 'more', 'another' );
 echo $form->listBox( $list );
+
+// form returns cloned form object
+$form1 = $form->input( 'text', 'user_name', 'taro-san', array( 'class' => 'myClass', 'ime' => 'ON' ) );
+echo 'form and form1 are equal: ' . ($form == $form1) . "\n";
+echo 'form and form1 are same : ' . ($form === $form1) . "\n";
+
