@@ -115,7 +115,7 @@ class Form extends Tags
     public function makeOptions( $select, $items, $checked ) 
     {
         if( $checked && !is_array( $checked ) ) $checked = array( $checked );
-        $prev_group = NULL;
+        $groupList = array();
         foreach( $items as $item ) 
         {
             $value = $item[0];
@@ -125,12 +125,15 @@ class Form extends Tags
             if( isset( $item[2] ) ) 
             {
                 $group = $item[2];
-                if( $prev_group != $group ) {
+                if( array_key_exists( $group, $groupList ) ) {
+                    $optGroup = $groupList[ $group ];
+                }
+                else {
                     $optGroup = $this::_()->optgroup()->label( $group );
                     $select->contain_( $optGroup );
-                    $prev_group = $group;
+                    $groupList[ $group ] = $optGroup;
                 }
-                if( isset( $optGroup ) ) $optGroup->contain_( $option );
+                $optGroup->contain_( $option );
             }
             else {
                 $select->contain_( $option );
