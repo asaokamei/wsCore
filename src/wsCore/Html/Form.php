@@ -29,7 +29,6 @@ class Form extends Tags
     // +----------------------------------------------------------------------+
     /**
      * quick method to create input element.
-     * todo: return as new object.
      *
      * @param string      $type
      * @param string      $name
@@ -52,7 +51,6 @@ class Form extends Tags
 
     /**
      * creates textArea element.
-     * todo: return as new object.
      *
      * @param string $name
      * @param null|string $value
@@ -86,7 +84,6 @@ class Form extends Tags
     // +----------------------------------------------------------------------+
     /**
      * make select list.
-     * todo: return as new object.
      * 
      * @param string $name
      * @param array $items
@@ -111,9 +108,9 @@ class Form extends Tags
     /**
      * makes option list for Select box.
      *
-     * @param $select
-     * @param $items
-     * @param $checked
+     * @param Form $select
+     * @param array $items
+     * @param array|string $checked
      * @return void
      */
     public function makeOptions( $select, $items, $checked ) 
@@ -124,13 +121,13 @@ class Form extends Tags
         {
             $value = $item[0];
             $label = $item[1];
-            $option = $this()->option( $label )->value( $value );
+            $option = $this::_()->option( $label )->value( $value );
             if( in_array( $value, $checked ) ) $option->checked();
             if( isset( $item[2] ) ) 
             {
                 $group = $item[2];
                 if( $prev_group != $group ) {
-                    $optGroup = $this()->optgroup()->label( $group );
+                    $optGroup = $this::_()->optgroup()->label( $group );
                     $select->contain_( $optGroup );
                     $prev_group = $group;
                 }
@@ -144,7 +141,6 @@ class Form extends Tags
     // +----------------------------------------------------------------------+
     /**
      * make single radio button element.
-     * todo: return as new object.
      * 
      * @param string $name
      * @param string $value
@@ -160,7 +156,6 @@ class Form extends Tags
 
     /**
      * make single checkbox button.
-     * todo: return as new object.
      * 
      * @param string $name
      * @param string $value
@@ -178,7 +173,6 @@ class Form extends Tags
 
     /**
      * make single radio button inside label tag with $label as description.
-     * todo: return as new object.
      * @param string $name
      * @param       $value
      * @param       $label
@@ -186,12 +180,11 @@ class Form extends Tags
      * @return Form|Tags
      */
     public function radioLabel( $name, $value, $label, $attributes=array() ) {
-        return $this()->label( $this->radio( $name, $value, $attributes ) . $label );
+        return $this::_()->label( $this->radio( $name, $value, $attributes ) . $label );
     }
 
     /**
      * make single checkbox button inside label tag with $label as description.
-     * todo: return as new object.
      * @param string $name
      * @param       $value
      * @param       $label
@@ -199,7 +192,7 @@ class Form extends Tags
      * @return Form|Tags
      */
     public function checkLabel( $name, $value, $label, $attributes=array() ) {
-        return $this()->label( $this->check( $name, $value, $attributes ) . $label );
+        return $this::_()->label( $this->check( $name, $value, $attributes ) . $label );
     }
 
     /**
@@ -230,7 +223,6 @@ class Form extends Tags
 
     /**
      * the body routine for radioBox and checkBox.
-     * todo: return as new object.
      * 
      * @param string $style
      * @param string $name
@@ -242,15 +234,16 @@ class Form extends Tags
     public function doBox( $style, $name, $items, $checked=array(), $attributes=array() )
     {
         if( $checked && !is_array( $checked ) ) $checked = array( $checked ); 
-        $list = $this()->nl();
-        $div = $this()->div( $list )->class( 'formListBox' );
+        $list = $this::_()->nl();
+        $div = $this::_()->div( $list )->_class( 'formListBox' );
         foreach( $items as $item ) {
             $value = $item[0];
             $label = $item[1];
+            /** @var $check Form */
             $check = $this()->$style( $name, $value, $attributes );
             if( in_array( $value, $checked ) ) $check->checked();
             $list->contain_(
-                $this()->li( $this()->label( $check . $label )
+                $this::_()->li( $this::_()->label( $check . $label )
                 ));
         }
         return $div;
@@ -258,10 +251,10 @@ class Form extends Tags
 
     public function listBox( $items, $name=NULL )
     {
-        $list = $this()->nl();
-        $div = $this()->div( $list )->class( 'formListBox' . $name );
+        $list = $this::_()->nl();
+        $div = $this::_()->div( $list )->_class( 'formListBox' . $name );
         foreach( $items as $item ) {
-            $list->contain_( $this()->li( $item ) );
+            $list->contain_( $this::_()->li( $item ) );
         }
         return $div;
     }
