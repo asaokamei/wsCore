@@ -75,7 +75,7 @@ class Selector
      */
     public function __construct( $form )
     {
-        $this->form = clone $form;
+        $this->form = $form;
         $this->htmlFilter = function( $v ) {
             return htmlentities( $v, ENT_QUOTES, 'UTF-8');
         };
