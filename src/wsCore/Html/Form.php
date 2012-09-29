@@ -31,21 +31,23 @@ class Form extends Tags
      * quick method to create input element.
      * todo: return as new object.
      *
-     * @param string $type
-     * @param string $name
+     * @param string      $type
+     * @param string      $name
      * @param null|string $value
-     * @param array $attributes
+     * @param array       $attributes
+     * @param Form        $form
      * @return Form|Tags
      */
-    public function input( $type, $name, $value=NULL, $attributes=array() ) 
+    public function input( $type, $name, $value=NULL, $attributes=array(), $form=NULL ) 
     {
-        $this->style = $type;
-        $this->setTagName_( 'input' );
-        $this->setType( $type );
-        $this->setName( $name );
-        $this->setValue( $value );
-        $this->applyAttributes( $attributes );
-        return $this;
+        if( !$form ) $form = clone $this;
+        $form->style = $type;
+        $form->setTagName_( 'input' );
+        $form->setType( $type );
+        $form->setName( $name );
+        $form->setValue( $value );
+        $form->applyAttributes( $attributes );
+        return $form;
     }
 
     /**
@@ -59,12 +61,13 @@ class Form extends Tags
      */
     public function textArea( $name, $value=NULL, $attributes=array() ) 
     {
-        $this->style = 'textarea';
-        $this->setTagName_( 'textarea' );
-        $this->applyAttributes( $attributes );
-        $this->setName( $name );
-        $this->contents[0] = '';
-        return $this->contain_( $value );
+        $form = clone $this;
+        $form->style = 'textarea';
+        $form->setTagName_( 'textarea' );
+        $form->applyAttributes( $attributes );
+        $form->setName( $name );
+        $form->contents[0] = '';
+        return $form->contain_( $value );
     }
 
     public function setContents_( $contents )
@@ -94,14 +97,15 @@ class Form extends Tags
      */
     public function select( $name, $items, $checked=NULL, $attributes=array() ) 
     {
-        if( array_key_exists( 'multiple', $attributes ) ) $this->multiple = TRUE;
-        $this->style = 'select';
-        $this->setTagName_( 'select' );
-        $this->setName( $name );
-        $this->items = $items;
-        $this->applyAttributes( $attributes );
-        $this->makeOptions( $this, $items, $checked );
-        return $this;
+        $form = clone $this;
+        if( array_key_exists( 'multiple', $attributes ) ) $form->multiple = TRUE;
+        $form->style = 'select';
+        $form->setTagName_( 'select' );
+        $form->setName( $name );
+        $form->items = $items;
+        $form->applyAttributes( $attributes );
+        $form->makeOptions( $form, $items, $checked );
+        return $form;
     }
 
     /**
@@ -149,9 +153,9 @@ class Form extends Tags
      */
     public function radio( $name, $value, $attributes=array() ) 
     {
-        $this->input( 'radio', $name, $value, $attributes );
-        $this->style = 'radio';
-        return $this;
+        $form = $this->input( 'radio', $name, $value, $attributes );
+        $form->style = 'radio';
+        return $form;
     }
 
     /**
@@ -165,10 +169,11 @@ class Form extends Tags
      */
     public function check( $name, $value, $attributes=array() ) 
     {
-        $this->multiple = TRUE;
-        $this->input( 'checkbox', $name, $value, $attributes );
-        $this->style = 'checkbox';
-        return $this;
+        $form = clone $this;
+        $form->multiple = TRUE;
+        $form = $this->input( 'checkbox', $name, $value, $attributes, $form );
+        $form->style = 'checkbox';
+        return $form;
     }
 
     /**
