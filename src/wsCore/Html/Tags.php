@@ -203,7 +203,7 @@ class Tags
      */
     public function normalize_( $name ) {
         $name = strtolower( $name );
-        $name = ( $name[0]=='_') ? substr( $name, 1 ) : $name;
+        if( $name[0]=='_') $name = substr( $name, 1 );
         return $name;
     }
     // +----------------------------------------------------------------------+
