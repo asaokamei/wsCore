@@ -34,12 +34,11 @@ class Form extends Tags
      * @param string      $name
      * @param null|string $value
      * @param array       $attributes
-     * @param Form        $form
      * @return Form|Tags
      */
-    public function input( $type, $name, $value=NULL, $attributes=array(), $form=NULL ) 
+    public function input( $type, $name, $value=NULL, $attributes=array() ) 
     {
-        if( !$form ) $form = clone $this;
+        $form = clone $this;
         $form->style = $type;
         $form->setTagName_( 'input' );
         $form->setType( $type );
@@ -164,9 +163,8 @@ class Form extends Tags
      */
     public function check( $name, $value, $attributes=array() ) 
     {
-        $form = clone $this;
+        $form = $this->input( 'checkbox', $name, $value, $attributes );
         $form->multiple = TRUE;
-        $form = $this->input( 'checkbox', $name, $value, $attributes, $form );
         $form->style = 'checkbox';
         return $form;
     }
