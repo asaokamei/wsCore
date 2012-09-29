@@ -7,6 +7,10 @@ Core::go();
 /** @var $selector \wsCore\Html\Selector */
 $selector = Core::get( '\wsCore\Html\Selector' );
 
+/**
+ * todo: make PHPUnit tests
+ */
+
 // test Selector_Text
 
 $sel = $selector->getInstance( 'text', 'test' );

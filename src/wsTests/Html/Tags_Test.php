@@ -3,6 +3,10 @@ namespace wsTests\Html;
 require( __DIR__ . '/../../autoloader.php' );
 use \wsCore\Html\Tags as Tags;
 
+/**
+ * todo: make PHPUnit tests
+ */
+
 $tags = new Tags();
 
 echo "\n--- basic usage ---\n";
