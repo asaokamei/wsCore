@@ -28,12 +28,14 @@ class Dao
     /** @var Query */
     protected $query;
 
-    /** @var \wsCore\Html\Selector */
-    protected $selector;
+    /** @var \wsCore\Html\Selector|\Closure */
+    protected $selectorObj;
 
     /** @var \wsCore\DbAccess\DataRecord */
     protected $recordClassName = '\wsCore\DbAccess\DataRecord';
 
+    // +----------------------------------------------------------------------+
+    //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+
     /**
      * @param $query Query
@@ -45,7 +47,7 @@ class Dao
     {
         $this->query = $query;
         $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this ) );
-        $this->selector= $selector;
+        $this->selectorObj= $selector;
     }
 
     /**
@@ -69,8 +71,11 @@ class Dao
      * @return \wsCore\Html\Selector
      */
     public function selector() {
-        return ( $this->selector instanceof \Closure ) ? $this->selector() : $this->selector;
+        /** @noinspection PhpUndefinedMethodInspection */
+        return ( $this->selectorObj instanceof \Closure ) ? $this->selectorObj() : $this->selectorObj;
     }
+    // +----------------------------------------------------------------------+
+    //  Basic DataBase Access.
     // +----------------------------------------------------------------------+
     /**
      * @param string $id
@@ -148,6 +153,8 @@ class Dao
         return $this->insertId( $values );
     }
     // +----------------------------------------------------------------------+
+    //  Managing Selector for Html/Form Output. 
+    // +----------------------------------------------------------------------+
     /**
      * @param string $type
      * @param string $var_name
@@ -201,7 +208,9 @@ class Dao
         }
         return $sel;
     }
-
+    // +----------------------------------------------------------------------+
+    //  Managing Validation and Properties. 
+    // +----------------------------------------------------------------------+
     /**
      * checks input data using pggCheck.
      * $validators[ $var_name ] = [
