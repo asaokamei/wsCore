@@ -14,6 +14,12 @@ namespace wsCore\Html;
  * @method \wsCore\Html\Tags bold()
  * @method \wsCore\Html\Tags i()
  * @method \wsCore\Html\Tags em()
+ * @method \wsCore\Html\Tags option()
+ * @method \wsCore\Html\Tags checked
+ * @method \wsCore\Html\Tags optgroup
+ * @method \wsCore\Html\Tags label
+ * @method \wsCore\Html\Tags nl
+ * @method \wsCore\Html\Tags li
  */
 class Tags
 {
@@ -78,6 +84,17 @@ class Tags
     {
         $this->setTagName_( $tagName );
         $this->setContents_( $contents );
+    }
+
+    /**
+     * @param string|null  $tagName
+     * @param null|string $contents
+     * @return \wsCore\Html\Tags
+     */
+    public function _( $tagName=NULL, $contents=NULL )
+    {
+        $class = get_called_class();
+        return new $class( $tagName, $contents );
     }
 
     /**
