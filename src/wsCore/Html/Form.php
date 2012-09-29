@@ -29,6 +29,7 @@ class Form extends Tags
     // +----------------------------------------------------------------------+
     /**
      * quick method to create input element.
+     * todo: return as new object.
      *
      * @param string $type
      * @param string $name
@@ -49,6 +50,7 @@ class Form extends Tags
 
     /**
      * creates textArea element.
+     * todo: return as new object.
      *
      * @param string $name
      * @param null|string $value
@@ -81,6 +83,7 @@ class Form extends Tags
     // +----------------------------------------------------------------------+
     /**
      * make select list.
+     * todo: return as new object.
      * 
      * @param string $name
      * @param array $items
@@ -97,7 +100,7 @@ class Form extends Tags
         $this->setName( $name );
         $this->items = $items;
         $this->applyAttributes( $attributes );
-        $this-> makeOptions( $this, $items, $checked );
+        $this->makeOptions( $this, $items, $checked );
         return $this;
     }
 
@@ -136,7 +139,8 @@ class Form extends Tags
     }
     // +----------------------------------------------------------------------+
     /**
-     * make single radio button element. 
+     * make single radio button element.
+     * todo: return as new object.
      * 
      * @param string $name
      * @param string $value
@@ -151,7 +155,8 @@ class Form extends Tags
     }
 
     /**
-     * make single checkbox button. 
+     * make single checkbox button.
+     * todo: return as new object.
      * 
      * @param string $name
      * @param string $value
@@ -168,6 +173,7 @@ class Form extends Tags
 
     /**
      * make single radio button inside label tag with $label as description.
+     * todo: return as new object.
      * @param string $name
      * @param       $value
      * @param       $label
@@ -180,6 +186,7 @@ class Form extends Tags
 
     /**
      * make single checkbox button inside label tag with $label as description.
+     * todo: return as new object.
      * @param string $name
      * @param       $value
      * @param       $label
@@ -217,7 +224,8 @@ class Form extends Tags
     }
 
     /**
-     * the body routine for radioBox and checkBox. 
+     * the body routine for radioBox and checkBox.
+     * todo: return as new object.
      * 
      * @param string $style
      * @param string $name
