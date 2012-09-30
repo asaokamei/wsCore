@@ -21,6 +21,12 @@ validate( $validator, $data )
   external API will be validate( $validator ).
   internaly validateData( $validator ) and call Dao's validate method.
 
+popHtml( $type, $prop_name, $value )
+: pass type of html (either html, form, or raw), property name, and 
+  its value if present. 
+: will return appropriate form or html text. for html text, 
+  its html entities are encoded. 
+
 Validation
 ----------
 
