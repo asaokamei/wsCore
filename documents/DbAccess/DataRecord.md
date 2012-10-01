@@ -59,3 +59,32 @@ then, from DataRecord point of view
 
 how's this?
 
+Html Form Element
+-----------------
+
+DataRecord knows how to get it's data from HTML forms. 
+
+    $data->popName( 'user_name' ); // shows User's Name...
+    
+    $data->htmlType( 'html' );
+    $data->popHtml( 'user_name' ); // shows user_name, html safe. 
+    
+    $data->htmlType( 'form' );
+    $data->popHtml( 'user_gender' ); // shows radio buttons for male/female. 
+    
+
+Relation
+--------
+
+It would be nice if...
+
+    // setting relation, simple case. 
+    $data->link()->set( $dataB );
+    
+    // setting relation, a bit more complicated case
+    $car->link( 'top_color_id' )->set( $colorBlack );
+    $car->link( 'side_color_id' )->set( $colorRed );
+    
+    // setting relation using many-to-many table.
+    $friend->link( 'group' )->set( $friends );
+
