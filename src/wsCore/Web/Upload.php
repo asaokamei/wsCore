@@ -1,5 +1,7 @@
 <?php
 
+class UploadException extends Exception {}
+
 class Upload
 {
     const ERR_NO_UPLOAD = 'ERR901';
@@ -19,6 +21,7 @@ class Upload
     /** @var null         error code if error */
     private $error_code = NULL;
 
+    private $throw_exception = TRUE;
     /**
      * @param null $userFile
      */
@@ -34,7 +37,7 @@ class Upload
     public function setErrorMessage()
     {
         $this->errorMessages = array(
-            UPLOAD_ERR_OK         =>  'リフレッシュなどでファイルがアップされてません。 ',
+            UPLOAD_ERR_OK         =>  'ファイルをアップロードしました。 ',
             UPLOAD_ERR_INI_SIZE   =>  'ファイルサイズが上限を超えています。  ',
             UPLOAD_ERR_FORM_SIZE  =>  'ファイルサイズが上限値を超えています。  ',
             UPLOAD_ERR_PARTIAL    =>  'アップロードが完了しませんでした。  ',
@@ -43,7 +46,7 @@ class Upload
             UPLOAD_ERR_CANT_WRITE =>  'ディスクへの書き込みに失敗しました。 ',
             UPLOAD_ERR_EXTENSION  =>  'アップロードが拡張モジュールによって停止されました。  ',
             static::ERR_NO_UPLOAD =>  'ファイルがアップロードされていません。 ',
-            static::ERR_NO_UPLOAD =>  'アップロードされたファイルではありません。 ',
+            static::ERR_INVALID   =>  'アップロードされたファイルではありません。 ',
             static::ERR_SIZE_ZERO =>  'ファイルサイズが空です（サイズ＝０）。 ',
             static::ERR_BAD_EXT   =>  'ファイルの拡張子が正しくありません。 ',
         );
@@ -64,25 +67,36 @@ class Upload
             $this->upload_info = array(
                 'error' => static::ERR_NO_UPLOAD,
             );
+            return $this->error;
         }
-        if( isset( $this->upload_info[ 'error' ] ) ) {
+        if( $this->upload_info[ 'error' ] != UPLOAD_ERR_OK ) {
             $this->setError( $this->upload_info[ 'error' ] );
         }
-        if( !isset( $this->upload_info[ 'size' ] ) || $this->upload_info[ 'size' ] <= 0 ) {
-            $this->setError( static::ERR_SIZE_ZERO );
-        }
-        if( !is_uploaded_file( $this->upload_info[ 'tmp_name' ] ) ) {
-            $this->setError( static::ERR_INVALID );
-        }
+        else
+            if( !isset( $this->upload_info[ 'size' ] ) || $this->upload_info[ 'size' ] <= 0 ) {
+                $this->setError( static::ERR_SIZE_ZERO );
+            }
+            else
+                if( !is_uploaded_file( $this->upload_info[ 'tmp_name' ] ) ) {
+                    $this->setError( static::ERR_INVALID );
+                }
         return $this->error;
     }
 
     /**
      * @param $error_code
+     * @throws UploadException
      * @return bool
      */
     public function setError( $error_code ) {
         $this->error_code = $error_code;
+        if( $this->throw_exception ) {
+            $message = " (error #$error_code)";
+            if( isset( $this->errorMessages[ $error_code ] ) ) {
+                $message = $this->errorMessages[ $error_code ] . $message;
+            }
+            throw new UploadException( $message );
+        }
         $this->error      = TRUE;
         return $this->error;
     }
@@ -123,6 +137,9 @@ class Upload
      */
     public function isValid( &$err_code=NULL ) {
         $err_code = $this->error_code;
+        if( isset( $this->errorMessages[ $err_code ] ) ) {
+            $err_code = $this->errorMessages[ $err_code ] . " (error #$err_code)";
+        }
         return !$this->error;
     }
 
