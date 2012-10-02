@@ -65,7 +65,8 @@ class Csv
     {
         if( !$this->filePointer ) throw new RuntimeException( "Invalid CSV pointer: " );
         $data = fgetcsv( $this->filePointer, $size );
-        if( $this->useHeader ) {
+        if( count( $data ) == 1 && $data[0] === NULL ) $data = array(); // make it really empty.
+        if( !empty( $data ) && $this->useHeader ) {
             $result = array();
             foreach( $data as $col => $val ) {
                 $result[ $this->header[$col] ] = $val;
