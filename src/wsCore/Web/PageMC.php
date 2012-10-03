@@ -1,6 +1,7 @@
 <?php
+namespace wsCore\Web;
 
-class AppException extends Exception {}
+class PageMcException extends \Exception {}
 
 class ExampleController
 {
@@ -59,7 +60,7 @@ class PageMC
     /** @var string             default method name is act_index  */
     protected $default  = 'index';
 
-    /** @var PageView           view object...  */
+    /** @var \wsCore\Html\PageView           view object...  */
     protected $view = NULL;
 
     /** @var int                current error level */
@@ -71,52 +72,26 @@ class PageMC
     /** @var array              titles/button of each action */
     protected $titles = array();
 
-    /** @var array              list of annotations used in PageMC */
-    protected $annotation = array( 'submitAction', 'actionTitle' );
+    /** @var Session */
+    protected $session;
     // +-----------------------------------------------------------+
     /**
      * starts PageMC with object as Controller.
      *
      * @param object $object
+     * @param Session $session
      */
-    public function __construct( $object )
+    public function __construct( $object, $session=null )
     {
         $this->object = $object;
+        $this->session = $session;
         if( !isset( $_SESSION[ static::TOKEN_ID ] ) ) $_SESSION[ static::TOKEN_ID ] = array();
-        $this->reflect( $object );
-    }
-
-    /**
-     * get method annotations for PageMC.
-     *
-     * @param $object
-     */
-    public function reflect( $object )
-    {
-        $refObject = new ReflectionClass( $object );
-        $refMethods = $refObject->getMethods();
-        foreach( $refMethods as $rMethod )
-        {
-            $name = $rMethod->getName();
-            if( substr( $name, 0, 4 ) !== 'act_' ) continue;
-            $name = substr( $name, 4 );
-            $docs = $rMethod->getDocComment();
-            if( !preg_match_all( "/(@.*)$/mU", $docs, $matches ) ) continue;
-            foreach( $matches[1] as $comment )
-            {
-                if( !preg_match( '/@([-_a-zA-Z0-9]+)[ \t]+(.*)$/', $comment, $comMatch ) ) continue;
-                if( in_array( $comMatch[1], $this->annotation ) ) {
-                    $this->titles[ $name ][ $comMatch[1] ] = $comMatch[2];
-                }
-            }
-        }
-        var_dump( $this->titles );
     }
 
     // +-----------------------------------------------------------+
     /**
-     * @param PageView $view
-     * @throws AppException
+     * @param \wsCore\Html\PageView|array $view
+     * @throws PageMcException
      */
     public function run( $view )
     {
@@ -128,19 +103,36 @@ class PageMC
         {
             $this->view->set( 'currAction', $action );
             if( !method_exists( $this->object, $method ) )
-                throw new AppException( "invalid action: $action" );
+                throw new PageMcException( "invalid action: $action" );
 
             if( method_exists( $this->object, 'pre_action' ) ) {
                 call_user_func( array( $this->object, 'pre_action' ), $this );
             }
             call_user_func( array( $this->object, $method ), $view );
+            $this->setTitles( $action, '_curr' );
         }
-        catch( AppException $e ) {
+        catch( PageMcException $e ) {
             $this->error( $e->getMessage() );
         }
     }
-    public function nextAct( $act ) {
-        $this->view->set( $this->act_name, $act );
+    // +-----------------------------------------------------------+
+    //  managing actions
+    // +-----------------------------------------------------------+
+    public function nextAct( $act )
+    {
+        $this->view[ $this->act_name ] = $act;
+        $this->setTitles( $act, $this->act_name );
+    }
+
+    public function setTitles( $act, $prefix )
+    {
+        if( !$act ) return;
+        if( isset( $this->object->titles ) && is_array( $this->object->titles ) ) {
+            if( array_key_exists( $act, $this->object->titles ) ) {
+                $this->view[ $prefix . '_title' ] = $this->object->titles[ $act ][ 'title' ];
+                $this->view[ $prefix . '_button' ] = $this->object->titles[ $act ][ 'button' ];
+            }
+        }
     }
     // +-----------------------------------------------------------+
     // token for Cross Site Resource Forage
@@ -150,16 +142,7 @@ class PageMC
      */
     public function pushToken()
     {
-        $token = md5( rand() ); // need better token!
-        if( !isset( $_SESSION[ static::TOKEN_ID ][ 'token' ] ) ) {
-            $_SESSION[ static::TOKEN_ID ][ 'token' ] = array();
-        }
-        $token_data  = $_SESSION[ static::TOKEN_ID ][ 'token' ];
-        array_push( $token_data, $token );
-        if( count( $token_data ) > 20 ) {
-            array_shift( $token_data );
-        }
-        $this->view->set( static::TOKEN_ID, $token );
+        $this->session->pushToken();
     }
 
     /**
@@ -169,15 +152,7 @@ class PageMC
      */
     public function verifyToken()
     {
-        $token_post = $_POST[ static::TOKEN_ID ];
-        $token_data  = $_SESSION[ static::TOKEN_ID ][ 'token' ];
-        if( $token_post && in_array( $token_post, $token_data ) ) {
-            $key = array_search( $token_post, $token_data );
-            unset( $token_data[ $key ] );
-            return TRUE;
-        }
-        $this->error( 'access not allowed with current token.' );
-        return FALSE;
+        return $this->session->verifyToken();
     }
 
     // +-----------------------------------------------------------+
@@ -202,8 +177,38 @@ class PageMC
         $message = $this->messages;
         return $this->errLevel >= static::ERR_ERROR;
     }
-    // +-----------------------------------------------------------+
+
+    function displayMessage( $opt=array() )
+    {
+        if( empty( $this->messages ) ) return '';
+        $message = implode( '<br />', $this->messages );
+
+        if( $this->errLevel >= static::ERR_ERROR ) {
+            $tbl_color = '#CC3300';
+            $tbl_msg   = 'エラーがありました';
+        }
+        else {
+            $tbl_color = '#6699CC';
+            $tbl_msg   = 'メッセージ';
+        }
+        if( is_array( $opt ) ) extract( $opt );
+        if( !isset( $width ) ) $width = '100%';
+        ?>
+    <br>
+    <table class="err_box" width="<?php echo $width; ?>"  border="0" align="center" cellpadding="2" cellspacing="2" bgcolor="<?php echo $tbl_color;?>">
+        <tr>
+            <th><?php echo "<span style='color=white;' ><strong>{$tbl_msg}</strong></span>\n"; ?></th>
+        </tr>
+        <tr>
+            <td bgcolor="#FFFFFF"><?php echo $message;?></td>
+        </tr>
+    </table>
+    <br>
+    <?php
+    }    // +-----------------------------------------------------------+
 }
 
+/**
 $obj = new ExampleController();
 $page = new PageMC( $obj );
+ **/
