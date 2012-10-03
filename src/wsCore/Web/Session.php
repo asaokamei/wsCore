@@ -1,5 +1,6 @@
 <?php
-namespace AmidaMVC\Tools;
+namespace wsCore\Web;
+
 /**
  * Session wrapper.
  */
