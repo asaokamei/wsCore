@@ -76,13 +76,6 @@ class DataIO
     }
 
     /**
-     * @param $validator  Validator
-     */
-    public function injectValidator( $validator ) {
-        $this->validator = $validator;
-    }
-
-    /**
      * @param array $data
      */
     public function source( $data=array() ) {
