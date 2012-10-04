@@ -2,8 +2,7 @@
 namespace wsTests\Validator;
 require_once( __DIR__ . '/../../autoloader.php' );
 
-use \wsCore\Validator\DataIO as dio;
-use \wsCore\Validator\Validator as validator;
+use \wsCore\Core;
 
 class DataIO_Test extends \PHPUnit_Framework_TestCase
 {
@@ -11,8 +10,8 @@ class DataIO_Test extends \PHPUnit_Framework_TestCase
     var $dio;
     public function setUp()
     {
-        $this->dio = new dio();
-        $this->dio->injectValidator( new validator() );
+        Core::go();
+        $this->dio = Core::get( 'DataIO' );
     }
     public function getData()
     {
@@ -36,7 +35,7 @@ class DataIO_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $err_msg, $errors['num'][2] );
 
         // test popData. should have all the values
-        $allData = $this->dio->popData();
+        $allData = $this->dio->pop();
         $this->assertTrue( isset( $allData['num'][2] ) );
 
         // test popSafe. should not have value with errors.

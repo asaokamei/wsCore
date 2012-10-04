@@ -32,8 +32,13 @@ class DataIO
     /** @var Validator */
     private $validator = NULL;
     // +----------------------------------------------------------------------+
-    public function __construct()
+    /**
+     * @param $validator
+     * @DimInjection Fresh \wsCore\Validator\Validator
+     */
+    public function __construct( $validator ) 
     {
+        $this->validator = $validator;
         $this->filterOrder = array(
             'multiple'    => FALSE, // combine multiple values into one.
             'sameWith'    => FALSE, // compare with another value.
@@ -148,10 +153,17 @@ class DataIO
     }
 
     /**
+     * @param null|string $key
      * @return array
      */
-    public function popData() {
-        return $this->data;
+    public function pop( $key=NULL ) {
+        if( is_null( $key ) ) {
+            return $this->data;
+        } 
+        elseif( array_key_exists( $key, $this->data ) ) {
+            return $this->data[ $key ];
+        }
+        return NULL;
     }
 
     /**

@@ -4,20 +4,24 @@ DataIO, for Data Input and Output
 Simple Start
 ------------
 
-get DataIO object and get values from $_POST, a default data source.
+get DataIO object from Core.
 
     Core::goEasy();
     $dio = Core::fresh( 'dio' );
+
+get values from $_POST, a default data source.
+
     $dio->pushValue( 'mail' );
     $dio->pushValue( 'name' );
-    $data = $dio->pop();
+    $data = $dio->pop(); // pops mail and name. 
 
 get values using preset types from $_REQUEST.
 
     $dio->source( $_REQUEST ); // default is $_POST.
-    $dio->push( 'mail', 'user_mail', 'required' ); // required value
-    $dio->push( 'text', 'user_name', 'required' ); // required value
-    $data = $dio->pop();
+    $dio->push( 'user_mail', 'mail', 'required' ); // required value
+    $dio->push( 'user_name', 'text', 'required' ); // required value
+    $data  = $dio->pop(); // pops user_mail and user_name. 
+    $isErr = $dio->popErrors( $errors ); // pops error messages for user_{mail|name}
 
 check errors and get error messages.
 the required filter has default error message: 'required field',
@@ -66,7 +70,12 @@ pushValue checks for a named value in the source with predefined filter type.
 ###validate( $name, &$value, $type=NULL, &$filters=array(), &$err_msg=NULL )
 
 semi-internal method, used by pushValue and push.
-Big difference is $filters must be an array.
+
+This method is almost the same as push method, except that this 
+- accepts only array for filters, 
+- returns error messages if validation failed, 
+- the value is returned as reference,
+- return value indicates validation success. 
 
     $ok = $dio->validate( $name, $value, $type, $filters, $err_msg );
 
