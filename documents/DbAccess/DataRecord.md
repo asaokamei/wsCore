@@ -59,6 +59,20 @@ then, from DataRecord point of view
 
 how's this?
 
+###Using DataIO
+
+for DataIO/Validator work with DataRecord with 'sameWith' and 
+'multiple' filters, well, how about this?
+
+    $source = array_merge( $rec->data, $_POST );
+    $dio->source( $source );
+    ....
+    .... do validation
+    ....
+    $new_data = $dio->pop();
+    $rec->data = array_merge( $rec->data, $new_data );
+
+
 Html Form Element
 -----------------
 
