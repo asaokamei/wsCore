@@ -15,6 +15,8 @@ get values from $_POST, a default data source.
     $dio->pushValue( 'name' );
     $data = $dio->pop(); // pops mail and name. 
 
+###simple validation with type
+
 get values using preset types from $_REQUEST.
 
     $dio->source( $_REQUEST ); // default is $_POST.
@@ -35,6 +37,8 @@ which you can change.
         }
     }
 
+###complex filter rules
+
 setting error messages.
 
     $dio->push( 'number', 'number', 'min:10|max:20|err_msg:enter number between 10 and 20' );
@@ -43,6 +47,30 @@ filter is either a text, or an array. they represent the same filters.
 
     $dio->push( 'age', 'number', 'min:10|max:20|err_msg:enter number between 10 and 20' );
     $dio->push( 'age', 'number', array( 'min' => 10, 'max' => 20, 'err_msg' => 'enter number between 10 and 20' ) );
+
+###multiple values
+
+combine input in multiple variables into one data, such as 
+telephone number and date. 
+
+the syntax is complex, array style of filter is required. 
+
+    $dio->pushValue( 'tel', array( 'multiple' => [ 
+        'suffix' => [ 'area', 'region', 'code' ], 
+        'format' => '(%03d) %d-%d' ] 
+    ) );
+    // gets tel_area, tel_region, and tel_code and format into (###) ####-####. 
+
+###sameWith
+
+for confirming email or password by entering the same input twice. 
+
+    $dio->push( 'mail', 'mail', 'required | sameWith:mail_confirm' );
+
+validates that the values for mail and mail_confirm are the same. 
+
+should think of better name...
+
 
 API
 ---
