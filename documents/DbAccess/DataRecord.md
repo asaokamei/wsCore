@@ -72,6 +72,31 @@ for DataIO/Validator work with DataRecord with 'sameWith' and
     $new_data = $dio->pop();
     $rec->data = array_merge( $rec->data, $new_data );
 
+Here's another idea. 
+
+    $rec->access( [ 'user_mail', 'user_mail_confirm' ] );
+    $rec->load( $_POST );   // reads in user_mail and user_mail_confirm
+    $rec->validate( $dio ); // validation. 
+
+    $rec->insert();         // checks against dao's access list.
+                            // which should reject user_mail_confirm. 
+
+Database Access Using Dao
+-------------------------
+
+idea... 
+
+    $rec->insert();       // inserts data: $rec->dao->insert( $rec->data );
+    $rec->insert( $dao ); // inserts data by given dao: $dao->insert( $rec->data );
+
+same goes for update and deletes. 
+
+access control. 
+
+each dao should have accessible property list, so that only the 
+data defined to the dao/table will be saved to database. 
+
+
 
 Html Form Element
 -----------------
