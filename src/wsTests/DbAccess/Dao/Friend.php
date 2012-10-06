@@ -45,4 +45,7 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
     public function recordClassName() {
         return $this->recordClassName;
     }
+    public function setSelector( $name, $info ) {
+        $this->selectors[ $name ] = $info;
+    }
 }
