@@ -35,7 +35,7 @@ class Dao
     protected $selectorObj;
 
     /** @var \wsCore\DbAccess\DataRecord */
-    protected $recordClassName = '\wsCore\DbAccess\DataRecord';
+    protected $recordClassName = 'wsCore\DbAccess\DataRecord';
 
     // +----------------------------------------------------------------------+
     //  Managing Object and Instances. 
