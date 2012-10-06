@@ -220,9 +220,9 @@ class Dao
             }
             else {
                 $class = $info[0];
-                $arg1     = ( isset( $info[2][0] ) ) ? $info[2][0] : null;
-                $arg2     = ( isset( $info[2][1] ) ) ? $info[2][1] : null;
-                $arg3     = ( isset( $info[2][2] ) ) ? $info[2][2] : null;
+                $arg1     = ( isset( $info[1][0] ) ) ? $info[1][0] : null;
+                $arg2     = ( isset( $info[1][1] ) ) ? $info[1][1] : null;
+                $arg3     = ( isset( $info[1][2] ) ) ? $info[1][2] : null;
                 $sel = new $class( $var_name, $arg1, $arg2, $arg3 );
             }
         }
