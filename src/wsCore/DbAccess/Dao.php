@@ -16,6 +16,9 @@ class Dao
     /** @var array      property names as key => name  */
     protected $properties = array();
 
+    /** @var array      accessible properties          */
+    protected $accessibles = array();
+    
     /** @var array      restricted keys in properties  */
     protected $restricts  = array();
 
@@ -48,8 +51,18 @@ class Dao
         $this->query = $query;
         $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this ) );
         $this->selectorObj= $selector;
+        $this->prepare();
     }
 
+    public function prepare()
+    {
+        if( empty( $this->properties ) ) return;
+        foreach( $this->properties as $name => $val ) {
+            if( $name == $this->id_name ) continue;
+            // TODO: skip relations as well. 
+            array_push( $this->accessibles, $name );
+        }
+    }
     /**
      * @return \wsCore\DbAccess\Query
      */
@@ -96,7 +109,7 @@ class Dao
     public function update( $id, $values )
     {
         if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
-        $this->restrict( $values );
+        $values = $this->restrict( $values );
         return $this->query()->where( $this->id_name, $id )->update( $values );
     }
 
@@ -108,7 +121,7 @@ class Dao
      */
     public function insertValue( $values )
     {
-        $this->restrict( $values );
+        $values = $this->restrict( $values );
         $this->query()->insert( $values );
         if( isset( $values[ $this->id_name ] ) ) {
             $id = $values[ $this->id_name ];
@@ -250,16 +263,18 @@ class Dao
      * uses $this->restricts or $this->properties
      *
      * @param array $values
+     * @return array
      */
-    public function restrict( &$values )
+    public function restrict( $values )
     {
-        if( !empty( $values ) )
+        if( empty( $values ) ) return $values;
         foreach( $values as $key => $val ) {
-            if( !in_array( $key, $this->restricts ) ||
-                !isset( $this->properties[ $key ] ) ) {
+            if( !in_array( $key, $this->accessibles ) ||
+                in_array( $key, $this->restricts ) ) {
                 unset( $values[ $key ] );
             }
         }
+        return $values;
     }
 
     /**
