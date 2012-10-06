@@ -96,7 +96,7 @@ class Dao
      */
     public function find( $id ) {
         return $this->query()
-            ->where( $this->id_name, $id )->limit(1)->select();
+            ->where( $this->id_name, $id )->limit(1)->select()->fetchRow();
     }
 
     /**
