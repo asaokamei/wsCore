@@ -176,7 +176,7 @@ class Query
                     throw new \RuntimeException( "Cannot fetch with offset for ".$driver );
                 }
             }
-            return $this->pdoStmt->fetch( \PDO::FETCH_ASSOC, \PDO::FETCH_ORI_ABS, $row );
+            return $this->pdoStmt->fetch( null, \PDO::FETCH_ORI_ABS, $row );
         }
         return array();
     }
