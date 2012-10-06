@@ -16,11 +16,8 @@ class Dao
     /** @var array      property names as key => name  */
     protected $properties = array();
 
-    /** @var array      accessible properties          */
-    protected $accessibles = array();
-    
     /** @var array      restricted keys in properties  */
-    protected $restricts  = array();
+    protected $restricted = array();
 
     /** @var array      for selector construction      */
     protected $selectors  = array();
@@ -56,12 +53,8 @@ class Dao
 
     public function prepare()
     {
-        if( empty( $this->properties ) ) return;
-        foreach( $this->properties as $name => $val ) {
-            if( $name == $this->id_name ) continue;
-            // TODO: skip relations as well. 
-            array_push( $this->accessibles, $name );
-        }
+        array_push( $this->restricted, $this->id_name );
+        // TODO: add relations as well. 
     }
     /**
      * @return \wsCore\DbAccess\Query
@@ -269,8 +262,8 @@ class Dao
     {
         if( empty( $values ) ) return $values;
         foreach( $values as $key => $val ) {
-            if( !in_array( $key, $this->accessibles ) ||
-                in_array( $key, $this->restricts ) ) {
+            if( !array_key_exists( $key, $this->properties ) ||
+                in_array( $key, $this->restricted ) ) {
                 unset( $values[ $key ] );
             }
         }
