@@ -50,7 +50,24 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->query->execSQL( $sql );
     }
     // +----------------------------------------------------------------------+
-    function test_simple_insert_and_find() {
+    function test_simple_insert_and_update()
+    {
+        $values = array(
+            'friend_name' => 'my friend',
+            'friend_bday' => '1980-01-23',
+        );
+        $id = $this->friend->insert( $values );
+        $update = array(
+            'friend_name' => 'my real friend',
+        );
+        $this->friend->update( $id, $update );
+        $data = $this->friend->find( $id );
+
+        $this->assertEquals( $update[ 'friend_name' ], $data[ 'friend_name' ] );
+        $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
+    }
+    function test_simple_insert_and_find() 
+    {
         $values = array(
             'friend_name' => 'my friend',
             'friend_bday' => '1980-01-23',
