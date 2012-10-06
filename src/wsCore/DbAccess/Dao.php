@@ -51,6 +51,9 @@ class Dao
         $this->prepare();
     }
 
+    /**
+     * prepares restricted properties. 
+     */
     public function prepare()
     {
         array_push( $this->restricted, $this->id_name );
@@ -101,7 +104,6 @@ class Dao
      */
     public function update( $id, $values )
     {
-        if( isset( $values[ $this->id_name ] ) ) unset(  $values[ $this->id_name ] );
         $values = $this->restrict( $values );
         return $this->query()->where( $this->id_name, $id )->update( $values );
     }
@@ -141,7 +143,6 @@ class Dao
      */
     public function insertId( $values )
     {
-        if( isset( $values[ $this->id_name ] ) ) { unset(  $values[ $this->id_name ] ); }
         $this->insertValue( $values );
         $id = $this->query->lastId();
         return $id;
