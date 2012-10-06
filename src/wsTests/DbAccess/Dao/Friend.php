@@ -42,4 +42,7 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
     {
         parent::__construct( $query, $selector );
     }
+    public function recordClassName() {
+        return $this->recordClassName;
+    }
 }

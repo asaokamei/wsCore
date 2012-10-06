@@ -60,6 +60,20 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals( $values[ 'friend_name' ], $data[ 'friend_name' ] );
         $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
+        $this->assertTrue( is_object( $data ) );
+        $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
+
+        $values = array(
+            'friend_name' => 'my friend2',
+            'friend_bday' => '1990-03-21',
+        );
+        $id = $this->friend->insert( $values );
+        $data = $this->friend->find( $id );
+
+        $this->assertEquals( $values[ 'friend_name' ], $data[ 'friend_name' ] );
+        $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
+        $this->assertTrue( is_object( $data ) );
+        $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
     }
     // +----------------------------------------------------------------------+
 }
