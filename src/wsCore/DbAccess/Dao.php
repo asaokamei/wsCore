@@ -81,7 +81,14 @@ class Dao
      */
     public function selector() {
         /** @noinspection PhpUndefinedMethodInspection */
-        return ( $this->selectorObj instanceof \Closure ) ? $this->selectorObj() : $this->selectorObj;
+        if( $this->selectorObj instanceof \Closure ) {
+            $selector = $this->selectorObj;
+            $retSel   = $selector();
+        }
+        else {
+            $retSel   = $this->selectorObj;
+        }
+        return $retSel;
     }
     // +----------------------------------------------------------------------+
     //  Basic DataBase Access.
@@ -206,11 +213,17 @@ class Dao
         if( isset( $this->selectors[ $var_name ] ) ) {
             $info  = $this->selectors[ $var_name ];
             if( $info[0] == 'Selector' ) {
-                $sel = $this->selector()->getInstance( $info[1], $var_name, $info[2], $info[3] );
+                $selector = $this->selector();
+                $arg2     = ( isset( $info[2] ) ) ? $info[2] : null;
+                $arg3     = ( isset( $info[3] ) ) ? $info[3] : null;
+                $sel = $selector->getInstance( $info[1], $var_name, $arg2, $arg3 );
             }
             else {
                 $class = $info[0];
-                $sel = new $class( $var_name, $info[2][0], $info[2][1], $info[2][2] );
+                $arg1     = ( isset( $info[2][0] ) ) ? $info[2][0] : null;
+                $arg2     = ( isset( $info[2][1] ) ) ? $info[2][1] : null;
+                $arg3     = ( isset( $info[2][2] ) ) ? $info[2][2] : null;
+                $sel = new $class( $var_name, $arg1, $arg2, $arg3 );
             }
         }
         return $sel;

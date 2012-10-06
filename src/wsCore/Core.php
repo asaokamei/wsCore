@@ -11,6 +11,7 @@ class Core
         'Query'     => '\wsCore\DbAccess\Query',
         'Validator' => '\wsCore\Validator\Validator',
         'DataIO'    => '\wsCore\Validator\DataIO',
+        'Selector'  => '\wsCore\Html\Selector',
         '' => '',
     );
 

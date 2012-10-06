@@ -50,6 +50,33 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->query->execSQL( $sql );
     }
     // +----------------------------------------------------------------------+
+    function test_getSelector()
+    {
+        $sel = $this->friend->getSelector( 'friend_name' );
+        $this->assertTrue( is_object( $sel ) );
+        $this->assertEquals( 'wsCore\Html\Selector_Text', get_class( $sel ) );
+
+        $sel = $this->friend->getSelector( 'friend_bday' );
+        $this->assertTrue( is_object( $sel ) );
+        $this->assertEquals( 'wsCore\Html\Selector_DateYMD', get_class( $sel ) );
+    }
+    function test_dao_basics()
+    {
+        $id_name = $this->friend->getIdName();
+        $this->assertEquals( 'friend_id', $id_name );
+
+        $model_name = $this->friend->getModelName();
+        $this->assertEquals( 'wsTests\DbAccess\Dao_Friend', $model_name );
+
+        $prop_name = $this->friend->propertyName( 'friend_name');
+        $this->assertEquals( 'name', $prop_name );
+        $prop_name = $this->friend->propertyName( 'friend_bday');
+        $this->assertEquals( 'birthday', $prop_name );
+        
+        $data = $this->friend->getRecord();
+        $this->assertTrue( is_object( $data ) );
+        $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
+    }
     function test_id_is_restricted()
     {
         $values = array(
