@@ -50,6 +50,23 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->query->execSQL( $sql );
     }
     // +----------------------------------------------------------------------+
+    function test_old_style_selector_by_class()
+    {
+        $this->friend->setSelector( 
+            'friend_name', 
+            array( 'wsTests\DbAccess\Dao_SelSomething', array( 'aa', 'bb', 'cc' ) ) 
+        );
+        $sel = $this->friend->getSelector( 'friend_name' );
+        $this->assertTrue( is_object( $sel ) );
+        $this->assertEquals( 'wsTests\DbAccess\Dao_SelSomething', get_class( $sel ) );
+        $this->assertEquals( 'friend_name', $sel->a );
+        $this->assertEquals( 'aa', $sel->b );
+        $this->assertEquals( 'bb', $sel->c );
+        $this->assertEquals( 'cc', $sel->d );
+    }
+    /**
+     * 
+     */
     function test_popHtml()
     {
         $name = $this->friend->popHtml( 'html', 'friend_name', 'my good friend' );
@@ -59,12 +76,18 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertContains( '<input type="text" name="friend_name" ', $form );
         $this->assertContains( 'value="my good friend"', $form );
     }
+    /**
+     *
+     */
     function test_getSelInstance()
     {
         $sel1 = $this->friend->getSelInstance( 'friend_name' );
         $sel2 = $this->friend->getSelInstance( 'friend_name' );
         $this->assertSame( $sel1, $sel2 );
     }
+    /**
+     *
+     */
     function test_getSelector()
     {
         $sel = $this->friend->getSelector( 'friend_name' );
@@ -76,6 +99,9 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue( is_object( $sel ) );
         $this->assertEquals( 'wsCore\Html\Selector_DateYMD', get_class( $sel ) );
     }
+    /**
+     *
+     */
     function test_dao_basics()
     {
         $id_name = $this->friend->getIdName();
@@ -93,6 +119,9 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue( is_object( $data ) );
         $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
     }
+    /**
+     *
+     */
     function test_id_is_restricted()
     {
         $values = array(
@@ -115,6 +144,9 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $update[ 'friend_name' ], $data[ 'friend_name' ] );
         $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
     }
+    /**
+     *
+     */
     function test_simple_insert_and_update()
     {
         $values = array(
@@ -131,6 +163,9 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $update[ 'friend_name' ], $data[ 'friend_name' ] );
         $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
     }
+    /**
+     *
+     */
     function test_simple_insert_and_find() 
     {
         $values = array(
