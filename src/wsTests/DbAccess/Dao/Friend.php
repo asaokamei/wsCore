@@ -27,7 +27,7 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
     /** @var array      for selector construction      */
     protected $selectors  = array(
         'friend_id'   => array( 'Selector', 'text' ),
-        'friend_name' => array( 'Selector', 'text' ),
+        'friend_name' => array( 'Selector', 'text', 'width:43' ),
         'friend_bday' => array( 'Selector', 'DateYMD' ),
     );
     

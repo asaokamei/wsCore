@@ -55,6 +55,7 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $sel = $this->friend->getSelector( 'friend_name' );
         $this->assertTrue( is_object( $sel ) );
         $this->assertEquals( 'wsCore\Html\Selector_Text', get_class( $sel ) );
+        $this->assertEquals( '43', $sel->attributes[ 'width'] );
 
         $sel = $this->friend->getSelector( 'friend_bday' );
         $this->assertTrue( is_object( $sel ) );
