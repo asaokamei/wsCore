@@ -50,6 +50,21 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->query->execSQL( $sql );
     }
     // +----------------------------------------------------------------------+
+    function test_popHtml()
+    {
+        $name = $this->friend->popHtml( 'html', 'friend_name', 'my good friend' );
+        $this->assertEquals( 'my good friend', $name );
+        
+        $form = (string) $this->friend->popHtml( 'form', 'friend_name', 'my good friend' );
+        $this->assertContains( '<input type="text" name="friend_name" ', $form );
+        $this->assertContains( 'value="my good friend"', $form );
+    }
+    function test_getSelInstance()
+    {
+        $sel1 = $this->friend->getSelInstance( 'friend_name' );
+        $sel2 = $this->friend->getSelInstance( 'friend_name' );
+        $this->assertSame( $sel1, $sel2 );
+    }
     function test_getSelector()
     {
         $sel = $this->friend->getSelector( 'friend_name' );
