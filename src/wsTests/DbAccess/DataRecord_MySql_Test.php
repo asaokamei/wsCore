@@ -101,7 +101,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $name = 'my old friend';
         $bday = '1990-12-31';
         $record->set( 'friend_name', $name );
-        $record->set( 'friend_bday', $bday );
+        $record[ 'friend_bday' ] = $bday;
         $record->update();
         
         $id = $record->getId();
