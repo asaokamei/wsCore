@@ -85,7 +85,10 @@ class Validator
                 'mbConvert:hankaku|sanitize:email|pattern:mail',
                 'err_msg' => 'invalid email format'
             ),
-            'date' => array(),
+            'date' => array(
+                // TODO: think of better regular date filter rules. 
+                'mbConvert:hankaku|pattern:[0-9]{4}-[0-9]{2}-[0-9]{2}',
+            ),
             'dateYM' => array(),
             'time' => array(),
             'datetime' => array(),
