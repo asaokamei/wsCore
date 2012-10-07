@@ -111,7 +111,7 @@ class DataIO
         $filters = $this->validator->prepareFilter( $filters );
         $filters = array_merge( $this->filterOrder, $filterType, $filters );
         $value = NULL;
-        $ok = $this->validate( $name, $value, NULL, $filters );
+        $ok = $this->validate( $name, $value, $type, $filters );
         if( !$ok ) $value = FALSE;
         return $this;
     }
