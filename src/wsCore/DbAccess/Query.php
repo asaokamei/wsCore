@@ -495,26 +495,13 @@ class Query
         return $this;
     }
     public function makeInsert() {
-        $this->processValues();
+        $this->sqlObj->processValues();
         $this->sql = SqlBuilder::makeInsert( $this->sqlObj );
         return $this;
     }
     public function makeUpdate() {
-        $this->processValues();
-        $this->sql = SqlBuilder::makeUpdate( $this->sqlObj );
-        return $this;
-    }
-
-    /**
-     * prepares value for prepared statement. if value is NULL,
-     * it will not be treated as prepared value, instead it is
-     * set to SQL's NULL value.
-     *
-     * @return Query
-     */
-    public function processValues()
-    {
         $this->sqlObj->processValues();
+        $this->sql = SqlBuilder::makeUpdate( $this->sqlObj );
         return $this;
     }
     // +----------------------------------------------------------------------+
