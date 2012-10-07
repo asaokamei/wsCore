@@ -54,10 +54,8 @@ class Validator
             'sameAs'      => FALSE,
         );
         $this->filterOptions = array(
-            'noNull' => array( function( &$v ) { $v = str_replace( "\0", '', $v ); return TRUE; } ),
-            'trim'   => array( function( &$v ) { $v = trim( $v );return TRUE;} ),
+            'trim' => array( 'myTrim' ),
             'sanitize' => array(
-                function( &$v, $p ) { $v = filter_var( $v, $p ); return !!$v; },
                 'mail'   => FILTER_SANITIZE_EMAIL,
                 'float'  => FILTER_SANITIZE_NUMBER_FLOAT,
                 'int'    => FILTER_SANITIZE_NUMBER_INT,
@@ -229,7 +227,7 @@ class Validator
         if( is_callable( $method ) ) {
             return $method( $value, $parameter, $loop );
         }
-        $method = 'filter_' . $rule;
+        $method = 'filter_' . $method;
         if( method_exists( $this, $method ) ) {
             return $this->$method( $value, $parameter, $loop );
         }
@@ -276,6 +274,21 @@ class Validator
     //  filter definitions (filters that alters the value).
     // +----------------------------------------------------------------------+
 
+    public function filter_noNull( &$v ) { 
+        $v = str_replace( "\0", '', $v ); 
+        return TRUE; 
+    }
+    
+    public function filter_myTrim( &$v ) { 
+        $v = trim( $v );
+        return TRUE;
+    }
+    
+    public function sanitize( &$v, $p ) { 
+        $v = filter_var( $v, $p ); 
+        return !!$v; 
+    }
+    
     public function filter_encoding( &$v, $p ) {
         $code = ( empty( $p ) ) ? static::$charCode: $p;
         if( mb_check_encoding( $v, $code ) ) {
