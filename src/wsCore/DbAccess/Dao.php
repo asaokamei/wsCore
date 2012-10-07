@@ -183,7 +183,7 @@ class Dao
     public function popHtml( $type, $var_name, $value=NULL )
     {
         $sel = $this->getSelInstance( $var_name );
-        $val = $sel->show( $type, $value );
+        $val = $sel->popHtml( $type, $value );
         return $val;
     }
     /**
