@@ -239,23 +239,22 @@ class Dao
     /**
      * checks input data using pggCheck.
      * $validators[ $var_name ] = [
-     *     type  => dataType or methodName,
-     *     args  => [ arg2, arg3, arg4...],
+     *     dataType or methodName,
+     *     'filter rules',
      *   ]
      * @param \wsCore\Validator\DataIo $dio
-     * @param $var_name
      * @return mixed|null
      */
-    public function validate( $dio, $var_name )
+    public function validate( $dio )
     {
-        $return = NULL;
-        if( isset( $this->validators[ $var_name ] ) ) {
-            $info   = $this->validators[ $var_name ];
-            $method = $info[ 'type' ];
-            $args   = $info[ 'args' ];
-            $return = $dio->validate( $var_name, $method, $args );
+        if( empty( $this->validators ) ) return $this;
+        foreach( $this->validators as $var_name => $info )
+        {
+            $type   = $info[0];
+            $filter = ( isset( $info[1] ) ) ? $info[1] : '';
+            $dio->push( $var_name, $type, $filter );
         }
-        return $return;
+        return $this;
     }
 
     /**

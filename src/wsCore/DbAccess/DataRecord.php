@@ -213,10 +213,32 @@ class DataRecord implements \ArrayAccess
     // +----------------------------------------------------------------------+
     //  Validating data.
     // +----------------------------------------------------------------------+
-    public function validate() {}
-    public function validationOK() {}
-    public function resetValidation() {}
-    public function isValid() {}
+    /**
+     * @param \wsCore\Validator\DataIO $dio
+     * @return bool
+     */
+    public function validate( $dio )
+    {
+        $dio->source( $this->properties );
+        $this->dao->validate( $dio );
+        $this->is_valid = !$dio->popErrors( $this->errors );
+        return $this->is_valid;
+    }
+
+    /**
+     * @return DataRecord
+     */
+    public function resetValidation() {
+        $this->is_valid = FALSE;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValid() {
+        return $this->is_valid;
+    }
     // +----------------------------------------------------------------------+
     //  saving data to db using dao.
     // +----------------------------------------------------------------------+
