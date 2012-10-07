@@ -206,7 +206,7 @@ class Query
     /**
      * @param string $table
      * @param string $id_name
-     * @return Query
+     * @return \wsCore\DbAccess\Query
      */
     public function table( $table, $id_name='id' ) {
         $this->clear();
