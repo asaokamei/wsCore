@@ -19,8 +19,8 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
     /** @var array      for validation of inputs       */
     protected $validators = array(
         'friend_id'   => array( 'number' ),
-        'friend_name' => array( 'text' ),
-        'friend_bday' => array( 'date' ),
+        'friend_name' => array( 'text', 'required' ),
+        'friend_bday' => array( 'date', 'required' ),
     );
 
 
