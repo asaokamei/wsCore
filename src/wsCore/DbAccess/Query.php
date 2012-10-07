@@ -66,12 +66,13 @@ class Query
     //  executing with PdObject
     // +----------------------------------------------------------------------+
     /**
-     * @param $mode
-     * @param null $class
+     * @param       $mode
+     * @param null  $class
+     * @param array $args
      * @return Query
      */
-    public function setFetchMode( $mode, $class=NULL ) {
-        $this->pdoObj->setFetchMode( $mode, $class );
+    public function setFetchMode( $mode, $class=NULL, $args=array() ) {
+        $this->pdoObj->setFetchMode( $mode, $class, $args );
         return $this;
     }
 
@@ -176,7 +177,7 @@ class Query
                     throw new \RuntimeException( "Cannot fetch with offset for ".$driver );
                 }
             }
-            return $this->pdoStmt->fetch( null, \PDO::FETCH_ORI_ABS, $row );
+            return $this->pdoStmt->fetch( NULL, \PDO::FETCH_ORI_ABS, $row );
         }
         return array();
     }
@@ -362,7 +363,7 @@ class Query
         $this->sqlObj->modRaw( $mod );
         return $this;
     }
-    public function id( $val, $type=null ) {
+    public function id( $val, $type=NULL ) {
         return $this->w( $this->id_name )->mod( $val, '=', $type );
     }
     public function eq( $val, $type=NULL ) {
