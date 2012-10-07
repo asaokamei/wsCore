@@ -239,9 +239,7 @@ class DataRecord implements \ArrayAccess
     public function update( $dao=NULL ) 
     {
         if( is_null( $dao ) ) $dao = $this->dao;
-        $q = $dao->query();
-        /** @var $q Query */
-        $q->id( $this->id )->update( $this->properties );
+        $dao->update( $this->id, $this->properties );
         return $this;
     }
 
@@ -252,9 +250,7 @@ class DataRecord implements \ArrayAccess
     public function delete( $dao=NULL ) 
     {
         if( is_null( $dao ) ) $dao = $this->dao;
-        $q = $dao->query();
-        /** @var $q Query */
-        $q->id( $this->id )->makeDelete()->exec();
+        $dao->delete( $this->id );
         return $this;
     }
     // +----------------------------------------------------------------------+
