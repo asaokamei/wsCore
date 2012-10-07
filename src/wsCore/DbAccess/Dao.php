@@ -95,11 +95,13 @@ class Dao
     // +----------------------------------------------------------------------+
     /**
      * @param string $id
-     * @return \PdoStatement
+     * @return DataRecord
      */
     public function find( $id ) {
-        return $this->query()
+        $record = $this->query()
             ->where( $this->id_name, $id )->limit(1)->select()->fetchRow();
+        $record->resetId();
+        return $record;
     }
 
     /**
@@ -107,12 +109,13 @@ class Dao
      *
      * @param string $id
      * @param array $values
-     * @return \PdoStatement
+     * @return Dao
      */
     public function update( $id, $values )
     {
         $values = $this->restrict( $values );
-        return $this->query()->where( $this->id_name, $id )->update( $values );
+        $this->query()->where( $this->id_name, $id )->update( $values );
+        return $this;
     }
 
     /**
