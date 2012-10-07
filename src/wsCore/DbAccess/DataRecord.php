@@ -221,20 +221,40 @@ class DataRecord implements \ArrayAccess
     //  saving data to db using dao.
     // +----------------------------------------------------------------------+
     /**
+     * @param Dao $dao
      * @return DataRecord
      */
-    public function insert() {
-        $id = $this->dao->insert( $this->properties );
+    public function insert( $dao=NULL ) 
+    {
+        if( is_null( $dao ) ) $dao = $this->dao;
+        $id = $dao->insert( $this->properties );
         $this->id = $id;
         return $this;
     }
 
     /**
+     * @param Dao $dao
      * @return DataRecord
      */
-    public function update() {
-        $q = $this->dao->query();
-        $q->w( $this->id_name )->eq( $this->id )->update( $this->properties );
+    public function update( $dao=NULL ) 
+    {
+        if( is_null( $dao ) ) $dao = $this->dao;
+        $q = $dao->query();
+        /** @var $q Query */
+        $q->id( $this->id )->update( $this->properties );
+        return $this;
+    }
+
+    /**
+     * @param Dao $dao
+     * @return DataRecord
+     */
+    public function delete( $dao=NULL ) 
+    {
+        if( is_null( $dao ) ) $dao = $this->dao;
+        $q = $dao->query();
+        /** @var $q Query */
+        $q->id( $this->id )->makeDelete()->exec();
         return $this;
     }
     // +----------------------------------------------------------------------+
