@@ -123,7 +123,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $record = $this->friend->find( $id );
         $record->delete();
         
-        $data = $this->query->table( 'friend' )->w( 'friend_id' )->eq( $id )->select()->fetchRow();
+        $data = $this->query->table( 'friend' )->w( 'friend_id' )->eq( $id )->select();
         $this->assertEmpty( $data );
     }
 

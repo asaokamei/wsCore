@@ -457,11 +457,11 @@ class Query
 
     /**
      * @param array|null $column
-     * @return Query
+     * @return array|mixed
      */
     public function select( $column=NULL ) {
         if( $column ) $this->column( $column );
-        return $this->makeSelect()->exec();
+        return $this->makeSelect()->exec()->fetchAll();
     }
 
     /**

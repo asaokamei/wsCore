@@ -99,7 +99,8 @@ class Dao
      */
     public function find( $id ) {
         $record = $this->query()
-            ->id( $id )->limit(1)->select()->fetchRow();
+            ->id( $id )->limit(1)->select();
+        $record = $record[0];
         $record->resetId();
         return $record;
     }
