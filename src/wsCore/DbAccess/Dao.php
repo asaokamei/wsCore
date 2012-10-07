@@ -99,7 +99,7 @@ class Dao
      */
     public function find( $id ) {
         $record = $this->query()
-            ->where( $this->id_name, $id )->limit(1)->select()->fetchRow();
+            ->id( $id )->limit(1)->select()->fetchRow();
         $record->resetId();
         return $record;
     }
@@ -114,7 +114,7 @@ class Dao
     public function update( $id, $values )
     {
         $values = $this->restrict( $values );
-        $this->query()->where( $this->id_name, $id )->update( $values );
+        $this->query()->id( $id )->update( $values );
         return $this;
     }
 
@@ -144,7 +144,7 @@ class Dao
     public function delete( $id )
     {
         return $this->query()->clearWhere()
-            ->where( $this->id_name, $id )->limit(1)->makeDelete()->exec();
+            ->id( $id )->limit(1)->makeDelete()->exec();
     }
 
     /**
