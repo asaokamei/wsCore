@@ -16,8 +16,8 @@ class Dao
     /** @var array      property names as key => name  */
     protected $properties = array();
 
-    /** @var array      restricted keys in properties  */
-    protected $restricted = array();
+    /** @var array      protected properties           */
+    protected $protected  = array();
 
     /** @var array      for selector construction      */
     protected $selectors  = array();
@@ -56,7 +56,7 @@ class Dao
      */
     public function prepare()
     {
-        array_push( $this->restricted, $this->id_name );
+        array_push( $this->protected, $this->id_name );
         // TODO: add relations as well. 
     }
     /**
@@ -115,7 +115,7 @@ class Dao
      */
     public function update( $id, $values )
     {
-        $values = $this->restrict( $values );
+        $values = $this->protect( $values );
         $this->query()->id( $id )->update( $values );
         return $this;
     }
@@ -128,7 +128,7 @@ class Dao
      */
     public function insertValue( $values )
     {
-        $values = $this->restrict( $values );
+        $values = $this->protect( $values );
         $this->query()->insert( $values );
         if( isset( $values[ $this->id_name ] ) ) {
             $id = $values[ $this->id_name ];
@@ -219,15 +219,15 @@ class Dao
             $info  = $this->selectors[ $var_name ];
             if( $info[0] == 'Selector' ) {
                 $selector = $this->selector();
-                $arg2     = ( isset( $info[2] ) ) ? $info[2] : null;
-                $arg3     = ( isset( $info[3] ) ) ? $info[3] : null;
+                $arg2     = ( isset( $info[2] ) ) ? $info[2] : NULL;
+                $arg3     = ( isset( $info[3] ) ) ? $info[3] : NULL;
                 $sel = $selector->getInstance( $info[1], $var_name, $arg2, $arg3 );
             }
             else {
                 $class = $info[0];
-                $arg1     = ( isset( $info[1][0] ) ) ? $info[1][0] : null;
-                $arg2     = ( isset( $info[1][1] ) ) ? $info[1][1] : null;
-                $arg3     = ( isset( $info[1][2] ) ) ? $info[1][2] : null;
+                $arg1     = ( isset( $info[1][0] ) ) ? $info[1][0] : NULL;
+                $arg2     = ( isset( $info[1][1] ) ) ? $info[1][1] : NULL;
+                $arg3     = ( isset( $info[1][2] ) ) ? $info[1][2] : NULL;
                 $sel = new $class( $var_name, $arg1, $arg2, $arg3 );
             }
         }
@@ -276,12 +276,12 @@ class Dao
      * @param array $values
      * @return array
      */
-    public function restrict( $values )
+    public function protect( $values )
     {
         if( empty( $values ) ) return $values;
         foreach( $values as $key => $val ) {
             if( !array_key_exists( $key, $this->properties ) ||
-                in_array( $key, $this->restricted ) ) {
+                in_array( $key, $this->protected ) ) {
                 unset( $values[ $key ] );
             }
         }
