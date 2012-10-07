@@ -143,5 +143,22 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( 'wsTests\DbAccess\Dao_Friend', $record->getModel() );
         $this->assertFalse( isset( $record[ 'not exists' ] ) );
     }
+    public function test_validator()
+    {
+        $record = $this->friend->getRecord();
+        $values = array(
+            'friend_name' => 'my friend',
+            'friend_bday' => '1980-01-23',
+        );
+        $record->load( $values );
+        
+        $dio = Core::get( 'DataIO' );
+        $record->validate( $dio );
+        $this->assertTrue( $record->isValid() );
+        
+        $record->set( 'friend_bday', '1234567890' ); // faulty date.
+        $record->validate( $dio );
+        $this->assertFalse( $record->isValid() );
+    }
     // +----------------------------------------------------------------------+    
 }
