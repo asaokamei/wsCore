@@ -42,6 +42,10 @@ class Dimple_Test extends \PHPUnit_Framework_TestCase
         // certainly not id3...
         $this->assertNotEquals( $id3, $got );
     }
+
+    /**
+     * TODO: rewrite this test. Dimplet does not chain id anymore, extend only applied once. 
+     */
     public function test_extend_many_classes()
     {
         // call class1 -> class2 
