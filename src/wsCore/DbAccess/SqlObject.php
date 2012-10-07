@@ -83,7 +83,7 @@ class SqlObject
      * @param string $val
      * @param string $rel
      * @param null|string|bool   $type
-     * @return Sql
+     * @return SqlObject
      */
     public function where( $col, $val, $rel='=', $type=NULL ) {
         $this->prepOrQuote( $val, $type, $col );
@@ -96,7 +96,7 @@ class SqlObject
      * @param        $col
      * @param        $val
      * @param string $rel
-     * @return Sql
+     * @return SqlObject
      */
     public function whereRaw( $col, $val, $rel='=' ) {
         $where = array( 'col' => $col, 'val'=> $val, 'rel' => $rel, 'op' => 'AND' );
@@ -140,7 +140,7 @@ class SqlObject
      * it will not be treated as prepared value, instead it is
      * set to SQL's NULL value.
      *
-     * @return Sql
+     * @return SqlObject
      */
     public function processValues()
     {
@@ -167,7 +167,7 @@ class SqlObject
      * @param      $val
      * @param null $type    data type
      * @param null $col     column name. used to find data type
-     * @return Sql
+     * @return SqlObject
      */
     public function prepOrQuote( &$val, $type=NULL, $col=NULL )
     {
@@ -186,7 +186,7 @@ class SqlObject
      * @param string|array $val
      * @param null|int     $type    data type
      * @param null $col     column name. used to find data type
-     * @return Sql
+     * @return SqlObject
      */
     public function prepare( &$val, $type=NULL, $col=NULL )
     {
@@ -214,7 +214,7 @@ class SqlObject
      *
      * @param string|array $val
      * @param null|int     $type    data type
-     * @return Sql
+     * @return SqlObject
      */
     public function quote( &$val, $type=NULL )
     {
