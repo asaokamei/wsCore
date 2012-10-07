@@ -109,6 +109,10 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $name, $data[ 'friend_name' ] );
         $this->assertEquals( $bday, $data[ 'friend_bday' ] );
     }
+
+    /**
+     * 
+     */
     public function test_simple_delete()
     {
         $values = array(
@@ -121,6 +125,23 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         
         $data = $this->query->table( 'friend' )->w( 'friend_id' )->eq( $id )->select()->fetchRow();
         $this->assertEmpty( $data );
+    }
+
+    /**
+     * 
+     */
+    public function test_basic()
+    {
+        $record = $this->friend->getRecord();
+        $values = array(
+            'friend_name' => 'my friend',
+            'friend_bday' => '1980-01-23',
+        );
+        $record->load( $values );
+        $record->insert();
+        
+        $this->assertEquals( 'wsTests\DbAccess\Dao_Friend', $record->getModel() );
+        $this->assertFalse( isset( $record[ 'not exists' ] ) );
     }
     // +----------------------------------------------------------------------+    
 }
