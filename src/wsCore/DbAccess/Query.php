@@ -457,7 +457,7 @@ class Query
 
     /**
      * @param array|null $column
-     * @return array|mixed
+     * @return array|DataRecord
      */
     public function select( $column=NULL ) {
         if( $column ) $this->column( $column );
