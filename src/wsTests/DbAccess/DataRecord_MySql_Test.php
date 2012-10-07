@@ -143,6 +143,10 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( 'wsTests\DbAccess\Dao_Friend', $record->getModel() );
         $this->assertFalse( isset( $record[ 'not exists' ] ) );
     }
+
+    /**
+     * 
+     */
     public function test_validator()
     {
         $record = $this->friend->getRecord();
@@ -159,6 +163,38 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $record->set( 'friend_bday', '1234567890' ); // faulty date.
         $record->validate( $dio );
         $this->assertFalse( $record->isValid() );
+    }
+
+    /**
+     * 
+     */
+    function test_popHtml()
+    {
+        // set data
+        $record = $this->friend->getRecord();
+        $values = array(
+            'friend_name' => 'he\'s friend',
+            'friend_bday' => '1980-01-23',
+        );
+        $record->load( $values );
+
+        // test getting html, a web-safe value.
+        $record->setHtmlType( 'html' );
+        $html = (string) $record->popHtml( 'friend_name' );
+        $this->assertContains( htmlentities( 'he\'s friend', ENT_QUOTES, 'UTF-8' ), $html );
+
+        $html = (string) $record->popHtml( 'friend_bday' );
+        $this->assertContains( '1980/01/23', $html );
+        
+        $record->setHtmlType( 'form' );
+        $html = (string) $record->popHtml( 'friend_name' );
+        $this->assertContains( '<input type="text" name="friend_name" ', $html );
+        $this->assertContains( ' value="' . htmlentities( 'he\'s friend', ENT_QUOTES, 'UTF-8' ) . '" ', $html );
+
+        $html = (string) $record->popHtml( 'friend_bday' );
+        $this->assertContains( '<select name="friend_bday_y" ', $html );
+        $this->assertContains( '<select name="friend_bday_m" ', $html );
+        $this->assertContains( '<select name="friend_bday_d" ', $html );
     }
     // +----------------------------------------------------------------------+    
 }
