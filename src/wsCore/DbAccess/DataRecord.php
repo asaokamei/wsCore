@@ -35,7 +35,6 @@ class DataRecord implements \ArrayAccess
      */
     public function __construct( $dao=NULL )
     {
-        $this->dao     = $dao;
         $this->setDao( $dao );
     }
 
@@ -44,10 +43,12 @@ class DataRecord implements \ArrayAccess
      */
     public function setDao( $dao ) {
         if( $dao ) {
+            $this->dao     = $dao;
             $this->id_name = $dao->getIdName();
             $this->model   = $dao->getModelName();
         }
     }
+    
     /**
      * creates record from data for an existing data.
      * @param array $data
@@ -129,10 +130,9 @@ class DataRecord implements \ArrayAccess
             $this->properties = array_merge( $this->properties, $name );
         }
         else {
-            if( $name == $this->id_name ) {
-                $this->id = $value;
+            if( $name !== $this->id_name ) {
+                $this->properties[ $name ] = $value;
             }
-            $this->properties[ $name ] = $value;
         }
         return $this;
     }
@@ -217,5 +217,25 @@ class DataRecord implements \ArrayAccess
     public function validationOK() {}
     public function resetValidation() {}
     public function isValid() {}
+    // +----------------------------------------------------------------------+
+    //  saving data to db using dao.
+    // +----------------------------------------------------------------------+
+    /**
+     * @return DataRecord
+     */
+    public function insert() {
+        $id = $this->dao->insert( $this->properties );
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return DataRecord
+     */
+    public function update() {
+        $q = $this->dao->query();
+        $q->w( $this->id_name )->eq( $this->id )->update( $this->properties );
+        return $this;
+    }
     // +----------------------------------------------------------------------+
 }
