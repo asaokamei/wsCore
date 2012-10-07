@@ -362,6 +362,9 @@ class Query
         $this->sqlObj->modRaw( $mod );
         return $this;
     }
+    public function id( $val, $type=null ) {
+        return $this->w( $this->id_name )->mod( $val, '=', $type );
+    }
     public function eq( $val, $type=NULL ) {
         return $this->mod( $val, '=', $type );
     }
