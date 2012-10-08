@@ -142,6 +142,9 @@ class Dao
     public function update( $id, $values )
     {
         $values = $this->protect( $values );
+        if( isset( $values[ $this->id_name ] ) ) {
+            unset( $values[ $this->id_name ] );
+        }
         if( isset( $this->dataTypes[ '!updated_at' ] ) ) {
             $values[ $this->dataTypes[ '!updated_at' ] ] = date( 'Y-m-d H:i:s' );
         }
@@ -185,6 +188,9 @@ class Dao
      */
     public function insertId( $values )
     {
+        if( isset( $values[ $this->id_name ] ) ) {
+            unset( $values[ $this->id_name ] );
+        }
         $this->insertValue( $values );
         $id = $this->query->lastId();
         return $id;
