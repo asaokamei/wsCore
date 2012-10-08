@@ -40,8 +40,8 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
               friend_id    SERIAL, 
               friend_name  text, 
               friend_bday  date,
-              created_at   datetime,
-              updated_at   datetime,
+              new_dt_friend   datetime,
+              mod_dt_friend   datetime,
               constraint friend_pkey PRIMARY KEY (
                 friend_id
               )
@@ -196,5 +196,41 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertContains( '<select name="friend_bday_m" ', $html );
         $this->assertContains( '<select name="friend_bday_d" ', $html );
     }
+
+    /**
+     *
+     */
+    function test_created_and_updated_at()
+    {
+        $values = array(
+            'friend_name' => 'my friend',
+            'friend_bday' => '1980-01-23',
+        );
+        $id = $this->friend->insert( $values );
+        $data = $this->friend->find( $id );
+
+        $this->assertEquals( $values[ 'friend_name' ], $data[ 'friend_name' ] );
+        $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
+        $this->assertTrue( is_object( $data ) );
+        $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
+
+        $record = $this->friend->getRecord();
+        $values = array(
+            'friend_name' => 'my friend2',
+            'friend_bday' => '1990-03-21',
+        );
+        $record->load( $values );
+        $record->insert();
+        $id2 = $record->getId();
+
+        $this->assertNotEquals( $id, $id2 );
+
+        $data = $this->friend->find( $id2 );
+        $this->assertEquals( $values[ 'friend_name' ], $data->get( 'friend_name' ) );
+        $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
+        $this->assertTrue( is_object( $data ) );
+        $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
+    }
+
     // +----------------------------------------------------------------------+    
 }

@@ -16,8 +16,23 @@ class Dao
     /** @var string     name of primary key        */
     protected $id_name;
 
+    /** @var array      define property and data type  */
+    protected $definition = array();
+    
     /** @var array      property names as key => name  */
     protected $properties = array();
+    
+    /** 
+     * store data types for each properties as in 
+     * prepared statement's bindValue as key => type
+     * 
+     * for special case, 
+     *    !created_at => key
+     *    !updated_at => key
+     * 
+     * @var array      data type for prepared sql     
+     */
+    protected $dataTypes  = array();
 
     /** @var array      protected properties           */
     protected $protected  = array();
@@ -59,6 +74,15 @@ class Dao
      */
     public function prepare()
     {
+        if( !empty( $this->definition ) ) {
+            foreach( $this->definition as $key => $info ) {
+                $this->properties[ $key ] = $info[0];
+                $this->dataTypes[  $key ] = $info[1];
+                if( isset( $info[2] ) ) {
+                    $this->dataTypes[ '!' . $info[2] ] = $key;
+                }
+            }
+        }
         array_push( $this->protected, $this->id_name );
         // TODO: add relations as well. 
     }
@@ -119,6 +143,9 @@ class Dao
     public function update( $id, $values )
     {
         $values = $this->protect( $values );
+        if( isset( $this->dataTypes[ '!updated_at' ] ) ) {
+            $values[ $this->dataTypes[ '!updated_at' ] ] = date( 'Y-m-d H:i:s' );
+        }
         $this->query()->id( $id )->update( $values );
         return $this;
     }
@@ -132,6 +159,12 @@ class Dao
     public function insertValue( $values )
     {
         $values = $this->protect( $values );
+        if( isset( $this->dataTypes[ '!updated_at' ] ) ) {
+            $values[ $this->dataTypes[ '!updated_at' ] ] = date( 'Y-m-d H:i:s' );
+        }
+        if( isset( $this->dataTypes[ '!created_at' ] ) ) {
+            $values[ $this->dataTypes[ '!created_at' ] ] = date( 'Y-m-d H:i:s' );
+        }
         $this->query()->insert( $values );
         $id = $this->arrGet( $values, $this->id_name, TRUE );
         return $id;
@@ -267,11 +300,8 @@ class Dao
     }
 
     /**
-     * restrict values to only the defined keys.
-     * uses $this->restricts or $this->properties
+     * protect values: only the keys in the property list.
      * 
-     * TODO: not to protect inside Dao. cannot modify/add relations!
-     *
      * @param array $values
      * @return array
      */
@@ -279,8 +309,7 @@ class Dao
     {
         if( empty( $values ) ) return $values;
         foreach( $values as $key => $val ) {
-            if( !array_key_exists( $key, $this->properties ) ||
-                in_array( $key, $this->protected ) ) {
+            if( !array_key_exists( $key, $this->properties ) ) {
                 unset( $values[ $key ] );
             }
         }

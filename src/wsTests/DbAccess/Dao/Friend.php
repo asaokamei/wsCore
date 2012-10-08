@@ -9,11 +9,12 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
     /** @var string     name of primary key        */
     protected $id_name = 'friend_id';
 
-    /** @var array      property names as key => name  */
-    protected $properties = array(
-        'friend_id'   => 'friend code',
-        'friend_name' => 'name',
-        'friend_bday' => 'birthday',
+    protected $definition = array(
+        'friend_id'     => array( 'friend code', 'number', ),
+        'friend_name'   => array( 'name',        'string', ),
+        'friend_bday'   => array( 'birthday',    'string', ),
+        'new_dt_friend' => array( 'created at',  'string', 'created_at'),
+        'mod_dt_friend' => array( 'updated at',  'string', 'updated_at'),
     );
 
     /** @var array      for validation of inputs       */
