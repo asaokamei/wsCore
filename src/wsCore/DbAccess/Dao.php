@@ -5,8 +5,6 @@ namespace wsCore\DbAccess;
  * base class for dao's for database tables.
  * a Table Data Gateway pattern.
  * 
- * TODO: add {created|updated}_at column support. 
- * 
  */
 class Dao
 {
@@ -71,6 +69,7 @@ class Dao
 
     /**
      * prepares restricted properties. 
+     * TODO: improve {created|updated}_at implementation. 
      */
     public function prepare()
     {
