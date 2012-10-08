@@ -40,8 +40,8 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
               friend_id    SERIAL, 
               friend_name  text, 
               friend_bday  date,
-              created_at   datetime,
-              updated_at   datetime,
+              new_dt_friend   datetime,
+              mod_dt_friend   datetime,
               constraint friend_pkey PRIMARY KEY (
                 friend_id
               )
