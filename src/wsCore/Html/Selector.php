@@ -320,6 +320,13 @@ class Selector
         }
         return $filter_array;
     }
+
+    /**
+     * @param array $arr
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
     public function arrGet( $arr, $key, $default=NULL ) {
         if( array_key_exists( $key, $arr ) ) {
             return $arr[ $key ];

@@ -133,12 +133,7 @@ class Dao
     {
         $values = $this->protect( $values );
         $this->query()->insert( $values );
-        if( isset( $values[ $this->id_name ] ) ) {
-            $id = $values[ $this->id_name ];
-        }
-        else {
-            $id = TRUE;
-        }
+        $id = $this->arrGet( $values, $this->id_name, TRUE );
         return $id;
     }
 
@@ -222,15 +217,15 @@ class Dao
             $info  = $this->selectors[ $var_name ];
             if( $info[0] == 'Selector' ) {
                 $selector = $this->selector();
-                $arg2     = ( isset( $info[2] ) ) ? $info[2] : NULL;
-                $arg3     = ( isset( $info[3] ) ) ? $info[3] : NULL;
+                $arg2     = $this->arrGet( $info, 2, NULL );
+                $arg3     = $this->arrGet( $info, 3, NULL );
                 $sel = $selector->getInstance( $info[1], $var_name, $arg2, $arg3 );
             }
             else {
                 $class = $info[0];
-                $arg1     = ( isset( $info[1][0] ) ) ? $info[1][0] : NULL;
-                $arg2     = ( isset( $info[1][1] ) ) ? $info[1][1] : NULL;
-                $arg3     = ( isset( $info[1][2] ) ) ? $info[1][2] : NULL;
+                $arg1     = $this->arrGet( $info[1], 0, NULL );
+                $arg2     = $this->arrGet( $info[1], 1, NULL );
+                $arg3     = $this->arrGet( $info[1], 2, NULL );
                 $sel = new $class( $var_name, $arg1, $arg2, $arg3 );
             }
         }
@@ -253,8 +248,8 @@ class Dao
         if( empty( $this->validators ) ) return $this;
         foreach( $this->validators as $var_name => $info )
         {
-            $type   = $info[0];
-            $filter = ( isset( $info[1] ) ) ? $info[1] : '';
+            $type   = $this->arrGet( $info, 0, null );
+            $filter = $this->arrGet( $info, 1, '' );
             $dio->push( $var_name, $type, $filter );
         }
         return $this;
@@ -268,8 +263,7 @@ class Dao
      */
     public function propertyName( $var_name )
     {
-        return ( isset( $this->properties[ $var_name ] ) )?
-            $this->properties[ $var_name ]: NULL;
+        return $this->arrGet( $this->properties, $var_name , NULL );
     }
 
     /**
@@ -306,6 +300,19 @@ class Dao
      */
     public function getModelName() {
         return get_called_class();
+    }
+    
+    /**
+     * @param array $arr
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function arrGet( $arr, $key, $default=NULL ) {
+        if( array_key_exists( $key, $arr ) ) {
+            return $arr[ $key ];
+        }
+        return $default;
     }
     // +----------------------------------------------------------------------+
 }
