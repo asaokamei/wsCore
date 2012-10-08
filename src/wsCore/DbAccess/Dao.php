@@ -269,6 +269,8 @@ class Dao
     /**
      * restrict values to only the defined keys.
      * uses $this->restricts or $this->properties
+     * 
+     * TODO: not to protect inside Dao. cannot modify/add relations!
      *
      * @param array $values
      * @return array
