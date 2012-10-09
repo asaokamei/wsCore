@@ -91,6 +91,14 @@ class DataRecord implements \ArrayAccess
     public function getId() {
         return $this->id;
     }
+    
+    public function getIdName() {
+        return $this->id_name;
+    }
+    
+    public function getTable() {
+        return $this->dao->getTable();
+    }
 
     // +----------------------------------------------------------------------+
     //  get/set properties, and ArrayAccess
