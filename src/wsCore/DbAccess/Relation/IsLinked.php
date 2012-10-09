@@ -1,7 +1,10 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Relation_HasOne
+/**
+ * opposite of Relation_HasOne. 
+ */
+class Relation_IsLinked
 {
     protected $source;
     protected $column;
@@ -9,12 +12,12 @@ class Relation_HasOne
     protected $targetColumn;
 
     /**
-     * @param \wsCore\DbAccess\DataRecord   $source
-     * @param string                        $column
+     * @param DataRecord                    $source
+     * @param                               $targetColumn
      * @param string                        $targetModel
-     * @param string|null                   $targetColumn
+     * @param string                        $column
      */
-    public function __construct( $source, $column, $targetModel, $targetColumn=NULL )
+    public function __construct( $source, $targetColumn, $targetModel, $column=NULL )
     {
         $this->source = $source;
         $this->column = $column;
@@ -23,23 +26,23 @@ class Relation_HasOne
     }
 
     /**
-     * @param \wsCore\DbAccess\DataRecord $target
+     * @param DataRecord $target
+     * @return Relation_IsLinked
      * @throws \RuntimeException
-     * @return \wsCore\DbAccess\Relation_HasOne
      */
-    public function link( $target ) 
+    public function link( $target )
     {
         if( $target->getModel() != $this->targetModel ) {
             throw new \RuntimeException( "target model not match!" );
         }
-        if( $this->targetColumn ) {
-            $value = $target->get( $this->targetColumn );
+        if( $this->column ) {
+            $value = $this->source->get( $this->column );
         }
         else {
             // TODO: check if id is permanent or tentative. 
-            $value = $target->getId();
+            $value = $this->source->getId();
         }
-        $this->source->set( $this->column, $value );
+        $target->set( $this->targetColumn, $value );
         return $this;
     }
 
@@ -56,5 +59,3 @@ class Relation_HasOne
         return $dao->query()->w( $this->targetColumn )->eq( $value )->select();
     }
 }
-
-    
