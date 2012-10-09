@@ -50,6 +50,8 @@ class Dao
     /** @var \wsCore\DbAccess\DataRecord */
     protected $recordClassName = 'wsCore\DbAccess\DataRecord';
 
+    /** @var array|Dao  */
+    static $daoObjects = array();
     // +----------------------------------------------------------------------+
     //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+
@@ -65,8 +67,22 @@ class Dao
         $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this ) );
         $this->selectorObj= $selector;
         $this->prepare();
+        // simple object pooling. 
+        $class = get_called_class();
+        static::$daoObjects[ $class ] = $this;
     }
 
+    /**
+     * @return Dao
+     * @throws \RuntimeException
+     */
+    static public function getInstance() {
+        $class = get_called_class();
+        if( isset( static::$daoObjects[ $class ] ) ) {
+            return static::$daoObjects[ $class ];
+        }
+        throw new \RuntimeException( "$class dao instance not found" );
+    }
     /**
      * prepares restricted properties. 
      * TODO: improve {created|updated}_at implementation. 
@@ -286,7 +302,7 @@ class Dao
         if( empty( $this->validators ) ) return $this;
         foreach( $this->validators as $var_name => $info )
         {
-            $type   = $this->arrGet( $info, 0, null );
+            $type   = $this->arrGet( $info, 0, NULL );
             $filter = $this->arrGet( $info, 1, '' );
             $dio->push( $var_name, $type, $filter );
         }
