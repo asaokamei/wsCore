@@ -338,6 +338,10 @@ class Dao
         return get_called_class();
     }
     
+    public function getTable() {
+        return $this->table;
+    }
+    
     /**
      * @param array $arr
      * @param string $key
