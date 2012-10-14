@@ -33,21 +33,8 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
      */
     function setupFriend( $table='friend' )
     {
-        $sql = "DROP TABLE IF EXISTS {$table}";
-        $this->query->execSQL( $sql );
-        $sql = "
-            CREATE TABLE {$table} (
-              friend_id    SERIAL, 
-              friend_name  text, 
-              friend_bday  date,
-              new_dt_friend   datetime,
-              mod_dt_friend   datetime,
-              constraint friend_pkey PRIMARY KEY (
-                friend_id
-              )
-            )
-        ";
-        $this->query->execSQL( $sql );
+        $this->query->execSQL( Dao_SetUp::clearFriend( $table ) );
+        $this->query->execSQL( Dao_SetUp::setupFriend( $table ) );
     }
     // +----------------------------------------------------------------------+
     /**
