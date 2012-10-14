@@ -36,7 +36,7 @@ class Relation_Many2many extends Dao
      * @param DataRecord $target
      * @return DataRecord
      */
-    public function link( $target )
+    public function set( $target )
     {
         $this->target = $target;
         $this->pivot();
@@ -53,6 +53,9 @@ class Relation_Many2many extends Dao
             $record = $this->exists( $target );
         }
         return $record;
+    }
+    public function del( $target ) {
+        
     }
 
     /**
@@ -91,7 +94,7 @@ class Relation_Many2many extends Dao
     /**
      * @return array|DataRecord
      */
-    public function getLinkedRecord()
+    public function get()
     {
         $target  = ( $this->pivot == 'target' ) ? $this->target : $this->source;
         $id_name = $target->getIdName();

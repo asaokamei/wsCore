@@ -27,7 +27,7 @@ class Relation_HasOne
      * @throws \RuntimeException
      * @return \wsCore\DbAccess\Relation_HasOne
      */
-    public function link( $target ) 
+    public function set( $target ) 
     {
         if( $target->getModel() != $this->targetModel ) {
             throw new \RuntimeException( "target model not match!" );
@@ -42,11 +42,14 @@ class Relation_HasOne
         $this->source->set( $this->column, $value );
         return $this;
     }
+    public function del( $target ) {
+
+    }
 
     /**
      * @return array|DataRecord
      */
-    public function getLinkedRecord()
+    public function get()
     {
         /** @var $dao \wsCore\DbAccess\Dao */
         $model = $this->targetModel;
