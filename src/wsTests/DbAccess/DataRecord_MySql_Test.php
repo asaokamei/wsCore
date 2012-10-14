@@ -189,10 +189,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
      */
     function test_created_and_updated_at()
     {
-        $values = array(
-            'friend_name' => 'my friend',
-            'friend_bday' => '1980-01-23',
-        );
+        $values = Dao_SetUp::makeFriend();
         $id = $this->friend->insert( $values );
         $data = $this->friend->find( $id );
 
@@ -202,10 +199,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
 
         $record = $this->friend->getRecord();
-        $values = array(
-            'friend_name' => 'my friend2',
-            'friend_bday' => '1990-03-21',
-        );
+        $values = Dao_SetUp::makeFriend(1);
         $record->load( $values );
         $record->insert();
         $id2 = $record->getId();
