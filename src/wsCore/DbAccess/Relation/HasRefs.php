@@ -4,7 +4,7 @@ namespace wsCore\DbAccess;
 /**
  * opposite of Relation_HasOne. 
  */
-class Relation_IsLinked
+class Relation_HasRefs
 {
     protected $source;
     protected $column;
@@ -27,10 +27,10 @@ class Relation_IsLinked
 
     /**
      * @param DataRecord $target
-     * @return Relation_IsLinked
+     * @return Relation_HasRefs
      * @throws \RuntimeException
      */
-    public function link( $target )
+    public function set( $target )
     {
         if( $target->getModel() != $this->targetModel ) {
             throw new \RuntimeException( "target model not match!" );
@@ -45,11 +45,14 @@ class Relation_IsLinked
         $target->set( $this->targetColumn, $value );
         return $this;
     }
+    public function del( $target ) {
+
+    }
 
     /**
      * @return array|DataRecord
      */
-    public function getLinkedRecord()
+    public function get()
     {
         /** @var $dao \wsCore\DbAccess\Dao */
         $model = $this->targetModel;
