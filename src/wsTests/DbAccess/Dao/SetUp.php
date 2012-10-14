@@ -3,6 +3,9 @@ namespace wsTests\DbAccess;
 
 class Dao_SetUp
 {
+    // +----------------------------------------------------------------------+
+    //  for Friend table
+    // +----------------------------------------------------------------------+
     /**
      * @param string $table
      * @return string
@@ -49,6 +52,18 @@ class Dao_SetUp
         }
         return $values;
     }
+
+    // +----------------------------------------------------------------------+
+    //  for Contact table
+    // +----------------------------------------------------------------------+
+    /**
+     * @param string $table
+     * @return string
+     */
+    static function clearContact( $table='contact' ) {
+        $sql = "DROP TABLE IF EXISTS {$table}";
+        return $sql;
+    }
     
     /**
      * @param string $table
@@ -87,5 +102,6 @@ class Dao_SetUp
         }
         return $values;
     }
+    // +----------------------------------------------------------------------+
 }
     
