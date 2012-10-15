@@ -11,17 +11,17 @@ class Relation_HasOne
     protected $targetColumn;
 
     /**
-     * @param DataRecord $source
-     * @param string                        $source_column
-     * @param string                        $targetModel
-     * @param string|null                   $targetColumn
+     * @param DataRecord   $source
+     * @param array        $relInfo
      */
-    public function __construct( $source, $source_column, $targetModel, $targetColumn=NULL )
+    public function __construct( $source, $relInfo )
     {
         $this->source = $source;
+        $source_column = ( isset( $relInfo[ 'source_column' ] ) ) ?
+            $relInfo[ 'source_column' ] : $relInfo[ 'relation_name' ];
         $this->source_column = $source_column;
-        $this->targetModel  = $targetModel;
-        $this->targetColumn = $targetColumn;
+        $this->targetModel  = $relInfo[ 'target_model' ];
+        $this->targetColumn = $relInfo[ 'target_column' ];
     }
 
     /**
@@ -45,8 +45,14 @@ class Relation_HasOne
         $this->target = $target;
         return $this;
     }
-    public function del( $target ) {
 
+    /**
+     * @param null $target
+     * @return Relation_HasOne
+     */
+    public function del( $target=NULL ) {
+        $this->source->set( $this->source_column, NULL );
+        return $this;
     }
 
     /**
