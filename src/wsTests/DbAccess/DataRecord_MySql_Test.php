@@ -141,7 +141,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $record->load( $values );
         $record->insert();
         
-        $this->assertEquals( 'wsTests\DbAccess\Dao_Friend', $record->getModel() );
+        $this->assertEquals( 'Dao_Friend', $record->getModel() );
         $this->assertFalse( isset( $record[ 'not exists' ] ) );
     }
 
