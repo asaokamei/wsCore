@@ -50,6 +50,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->query->execSQL( Dao_SetUp::setupContact( $table ) );
     }
     // +----------------------------------------------------------------------+
+
     /**
      *
      */
@@ -226,13 +227,27 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
     }
 
-    function xtest_contact_basic_function()
+    function test_contact_basic_function()
     {
         $values = Dao_SetUp::makeContact();
         $id = $this->contact->insert( $values );
         $data = $this->contact->find( $id );
 
         $this->assertEquals( $values[ 'contact_info' ], $data[ 'contact_info' ] );
+        $this->assertTrue( is_object( $data ) );
+        $this->assertEquals( $this->contact->recordClassName(), get_class( $data ) );
+
+        \wsCore\DbAccess\Query::$pqDefault = 'quote';
+        $record = $this->contact->getRecord();
+        $values = Dao_SetUp::makeContact(1);
+        $record->load( $values );
+        $record->insert();
+        $id2 = $record->getId();
+
+        $this->assertNotEquals( $id, $id2 );
+
+        $data = $this->contact->find( $id2 );
+        $this->assertEquals( $values[ 'contact_info' ], $data->get( 'contact_info' ) );
         $this->assertTrue( is_object( $data ) );
         $this->assertEquals( $this->contact->recordClassName(), get_class( $data ) );
     }
