@@ -50,7 +50,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->query->execSQL( Dao_SetUp::setupContact( $table ) );
     }
     // +----------------------------------------------------------------------+
-    function test_1()
+    function test_simple_HasOne()
     {
         $dataFriend = Dao_SetUp::makeFriend();
         $id1 = $this->friend->insert( $dataFriend );
@@ -60,6 +60,19 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $contact = $this->contact->getRecord();
         $contact->load( $dataContact );
         $contact->relation( 'friend_id' )->set( $friend );
+        $this->assertEquals( $id1, $contact->get( 'friend_id' ) );
+    }
+    function test_simple_HasRefs()
+    {
+        $dataFriend = Dao_SetUp::makeFriend();
+        $id1 = $this->friend->insert( $dataFriend );
+        $friend = $this->friend->find( $id1 );
+
+        $dataContact = Dao_SetUp::makeContact();
+        $contact = $this->contact->getRecord();
+        $contact->load( $dataContact );
+        $friend->relation( 'contact' )->set( $contact );
+
         $this->assertEquals( $id1, $contact->get( 'friend_id' ) );
     }
 }

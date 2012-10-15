@@ -30,6 +30,15 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
         'friend_name' => array( 'Selector', 'text', 'width:43' ),
         'friend_bday' => array( 'Selector', 'DateYMD' ),
     );
+
+    protected $relations = array(
+        'contact' => array(
+            'relation_type' => 'HasRefs',
+            'source_column' => null, // use id. 
+            'target_model'  => 'Dao_Contact',
+            'target_column' => null, // use id name of source. 
+        ),
+    );
     
     // +----------------------------------------------------------------------+
     /**

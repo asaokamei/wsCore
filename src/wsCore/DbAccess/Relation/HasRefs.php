@@ -7,22 +7,22 @@ namespace wsCore\DbAccess;
 class Relation_HasRefs
 {
     protected $source;
-    protected $column;
+    protected $source_column;
+    protected $target;
     protected $targetModel;
     protected $targetColumn;
 
     /**
-     * @param DataRecord                    $source
-     * @param                               $targetColumn
-     * @param string                        $targetModel
-     * @param string                        $column
+     * @param DataRecord   $source
+     * @param array        $relInfo
      */
-    public function __construct( $source, $targetColumn, $targetModel, $column=NULL )
+    public function __construct( $source, $relInfo )
     {
         $this->source = $source;
-        $this->column = $column;
-        $this->targetModel  = $targetModel;
-        $this->targetColumn = $targetColumn;
+        $this->source_column = $relInfo[ 'source_column' ];
+        $this->targetModel  = $relInfo[ 'target_model' ];
+        $this->targetColumn = ( is_null( $relInfo[ 'target_column' ] ) ) ? 
+            $source->getIdName() : $relInfo[ 'target_column' ];
     }
 
     /**
@@ -35,18 +35,27 @@ class Relation_HasRefs
         if( $target->getModel() != $this->targetModel ) {
             throw new \RuntimeException( "target model not match!" );
         }
-        if( $this->column ) {
-            $value = $this->source->get( $this->column );
+        if( $this->source_column ) {
+            $value = $this->source->get( $this->source_column );
         }
         else {
             // TODO: check if id is permanent or tentative. 
             $value = $this->source->getId();
         }
         $target->set( $this->targetColumn, $value );
+        $this->target = $target;
         return $this;
     }
-    public function del( $target ) {
 
+    /**
+     * @param DataRecord $target
+     * @return Relation_HasOne
+     */
+    public function del( $target=null ) {
+        if( !is_null( $target ) ) {
+            $target->set( $this->targetColumn, null );
+        }
+        return $this;
     }
 
     /**
@@ -58,7 +67,7 @@ class Relation_HasRefs
         $model = $this->targetModel;
         // TODO: need getInstance in Dao. 
         $dao   = $model::getInstance();
-        $value = $this->source->get( $this->column );
+        $value = $this->source->get( $this->source_column );
         return $dao->query()->w( $this->targetColumn )->eq( $value )->select();
     }
 }
