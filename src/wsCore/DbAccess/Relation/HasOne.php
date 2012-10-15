@@ -3,21 +3,23 @@ namespace wsCore\DbAccess;
 
 class Relation_HasOne
 {
+    /** @var DataRecord */
     protected $source;
-    protected $column;
+    protected $source_column;
+    protected $target;
     protected $targetModel;
     protected $targetColumn;
 
     /**
-     * @param \wsCore\DbAccess\DataRecord   $source
-     * @param string                        $column
+     * @param DataRecord $source
+     * @param string                        $source_column
      * @param string                        $targetModel
      * @param string|null                   $targetColumn
      */
-    public function __construct( $source, $column, $targetModel, $targetColumn=NULL )
+    public function __construct( $source, $source_column, $targetModel, $targetColumn=NULL )
     {
         $this->source = $source;
-        $this->column = $column;
+        $this->source_column = $source_column;
         $this->targetModel  = $targetModel;
         $this->targetColumn = $targetColumn;
     }
@@ -30,7 +32,7 @@ class Relation_HasOne
     public function set( $target ) 
     {
         if( $target->getModel() != $this->targetModel ) {
-            throw new \RuntimeException( "target model not match!" );
+            throw new \RuntimeException( "target model not match! " );
         }
         if( $this->targetColumn ) {
             $value = $target->get( $this->targetColumn );
@@ -39,7 +41,8 @@ class Relation_HasOne
             // TODO: check if id is permanent or tentative. 
             $value = $target->getId();
         }
-        $this->source->set( $this->column, $value );
+        $this->source->set( $this->source_column, $value );
+        $this->target = $target;
         return $this;
     }
     public function del( $target ) {
@@ -55,7 +58,7 @@ class Relation_HasOne
         $model = $this->targetModel;
         // TODO: need getInstance in Dao. 
         $dao   = $model::getInstance();
-        $value = $this->source->get( $this->column );
+        $value = $this->source->get( $this->source_column );
         return $dao->query()->w( $this->targetColumn )->eq( $value )->select();
     }
 }
