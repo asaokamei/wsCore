@@ -60,7 +60,7 @@ class DataRecord implements \ArrayAccess
         if( !is_array( $data ) ) {
             throw new \RuntimeException( "data must be an array." );
         }
-        $this->originals = $this->properties = $data;
+        $this->properties = array_merge( $this->properties, $data );
         $this->resetId();
         return $this;
     }
