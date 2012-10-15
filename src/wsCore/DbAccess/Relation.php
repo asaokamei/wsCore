@@ -6,6 +6,43 @@ class Relation
     static $pool = array();
 
     /**
+     * @param DataRecord  $source
+     * @param array       $relations
+     * @param string      $name
+     * @param null|string $type
+     * @return mixed
+     * @throws \RuntimeException
+     */
+    static public function getRelation( $source, $relations, $name, $type=NULL )
+    {
+        if( empty( $relations ) ) {
+            throw new \RuntimeException( "no relations. " );
+        }
+        foreach( $relations as $relName => $relInfo ) {
+            if( $relName == $name ) {
+                $relInfo[ 'source' ] = $source;
+                $relInfo[ 'relation_name' ] = $name;
+                $relation = static::newRelation( $relInfo );
+            }
+        }
+        return $relation;
+    }
+
+    /**
+     * @param $relInfo
+     * @return mixed
+     */
+    static public function newRelation( $relInfo )
+    {
+        $source_column = ( isset( $relInfo[ 'source_column' ] ) ) ? 
+            $relInfo[ 'source_column' ] : $relInfo[ 'relation_name' ];
+        $type = $relInfo[ 'relation_type' ];
+        $class = '\wsCore\DbAccess\Relation_' . ucwords( $type );
+        $relation = new $class( $relInfo[ 'source' ], $source_column, 
+            $relInfo[ 'target_model' ], $relInfo[ 'target_column' ] );
+        return $relation;
+    }
+    /**
      * @param DataRecord   $source
      * @param strimg       $column
      * @param string       $targetModel
