@@ -5,7 +5,7 @@ class Relation_HasOne
 {
     /** @var DataRecord */
     protected $source;
-    protected $source_column;
+    protected $sourceColumn;
     protected $target;
     protected $targetModel;
     protected $targetColumn;
@@ -19,7 +19,7 @@ class Relation_HasOne
         $this->source = $source;
         $source_column = ( isset( $relInfo[ 'source_column' ] ) ) ?
             $relInfo[ 'source_column' ] : $relInfo[ 'relation_name' ];
-        $this->source_column = $source_column;
+        $this->sourceColumn = $source_column;
         $this->targetModel  = $relInfo[ 'target_model' ];
         $this->targetColumn = $relInfo[ 'target_column' ];
     }
@@ -41,7 +41,7 @@ class Relation_HasOne
             // TODO: check if id is permanent or tentative. 
             $value = $target->getId();
         }
-        $this->source->set( $this->source_column, $value );
+        $this->source->set( $this->sourceColumn, $value );
         $this->target = $target;
         return $this;
     }
@@ -51,7 +51,7 @@ class Relation_HasOne
      * @return Relation_HasOne
      */
     public function del( $target=NULL ) {
-        $this->source->set( $this->source_column, NULL );
+        $this->source->set( $this->sourceColumn, NULL );
         return $this;
     }
 
@@ -64,7 +64,7 @@ class Relation_HasOne
         $model = $this->targetModel;
         // TODO: need getInstance in Dao. 
         $dao   = $model::getInstance();
-        $value = $this->source->get( $this->source_column );
+        $value = $this->source->get( $this->sourceColumn );
         return $dao->query()->w( $this->targetColumn )->eq( $value )->select();
     }
 }

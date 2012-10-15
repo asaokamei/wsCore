@@ -7,7 +7,7 @@ namespace wsCore\DbAccess;
 class Relation_HasRefs
 {
     protected $source;
-    protected $source_column;
+    protected $sourceColumn;
     protected $target;
     protected $targetModel;
     protected $targetColumn;
@@ -19,7 +19,7 @@ class Relation_HasRefs
     public function __construct( $source, $relInfo )
     {
         $this->source = $source;
-        $this->source_column = $relInfo[ 'source_column' ];
+        $this->sourceColumn = $relInfo[ 'source_column' ];
         $this->targetModel  = $relInfo[ 'target_model' ];
         $this->targetColumn = ( is_null( $relInfo[ 'target_column' ] ) ) ? 
             $source->getIdName() : $relInfo[ 'target_column' ];
@@ -35,8 +35,8 @@ class Relation_HasRefs
         if( $target->getModel() != $this->targetModel ) {
             throw new \RuntimeException( "target model not match!" );
         }
-        if( $this->source_column ) {
-            $value = $this->source->get( $this->source_column );
+        if( $this->sourceColumn ) {
+            $value = $this->source->get( $this->sourceColumn );
         }
         else {
             // TODO: check if id is permanent or tentative. 
@@ -51,9 +51,9 @@ class Relation_HasRefs
      * @param DataRecord $target
      * @return Relation_HasOne
      */
-    public function del( $target=null ) {
+    public function del( $target=NULL ) {
         if( !is_null( $target ) ) {
-            $target->set( $this->targetColumn, null );
+            $target->set( $this->targetColumn, NULL );
         }
         return $this;
     }
@@ -67,7 +67,7 @@ class Relation_HasRefs
         $model = $this->targetModel;
         // TODO: need getInstance in Dao. 
         $dao   = $model::getInstance();
-        $value = $this->source->get( $this->source_column );
+        $value = $this->source->get( $this->sourceColumn );
         return $dao->query()->w( $this->targetColumn )->eq( $value )->select();
     }
 }
