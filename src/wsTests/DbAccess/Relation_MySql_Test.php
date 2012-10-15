@@ -60,6 +60,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $contact = $this->contact->getRecord();
         $contact->load( $dataContact );
         $contact->relation( 'friend_id' )->set( $friend );
+        $contact->insert();
         $this->assertEquals( $id1, $contact->get( 'friend_id' ) );
     }
     function test_simple_HasRefs()
@@ -72,6 +73,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $contact = $this->contact->getRecord();
         $contact->load( $dataContact );
         $friend->relation( 'contact' )->set( $contact );
+        $contact->insert();
 
         $this->assertEquals( $id1, $contact->get( 'friend_id' ) );
     }
