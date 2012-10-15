@@ -14,6 +14,9 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
 
     /** @var Dao_Friend */
     public $friend;
+    
+    /** @var Dao_Contact */
+    public $contact;
     // +----------------------------------------------------------------------+
     function setUp()
     {
@@ -24,8 +27,10 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->query = Core::get( 'Query' );
 
         $this->setupFriend();
+        $this->setupContact();
 
-        $this->friend = Core::get( '\wsTests\DbAccess\Dao_Friend' );
+        $this->friend  = Core::get( '\wsTests\DbAccess\Dao_Friend' );
+        $this->contact = Core::get( '\wsTests\DbAccess\Dao_Contact' );
     }
 
     /**
@@ -35,6 +40,14 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
     {
         $this->query->execSQL( Dao_SetUp::clearFriend( $table ) );
         $this->query->execSQL( Dao_SetUp::setupFriend( $table ) );
+    }
+    /**
+     * @param string $table
+     */
+    function setupContact( $table='contact' )
+    {
+        $this->query->execSQL( Dao_SetUp::clearContact( $table ) );
+        $this->query->execSQL( Dao_SetUp::setupContact( $table ) );
     }
     // +----------------------------------------------------------------------+
     /**
@@ -213,5 +226,15 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
     }
 
+    function xtest_contact_basic_function()
+    {
+        $values = Dao_SetUp::makeContact();
+        $id = $this->contact->insert( $values );
+        $data = $this->contact->find( $id );
+
+        $this->assertEquals( $values[ 'contact_info' ], $data[ 'contact_info' ] );
+        $this->assertTrue( is_object( $data ) );
+        $this->assertEquals( $this->contact->recordClassName(), get_class( $data ) );
+    }
     // +----------------------------------------------------------------------+    
 }
