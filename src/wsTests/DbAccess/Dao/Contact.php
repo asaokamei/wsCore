@@ -1,34 +1,34 @@
 <?php
 namespace wsTests\DbAccess;
 
-class Dao_Friend extends \wsCore\DbAccess\Dao
+class Dao_Contact extends \wsCore\DbAccess\Dao
 {
     /** @var string     name of database table     */
-    protected $table = 'Friend';
+    protected $table = 'contact';
 
     /** @var string     name of primary key        */
-    protected $id_name = 'friend_id';
+    protected $id_name = 'contact_id';
 
     protected $definition = array(
-        'friend_id'     => array( 'friend code', 'number', ),
-        'friend_name'   => array( 'name',        'string', ),
-        'friend_bday'   => array( 'birthday',    'string', ),
-        'new_dt_friend' => array( 'created at',  'string', 'created_at'),
-        'mod_dt_friend' => array( 'updated at',  'string', 'updated_at'),
+        'contact_id'     => array( 'contact code', 'number', ),
+        'friend_id'      => array( 'friend link',  'number', ),
+        'contact_info'   => array( 'name',         'string', ),
+        'new_dt_contact' => array( 'created at',   'string', 'created_at'),
+        'mod_dt_contact' => array( 'updated at',   'string', 'updated_at'),
     );
 
     /** @var array      for validation of inputs       */
     protected $validators = array(
-        'friend_id'   => array( 'number' ),
-        'friend_name' => array( 'text', 'required' ),
-        'friend_bday' => array( 'date', 'required' ),
+        'contact_id'   => array( 'number' ),
+        'friend_id'    => array( 'number', 'required' ),
+        'contact_info' => array( 'text', 'required' ),
     );
 
     /** @var array      for selector construction      */
     protected $selectors  = array(
-        'friend_id'   => array( 'Selector', 'text' ),
-        'friend_name' => array( 'Selector', 'text', 'width:43' ),
-        'friend_bday' => array( 'Selector', 'DateYMD' ),
+        'contact_id'   => array( 'Selector', 'text' ),
+        'friend_id'    => array( 'Selector', 'text', 'width:10' ),
+        'contact_info' => array( 'Selector', 'text', 'width:43' ),
     );
     
     // +----------------------------------------------------------------------+
