@@ -79,7 +79,7 @@ class Dao_SetUp
               new_dt_contact   datetime,
               mod_dt_contact   datetime,
               constraint contact_id PRIMARY KEY (
-                friend_id
+                contact_id
               )
             )
         ";
