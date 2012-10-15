@@ -82,7 +82,10 @@ class DataRecord implements \ArrayAccess
      * @return string
      */
     public function getModel() {
-        return $this->model;
+        $bslash = strrpos( $this->model, '\\' );
+        $model = ( $bslash !== false ) ? 
+            substr( $this->model, $bslash + 1 ) : $this->model;
+        return $model;
     }
 
     /**
@@ -282,6 +285,14 @@ class DataRecord implements \ArrayAccess
         if( is_null( $dao ) ) $dao = $this->dao;
         $dao->delete( $this->id );
         return $this;
+    }
+    // +----------------------------------------------------------------------+
+    //  relations
+    // +----------------------------------------------------------------------+
+    public function relation( $name )
+    {
+        $relation = Relation::getRelation( $this, $this->dao->getRelationInfo(), $name );
+        return $relation;
     }
     // +----------------------------------------------------------------------+
 }
