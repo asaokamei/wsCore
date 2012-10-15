@@ -229,6 +229,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
 
     function test_contact_basic_function()
     {
+        // add new data. 
         $values = Dao_SetUp::makeContact();
         $id = $this->contact->insert( $values );
         $data = $this->contact->find( $id );
@@ -237,7 +238,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue( is_object( $data ) );
         $this->assertEquals( $this->contact->recordClassName(), get_class( $data ) );
 
-        \wsCore\DbAccess\Query::$pqDefault = 'quote';
+        // add new data by load/insert. 
         $record = $this->contact->getRecord();
         $values = Dao_SetUp::makeContact(1);
         $record->load( $values );
@@ -246,10 +247,19 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
 
         $this->assertNotEquals( $id, $id2 );
 
+        // update data.
         $data = $this->contact->find( $id2 );
         $this->assertEquals( $values[ 'contact_info' ], $data->get( 'contact_info' ) );
         $this->assertTrue( is_object( $data ) );
         $this->assertEquals( $this->contact->recordClassName(), get_class( $data ) );
+
+        $name = 'new contact';
+        $record->set( 'contact_info', $name );
+        $record->update();
+
+        $id = $record->getId();
+        $data = $this->contact->find( $id );
+        $this->assertEquals( $name, $data[ 'contact_info' ] );
     }
     // +----------------------------------------------------------------------+    
 }
