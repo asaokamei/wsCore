@@ -32,6 +32,9 @@ class Dao
      */
     protected $dataTypes  = array();
 
+    /** @var array     relations settings              */
+    protected $relations  = array();
+    
     /** @var array      protected properties           */
     protected $protected  = array();
 
@@ -370,6 +373,10 @@ class Dao
             return $arr[ $key ];
         }
         return $default;
+    }
+    
+    public function getRelationInfo() {
+        return $this->relations;
     }
     // +----------------------------------------------------------------------+
 }
