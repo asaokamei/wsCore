@@ -105,6 +105,7 @@ class Dao
      * @return \wsCore\DbAccess\Query
      */
     public function query() {
+        $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this ) );
         return $this->query->table( $this->table, $this->id_name );
     }
 
