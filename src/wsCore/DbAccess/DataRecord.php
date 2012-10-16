@@ -48,7 +48,13 @@ class DataRecord implements \ArrayAccess
             $this->model   = $dao->getModelName();
         }
     }
-    
+
+    /**
+     * @return null|Dao
+     */
+    public function getDao() {
+        return $this->dao;
+    }
     /**
      * creates record from data for an existing data.
      * @param array $data
@@ -92,7 +98,14 @@ class DataRecord implements \ArrayAccess
      * @return mixed|null
      */
     public function getId() {
-        return $this->id;
+        $id = null;
+        if( isset( $this->id ) ) {
+            $id = $this->id;
+        }
+        elseif( isset( $this->properties[ $this->id_name] ) ) {
+            $id = $this->properties[ $this->id_name];
+        }
+        return $id;
     }
     
     public function getIdName() {
@@ -175,6 +188,9 @@ class DataRecord implements \ArrayAccess
         }
         else {
             $this->properties[ $offset ] = $value;
+        }
+        if( $offset == $this->id_name ) {
+            $this->resetId();
         }
     }
 
@@ -289,6 +305,10 @@ class DataRecord implements \ArrayAccess
     // +----------------------------------------------------------------------+
     //  relations
     // +----------------------------------------------------------------------+
+    /**
+     * @param $name
+     * @return Relation_Interface
+     */
     public function relation( $name )
     {
         $relation = Relation::getRelation( $this, $this->dao->getRelationInfo(), $name );
