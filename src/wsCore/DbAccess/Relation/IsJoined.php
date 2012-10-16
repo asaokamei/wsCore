@@ -1,7 +1,10 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Relation_Many2many extends Dao
+/**
+ * represents many-to-many relationship using join-table.
+ */
+class Relation_IsJoined extends Dao
 {
     /** @var DataRecord */
     protected $source;
@@ -24,7 +27,7 @@ class Relation_Many2many extends Dao
 
     /**
      * @param DataRecord $source
-     * @return \wsCore\DbAccess\Relation_Many2many
+     * @return \wsCore\DbAccess\Relation_IsJoined
      */
     public function setSource( $source ) 
     {
