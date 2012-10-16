@@ -4,7 +4,7 @@ namespace wsTests\DbAccess;
 class Dao_Friend extends \wsCore\DbAccess\Dao
 {
     /** @var string     name of database table     */
-    protected $table = 'Friend';
+    protected $table = 'friend';
 
     /** @var string     name of primary key        */
     protected $id_name = 'friend_id';
