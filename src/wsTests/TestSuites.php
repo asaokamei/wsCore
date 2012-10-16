@@ -1,8 +1,5 @@
 <?php
 
-/**
- * TODO: does not work since some test/class contains closure, generates serialize error. 
- */
 class wsCore_SuiteTests
 {
     public static function suite()
