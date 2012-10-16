@@ -4,7 +4,7 @@ namespace wsCore\DbAccess;
 /**
  * represents many-to-many relationship using join-table.
  */
-class Relation_IsJoined extends Dao
+class Relation_HasJoined extends Dao
 {
     /** @var DataRecord */
     protected $source;
@@ -27,7 +27,7 @@ class Relation_IsJoined extends Dao
 
     /**
      * @param DataRecord $source
-     * @return \wsCore\DbAccess\Relation_IsJoined
+     * @return \wsCore\DbAccess\Relation_HasJoined
      */
     public function setSource( $source ) 
     {

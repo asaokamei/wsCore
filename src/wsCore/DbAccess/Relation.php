@@ -46,11 +46,11 @@ class Relation
     /**
      * @param DataRecord  $source
      * @param string      $m2mModel
-     * @return Relation_IsJoined
+     * @return Relation_HasJoined
      */
     static public function Many2many( $source, $m2mModel )
     {
-        /** @var $relation Relation_IsJoined */
+        /** @var $relation Relation_HasJoined */
         $relation = new $m2mModel( $source->query );
         $relation->setSource( $source );
         static::$pool[] = $relation;
