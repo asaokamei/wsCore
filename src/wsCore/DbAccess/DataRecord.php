@@ -278,6 +278,7 @@ class DataRecord implements \ArrayAccess
         if( is_null( $dao ) ) $dao = $this->dao;
         $id = $dao->insert( $this->properties );
         $this->id = $id;
+        $this->properties[ $this->id_name ] = $id;
         return $this;
     }
 
@@ -288,7 +289,7 @@ class DataRecord implements \ArrayAccess
     public function update( $dao=NULL ) 
     {
         if( is_null( $dao ) ) $dao = $this->dao;
-        $dao->update( $this->id, $this->properties );
+        $dao->update( $this->getId(), $this->properties );
         return $this;
     }
 
@@ -299,7 +300,7 @@ class DataRecord implements \ArrayAccess
     public function delete( $dao=NULL ) 
     {
         if( is_null( $dao ) ) $dao = $this->dao;
-        $dao->delete( $this->id );
+        $dao->delete( $this->getId() );
         return $this;
     }
     // +----------------------------------------------------------------------+
