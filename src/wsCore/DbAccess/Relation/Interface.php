@@ -16,7 +16,7 @@ interface Relation_Interface
     public function del( $target=null );
 
     /**
-     * @return DataRecord
+     * @return DataRecord[]
      */
     public function get();
 }
