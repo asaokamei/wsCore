@@ -60,12 +60,12 @@ class Relation_HasOne
      */
     public function get()
     {
-        /** @var $dao \wsCore\DbAccess\Dao */
+        /** @var $targetDao \wsCore\DbAccess\Dao */
         $model = $this->targetModel;
-        // TODO: need getInstance in Dao. 
-        $dao   = $model::getInstance();
+        $targetDao   = Dao::getInstance( $model, $this->source->getDao() );
         $value = $this->source->get( $this->sourceColumn );
-        return $dao->query()->w( $this->targetColumn )->eq( $value )->select();
+        $targetColumn = ( !$this->targetColumn )? $targetDao->getIdName() : $this->targetColumn;
+        return $targetDao->query()->w( $targetColumn )->eq( $value )->select();
     }
 }
 

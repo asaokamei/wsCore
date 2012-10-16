@@ -55,6 +55,9 @@ class Dao
 
     /** @var array|Dao  */
     static $daoObjects = array();
+
+    /** @var string       at where Dao classes exist  */
+    static $daoDirectory = null;
     // +----------------------------------------------------------------------+
     //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+
@@ -76,15 +79,33 @@ class Dao
     }
 
     /**
-     * @return Dao
-     * @throws \RuntimeException
+     * @param string $dir
      */
-    static public function getInstance() {
-        $class = get_called_class();
-        if( isset( static::$daoObjects[ $class ] ) ) {
-            return static::$daoObjects[ $class ];
+    static public function setDaoDirectory( $dir ) {
+        static::$daoDirectory = $dir;
+    }
+
+    /**
+     * @param string $model
+     * @param Dao $dao
+     * @throws \RuntimeException
+     * @return Dao
+     */
+    static public function getInstance( $model, $dao ) {
+        if( isset( static::$daoObjects[ $model ] ) ) {
+            return static::$daoObjects[ $model ];
         }
-        throw new \RuntimeException( "$class dao instance not found" );
+        $daoName = get_class( $dao );
+        $class   = substr( $daoName, 0, strrpos( $daoName, '\\' ) ) . '\\' . $model;
+        if( !class_exists( $class ) ) {
+            throw new \RuntimeException( "$class not found" );
+        }
+        // hack. get query and select from existing dao...
+        $query   = clone $dao->query();
+        $select  = $dao->selector();
+        if( is_object( $select ) ) $select = clone $select;
+        static::$daoObjects[ $model ] = new $class( $query, $select );
+        return static::$daoObjects[ $model ];
     }
     /**
      * prepares restricted properties. 
