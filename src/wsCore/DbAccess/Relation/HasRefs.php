@@ -65,9 +65,9 @@ class Relation_HasRefs
     {
         /** @var $dao \wsCore\DbAccess\Dao */
         $model = $this->targetModel;
-        // TODO: need getInstance in Dao. 
-        $dao   = $model::getInstance();
-        $value = $this->source->get( $this->sourceColumn );
-        return $dao->query()->w( $this->targetColumn )->eq( $value )->select();
+        $targetDao   = Dao::getInstance( $model, $this->source->getDao() );
+        $targetColumn = ( !$this->targetColumn )? $targetDao->getIdName() : $this->targetColumn;
+        $value = ( !$this->targetColumn )? $this->source->get( $this->sourceColumn ) : $this->source->getId();
+        return $targetDao->query()->w( $targetColumn )->eq( $value )->select();
     }
 }

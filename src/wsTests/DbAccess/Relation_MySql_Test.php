@@ -75,17 +75,36 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
     }
     function test_simple_HasRefs()
     {
+        // create a friend data.
         $dataFriend = Dao_SetUp::makeFriend();
         $id1 = $this->friend->insert( $dataFriend );
         $friend = $this->friend->find( $id1 );
 
+        // create a contact with a relation with the friend.
         $dataContact = Dao_SetUp::makeContact();
-        $contact = $this->contact->getRecord();
-        $contact->load( $dataContact );
-        $friend->relation( 'contact' )->set( $contact );
-        $contact->insert();
+        $contact1 = $this->contact->getRecord();
+        $contact1->load( $dataContact );
+        $friend->relation( 'contact' )->set( $contact1 );
+        $contact1->insert();
 
-        $this->assertEquals( $id1, $contact->get( 'friend_id' ) );
+        $this->assertEquals( $id1, $contact1->get( 'friend_id' ) );
+
+        // create another contact with the friendship.
+        $contact2 = $this->contact->getRecord();
+        $contact2->load( Dao_SetUp::makeContact(2) );
+        $friend->relation( 'contact' )->set( $contact2 );
+        $contact2->insert();
+
+        $this->assertEquals( $id1, $contact2->get( 'friend_id' ) );
+
+        // get contacts from friend.
+        $contacts = $friend->relation( 'contact' )->get();
+        $con1 = $contacts[0];
+        $con2 = $contacts[1];
+        $this->assertEquals( $contact1->getId(), $con1->getId() );
+        $this->assertEquals( $contact2->getId(), $con2->getId() );
+        $this->assertEquals( $contact1->get( 'contact_name' ), $con1->get( 'contact_name' ) );
+        $this->assertEquals( $contact2->get( 'contact_name' ), $con2->get( 'contact_name' ) );
     }
 }
 
