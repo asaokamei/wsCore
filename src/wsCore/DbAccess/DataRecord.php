@@ -95,7 +95,7 @@ class DataRecord implements \ArrayAccess
     }
 
     /**
-     * TODO: this id thing looks pretty confusing, or buggy. 
+     * TODO: this id thing looks pretty confusing, or buggy.
      * @return mixed|null
      */
     public function getId() {

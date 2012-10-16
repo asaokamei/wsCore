@@ -10,7 +10,7 @@ class Relation
      * @param array       $relations
      * @param string      $name
      * @param null|string $type
-     * @return mixed
+     * @return Relation_Interface
      * @throws \RuntimeException
      */
     static public function getRelation( $source, $relations, $name, $type=NULL )
@@ -18,6 +18,7 @@ class Relation
         if( empty( $relations ) ) {
             throw new \RuntimeException( "no relations. " );
         }
+        $relation = null;
         foreach( $relations as $relName => $relInfo ) {
             if( $relName == $name ) {
                 $relInfo[ 'relation_name' ] = $name;
@@ -26,34 +27,6 @@ class Relation
                 $relation = new $class( $source, $relInfo );
             }
         }
-        return $relation;
-    }
-    
-    /**
-     * @param DataRecord   $source
-     * @param string       $column
-     * @param string       $targetModel
-     * @param null|string  $targetColumn
-     * @return Relation_HasOne
-     */
-    static public function HasOne( $source, $column, $targetModel, $targetColumn=NULL )
-    {
-        $relation = new Relation_HasOne( $source, $column, $targetModel, $targetColumn );
-        static::$pool[] = $relation;
-        return $relation;
-    }
-
-    /**
-     * @param DataRecord  $source
-     * @param string      $m2mModel
-     * @return Relation_HasJoined
-     */
-    static public function Many2many( $source, $m2mModel )
-    {
-        /** @var $relation Relation_HasJoined */
-        $relation = new $m2mModel( $source->query );
-        $relation->setSource( $source );
-        static::$pool[] = $relation;
         return $relation;
     }
 }
