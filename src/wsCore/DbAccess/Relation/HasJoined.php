@@ -6,33 +6,43 @@ namespace wsCore\DbAccess;
  */
 class Relation_HasJoined extends Dao
 {
+    /** @var string|Dao */
+    protected $joinModel;
+    protected $query;
+
     /** @var DataRecord */
     protected $source;
-    protected $sourceModel;
+    protected $sourceColumn;
     
     /** @var DataRecord */
     protected $target;
     protected $targetModel;
+    protected $targetColumn;
 
     protected $pivot = 'target';
-    
-    /**
-     * @param Query $query
-     */
-    public function __construct( $query )
-    {
-        $this->query = $query;
-        // make sure to set {source|target}{Model|Column}.
-    }
 
     /**
-     * @param DataRecord $source
+     * @param DataRecord  $source
+     * @param array       $relInfo
      * @return \wsCore\DbAccess\Relation_HasJoined
      */
-    public function setSource( $source ) 
+    public function __construct( $source, $relInfo )
     {
+        try {
+            $this->joinModel = $source->getDao()->getInstance( [ 'join_model' ] );
+            $this->query = $this->joinModel->query();
+        }
+        catch( \Exception $e ) {
+            $this->joinModel = $relInfo[ 'join_model' ];
+            $this->query = clone $source->getDao()->query();
+            $this->query->table( $this->joinModel );
+        }
         $this->source = $source;
-        return $this;
+        $source_column = ( isset( $relInfo[ 'source_column' ] ) ) ?
+            $relInfo[ 'source_column' ] : $source->getIdName();
+        $this->sourceColumn = $source_column;
+        $this->targetModel  = $relInfo[ 'target_model' ];
+        $this->targetColumn = $relInfo[ 'target_column' ];
     }
 
     /**
@@ -42,56 +52,44 @@ class Relation_HasJoined extends Dao
     public function set( $target )
     {
         $this->target = $target;
-        $this->pivot();
+        $this->targetColumn = ( $this->targetColumn ) ?: $target->getIdName();
         // check if relation already exists. 
-        $record = $this->exists( $target );
+        $record = $this->getJoinRecord( $target );
         // adding new relation. 
         if( empty( $record ) ) {
             
             $values = array(
-                $this->source->getIdName() => $this->source->getId(),
-                $this->target->getIdName() => $this->target->getId(),
+                $this->sourceColumn => $this->source->getId(),
+                $this->targetColumn => $this->target->getId(),
             );
-            $this->insert( $values );
-            $record = $this->exists( $target );
+            $this->query->insert( $values );
+            $record = $this->getJoinRecord( $target );
         }
         return $record;
     }
-    public function del( $target ) {
+
+    /**
+     * @param null|DataRecord $target
+     * @return Relation_HasOne
+     */
+    public function del( $target=null ) {
         
     }
 
     /**
-     * @return bool|DataRecord
+     * @param DataRecord $target
+     * @return bool|DataRecord[]
      */
-    public function exists()
+    public function getJoinRecord( $target=null )
     {
         $sourceId = $this->source->getId();
-        $targetId = $this->target->getId();
-        $record = $this->query()
-            ->w( $this->source->getIdName() )->eq( $sourceId )
-            ->w( $this->target->getIdName() )->eq( $targetId )->select();
-        if( empty( $record ) ) {
-            return FALSE;
+        $this->query()->w( $this->sourceColumn )->eq( $sourceId );
+        if( $target ) {
+            $targetId = $target->getId();
+            $this->query()->w( $this->targetColumn )->eq( $targetId );
         }
+        $record = $this->query()->select();
         return $record[0];
-    }
-
-    /**
-     * @throws \RuntimeException
-     */
-    public function pivot()
-    {
-        if( $this->source->getModel() != $this->sourceModel ) {
-            $temp = $this->source;
-            $this->target = $this->source;
-            $this->target = $temp;
-            $this->pivot  = 'source';
-        }
-        if( $this->source->getModel() != $this->sourceModel ) {
-            throw new \RuntimeException( "Source/Target model mis match. " );
-        }
-        return $this;
     }
 
     /**
@@ -99,10 +97,11 @@ class Relation_HasJoined extends Dao
      */
     public function get()
     {
-        $target  = ( $this->pivot == 'target' ) ? $this->target : $this->source;
-        $id_name = $target->getIdName();
-        $table   = $target->getTable();
-        $id      = $target->getId();
-        return $this->query()->joinUsing( $table, $id_name )->w( $id_name )->eq( $id )->select();
+        $targetDao = $this->source->getDao()->getInstance( $this->targetModel );
+        $targetTable = $targetDao->table;
+        $targetIdName = $targetDao->getIdName();
+        return $this->query()->joinUsing( $targetTable, $targetIdName )
+            ->w( $this->sourceColumn )->eq( $this->source->getId() )
+            ->select();
     }
 }
