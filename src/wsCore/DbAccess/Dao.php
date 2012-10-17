@@ -57,7 +57,7 @@ class Dao
     static $daoObjects = array();
 
     /** @var string       at where Dao classes exist  */
-    static $daoDirectory = null;
+    static $daoDirectory = NULL;
     // +----------------------------------------------------------------------+
     //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+
@@ -74,7 +74,7 @@ class Dao
         $this->selectorObj= $selector;
         $this->prepare();
         // simple object pooling. 
-        $class = get_called_class();
+        $class = $this->makeModelName( get_called_class() );
         static::$daoObjects[ $class ] = $this;
     }
 
@@ -87,25 +87,14 @@ class Dao
 
     /**
      * @param string $model
-     * @param Dao $dao
      * @throws \RuntimeException
      * @return Dao
      */
-    static public function getInstance( $model, $dao ) {
+    public function getInstance( $model ) {
         if( isset( static::$daoObjects[ $model ] ) ) {
             return static::$daoObjects[ $model ];
         }
-        $daoName = get_class( $dao );
-        $class   = substr( $daoName, 0, strrpos( $daoName, '\\' ) ) . '\\' . $model;
-        if( !class_exists( $class ) ) {
-            throw new \RuntimeException( "$class not found" );
-        }
-        // hack. get query and select from existing dao...
-        $query   = clone $dao->query();
-        $select  = $dao->selector();
-        if( is_object( $select ) ) $select = clone $select;
-        static::$daoObjects[ $model ] = new $class( $query, $select );
-        return static::$daoObjects[ $model ];
+        throw new \RuntimeException( "instance of {$model} not set" );
     }
     /**
      * prepares restricted properties. 
@@ -371,6 +360,16 @@ class Dao
         return $this->id_name;
     }
 
+    /**
+     * @param string $class
+     * @return string
+     */
+    public function makeModelName( $class ) {
+        if( strpos( $class, '\\' ) !== FALSE ) {
+            $class = substr( $class, strrpos( $class, '\\' ) + 1 );
+        }
+        return $class;
+    }
     /**
      * name of the model: i.e. class name. 
      * @return string
