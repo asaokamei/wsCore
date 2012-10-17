@@ -62,7 +62,7 @@ class Relation_HasOne
     {
         /** @var $targetDao \wsCore\DbAccess\Dao */
         $model = $this->targetModel;
-        $targetDao   = Dao::getInstance( $model, $this->source->getDao() );
+        $targetDao   = $this->source->getDao()->getInstance( $model );
         $value = $this->source->get( $this->sourceColumn );
         $targetColumn = ( !$this->targetColumn )? $targetDao->getIdName() : $this->targetColumn;
         return $targetDao->query()->w( $targetColumn )->eq( $value )->select();
