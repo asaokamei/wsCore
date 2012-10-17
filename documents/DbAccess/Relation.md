@@ -27,21 +27,23 @@ the two tables are related by friend_id in contact table.
 
 ###Setting Relationship
 
-code example. 
+Instantiate Dao used in all the relationship before using relations. 
 
+    // make Dao in prior. 
+    $daoFriend  = Core::get( 'friend' );
+    $daoContact = Core::get( 'contact' );
+    
     // get friend record
-    $daoFriend = Core::get( 'friend' );
     $friend = $daoFriend->getRecord();
     $friend->set( 'friend_name', 'my friend' );
 
     // get contact record.
-    $daoContact = Core::get( 'contact' );
     $contact = $daoContact->getRecord();
     $contact->set( 'contact_info', 'contact method' );
 
-    // related them
+    // relate contact with friend. 
     $friend->relation( 'contact' )->set( $contact );
-    // or, the other way around,
+    // or, the other way around.
     $contact->relation( 'friend_id' )->set( $friend );
 
 all the relation must have an identifier name, such as 
@@ -49,13 +51,19 @@ all the relation must have an identifier name, such as
 
 ###Getting Related Records
 
+it is easy to retrieve the related records. 
+
     // related them
     $friend   = $daoFriend->find(1);
     $contacts = $friend->relation( 'contact' )->get();
+    
     // or, the other way around,
     $contact = $daoContact->find(1);
     $friends = $contact->relation( 'friend_id' )->get();
 
+the returned $friends is an array of DataRecords. 
+TODO: consider creating _collection_ object to store 
+DataRecords for future Cena protocol. 
 
 The details of the relationship must be defined in 
 each of dao (i.e. model). 
@@ -63,8 +71,22 @@ each of dao (i.e. model).
 Many-to-many relationship using join table is also supported, 
 and explained in a subsequent section. 
 
-Setting Up Dao
---------------
+###Deleting Relation
+
+to be written
+
+###Dao Instances
+
+Relation object uses Dao's factory method, or rather, simple 
+object pooling when calling each other. To do this without 
+much coding, Dao's inherited objects are all pooled. 
+
+When using relation, make sure all the concerning dao's are 
+instantiated (and thus pooled) before using relation. 
+
+
+Setting Up Relation in Dao
+--------------------------
 
 There are 3 types of relation available as of now. 
 
@@ -103,3 +125,9 @@ set up $relations in Friend's dao as follows.
 
 For relationship using join-table. 
 details to be written. 
+
+###HasMany
+
+to be written. 
+probably for non-RDBs. 
+
