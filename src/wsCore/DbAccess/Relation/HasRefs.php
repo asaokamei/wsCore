@@ -4,7 +4,7 @@ namespace wsCore\DbAccess;
 /**
  * opposite of Relation_HasOne. 
  */
-class Relation_HasRefs
+class Relation_HasRefs implements Relation_Interface
 {
     protected $source;
     protected $sourceColumn;

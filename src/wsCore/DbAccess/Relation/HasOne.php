@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Relation_HasOne
+class Relation_HasOne implements Relation_Interface
 {
     /** @var DataRecord */
     protected $source;
