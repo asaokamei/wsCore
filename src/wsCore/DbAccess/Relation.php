@@ -3,6 +3,7 @@ namespace wsCore\DbAccess;
 
 class Relation
 {
+    /** @var Relation_Interface[]      pools relation objects.             */
     static $pool = array();
 
     /**
@@ -28,5 +29,13 @@ class Relation
             }
         }
         return $relation;
+    }
+
+    /**
+     * TODO: implement un-linked relations.
+     * to relate unsaved DataRecord, run this method after all the DataRecords
+     * are saved to database, and thus, has the proper id value.
+     */
+    static public function link() {
     }
 }
