@@ -28,6 +28,9 @@ class DataRecord implements \ArrayAccess
     /** @var string         html type to show                   */
     protected $html_type  = 'NAME';
 
+    /** @var array          pools relation objects              */
+    protected $relations  = array();
+
     // +----------------------------------------------------------------------+
     /**
      * @param \wsCore\DbAccess\Dao $dao
@@ -313,8 +316,10 @@ class DataRecord implements \ArrayAccess
      */
     public function relation( $name )
     {
-        $relation = Relation::getRelation( $this, $this->dao->getRelationInfo(), $name );
-        return $relation;
+        if( !isset( $this->relations[ $name ] ) ) {
+            $this->relations[ $name ] = Relation::getRelation( $this, $this->dao->getRelationInfo(), $name );
+        }
+        return $this->relations[ $name ];
     }
     // +----------------------------------------------------------------------+
 }
