@@ -32,7 +32,7 @@ class Relation
     }
 
     /**
-     * TODO: implement un-linked relations.
+     * TODO: implement late-linking relations.
      * to relate unsaved DataRecord, run this method after all the DataRecords
      * are saved to database, and thus, has the proper id value.
      */
