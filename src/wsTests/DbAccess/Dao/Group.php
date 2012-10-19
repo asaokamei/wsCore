@@ -1,34 +1,31 @@
 <?php
 namespace wsTests\DbAccess;
 
-class Dao_Contact extends \wsCore\DbAccess\Dao
+class Dao_Group extends \wsCore\DbAccess\Dao
 {
     /** @var string     name of database table     */
-    protected $table = 'contact';
+    protected $table = 'myGroup';
 
     /** @var string     name of primary key        */
-    protected $id_name = 'contact_id';
+    protected $id_name = 'group_code';
 
     protected $definition = array(
-        'contact_id'     => array( 'contact code', 'number', ),
-        'friend_id'      => array( 'friend link',  'number', ),
-        'contact_info'   => array( 'name',         'string', ),
-        'new_dt_contact' => array( 'created at',   'string', 'created_at'),
-        'mod_dt_contact' => array( 'updated at',   'string', 'updated_at'),
+        'group_code'     => array( 'group code', 'number', ),
+        'group_name'   => array( 'name',         'string', ),
+        'new_dt_group' => array( 'created at',   'string', 'created_at'),
+        'mod_dt_group' => array( 'updated at',   'string', 'updated_at'),
     );
 
     /** @var array      for validation of inputs       */
     protected $validators = array(
-        'contact_id'   => array( 'number' ),
-        'friend_id'    => array( 'number', 'required' ),
-        'contact_info' => array( 'text', 'required' ),
+        'group_code'   => array( 'number' ),
+        'group_name' => array( 'text', 'required' ),
     );
 
     /** @var array      for selector construction      */
     protected $selectors  = array(
-        'contact_id'   => array( 'Selector', 'text' ),
-        'friend_id'    => array( 'Selector', 'text', 'width:10' ),
-        'contact_info' => array( 'Selector', 'text', 'width:43' ),
+        'group_code'   => array( 'Selector', 'text' ),
+        'group_name' => array( 'Selector', 'text', 'width:43' ),
     );
     
     protected $relations = array(
@@ -56,5 +53,8 @@ class Dao_Contact extends \wsCore\DbAccess\Dao
     }
     public function setSelector( $name, $info ) {
         $this->selectors[ $name ] = $info;
+    }
+    public function insert( $data ) {
+        return parent::insertValue( $data );
     }
 }
