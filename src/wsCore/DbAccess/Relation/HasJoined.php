@@ -23,6 +23,8 @@ class Relation_HasJoined implements Relation_Interface
     protected $targetModel;
     protected $targetColumn;
 
+    protected $linked = false;
+
     /**
      * @param DataRecord  $source
      * @param array       $relInfo
@@ -55,11 +57,21 @@ class Relation_HasJoined implements Relation_Interface
     {
         $this->target = $target;
         if( !$target ) return $this;
+        $this->target = $target;
+        $this->linked = false;
+        $this->link();
+        return $this;
+    }
+
+    public function link( $save=false )
+    {
+        if( !$this->source ) return $this;
+        if( !$this->target ) return $this;
         // set up.
-        if( !$this->targetColumn     ) $this->targetColumn     = $target->getIdName();
+        if( !$this->targetColumn     ) $this->targetColumn     = $this->target->getIdName();
         if( !$this->joinTargetColumn ) $this->joinTargetColumn = $this->targetColumn;
         // check if relation already exists.
-        $record = $this->getJoinRecord( $target );
+        $record = $this->getJoinRecord( $this->target );
         // adding new relation.
         // TODO: check if id is permanent or tentative.
         if( empty( $record ) ) {
@@ -69,6 +81,7 @@ class Relation_HasJoined implements Relation_Interface
             );
             $this->query->insert( $values );
         }
+        $this->linked = true;
         return $this;
     }
 
@@ -111,5 +124,12 @@ class Relation_HasJoined implements Relation_Interface
             ->w( $this->sourceColumn )->eq( $this->source->get( $this->joinSourceColumn ) )
             ->select();
         return $record;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLinked() {
+        return $this->linked;
     }
 }

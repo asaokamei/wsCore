@@ -6,9 +6,13 @@ class Relation_HasOne implements Relation_Interface
     /** @var DataRecord */
     protected $source;
     protected $sourceColumn;
+
+    /** @var DataRecord */
     protected $target;
     protected $targetModel;
     protected $targetColumn;
+
+    protected $linked = false;
 
     /**
      * @param DataRecord   $source
@@ -27,22 +31,40 @@ class Relation_HasOne implements Relation_Interface
     /**
      * @param \wsCore\DbAccess\DataRecord $target
      * @throws \RuntimeException
-     * @return \wsCore\DbAccess\Relation_HasOne
+     * @return \wsCore\DbAccess\Relation_HasOne|\wsCore\DbAccess\Relation_Interface
      */
     public function set( $target ) 
     {
         if( $target->getModel() != $this->targetModel ) {
             throw new \RuntimeException( "target model not match! " );
         }
+        $this->target = $target;
+        $this->linked = false;
+        $this->link();
+        return $this;
+    }
+
+    /**
+     * @param bool $save
+     * @return Relation_HasOne
+     */
+    public function link( $save=false )
+    {
+        if( !$this->source ) return $this;
+        if( !$this->target ) return $this;
         if( $this->targetColumn ) {
-            $value = $target->get( $this->targetColumn );
+            $value = $this->target->get( $this->targetColumn );
         }
         else {
-            // TODO: check if id is permanent or tentative. 
-            $value = $target->getId();
+            // TODO: check if id is permanent or tentative.
+            $value = $this->target->getId();
         }
         $this->source->set( $this->sourceColumn, $value );
-        $this->target = $target;
+        $this->linked = true;
+        if( $save ) {
+            die( "save in link not supported yet." );
+            //$this->source->save();
+        }
         return $this;
     }
 
@@ -66,6 +88,13 @@ class Relation_HasOne implements Relation_Interface
         $value = $this->source->get( $this->sourceColumn );
         $targetColumn = ( !$this->targetColumn )? $targetDao->getIdName() : $this->targetColumn;
         return $targetDao->query()->w( $targetColumn )->eq( $value )->select();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLinked() {
+        return $this->linked;
     }
 }
 

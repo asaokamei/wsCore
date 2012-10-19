@@ -19,4 +19,15 @@ interface Relation_Interface
      * @return DataRecord[]
      */
     public function get();
+
+    /**
+     * @param bool $save
+     * @return Relation_Interface
+     */
+    public function link( $save=false );
+
+    /**
+     * @return bool
+     */
+    public function isLinked();
 }
