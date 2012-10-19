@@ -13,6 +13,7 @@ class DbAccess_SuiteTests
         $suite->addTestFile( $folder . 'Dao_MySql_Test.php' );
         $suite->addTestFile( $folder . 'DataRecord_MySql_Test.php' );
         $suite->addTestFile( $folder . 'Relation_MySql_Test.php' );
+        $suite->addTestFile( $folder . 'Relation_HasJoined_MySql_Test.php' );
         return $suite;
     }
 }
