@@ -92,7 +92,7 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $group = $this->group->getRecord();
         $group->load( Dao_SetUp::makeGroup(1) );
         $group->insert();
-
+        // now get group. 
         $groups = $friend->relation( 'group' )->get();
         $this->assertEquals( 1, count( $groups ) );
         $groups = $groups[0];
