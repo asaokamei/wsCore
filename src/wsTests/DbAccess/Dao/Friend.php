@@ -47,6 +47,13 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
             //'source_column' => null, // same as the relation name
             //'target_column' => null, // use id.
         ),
+        'network' => array(
+            'relation_type' => 'HasJoinDao',
+            'join_model'    => 'Dao_Network',
+            'join_source_column' => 'friend_id_from',
+            'join_target_column' => 'friend_id_to',
+            'target_model'  => 'Dao_Friend',
+        ),
     );
     
     // +----------------------------------------------------------------------+
