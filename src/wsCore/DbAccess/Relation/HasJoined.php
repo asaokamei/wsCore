@@ -134,16 +134,29 @@ class Relation_HasJoined implements Relation_Interface
     public function get()
     {
         $table  = $this->targetDao->getTable();
+        $order  = isset( $this->order ) ? $this->order : $this->joinSourceColumn;
         $record = $this->targetDao->query()
             ->joinOn(
                 $this->joinTable,
                 "{$table}.{$this->targetColumn}={$this->joinTable}.{$this->joinTargetColumn}"
             )
             ->w( $this->joinSourceColumn )->eq( $this->source->get( $this->sourceColumn ) )
+            ->order( $order )
             ->select();
         return $record;
     }
 
+
+    /**
+     * @param string $order
+     * @return \wsCore\DbAccess\Relation_HasJoinDao
+     */
+    public function setOrder( $order )
+    {
+        $this->order = $order;
+        return $this;
+    }
+    
     /**
      * @return bool
      */
