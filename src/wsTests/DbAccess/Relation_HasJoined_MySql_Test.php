@@ -127,13 +127,13 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $friend->relation( 'group' )->set( $group2 );
         
         // get groups using relations. 
-        $groups = $friend->relation( 'group' )->get();
-        $group = $groups[0];
+        $groups = $friend->relation( 'group' )->setOrder( 'myGroup.group_code DESC' )->get();
+        $group = $groups[1];
         $dataGroup = Dao_SetUp::makeGroup(0);
         $this->assertEquals( $dataGroup[ 'group_code' ], $group[ 'group_code' ] );
         $this->assertEquals( '1999-12-31', $group[ 'created_date' ] );
         $this->assertEquals( $idFriend, $group[ 'friend_id' ] );
-        $group = $groups[1];
+        $group = $groups[0];
         $dataGroup = Dao_SetUp::makeGroup(1);
         $this->assertEquals( $dataGroup[ 'group_code' ], $group[ 'group_code' ] );
         $this->assertEquals( '1999-12-31', $group[ 'created_date' ] );
