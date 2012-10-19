@@ -47,10 +47,11 @@ class Relation_HasRefs implements Relation_Interface
 
     /**
      * @param bool $save
-     * @return Relation_HasRefs
+     * @return Relation_HasRefs|Relation_Interface
      */
     public function link( $save=false )
     {
+        if( $this->linked )  return $this;
         if( !$this->source ) return $this;
         if( !$this->target ) return $this;
         if( $this->sourceColumn ) {
