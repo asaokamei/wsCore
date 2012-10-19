@@ -88,7 +88,7 @@ class Dao
     /**
      * @param string $model
      * @throws \RuntimeException
-     * @return Dao
+     * @return \wsCore\DbAccess\Dao
      */
     public function getInstance( $model ) {
         if( isset( static::$daoObjects[ $model ] ) ) {
@@ -377,7 +377,10 @@ class Dao
     public function getModelName() {
         return get_called_class();
     }
-    
+
+    /**
+     * @return string
+     */
     public function getTable() {
         return $this->table;
     }
@@ -394,7 +397,10 @@ class Dao
         }
         return $default;
     }
-    
+
+    /**
+     * @return array
+     */
     public function getRelationInfo() {
         return $this->relations;
     }
