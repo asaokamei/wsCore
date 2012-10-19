@@ -163,7 +163,7 @@ class SqlBuilder
         $joined = '';
         if( !empty( $join ) )
             foreach( $join as $j ) {
-                $joined .= $j . ' ';
+                $joined .= ' ' . $j;
             }
         return $joined;
     }

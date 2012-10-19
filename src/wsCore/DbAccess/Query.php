@@ -295,17 +295,19 @@ class Query
      * @return Query
      */
     public function join( $table, $join, $by=NULL, $columns=NULL ) {
-        $this->sqlObj->join[] = "{$join} {$table}" . ($by)? " {$by}( {$columns} )": '';
+        $join  = "{$join} {$table}";
+        $join .= ($by)? " {$by}( {$columns} )": '';
+        $this->sqlObj->join[] = $join;
         return $this;
     }
     public function joinUsing( $table, $columns ) {
         return $this->join( $table, 'JOIN', 'USING', $columns );
     }
     public function joinLeftUsing( $table, $columns ) {
-        return $this->join( $table, 'LEFT JOIN', 'ON', $columns );
+        return $this->join( $table, 'LEFT JOIN', 'USING', $columns );
     }
     public function joinOn( $table, $columns ) {
-        return $this->join( $table, 'JOIN', 'USING', $columns );
+        return $this->join( $table, 'JOIN', 'On', $columns );
     }
     public function joinLeftOn( $table, $columns ) {
         return $this->join( $table, 'LEFT JOIN', 'ON', $columns );
