@@ -312,7 +312,7 @@ class DataRecord implements \ArrayAccess
     // +----------------------------------------------------------------------+
     /**
      * @param $name
-     * @return Relation_Interface
+     * @return Relation_Interface|Relation_HasJoinDao
      */
     public function relation( $name )
     {
