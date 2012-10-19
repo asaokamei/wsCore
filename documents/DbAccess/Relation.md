@@ -128,17 +128,17 @@ set up $relations in Friend's dao as follows.
     protected $relations = array(
         'contact' => array(
             'relation_type' => 'HasRefs',
-            'source_column' => null, // use id.
+            'source_column' => null, // use id name of source. 
             'target_model'  => 'Dao_Contact',
-            'target_column' => null, // use id.
+            'target_column' => null, // use source column. 
         ),
     );
 
 The array key means:
 *   relation_type: set to 'HasRefs'
-*   source_column: column name. uses source's id value if not set. 
+*   source_column: column name. uses source's id name if not set. 
 *   target_model: name of dao (or model). 
-*   target_column: column name. uses target's id value if not set. 
+*   target_column: column name. uses source_column if not set. 
 
 
 Many-to-Many Relationships

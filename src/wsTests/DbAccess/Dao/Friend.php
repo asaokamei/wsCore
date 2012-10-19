@@ -34,9 +34,9 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
     protected $relations = array(
         'contact' => array(
             'relation_type' => 'HasRefs',
-            'source_column' => null, // use id. 
+            'source_column' => null, // use id name of source. 
             'target_model'  => 'Dao_Contact',
-            'target_column' => null, // use id. 
+            'target_column' => null, // use source column. 
         ),
         'group' => array(
             'relation_type' => 'HasJoined',
