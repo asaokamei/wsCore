@@ -59,7 +59,7 @@ class Relation_HasJoinDao implements Relation_Interface
 
     /**
      * @param DataRecord $target
-     * @return Relation_Interface
+     * @return Relation_Interface|Relation_HasJoinDao
      */
     public function set( $target )
     {
@@ -128,7 +128,7 @@ class Relation_HasJoinDao implements Relation_Interface
                 $this->joinTable,
                 "{$table}.{$this->targetColumn}={$this->joinTable}.{$this->joinTargetColumn}"
             )
-            ->w( $this->sourceColumn )->eq( $this->source->get( $this->joinSourceColumn ) )
+            ->w( $this->joinSourceColumn )->eq( $this->source->get( $this->sourceColumn ) )
             ->select();
         return $record;
     }
