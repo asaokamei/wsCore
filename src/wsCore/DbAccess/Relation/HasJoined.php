@@ -20,6 +20,9 @@ class Relation_HasJoined implements Relation_Interface
     
     /** @var DataRecord */
     protected $target;
+
+    /** @var \wsCore\DbAccess\Dao */
+    protected $targetDao;
     protected $targetModel;
     protected $targetColumn;
 
@@ -36,17 +39,19 @@ class Relation_HasJoined implements Relation_Interface
         $this->joinTable        = $relInfo[ 'join_table' ];
         $this->joinSourceColumn = $relInfo[ 'join_source_column' ];
         $this->joinTargetColumn = $relInfo[ 'join_target_column' ];
+        $this->source           = $source;
+        $this->sourceColumn     = $relInfo[ 'source_column' ];
+        $this->targetModel      = $relInfo[ 'target_model' ];
+        $this->targetColumn     = $relInfo[ 'target_column' ];
         // get query from source's dao's query!
         $this->query            = clone $source->getDao()->query();
-        $this->query->table( $this->joinTable );
-        // set up source data.
-        $this->source           = $source;
-        $this->sourceColumn     = ( isset( $relInfo[ 'source_column' ] ) ) ?
-            $relInfo[ 'source_column' ] : $source->getIdName();
-        if( !$this->joinSourceColumn ) $this->joinSourceColumn = $this->sourceColumn;
-        // set up target data.
-        $this->targetModel  = $relInfo[ 'target_model' ];
-        $this->targetColumn = $relInfo[ 'target_column' ];
+        // set up unset properties.
+        if( !$this->sourceColumn )     $this->sourceColumn = $this->source->getIdName();
+        if( !$this->joinSourceColumn ) $this->joinSourceColumn = $this->source->getIdName();
+        // set up unset properties and target Dao.
+        $this->targetDao = $this->source->getDao()->getInstance( $this->targetModel );
+        if( !$this->targetColumn )     $this->targetColumn = $this->targetDao->getIdName();
+        if( !$this->joinTargetColumn ) $this->joinTargetColumn = $this->targetDao->getIdName();
     }
 
     /**
@@ -68,9 +73,6 @@ class Relation_HasJoined implements Relation_Interface
         if( $this->linked )  return $this;
         if( !$this->source ) return $this;
         if( !$this->target ) return $this;
-        // set up.
-        if( !$this->targetColumn     ) $this->targetColumn     = $this->target->getIdName();
-        if( !$this->joinTargetColumn ) $this->joinTargetColumn = $this->targetColumn;
         // check if relation already exists.
         $record = $this->getJoinRecord( $this->target );
         // adding new relation.
@@ -80,7 +82,7 @@ class Relation_HasJoined implements Relation_Interface
                 $this->sourceColumn => $this->source->get( $this->sourceColumn ),
                 $this->targetColumn => $this->target->get( $this->targetColumn ),
             );
-            $this->query->insert( $values );
+            $this->query->table( $this->joinTable )->insert( $values );
         }
         $this->linked = true;
         return $this;
@@ -100,14 +102,15 @@ class Relation_HasJoined implements Relation_Interface
      */
     public function getJoinRecord( $target=null )
     {
-        $sourceId = $this->source->getId();
-        $this->query->w( $this->sourceColumn )->eq( $sourceId );
+        $sourceValue = $this->source->get( $this->sourceColumn );
+        $query = $this->query->table( $this->joinTable );
+        $query->w( $this->sourceColumn )->eq( $sourceValue );
         if( !$target ) $target = $this->target;
         if( $target ) {
-            $targetId = $target->getId();
-            $this->query->w( $this->targetColumn )->eq( $targetId );
+            $targetValue = $target->get( $this->targetColumn );
+            $query->w( $this->targetColumn )->eq( $targetValue );
         }
-        $record = $this->query->select();
+        $record = $query->select();
         return $record;
     }
 
@@ -116,11 +119,11 @@ class Relation_HasJoined implements Relation_Interface
      */
     public function get()
     {
-        $targetDao = $this->source->getDao()->getInstance( $this->targetModel );
-        $record = $targetDao->query()
+        $table  = $this->targetDao->getTable();
+        $record = $this->targetDao->query()
             ->joinOn(
                 $this->joinTable,
-                "{$this->targetModel}.{$this->targetColumn}={$this->joinTable}.{$this->joinTargetColumn}"
+                "{$table}.{$this->targetColumn}={$this->joinTable}.{$this->joinTargetColumn}"
             )
             ->w( $this->sourceColumn )->eq( $this->source->get( $this->joinSourceColumn ) )
             ->select();
