@@ -61,7 +61,6 @@ class Relation_HasJoined implements Relation_Interface
     {
         $this->target = $target;
         if( !$target ) return $this;
-        $this->target = $target;
         $this->linked = false;
         $this->link();
         return $this;

@@ -42,7 +42,6 @@ class Relation_HasJoinDao implements Relation_Interface
     {
         // set up join table information.
         $this->source           = $source;
-        $this->query            = clone $source->getDao()->query();
         $this->joinModel        = $relInfo[ 'join_model' ];
         $this->joinDao          = $this->source->getDao()->getInstance( $this->joinModel );
         $this->joinTable        = $this->joinDao->getTable();
@@ -68,7 +67,6 @@ class Relation_HasJoinDao implements Relation_Interface
     {
         $this->target = $target;
         if( !$target ) return $this;
-        $this->target = $target;
         $this->linked = false;
         $this->link();
         return $this;
