@@ -40,12 +40,12 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
         ),
         'group' => array(
             'relation_type' => 'HasJoined',
-            'join_table'         => 'friend2group', // same as the relation name
-            'join_source_column' => null, // same as the relation name
-            'join_target_column' => null, // same as the relation name
-            'source_column' => null, // same as the relation name
+            'join_table'    => 'friend2group', // same as the relation name
             'target_model'  => 'Dao_Group',
-            'target_column' => null, // use id.
+            //'join_source_column' => null, // same as the relation name
+            //'join_target_column' => null, // same as the relation name
+            //'source_column' => null, // same as the relation name
+            //'target_column' => null, // use id.
         ),
     );
     

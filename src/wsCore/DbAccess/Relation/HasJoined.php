@@ -36,22 +36,21 @@ class Relation_HasJoined implements Relation_Interface
     public function __construct( $source, $relInfo )
     {
         // set up join table information.
-        $this->joinTable        = $relInfo[ 'join_table' ];
-        $this->joinSourceColumn = $relInfo[ 'join_source_column' ];
-        $this->joinTargetColumn = $relInfo[ 'join_target_column' ];
         $this->source           = $source;
-        $this->sourceColumn     = $relInfo[ 'source_column' ];
-        $this->targetModel      = $relInfo[ 'target_model' ];
-        $this->targetColumn     = $relInfo[ 'target_column' ];
-        // get query from source's dao's query!
         $this->query            = clone $source->getDao()->query();
-        // set up unset properties.
-        if( !$this->sourceColumn )     $this->sourceColumn = $this->source->getIdName();
-        if( !$this->joinSourceColumn ) $this->joinSourceColumn = $this->source->getIdName();
-        // set up unset properties and target Dao.
+        $this->joinTable        = $relInfo[ 'join_table' ];
+        // set up about source data.
+        $this->joinSourceColumn = isset( $relInfo[ 'join_source_column' ] ) ?
+            $relInfo[ 'join_source_column' ] : $source->getIdName();
+        $this->sourceColumn = isset( $relInfo[ 'sourceColumn' ] ) ?
+            $relInfo[ 'sourceColumn' ] : $source->getIdName();
+        // set up about target data.
+        $this->targetModel      = $relInfo[ 'target_model' ];
         $this->targetDao = $this->source->getDao()->getInstance( $this->targetModel );
-        if( !$this->targetColumn )     $this->targetColumn = $this->targetDao->getIdName();
-        if( !$this->joinTargetColumn ) $this->joinTargetColumn = $this->targetDao->getIdName();
+        $this->joinTargetColumn = isset( $relInfo[ 'join_target_model' ] ) ?
+            $relInfo[ 'join_target_model' ] : $this->targetDao->getIdName();
+        $this->targetColumn     = isset( $relInfo[ 'target_column' ] ) ?
+            $relInfo[ 'target_column' ] : $this->targetDao->getIdName();
     }
 
     /**
