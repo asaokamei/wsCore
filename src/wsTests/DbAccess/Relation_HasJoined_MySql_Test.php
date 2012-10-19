@@ -88,6 +88,11 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $id1, $joined[ 'friend_id' ] );
 
         // get group from friend.
+        // but before that, add more groups
+        $group = $this->group->getRecord();
+        $group->load( Dao_SetUp::makeGroup(1) );
+        $group->insert();
+
         $groups = $friend->relation( 'group' )->get();
         $this->assertEquals( 1, count( $groups ) );
         $groups = $groups[0];
