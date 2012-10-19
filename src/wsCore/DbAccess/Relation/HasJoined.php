@@ -47,8 +47,8 @@ class Relation_HasJoined implements Relation_Interface
         // set up about target data.
         $this->targetModel      = $relInfo[ 'target_model' ];
         $this->targetDao = $this->source->getDao()->getInstance( $this->targetModel );
-        $this->joinTargetColumn = isset( $relInfo[ 'join_target_model' ] ) ?
-            $relInfo[ 'join_target_model' ] : $this->targetDao->getIdName();
+        $this->joinTargetColumn = isset( $relInfo[ 'join_target_column' ] ) ?
+            $relInfo[ 'join_target_column' ] : $this->targetDao->getIdName();
         $this->targetColumn     = isset( $relInfo[ 'target_column' ] ) ?
             $relInfo[ 'target_column' ] : $this->targetDao->getIdName();
     }
@@ -78,8 +78,8 @@ class Relation_HasJoined implements Relation_Interface
         // TODO: check if id is permanent or tentative.
         if( empty( $record ) ) {
             $values = array(
-                $this->sourceColumn => $this->source->get( $this->sourceColumn ),
-                $this->targetColumn => $this->target->get( $this->targetColumn ),
+                $this->joinSourceColumn => $this->source->get( $this->sourceColumn ),
+                $this->joinTargetColumn => $this->target->get( $this->targetColumn ),
             );
             $this->query->table( $this->joinTable )->insert( $values );
         }
