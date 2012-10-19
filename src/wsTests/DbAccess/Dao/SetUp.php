@@ -140,7 +140,7 @@ class Dao_SetUp
     static function makeGroup( $idx=0 )
     {
         $values = array(
-            'group_code' => 'Group',
+            'group_code' => 'GroupCode',
             'group_name' => 'My Group Name',
         );
         if( $idx > 0 ) {
@@ -149,6 +149,36 @@ class Dao_SetUp
         }
         return $values;
     }
+    // +----------------------------------------------------------------------+
+    //  for Friend-to-Group join table
+    // +----------------------------------------------------------------------+
+    /**
+     * @param string $table
+     * @return string
+     */
+    static function clearFriend2Group( $table='friend2group' ) {
+        $sql = "DROP TABLE IF EXISTS {$table}";
+        return $sql;
+    }
+
+    /**
+     * @param string $table
+     * @return string
+     */
+    static function setupFriend2Group( $table='friend2group' )
+    {
+        $sql = "
+            CREATE TABLE {$table} (
+              group_code     varchar(64) NOT NULL,
+              friend_id      int NOT NULL,
+              constraint friend2group_id PRIMARY KEY (
+                group_code, friend_id
+              )
+            )
+        ";
+        return $sql;
+    }
+
     // +----------------------------------------------------------------------+
 }
     
