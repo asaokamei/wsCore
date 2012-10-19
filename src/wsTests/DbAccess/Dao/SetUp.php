@@ -180,5 +180,40 @@ class Dao_SetUp
     }
 
     // +----------------------------------------------------------------------+
+    //  for network (friend-to-friend) join table
+    // +----------------------------------------------------------------------+
+    /**
+     * @param string $table
+     * @return string
+     */
+    static function clearNetwork( $table='network' ) {
+        $sql = "DROP TABLE IF EXISTS {$table}";
+        return $sql;
+    }
+
+    /**
+     * @param string $table
+     * @return string
+     */
+    static function setupNetwork( $table='network' )
+    {
+        $sql = "
+            CREATE TABLE {$table} (
+              network_id      SERIAL,
+              friend_id_from  int NOT NULL,
+              friend_id_to    int NOT NULL,
+              comment         text,
+              status          int,
+              created_at      datetime,
+              updated_at      datetime,
+              constraint network_id PRIMARY KEY (
+                network_id
+              )
+            )
+        ";
+        return $sql;
+    }
+
+    // +----------------------------------------------------------------------+
 }
     
