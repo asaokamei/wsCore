@@ -104,7 +104,7 @@ class Relation_HasJoinDao implements Relation_Interface
             if( is_array( $this->values ) && !empty( $this->values ) ) {
                 $values = array_merge( $this->values, $values );
             }
-            $this->joinDao->query()->table( $this->joinTable )->insert( $values );
+            $this->joinDao->insert( $values );
         }
         $this->linked = true;
         return $this;
