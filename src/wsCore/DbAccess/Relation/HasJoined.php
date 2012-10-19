@@ -124,7 +124,7 @@ class Relation_HasJoined implements Relation_Interface
                 $this->joinTable,
                 "{$table}.{$this->targetColumn}={$this->joinTable}.{$this->joinTargetColumn}"
             )
-            ->w( $this->sourceColumn )->eq( $this->source->get( $this->joinSourceColumn ) )
+            ->w( $this->joinSourceColumn )->eq( $this->source->get( $this->sourceColumn ) )
             ->select();
         return $record;
     }
