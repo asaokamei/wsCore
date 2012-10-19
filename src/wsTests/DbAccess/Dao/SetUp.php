@@ -171,6 +171,7 @@ class Dao_SetUp
             CREATE TABLE {$table} (
               group_code     varchar(64) NOT NULL,
               friend_id      int NOT NULL,
+              created_date   date DEFAULT NULL,
               constraint friend2group_id PRIMARY KEY (
                 group_code, friend_id
               )

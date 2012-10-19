@@ -98,6 +98,46 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $groups = $groups[0];
         $this->assertEquals( $dataGroup[ 'group_code' ], $groups[ 'group_code' ] );
         $this->assertEquals( $id1, $groups[ 'friend_id' ] );
+        
+        // relate the new group with the friend.
+        $friend->relation( 'group' )->set( $group );
+        $manyFriends = $this->friend->find( $id1 );
+        $groups = $manyFriends->relation( 'group' )->get();
+        $this->assertEquals( 2, count( $groups ) );
+        $group = $groups[0];
+        $dataGroup = Dao_SetUp::makeGroup(0);
+        $this->assertEquals( $dataGroup[ 'group_code' ], $group[ 'group_code' ] );
+        $this->assertEquals( $id1, $group[ 'friend_id' ] );
+        $group = $groups[1];
+        $dataGroup = Dao_SetUp::makeGroup(1);
+        $this->assertEquals( $dataGroup[ 'group_code' ], $group[ 'group_code' ] );
+        $this->assertEquals( $id1, $group[ 'friend_id' ] );
+        
+    }
+    function test_more_HasJoined()
+    {
+        // set up friend and groups. 
+        $idFriend = $this->friend->insert( Dao_SetUp::makeFriend() );
+        $friend   = $this->friend->find( $idFriend );
+        $idGroup1 = $this->group->insert( Dao_SetUp::makeGroup() );
+        $idGroup2 = $this->group->insert( Dao_SetUp::makeGroup(1) );
+        $group1   = $this->group->find( $idGroup1 );
+        $group2   = $this->group->find( $idGroup2 );
+        $friend->relation( 'group' )->setValues( array( 'created_date' => '1999-12-31' ) )->set( $group1 );
+        $friend->relation( 'group' )->set( $group2 );
+        
+        // get groups using relations. 
+        $groups = $friend->relation( 'group' )->get();
+        $group = $groups[0];
+        $dataGroup = Dao_SetUp::makeGroup(0);
+        $this->assertEquals( $dataGroup[ 'group_code' ], $group[ 'group_code' ] );
+        $this->assertEquals( '1999-12-31', $group[ 'created_date' ] );
+        $this->assertEquals( $idFriend, $group[ 'friend_id' ] );
+        $group = $groups[1];
+        $dataGroup = Dao_SetUp::makeGroup(1);
+        $this->assertEquals( $dataGroup[ 'group_code' ], $group[ 'group_code' ] );
+        $this->assertEquals( '1999-12-31', $group[ 'created_date' ] );
+        $this->assertEquals( $idFriend, $group[ 'friend_id' ] );
     }
     // +----------------------------------------------------------------------+
 }
