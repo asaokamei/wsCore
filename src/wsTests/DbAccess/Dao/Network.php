@@ -15,8 +15,8 @@ class Dao_Network extends \wsCore\DbAccess\Dao
         'friend_id_to'   => array( 'friend to',    'number', ),
         'comment'        => array( 'comment',      'string', ),
         'status'         => array( 'friendship',   'number', ),
-        'new_dt_network' => array( 'created at',   'string', 'created_at'),
-        'mod_dt_network' => array( 'updated at',   'string', 'updated_at'),
+        'created_at'     => array( 'created at',   'string', 'created_at'),
+        'updated_at'     => array( 'updated at',   'string', 'updated_at'),
     );
 
     /** @var array      for validation of inputs       */
