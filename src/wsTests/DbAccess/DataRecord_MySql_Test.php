@@ -17,6 +17,9 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
     
     /** @var Dao_Contact */
     public $contact;
+
+    /** @var Dao_Group */
+    public $group;
     // +----------------------------------------------------------------------+
     function setUp()
     {
@@ -31,6 +34,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
 
         $this->friend  = Core::get( '\wsTests\DbAccess\Dao_Friend' );
         $this->contact = Core::get( '\wsTests\DbAccess\Dao_Contact' );
+        $this->group   = Core::get( '\wsTests\DbAccess\Dao_Group' );
     }
 
     /**
@@ -48,6 +52,14 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
     {
         $this->query->execSQL( Dao_SetUp::clearContact( $table ) );
         $this->query->execSQL( Dao_SetUp::setupContact( $table ) );
+    }
+    /**
+     * @param string $table
+     */
+    function setupGroup( $table='myGroup' )
+    {
+        $this->query->execSQL( Dao_SetUp::clearGroup( $table ) );
+        $this->query->execSQL( Dao_SetUp::setupGroup( $table ) );
     }
     // +----------------------------------------------------------------------+
 
@@ -261,5 +273,40 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         $data = $this->contact->find( $id );
         $this->assertEquals( $name, $data[ 'contact_info' ] );
     }
-    // +----------------------------------------------------------------------+    
+    function test_group_basic_function()
+    {
+        $this->setupGroup();
+        // add new data.
+        $values = Dao_SetUp::makeGroup();
+        $id = $this->group->insert( $values );
+        $data = $this->group->find( $id );
+
+        $this->assertEquals( $values[ 'group_name' ], $data[ 'group_name' ] );
+        $this->assertTrue( is_object( $data ) );
+        $this->assertEquals( $this->group->recordClassName(), get_class( $data ) );
+
+        // add new data by load/insert.
+        $record = $this->group->getRecord();
+        $values = Dao_SetUp::makeGroup(1);
+        $record->load( $values );
+        $record->insert();
+        $id2 = $record->getId();
+
+        $this->assertNotEquals( $id, $id2 );
+
+        // update data.
+        $data = $this->group->find( $id2 );
+        $this->assertEquals( $values[ 'group_name' ], $data->get( 'group_name' ) );
+        $this->assertTrue( is_object( $data ) );
+        $this->assertEquals( $this->group->recordClassName(), get_class( $data ) );
+
+        $name = 'new group';
+        $record->set( 'group_name', $name );
+        $record->update();
+
+        $id = $record->getId();
+        $data = $this->group->find( $id );
+        $this->assertEquals( $name, $data[ 'group_name' ] );
+    }
+    // +----------------------------------------------------------------------+
 }

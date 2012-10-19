@@ -100,6 +100,55 @@ class Dao_SetUp
         }
         return $values;
     }
+
+    // +----------------------------------------------------------------------+
+    //  for Group table
+    // +----------------------------------------------------------------------+
+    /**
+     * @param string $table
+     * @return string
+     */
+    static function clearGroup( $table='myGroup' ) {
+        $sql = "DROP TABLE IF EXISTS {$table}";
+        return $sql;
+    }
+
+    /**
+     * @param string $table
+     * @return string
+     */
+    static function setupGroup( $table='myGroup' )
+    {
+        $sql = "
+            CREATE TABLE {$table} (
+              group_code     varchar(64) NOT NULL,
+              group_name     text NOT NULL,
+              new_dt_group   datetime default NULL,
+              mod_dt_group   datetime default NULL,
+              constraint group_code PRIMARY KEY (
+                group_code
+              )
+            )
+        ";
+        return $sql;
+    }
+
+    /**
+     * @param int $idx
+     * @return array
+     */
+    static function makeGroup( $idx=0 )
+    {
+        $values = array(
+            'group_code' => 'Group',
+            'group_name' => 'My Group Name',
+        );
+        if( $idx > 0 ) {
+            $values[ 'group_code' ] .= '_' . $idx;
+            $values[ 'group_name' ] .= '#' . $idx;
+        }
+        return $values;
+    }
     // +----------------------------------------------------------------------+
 }
     
