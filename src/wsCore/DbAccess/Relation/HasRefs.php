@@ -12,6 +12,8 @@ class Relation_HasRefs implements Relation_Interface
 
     /** @var DataRecord */
     protected $target;
+    /** @var Dao */
+    protected $targetDao;
     protected $targetModel;
     protected $targetColumn;
 
@@ -23,10 +25,12 @@ class Relation_HasRefs implements Relation_Interface
     public function __construct( $source, $relInfo )
     {
         $this->source = $source;
-        $this->sourceColumn = $relInfo[ 'source_column' ];
+        $this->sourceColumn = isset( $relInfo[ 'source_column' ] ) ?
+            $relInfo[ 'source_column' ] : $source->getIdName() ;
         $this->targetModel  = $relInfo[ 'target_model' ];
-        $this->targetColumn = ( is_null( $relInfo[ 'target_column' ] ) ) ? 
-            $source->getIdName() : $relInfo[ 'target_column' ];
+        $this->targetColumn = ( isset( $relInfo[ 'target_column' ] ) ) ?
+            $relInfo[ 'target_column' ] : $this->sourceColumn ;
+        $this->targetDao   = $this->source->getDao()->getInstance( $this->targetModel );
     }
 
     /**
@@ -54,13 +58,8 @@ class Relation_HasRefs implements Relation_Interface
         if( $this->linked )  return $this;
         if( !$this->source ) return $this;
         if( !$this->target ) return $this;
-        if( $this->sourceColumn ) {
-            $value = $this->source->get( $this->sourceColumn );
-        }
-        else {
-            // TODO: check if id is permanent or tentative.
-            $value = $this->source->getId();
-        }
+        // TODO: check if id is permanent or tentative.
+        $value = $this->source->get( $this->sourceColumn );
         $this->target->set( $this->targetColumn, $value );
         $this->linked = true;
         if( $save ) {
@@ -86,12 +85,8 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function get()
     {
-        /** @var $dao \wsCore\DbAccess\Dao */
-        $model = $this->targetModel;
-        $targetDao   = $this->source->getDao()->getInstance( $model );
-        $targetColumn = ( !$this->targetColumn )? $targetDao->getIdName() : $this->targetColumn;
-        $value = ( !$this->targetColumn )? $this->source->get( $this->sourceColumn ) : $this->source->getId();
-        return $targetDao->query()->w( $targetColumn )->eq( $value )->select();
+        $value = $this->source->get( $this->sourceColumn );
+        return $this->targetDao->query()->w( $this->targetColumn )->eq( $value )->select();
     }
 
     /**
