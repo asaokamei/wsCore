@@ -28,6 +28,9 @@ class Relation
                 $relation = new $class( $source, $relInfo );
             }
         }
+        if( is_null( $relation ) ) {
+            throw new \RuntimeException( "no relation information for '{$name}''. " );
+        }
         return $relation;
     }
 
