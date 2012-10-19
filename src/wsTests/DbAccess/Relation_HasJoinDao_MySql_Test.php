@@ -18,8 +18,8 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
     /** @var Dao_Friend */
     public $friend;
 
-    /** @var Dao_Group */
-    public $group;
+    /** @var Dao_Network */
+    public $network;
     // +----------------------------------------------------------------------+
     function setUp()
     {
@@ -30,15 +30,14 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->query = Core::get( 'Query' );
 
         $this->setupFriend();
-        $this->setupGroup();
-        $this->setupFr2Gr();
+        $this->setupNetwork();
 
         $this->friend  = Core::get( '\wsTests\DbAccess\Dao_Friend' );
-        $this->group   = Core::get( '\wsTests\DbAccess\Dao_Group' );
+        $this->network = Core::get( '\wsTests\DbAccess\Dao_Network' );
 
         // load classes before test begins; easier debugging.
         class_exists( '\wsCore\DbAccess\Relation' );
-        class_exists( '\wsCore\DbAccess\Relation_HasJoined' );
+        class_exists( '\wsCore\DbAccess\Relation_HasJoinDao' );
     }
 
     /**
@@ -52,52 +51,43 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
     /**
      * @param string $table
      */
-    function setupGroup( $table='myGroup' )
+    function setupNetwork( $table='network' )
     {
-        $this->query->execSQL( Dao_SetUp::clearGroup( $table ) );
-        $this->query->execSQL( Dao_SetUp::setupGroup( $table ) );
-    }
-    /**
-     * @param string $table
-     */
-    function setupFr2Gr( $table='friend2group' )
-    {
-        $this->query->execSQL( Dao_SetUp::clearFriend2Group( $table ) );
-        $this->query->execSQL( Dao_SetUp::setupFriend2Group( $table ) );
+        $this->query->execSQL( Dao_SetUp::clearNetwork( $table ) );
+        $this->query->execSQL( Dao_SetUp::setupNetwork( $table ) );
     }
     // +----------------------------------------------------------------------+
-    function test_simple_HasJoined()
+    function test_simple_HasJoinDao()
     {
         // create a friend data.
-        $dataFriend = Dao_SetUp::makeFriend();
-        $id1 = $this->friend->insert( $dataFriend );
-        $friend = $this->friend->find( $id1 );
+        $id = $this->friend->insert( Dao_SetUp::makeFriend() );
+        $friend1 = $this->friend->find( $id );
+        $id = $this->friend->insert( Dao_SetUp::makeFriend(1) );
+        $friend2 = $this->friend->find( $id );
+        $id = $this->friend->insert( Dao_SetUp::makeFriend(2) );
+        $friend3 = $this->friend->find( $id );
+        $id = $this->friend->insert( Dao_SetUp::makeFriend(3) );
+        $friend4 = $this->friend->find( $id );
 
-        // create a group with a relation to the friend data.
-        $dataGroup = Dao_SetUp::makeGroup();
-        $group = $this->group->getRecord();
-        $group->load( $dataGroup );
-        $group->relation( 'friend' )->set( $friend );
-        $group->insert();
+        // first network from friend1 -> friend2.
+        $join  = $friend1->relation( 'network' )->set( $friend2 )->getJoinRecord();
+        $join1 = $join[0];
+        $join1->set( 'comment', 'first comment' );
+        $join1->set( 'status',  1 );
+        $join1->update();
 
-        // check if joined table is saved.
-        $joined = $this->query->table( 'friend2group' )->w( 'group_code' )->eq( $dataGroup[ 'group_code' ] )->select();
-        $this->assertEquals( 1, count( $joined ) );
-        $joined = $joined[0];
-        $this->assertEquals( $dataGroup[ 'group_code' ], $joined[ 'group_code' ] );
-        $this->assertEquals( $id1, $joined[ 'friend_id' ] );
+        // assert that friend1's good friend is a friend2.
+        $friends = $friend1->relation( 'network' )->get();
+        $goodFriend = $friends[0];
+        $this->assertEquals( $friend2->getId(), $goodFriend->getId() );
+        $this->assertEquals( 'first comment', $goodFriend->get( 'comment' ) );
+        $this->assertEquals( '1', $goodFriend->get( 'status' ) );
 
-        // get group from friend.
-        // but before that, add more groups
-        $group = $this->group->getRecord();
-        $group->load( Dao_SetUp::makeGroup(1) );
-        $group->insert();
-        // now get group.
-        $groups = $friend->relation( 'group' )->get();
-        $this->assertEquals( 1, count( $groups ) );
-        $groups = $groups[0];
-        $this->assertEquals( $dataGroup[ 'group_code' ], $groups[ 'group_code' ] );
-        $this->assertEquals( $id1, $groups[ 'friend_id' ] );
+        // add more friends.
+        $friend1->relation( 'network' )->set( $friend3 );
+        $friends = $friend1->relation( 'network' )->get();
+        $goodFriend = $friends[1];
+        $this->assertEquals( $friend3->getId(), $goodFriend->getId() );
     }
     // +----------------------------------------------------------------------+
 }
