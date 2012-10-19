@@ -307,7 +307,7 @@ class Query
         return $this->join( $table, 'LEFT JOIN', 'USING', $columns );
     }
     public function joinOn( $table, $columns ) {
-        return $this->join( $table, 'JOIN', 'On', $columns );
+        return $this->join( $table, 'JOIN', 'ON', $columns );
     }
     public function joinLeftOn( $table, $columns ) {
         return $this->join( $table, 'LEFT JOIN', 'ON', $columns );
