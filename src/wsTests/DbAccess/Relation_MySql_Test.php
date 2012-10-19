@@ -61,14 +61,14 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $dataContact = Dao_SetUp::makeContact();
         $contact = $this->contact->getRecord();
         $contact->load( $dataContact );
-        $contact->relation( 'friend_id' )->set( $friend );
+        $contact->relation( 'friend' )->set( $friend );
         $contact->insert();
         $this->assertEquals( $id1, $contact->get( 'friend_id' ) );
 
         // read the contact, and get the friend data via relation
         $id2 = $contact->getId();
         $contact2 = $this->contact->find( $id2 );
-        $friend2 = $contact2->relation( 'friend_id' )->get();
+        $friend2 = $contact2->relation( 'friend' )->get();
         $this->assertTrue( is_array( $friend2 ) );
         $friend2 = $friend2[0];
         $this->assertEquals( $id1, $friend2->getId() );

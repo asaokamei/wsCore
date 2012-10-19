@@ -71,7 +71,7 @@ Instantiate Dao used in all the relationship before using relations.
     // relate contact with friend. 
     $friend->relation( 'contact' )->set( $contact );
     // or, the other way around.
-    $contact->relation( 'friend_id' )->set( $friend );
+    $contact->relation( 'friend' )->set( $friend );
 
 all the relation must have an identifier name, such as 
 'friend_id' and 'contact'. 
@@ -103,7 +103,7 @@ contact table has 'HasOne' relation with friend table.
 set up $relations in Contact's dao as follows. 
 
     protected $relations = array(
-        'friend_id' => array(
+        'friend' => array(
             'relation_type' => 'HasOne',
             'source_column' => null, // use target_column.
             'target_model'  => 'Dao_Friend',
