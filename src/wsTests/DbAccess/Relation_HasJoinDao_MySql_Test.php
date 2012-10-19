@@ -84,12 +84,14 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( '1', $goodFriend->get( 'status' ) );
 
         // add more friends. get them.
-        $friend1->relation( 'network' )->set( $friend3 );
+        $friend1->relation( 'network' )->setValues( array( 'comment' => '2nd comment', 'status' => 2 ) )->set( $friend3 );
         $friends = $friend1->relation( 'network' )->get();
-        $goodFriend = $friends[1];
-        $this->assertEquals( $friend3->getId(), $goodFriend->getId() );
+        $goodFriend2 = $friends[1];
+        $this->assertEquals( $friend3->getId(), $goodFriend2->getId() );
+        $this->assertEquals( '2nd comment', $goodFriend2->get( 'comment' ) );
+        $this->assertEquals( '2', $goodFriend2->get( 'status' ) );
 
-        // add more friends. in reverse order.
+        // get all friends. in reverse order.
         $friend1->relation( 'network' )->set( $friend3 );
         $friends = $friend1->relation( 'network' )->setOrder( 'network_id DESC' )->get();
         $goodFriend = $friends[0];
