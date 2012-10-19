@@ -21,6 +21,11 @@ interface Relation_Interface
     public function get();
 
     /**
+     * @return DataRecord[]
+     */
+    public function getJoinRecord();
+
+    /**
      * @param bool $save
      * @return Relation_Interface
      */

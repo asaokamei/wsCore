@@ -95,6 +95,11 @@ class Relation_HasRefs implements Relation_Interface
     }
 
     /**
+     * @return void|DataRecord[]
+     */
+    public function getJoinRecord() {}
+
+    /**
      * @return bool
      */
     public function isLinked() {
