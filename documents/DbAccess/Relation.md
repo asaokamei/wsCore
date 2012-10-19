@@ -105,17 +105,17 @@ set up $relations in Contact's dao as follows.
     protected $relations = array(
         'friend_id' => array(
             'relation_type' => 'HasOne',
-            'source_column' => null, // use id
+            'source_column' => null, // use target_column.
             'target_model'  => 'Dao_Friend',
-            'target_column' => null, // use id.
+            'target_column' => null, // use target id name. 
         ),
     );
 
 The array key means:
 *   relation_type: set to 'HasOne'
-*   source_column: column name. uses source's id value if not set. 
+*   source_column: column name. uses target column if not set. 
 *   target_model: name of dao (or model). 
-*   target_column: column name. uses target's id value if not set. 
+*   target_column: column name. uses target's id name if not set. 
 
 
 ###Dao SetUp for HasRefs
