@@ -26,6 +26,9 @@ class Relation_HasJoined implements Relation_Interface
     protected $targetModel;
     protected $targetColumn;
 
+    protected $order  = null;    // select order for get
+    protected $values = array(); // extra values when set
+
     protected $linked = false;
 
     /**
@@ -66,6 +69,16 @@ class Relation_HasJoined implements Relation_Interface
         return $this;
     }
 
+    /**
+     * @param array $values
+     * @return \wsCore\DbAccess\Relation_HasJoinDao
+     */
+    public function setValues( $values )
+    {
+        $this->values = $values;
+        return $this;
+    }
+
     public function link( $save=false )
     {
         if( $this->linked )  return $this;
@@ -80,6 +93,9 @@ class Relation_HasJoined implements Relation_Interface
                 $this->joinSourceColumn => $this->source->get( $this->sourceColumn ),
                 $this->joinTargetColumn => $this->target->get( $this->targetColumn ),
             );
+            if( is_array( $this->values ) && !empty( $this->values ) ) {
+                $values = array_merge( $this->values, $values );
+            }
             $this->query->table( $this->joinTable )->insert( $values );
         }
         $this->linked = true;
