@@ -29,11 +29,14 @@ class Dao_Group extends \wsCore\DbAccess\Dao
     );
     
     protected $relations = array(
-        'friend_id' => array(
-            'relation_type' => 'HasOne',
-            'source_column' => null, // same as the relation name 
+        'friend' => array(
+            'relation_type' => 'HasJoined',
+            'join_table'         => 'friend2group', // same as the relation name
+            'join_source_column' => 'group_code', // same as the relation name
+            'join_target_column' => 'friend_id', // same as the relation name
+            'source_column' => 'group_code', // same as the relation name
             'target_model'  => 'Dao_Friend',
-            'target_column' => null, // use id. 
+            'target_column' => 'friend_id', // use id.
         ),
     );
     
