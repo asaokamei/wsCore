@@ -20,10 +20,13 @@ class Relation_HasOne implements Relation_Interface
      */
     public function __construct( $source, $relInfo )
     {
+        // TODO: refactor the setup. is it the relation name to use?
+        // todo: use idName from Dao if not set. 
         $this->source = $source;
         $source_column = ( isset( $relInfo[ 'source_column' ] ) ) ?
             $relInfo[ 'source_column' ] : $relInfo[ 'relation_name' ];
         $this->sourceColumn = $source_column;
+        // todo: get targetDao in the setup. 
         $this->targetModel  = $relInfo[ 'target_model' ];
         $this->targetColumn = $relInfo[ 'target_column' ];
     }

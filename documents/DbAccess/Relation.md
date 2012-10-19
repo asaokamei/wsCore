@@ -9,6 +9,33 @@ Basic Usage
 There are several types of relations are available, but 
 all of them have the unified interface. 
 
+###setting relation
+
+    // relate contact with friend. 
+    $friend->relation( 'contact' )->set( $contact );
+
+###getting related data
+
+    $contacts = $friend->relation( 'contact' )->get();
+
+All of the relationship has the identifying name. 
+
+###Dao SetUp and Object Pooling
+
+To make relations work, Dao (or model)'s relations must be 
+appropriately setup. 
+
+Relation object uses Dao's factory method, or rather, simple 
+object pooling when calling each other. To do this without 
+much coding, Dao's inherited objects are all pooled. 
+
+When using relation, make sure all the concerning dao's are 
+instantiated (and thus pooled) before using relation. 
+
+
+Simple Relationships
+--------------------
+
 ###Database example
 
 when you have two tables, such as: 
@@ -65,47 +92,33 @@ the returned $friends is an array of DataRecords.
 TODO: consider creating _collection_ object to store 
 DataRecords for future Cena protocol. 
 
-The details of the relationship must be defined in 
-each of dao (i.e. model). 
-
-Many-to-many relationship using join table is also supported, 
-and explained in a subsequent section. 
-
 ###Deleting Relation
 
 to be written
 
-###Dao Instances
-
-Relation object uses Dao's factory method, or rather, simple 
-object pooling when calling each other. To do this without 
-much coding, Dao's inherited objects are all pooled. 
-
-When using relation, make sure all the concerning dao's are 
-instantiated (and thus pooled) before using relation. 
-
-
-Setting Up Relation in Dao
---------------------------
-
-There are 3 types of relation available as of now. 
-
-###HasOne
+###Dao SetUp for HasOne
 
 contact table has 'HasOne' relation with friend table.
 
 set up $relations in Contact's dao as follows. 
 
     protected $relations = array(
-            'friend_id' => array(
+        'friend_id' => array(
             'relation_type' => 'HasOne',
-            'source_column' => null, // same as the relation name
+            'source_column' => null, // use id
             'target_model'  => 'Dao_Friend',
             'target_column' => null, // use id.
         ),
     );
 
-###HasRefs
+The array key means:
+*   relation_type: set to 'HasOne'
+*   source_column: column name. uses source's id value if not set. 
+*   target_model: name of dao (or model). 
+*   target_column: column name. uses target's id value if not set. 
+
+
+###Dao SetUp for HasRefs
 
 friend table has 'HasRefs' relationship with contact table, 
 which is the opposite of HasOne.
@@ -117,14 +130,94 @@ set up $relations in Friend's dao as follows.
             'relation_type' => 'HasRefs',
             'source_column' => null, // use id.
             'target_model'  => 'Dao_Contact',
-            'target_column' => null, // use id name of source.
+            'target_column' => null, // use id.
         ),
     );
 
-###IsJoined
+The array key means:
+*   relation_type: set to 'HasRefs'
+*   source_column: column name. uses source's id value if not set. 
+*   target_model: name of dao (or model). 
+*   target_column: column name. uses target's id value if not set. 
+
+
+Many-to-Many Relationships
+--------------------------
+
+###HasJoined
 
 For relationship using join-table. 
 details to be written. 
+
+    protected $relations = array(
+        'group' => array(
+            'relation_type' => 'HasJoined',
+            'join_table'    => 'friend2group', // same as the relation name
+            'target_model'  => 'Dao_Group',
+            //'join_source_column' => null, // use id
+            //'join_target_column' => null, // use id
+            //'source_column' => null, // use id
+            //'target_column' => null, // use id.
+        ),
+    );
+
+The array key means:
+
+the join table looks like:
+
+    CREATE TABLE friend2group (
+      group_code     varchar(64) NOT NULL,
+      friend_id      int NOT NULL,
+      constraint friend2group_id PRIMARY KEY (
+        group_code, friend_id
+      )
+    )
+
+
+###HasJoinDao
+
+Many-to-many using join table with Dao (model), i.e. join table 
+with a primary key. 
+
+    protected $relations = array(
+        'network' => array(
+            'relation_type' => 'HasJoinDao',
+            'join_model'    => 'Dao_Network',
+            'join_source_column' => 'friend_id_from',
+            'join_target_column' => 'friend_id_to',
+            'target_model'  => 'Dao_Friend',
+            //'source_column' => null, // use id.
+            //'target_column' => null, // use id.
+        ),
+    );
+
+With HasJoinDao, relationship can have its own values, and can be
+set and retrieved as follows. 
+
+    $friend1 = $friend->find(1);
+    $friend2 = $friend->find(2);
+    $friend1->relation( 'network' )->setValues( array( 'comment' => 'my good friend', 'status' => 2 ) )->set( $friend2 );
+    // get relationship between friend1 and friend2. 
+    $friends = $friend1->relation( 'network' )->get();
+    echo $friends[0]->get( 'comment' ); // shows 'my good friend'. 
+
+the join table looks like:
+
+    CREATE TABLE network (
+      network_id      SERIAL,
+      friend_id_from  int NOT NULL,
+      friend_id_to    int NOT NULL,
+      comment         text,
+      status          int,
+      created_at      datetime,
+      updated_at      datetime,
+      constraint network_id PRIMARY KEY (
+        network_id
+      )
+    )
+
+note that the join table has primary key (network_id), 
+some extra fields to be filled. 
 
 ###HasMany
 

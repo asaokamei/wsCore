@@ -36,15 +36,15 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
             'relation_type' => 'HasRefs',
             'source_column' => null, // use id. 
             'target_model'  => 'Dao_Contact',
-            'target_column' => null, // use id name of source. 
+            'target_column' => null, // use id. 
         ),
         'group' => array(
             'relation_type' => 'HasJoined',
-            'join_table'    => 'friend2group', // same as the relation name
+            'join_table'    => 'friend2group',
             'target_model'  => 'Dao_Group',
-            //'join_source_column' => null, // same as the relation name
-            //'join_target_column' => null, // same as the relation name
-            //'source_column' => null, // same as the relation name
+            //'join_source_column' => null, // use id
+            //'join_target_column' => null, // use id
+            //'source_column' => null, // use id.
             //'target_column' => null, // use id.
         ),
         'network' => array(
