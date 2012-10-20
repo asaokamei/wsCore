@@ -312,6 +312,7 @@ class DataRecord implements \ArrayAccess
         throw new \Exception( "not implemented yet" );
         /** @noinspection PhpUnreachableStatementInspection */
         foreach( $this->relations as $relation ) {
+            /** @var $relation Relation_Interface */
             $relation->link( TRUE );
         }
     }
