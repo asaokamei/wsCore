@@ -106,8 +106,18 @@ class Relation_HasJoined implements Relation_Interface
      * @param null|DataRecord $target
      * @return Relation_HasOne
      */
-    public function del( $target=null ) {
-        
+    public function del( $target=null ) 
+    {
+        $sourceValue = $this->source->get( $this->sourceColumn );
+        $query = $this->query->table( $this->joinTable );
+        $query->w( $this->joinSourceColumn )->eq( $sourceValue );
+        if( !$target ) $target = $this->target;
+        if( $target ) {
+            $targetValue = $target->get( $this->targetColumn );
+            $query->w( $this->joinTargetColumn )->eq( $targetValue );
+        }
+        $query->makeDelete()->exec();
+        return $this;
     }
 
     /**
@@ -118,11 +128,11 @@ class Relation_HasJoined implements Relation_Interface
     {
         $sourceValue = $this->source->get( $this->sourceColumn );
         $query = $this->query->table( $this->joinTable );
-        $query->w( $this->sourceColumn )->eq( $sourceValue );
+        $query->w( $this->joinSourceColumn )->eq( $sourceValue );
         if( !$target ) $target = $this->target;
         if( $target ) {
             $targetValue = $target->get( $this->targetColumn );
-            $query->w( $this->targetColumn )->eq( $targetValue );
+            $query->w( $this->joinTargetColumn )->eq( $targetValue );
         }
         $record = $query->select();
         return $record;

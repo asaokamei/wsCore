@@ -139,5 +139,29 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( '1999-12-31', $group[ 'created_date' ] );
         $this->assertEquals( $idFriend, $group[ 'friend_id' ] );
     }
+    function test_HasJoined_del()
+    {
+        // set up friend and groups. 
+        $idFriend = $this->friend->insert( Dao_SetUp::makeFriend() );
+        $friend   = $this->friend->find( $idFriend );
+        $idGroup1 = $this->group->insert( Dao_SetUp::makeGroup() );
+        $idGroup2 = $this->group->insert( Dao_SetUp::makeGroup(1) );
+        $group1   = $this->group->find( $idGroup1 );
+        $group2   = $this->group->find( $idGroup2 );
+        $friend->relation( 'group' )->setValues( array( 'created_date' => '1999-12-31' ) )->set( $group1 );
+        $friend->relation( 'group' )->set( $group2 );
+        
+        // get groups.
+        $groups1 = $friend->relation( 'group' )->get();
+        $this->assertEquals( 2, count( $groups1 ) );
+        
+        // delete one of the group.
+        $friend->relation( 'group' )->del( $group1 );
+        
+        // get groups, again. 
+        $groups2 = $friend->relation( 'group' )->get();
+        $this->assertEquals( 1, count( $groups2 ) );
+        $this->assertEquals( $groups1[1]->getId(), $groups2[0]->getId() );
+    }
     // +----------------------------------------------------------------------+
 }
