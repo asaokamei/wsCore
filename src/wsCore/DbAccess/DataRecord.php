@@ -141,7 +141,7 @@ class DataRecord implements \ArrayAccess
      */
     public function get( $name=NULL ) {
         if( $name ) {
-            return ( isset( $this->properties[ $name ] ) ) ? $this->properties[ $name ]: FALSE;
+            return ( array_key_exists( $name, $this->properties ) ) ? $this->properties[ $name ]: FALSE;
         }
         return $this->properties;
     }
