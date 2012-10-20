@@ -28,7 +28,7 @@ class DataRecord implements \ArrayAccess
     /** @var string         html type to show                   */
     protected $html_type  = 'NAME';
 
-    /** @var array          pools relation objects              */
+    /** @var Relation_Interface[]       relation objects        */
     protected $relations  = array();
 
     // +----------------------------------------------------------------------+
@@ -102,7 +102,7 @@ class DataRecord implements \ArrayAccess
      * @return mixed|null
      */
     public function getId() {
-        $id = null;
+        $id = NULL;
         if( isset( $this->id ) ) {
             $id = $this->id;
         }
@@ -306,6 +306,14 @@ class DataRecord implements \ArrayAccess
         if( is_null( $dao ) ) $dao = $this->dao;
         $dao->delete( $this->getId() );
         return $this;
+    }
+
+    public function save( $saveRelations=FALSE ) {
+        throw new \Exception( "not implemented yet" );
+        /** @noinspection PhpUnreachableStatementInspection */
+        foreach( $this->relations as $relation ) {
+            $relation->link( TRUE );
+        }
     }
     // +----------------------------------------------------------------------+
     //  relations
