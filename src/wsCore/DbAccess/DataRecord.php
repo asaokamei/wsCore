@@ -91,10 +91,7 @@ class DataRecord implements \ArrayAccess
      * @return string
      */
     public function getModel() {
-        $bslash = strrpos( $this->model, '\\' );
-        $model = ( $bslash !== false ) ? 
-            substr( $this->model, $bslash + 1 ) : $this->model;
-        return $model;
+        return $this->model;
     }
 
     /**

@@ -375,7 +375,7 @@ class Dao
      * @return string
      */
     public function getModelName() {
-        return get_called_class();
+        return $this->makeModelName( get_called_class() );
     }
 
     /**
