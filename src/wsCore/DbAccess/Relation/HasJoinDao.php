@@ -112,8 +112,18 @@ class Relation_HasJoinDao implements Relation_Interface
      * @param null|DataRecord $target
      * @return Relation_HasOne
      */
-    public function del( $target=null ) {
-        
+    public function del( $target=null ) 
+    {
+        $sourceValue = $this->source->get( $this->sourceColumn );
+        $query = $this->joinDao->query();
+        $query->w( $this->joinSourceColumn )->eq( $sourceValue );
+        if( !$target ) $target = $this->target;
+        if( $target ) {
+            $targetValue = $target->get( $this->targetColumn );
+            $query->w( $this->joinTargetColumn )->eq( $targetValue );
+        }
+        $query->makeDelete()->exec();
+        return $this;
     }
 
     /**

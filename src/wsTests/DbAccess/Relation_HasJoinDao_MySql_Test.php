@@ -100,4 +100,30 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $friend2->getId(), $goodFriend->getId() );
     }
     // +----------------------------------------------------------------------+
+    function test_HasJoinDao_del()
+    {
+        // create a friend data.
+        $id = $this->friend->insert( Dao_SetUp::makeFriend() );
+        $friend1 = $this->friend->find( $id );
+        $id = $this->friend->insert( Dao_SetUp::makeFriend(1) );
+        $friend2 = $this->friend->find( $id );
+        $id = $this->friend->insert( Dao_SetUp::makeFriend(2) );
+        $friend3 = $this->friend->find( $id );
+        // first network from friend1 -> friend2.
+        $friend1->relation( 'network' )->set( $friend2 );
+        $friend1->relation( 'network' )->set( $friend3 );
+        
+        // get my network.
+        $myNetwork1 = $friend1->relation( 'network' )->get();
+        $this->assertEquals( 2, count( $myNetwork1 ) );
+        
+        // remove one of the network
+        $friend1->relation( 'network' )->del( $friend2 );
+
+        // get my network, again.
+        $myNetwork2 = $friend1->relation( 'network' )->get();
+        $this->assertEquals( 1, count( $myNetwork2 ) );
+        $this->assertEquals( $myNetwork1[1]->getId(), $myNetwork2[0]->getId() );
+    }
+    // +----------------------------------------------------------------------+
 }
