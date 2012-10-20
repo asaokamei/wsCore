@@ -64,7 +64,7 @@ class Relation_HasRefs implements Relation_Interface
         $this->linked = true;
         if( $save ) {
             die( "save in link not supported yet." );
-            //$this->source->save();
+            //$this->target->save();
         }
         return $this;
     }
