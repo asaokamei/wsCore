@@ -11,7 +11,6 @@ class DataRecord implements \ArrayAccess
     
     /** @var array         stores property of the record        */
     protected $properties = array();
-    protected $originals  = array(); // stores original data from db
 
     /** @var bool          validation result.                   */
     protected $is_valid   = FALSE;
