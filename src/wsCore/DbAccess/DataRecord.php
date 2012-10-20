@@ -38,6 +38,7 @@ class DataRecord implements \ArrayAccess
     public function __construct( $dao=NULL )
     {
         $this->setDao( $dao );
+        $this->resetId();
     }
 
     /**
@@ -48,7 +49,6 @@ class DataRecord implements \ArrayAccess
             $this->dao     = $dao;
             $this->id_name = $dao->getIdName();
             $this->model   = $dao->getModelName();
-            $this->resetId();
         }
     }
 
@@ -182,9 +182,6 @@ class DataRecord implements \ArrayAccess
         }
         else {
             $this->properties[ $offset ] = $value;
-        }
-        if( $offset == $this->id_name ) {
-            $this->resetId();
         }
     }
 
