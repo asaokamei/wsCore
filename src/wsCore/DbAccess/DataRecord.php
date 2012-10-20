@@ -48,6 +48,7 @@ class DataRecord implements \ArrayAccess
             $this->dao     = $dao;
             $this->id_name = $dao->getIdName();
             $this->model   = $dao->getModelName();
+            $this->resetId();
         }
     }
 
@@ -98,14 +99,7 @@ class DataRecord implements \ArrayAccess
      * @return mixed|null
      */
     public function getId() {
-        $id = NULL;
-        if( isset( $this->id ) ) {
-            $id = $this->id;
-        }
-        elseif( isset( $this->properties[ $this->id_name] ) ) {
-            $id = $this->properties[ $this->id_name];
-        }
-        return $id;
+        return $this->id;
     }
     
     public function getIdName() {
@@ -127,6 +121,9 @@ class DataRecord implements \ArrayAccess
      */
     public function __set( $name, $value ) {
         $this->set( $name, $value );
+        if( $name == $this->id_name ) {
+            $this->id = $value;
+        }
     }
 
     /**
@@ -154,9 +151,7 @@ class DataRecord implements \ArrayAccess
             $this->properties = array_merge( $this->properties, $name );
         }
         else {
-            if( $name !== $this->id_name ) {
-                $this->properties[ $name ] = $value;
-            }
+            $this->properties[ $name ] = $value;
         }
         return $this;
     }
