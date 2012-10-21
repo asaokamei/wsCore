@@ -8,16 +8,16 @@ namespace wsCore\DbAccess;
  */
 class Dao
 {
-    /** @var string     name of database table     */
+    /** @var string                          name of database table          */
     protected $table;
 
-    /** @var string     name of primary key        */
+    /** @var string                          name of primary key             */
     protected $id_name;
 
-    /** @var array      define property and data type  */
+    /** @var array                           define property and data type   */
     protected $definition = array();
     
-    /** @var array      property names as key => name  */
+    /** @var array                           property names as key => name   */
     protected $properties = array();
     
     /** 
@@ -28,32 +28,32 @@ class Dao
      *    !created_at => key
      *    !updated_at => key
      * 
-     * @var array      data type for prepared sql     
+     * @var array   
      */
     protected $dataTypes  = array();
 
-    /** @var array     relations settings              */
+    /** @var array                           relations settings              */
     protected $relations  = array();
     
-    /** @var array      protected properties           */
+    /** @var array                           protected properties            */
     protected $protected  = array();
 
-    /** @var array      for selector construction      */
+    /** @var array                           for selector construction       */
     protected $selectors  = array();
 
-    /** @var array      for validation of inputs       */
+    /** @var array                           for validation of inputs        */
     protected $validators = array();
 
-    /** @var Query */
+    /** @var Query                                                           */
     protected $query;
 
-    /** @var \wsCore\Html\Selector|\Closure */
+    /** @var \wsCore\Html\Selector|\Closure                                  */
     protected $selectorObj;
 
     /** @var \wsCore\DbAccess\DataRecord    return class from Pdo            */
     protected $recordClassName = 'wsCore\DbAccess\DataRecord';
 
-    /** @var array|Dao  */
+    /** @var array|Dao                                                       */
     static $daoObjects = array();
     // +----------------------------------------------------------------------+
     //  Managing Object and Instances. 
@@ -76,13 +76,6 @@ class Dao
     }
 
     /**
-     * @param string $dir
-     */
-    static public function setDaoDirectory( $dir ) {
-        static::$daoDirectory = $dir;
-    }
-
-    /**
      * @param string $model
      * @throws \RuntimeException
      * @return \wsCore\DbAccess\Dao
@@ -93,6 +86,7 @@ class Dao
         }
         throw new \RuntimeException( "instance of {$model} not set" );
     }
+    
     /**
      * prepares restricted properties. 
      * TODO: improve {created|updated}_at implementation. 
@@ -249,6 +243,7 @@ class Dao
         $val = $sel->popHtml( $type, $value );
         return $val;
     }
+    
     /**
      * @param string $var_name
      * @return null|object
