@@ -3,31 +3,31 @@ namespace wsCore\DbAccess;
 
 class DataRecord implements \ArrayAccess
 {
-    /** @var mixed         value of id. probably an integer     */
+    /** @var mixed                     value of id. probably an integer      */
     protected $id         = NULL;
     
-    /** @var string        name of primary key                  */
+    /** @var string                    name of primary key                   */
     protected $id_name    = NULL;
     
-    /** @var array         stores property of the record        */
+    /** @var array                     stores property of the record         */
     protected $properties = array();
 
-    /** @var bool          validation result.                   */
+    /** @var bool                      validation result.                    */
     protected $is_valid   = FALSE;
 
-    /** @var array         stores error messages from validator */
+    /** @var array                     stores error messages from validator  */
     protected $errors     = array();
 
     /** @var string|null */
     protected $model      = NULL;
 
-    /** @var \wsCore\DbAccess\Dao                               */
+    /** @var \wsCore\DbAccess\Dao      Data Access Object                    */
     protected $dao        = NULL;
     
-    /** @var string         html type to show                   */
+    /** @var string                     html type to show                    */
     protected $html_type  = 'NAME';
 
-    /** @var Relation_Interface[]       relation objects        */
+    /** @var Relation_Interface[]       relation objects pool                */
     protected $relations  = array();
 
     // +----------------------------------------------------------------------+
@@ -85,11 +85,17 @@ class DataRecord implements \ArrayAccess
     public function getId() {
         return $this->id;
     }
-    
+
+    /**
+     * @return null|string
+     */
     public function getIdName() {
         return $this->id_name;
     }
-    
+
+    /**
+     * @return string
+     */
     public function getTable() {
         return $this->dao->getTable();
     }
