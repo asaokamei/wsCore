@@ -105,9 +105,6 @@ class DataRecord implements \ArrayAccess
      */
     public function __set( $name, $value ) {
         $this->set( $name, $value );
-        if( $name == $this->id_name ) {
-            $this->id = $value;
-        }
     }
 
     /**
@@ -283,6 +280,7 @@ class DataRecord implements \ArrayAccess
     public function save( $saveRelations=FALSE ) {
         throw new \Exception( "not implemented yet" );
         /** @noinspection PhpUnreachableStatementInspection */
+        if( $saveRelations && !empty( $this->relations ) ) 
         foreach( $this->relations as $relation ) {
             /** @var $relation Relation_Interface */
             $relation->link( TRUE );
