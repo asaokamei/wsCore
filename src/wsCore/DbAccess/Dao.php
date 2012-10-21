@@ -50,14 +50,11 @@ class Dao
     /** @var \wsCore\Html\Selector|\Closure */
     protected $selectorObj;
 
-    /** @var \wsCore\DbAccess\DataRecord */
+    /** @var \wsCore\DbAccess\DataRecord    return class from Pdo            */
     protected $recordClassName = 'wsCore\DbAccess\DataRecord';
 
     /** @var array|Dao  */
     static $daoObjects = array();
-
-    /** @var string       at where Dao classes exist  */
-    static $daoDirectory = NULL;
     // +----------------------------------------------------------------------+
     //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+
