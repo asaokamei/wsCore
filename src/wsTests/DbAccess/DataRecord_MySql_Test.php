@@ -85,7 +85,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
             'friend_name' => 'my friend2',
             'friend_bday' => '1990-03-21',
         );
-        $record->load( $values );
+        $record->set( $values );
         $record->insert();
         $id2 = $record->getId();
 
@@ -108,7 +108,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
             'friend_name' => 'my friend',
             'friend_bday' => '1980-01-23',
         );
-        $record->load( $values );
+        $record->set( $values );
         $record->insert();
         
         $name = 'my old friend';
@@ -150,7 +150,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
             'friend_name' => 'my friend',
             'friend_bday' => '1980-01-23',
         );
-        $record->load( $values );
+        $record->set( $values );
         $record->insert();
         
         $this->assertEquals( 'Dao_Friend', $record->getModel() );
@@ -167,7 +167,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
             'friend_name' => 'my friend',
             'friend_bday' => '1980-01-23',
         );
-        $record->load( $values );
+        $record->set( $values );
         
         $dio = Core::get( 'DataIO' );
         $record->validate( $dio );
@@ -189,7 +189,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
             'friend_name' => 'he\'s friend',
             'friend_bday' => '1980-01-23',
         );
-        $record->load( $values );
+        $record->set( $values );
 
         // test getting html, a web-safe value.
         $record->setHtmlType( 'html' );
@@ -226,7 +226,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
 
         $record = $this->friend->getRecord();
         $values = Dao_SetUp::makeFriend(1);
-        $record->load( $values );
+        $record->set( $values );
         $record->insert();
         $id2 = $record->getId();
 
@@ -253,7 +253,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         // add new data by load/insert. 
         $record = $this->contact->getRecord();
         $values = Dao_SetUp::makeContact(1);
-        $record->load( $values );
+        $record->set( $values );
         $record->insert();
         $id2 = $record->getId();
 
@@ -288,7 +288,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         // add new data by load/insert.
         $record = $this->group->getRecord();
         $values = Dao_SetUp::makeGroup(1);
-        $record->load( $values );
+        $record->set( $values );
         $record->insert();
         $id2 = $record->getId();
 

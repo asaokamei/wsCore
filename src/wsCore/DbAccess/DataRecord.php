@@ -58,20 +58,6 @@ class DataRecord implements \ArrayAccess
     public function getDao() {
         return $this->dao;
     }
-    /**
-     * creates record from data for an existing data.
-     * @param array $data
-     * @return \wsCore\DbAccess\DataRecord
-     * @throws \RuntimeException
-     */
-    public function load( $data )
-    {
-        if( !is_array( $data ) ) {
-            throw new \RuntimeException( "data must be an array." );
-        }
-        $this->properties = array_merge( $this->properties, $data );
-        return $this;
-    }
 
     /**
      * sets id value from the property if dao is set (i.e. know which is id data).

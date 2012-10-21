@@ -76,7 +76,7 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         // create a group with a relation to the friend data.
         $dataGroup = Dao_SetUp::makeGroup();
         $group = $this->group->getRecord();
-        $group->load( $dataGroup );
+        $group->set( $dataGroup );
         $group->relation( 'friend' )->set( $friend );
         $group->insert();
 
@@ -90,7 +90,7 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         // get group from friend.
         // but before that, add more groups
         $group = $this->group->getRecord();
-        $group->load( Dao_SetUp::makeGroup(1) );
+        $group->set( Dao_SetUp::makeGroup(1) );
         $group->insert();
         // now get group.
         $groups = $friend->relation( 'group' )->get();

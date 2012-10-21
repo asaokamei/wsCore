@@ -60,7 +60,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         // create a contact with a relation to the friend data.
         $dataContact = Dao_SetUp::makeContact();
         $contact = $this->contact->getRecord();
-        $contact->load( $dataContact );
+        $contact->set( $dataContact );
         $contact->relation( 'friend' )->set( $friend );
         $contact->insert();
         $this->assertEquals( $id1, $contact->get( 'friend_id' ) );
@@ -83,7 +83,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         // create a contact with a relation with the friend.
         $dataContact = Dao_SetUp::makeContact();
         $contact1 = $this->contact->getRecord();
-        $contact1->load( $dataContact );
+        $contact1->set( $dataContact );
         $friend->relation( 'contact' )->set( $contact1 );
         $contact1->insert();
 
@@ -91,7 +91,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
 
         // create another contact with the friendship.
         $contact2 = $this->contact->getRecord();
-        $contact2->load( Dao_SetUp::makeContact(2) );
+        $contact2->set( Dao_SetUp::makeContact(2) );
         $friend->relation( 'contact' )->set( $contact2 );
         $contact2->insert();
 
@@ -112,7 +112,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $idFriend  = $this->friend->insert( Dao_SetUp::makeFriend() );
         $friend    = $this->friend->find( $idFriend );
         $contact   = $this->contact->getRecord();
-        $contact->load( Dao_SetUp::makeContact() )->relation( 'friend' )->set( $friend );
+        $contact->set( Dao_SetUp::makeContact() )->relation( 'friend' )->set( $friend );
         $contact->insert();
 
         // delete relation. 
@@ -122,7 +122,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
 
         // verify relation is deleted.
         $finalContact = $this->contact->find( $contact->getId() );
-        $this->assertEquals( null, $finalContact->get( 'friend_id' ) );
+        $this->assertEquals( NULL, $finalContact->get( 'friend_id' ) );
     }
     function test_HasRefs_del()
     {
@@ -130,7 +130,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $idFriend  = $this->friend->insert( Dao_SetUp::makeFriend() );
         $friend    = $this->friend->find( $idFriend );
         $contact   = $this->contact->getRecord();
-        $contact->load( Dao_SetUp::makeContact() )->relation( 'friend' )->set( $friend );
+        $contact->set( Dao_SetUp::makeContact() )->relation( 'friend' )->set( $friend );
         $contact->insert();
         
         // delete relation. 
@@ -140,7 +140,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
 
         // verify relation is deleted.
         $finalContact = $this->contact->find( $contact->getId() );
-        $this->assertEquals( null, $finalContact->get( 'friend_id' ) );
+        $this->assertEquals( NULL, $finalContact->get( 'friend_id' ) );
     }
 }
 
