@@ -3,6 +3,18 @@ namespace wsCore\DbAccess;
 
 class DataRecord implements \ArrayAccess
 {
+    const ID_TYPE_GET  = 'get';
+    const ID_TYPE_NEW  = 'new';
+    const ACTION_NONE  = 'act-none';
+    const ACTION_SAVE  = 'act-save';
+    const ACTION_DEL   = 'act-del';
+
+    /** @var string|null               source type: get, new, or null        */
+    protected $srcType    = null;
+
+    /** @var string                    action to do                          */
+    protected $actType    = self::ACTION_NONE;
+
     /** @var mixed                     value of id. probably an integer      */
     protected $id         = NULL;
     
@@ -33,10 +45,13 @@ class DataRecord implements \ArrayAccess
     // +----------------------------------------------------------------------+
     /**
      * @param \wsCore\DbAccess\Dao $dao
+     * @param string|null $type
      * @DimInject  Get  Dao
      */
-    public function __construct( $dao=NULL )
+    public function __construct( $dao=NULL, $type=null )
     {
+        $this->srcType = ($type) ?: self::ID_TYPE_GET;
+        $this->actType = self::ACTION_NONE;
         $this->setDao( $dao );
         $this->resetId();
     }
@@ -77,6 +92,20 @@ class DataRecord implements \ArrayAccess
      */
     public function getModel() {
         return $this->model;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getType() {
+        return ( $this->srcType==self::ID_TYPE_GET ) ? self::ID_TYPE_GET : self::ID_TYPE_NEW;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIdPermanent() {
+        return $this->srcType == self::ID_TYPE_GET;
     }
 
     /**
@@ -257,6 +286,7 @@ class DataRecord implements \ArrayAccess
     {
         if( is_null( $dao ) ) $dao = $this->dao;
         $id = $dao->insert( $this->properties );
+        $this->srcType = self::ID_TYPE_GET;
         $this->id = $id;
         $this->properties[ $this->id_name ] = $id;
         return $this;
@@ -284,14 +314,27 @@ class DataRecord implements \ArrayAccess
         return $this;
     }
 
-    public function save( $saveRelations=FALSE ) {
-        throw new \Exception( "not implemented yet" );
-        /** @noinspection PhpUnreachableStatementInspection */
-        if( $saveRelations && !empty( $this->relations ) ) 
-        foreach( $this->relations as $relation ) {
-            /** @var $relation Relation_Interface */
-            $relation->link( TRUE );
+    /**
+     * @param bool $saveRelations
+     * @return \wsCore\DbAccess\DataRecord
+     */
+    public function save( $saveRelations=FALSE )
+    {
+        if( $this->actType == self::ACTION_NONE ) {
+            // do nothing.
+        } elseif( $this->actType == self::ACTION_DEL ) {
+            $this->delete();
+        } elseif( $this->srcType == self::ID_TYPE_GET ) { // i.e. ACTION_SAVE
+            $this->update();
+        } else {
+            $this->insert();
+            if( $saveRelations && !empty( $this->relations ) ) {
+                foreach( $this->relations as $relation ) {
+                    $relation->link( TRUE );
+                }
+            }
         }
+        return $this;
     }
     // +----------------------------------------------------------------------+
     //  relations
