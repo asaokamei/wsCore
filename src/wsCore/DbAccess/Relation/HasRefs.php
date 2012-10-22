@@ -59,12 +59,15 @@ class Relation_HasRefs implements Relation_Interface
         if( !$this->source ) return $this;
         if( !$this->target ) return $this;
         // TODO: check if id is permanent or tentative.
+        if( $this->sourceColumn == $this->source->getIdName() &&
+            !$this->source->isIdPermanent() ) {
+            return $this;
+        }
         $value = $this->source->get( $this->sourceColumn );
         $this->target->set( $this->targetColumn, $value );
         $this->linked = true;
         if( $save ) {
-            die( "save in link not supported yet." );
-            //$this->target->save();
+            $this->target->save();
         }
         return $this;
     }
