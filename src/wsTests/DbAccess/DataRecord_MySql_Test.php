@@ -134,7 +134,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
         );
         $id = $this->friend->insert( $values );
         $record = $this->friend->find( $id );
-        $record->delete();
+        $record->deleteRecord();
         
         $data = $this->query->table( 'friend' )->w( 'friend_id' )->eq( $id )->select();
         $this->assertEmpty( $data );

@@ -9,7 +9,7 @@ class DataRecord implements \ArrayAccess
     const ACTION_SAVE  = 'act-save';
     const ACTION_DEL   = 'act-del';
 
-    /** @var string|null               source type: get, new, or null        */
+    /** @var string|null               id type: get, new, or null            */
     protected $srcType    = null;
 
     /** @var string                    action to do                          */
@@ -129,6 +129,22 @@ class DataRecord implements \ArrayAccess
         return $this->dao->getTable();
     }
 
+    /**
+     * @param string $actType
+     * @param bool $force
+     * @return DataRecord
+     */
+    protected function setActionType( $actType, $force=false )
+    {
+        if( ( $actType == self::ACTION_NONE && $force ) ||
+            ( $actType == self::ACTION_SAVE && $this->actType != self::ACTION_DEL ) ||
+            ( $actType == self::ACTION_DEL ) )
+        {
+            $this->actType = $actType;
+        }
+        return $this;
+    }
+
     // +----------------------------------------------------------------------+
     //  get/set properties, and ArrayAccess
     // +----------------------------------------------------------------------+
@@ -169,6 +185,7 @@ class DataRecord implements \ArrayAccess
         else {
             $this->properties[ $name ] = $value;
         }
+        $this->setActionType( self::ACTION_SAVE );
         return $this;
     }
 
@@ -195,11 +212,10 @@ class DataRecord implements \ArrayAccess
     public function offsetSet( $offset, $value )
     {
         if( is_null( $offset ) ) {
-            $this->properties = $value;
+            $offset = $value;
+            $value  = null;
         }
-        else {
-            $this->properties[ $offset ] = $value;
-        }
+        $this->set( $offset, $value );
     }
 
     /**
@@ -304,10 +320,18 @@ class DataRecord implements \ArrayAccess
     }
 
     /**
+     * @return DataRecord
+     */
+    public function delete()
+    {
+        return $this->setActionType( self::ACTION_DEL );
+    }
+
+    /**
      * @param Dao $dao
      * @return DataRecord
      */
-    public function delete( $dao=NULL ) 
+    public function deleteRecord( $dao=NULL )
     {
         if( is_null( $dao ) ) $dao = $this->dao;
         $dao->delete( $this->getId() );
@@ -322,15 +346,21 @@ class DataRecord implements \ArrayAccess
     {
         if( $this->actType == self::ACTION_NONE ) {
             // do nothing.
-        } elseif( $this->actType == self::ACTION_DEL ) {
-            $this->delete();
-        } elseif( $this->srcType == self::ID_TYPE_GET ) { // i.e. ACTION_SAVE
-            $this->update();
-        } else {
-            $this->insert();
-            if( $saveRelations && !empty( $this->relations ) ) {
-                foreach( $this->relations as $relation ) {
-                    $relation->link( TRUE );
+        }
+        elseif( $this->actType == self::ACTION_DEL ) {
+            $this->deleteRecord();
+        }
+        elseif( $this->actType == self::ACTION_SAVE )
+        {
+            if( $this->srcType == self::ID_TYPE_GET ) { // i.e. ACTION_SAVE
+                $this->update();
+            }
+            elseif( $this->srcType == self::ID_TYPE_NEW ) {
+                $this->insert();
+                if( $saveRelations && !empty( $this->relations ) ) {
+                    foreach( $this->relations as $relation ) {
+                        $relation->link();
+                    }
                 }
             }
         }
