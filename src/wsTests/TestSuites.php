@@ -22,7 +22,7 @@ class wsCore_SuiteTests
 
         // DbAccess Tests
         $suite->addTestFile( $folder . 'DbAccess/DbAccess_SuiteTest.php' );
-        
+
         return $suite;
     }
 }

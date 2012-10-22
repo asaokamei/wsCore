@@ -53,7 +53,7 @@ class DataRecord implements \ArrayAccess
     }
 
     /**
-     * @return null|Dao
+     * @return null|\wsCore\DbAccess\Dao
      */
     public function getDao() {
         return $this->dao;
@@ -117,7 +117,7 @@ class DataRecord implements \ArrayAccess
      * returns it's property. 
      * 
      * @param null|string $name
-     * @return mixed
+     * @return array|bool
      */
     public function get( $name=NULL ) {
         if( $name ) {
@@ -212,9 +212,10 @@ class DataRecord implements \ArrayAccess
 
     /**
      * @param $name
+     * @return string
      */
     public function popName( $name ) {
-        $this->dao->propertyName( $name );
+        return $this->dao->propertyName( $name );
     }
     // +----------------------------------------------------------------------+
     //  Validating data.
