@@ -1,5 +1,14 @@
 <?php
 
+// testing ReflectionProperty
+
+$entity = new EntityBase();
+$prop = new ReflectionProperty( $entity, '_type' );
+$prop->setAccessible( true );
+$prop->setValue( $entity, 'test' );
+echo $prop->getValue( $entity );
+// echo $prop->_type; // error!
+
 /*
  * Dao and Model has the same "name", that is 'yourModel' are common like:
  * \App\Dao\yourModel and \App\Model\yourModel.
@@ -203,7 +212,9 @@ class EntityManager
             $type = $entity->getType();
             $dao  = $this->getDao( $entity );
             if( $type == 'new' ) {
-                $dao->insert( $entity );
+                $id = $dao->insert( $entity );
+                $entity->setIdentifier( $id );
+                $entity->setType( 'get' );
             }
             elseif( $type == 'get' ) {
                 $dao->update( $entity->getIdentifier(), $entity );
