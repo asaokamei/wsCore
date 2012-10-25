@@ -110,13 +110,14 @@ class EntityManager
         }
         return $this;
     }
+    
     /**
      * @param $entity
      * @return wsCore\DbAccess\Dao
      */
     public function getModel( $entity ) {
-        $mapper = $this->getEntityProperty( $entity, 'model' );
-        return $this->models[ $mapper ];
+        $model = $this->getEntityProperty( $entity, 'model' );
+        return $this->models[ $model ];
     }
 
     /**
