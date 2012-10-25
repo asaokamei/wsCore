@@ -2,7 +2,9 @@
 
 // testing ReflectionProperty
 
-$entity = new EntityBase();
+class SomEntity extends EntityBase {}
+
+$entity = new SomEntity();
 $prop = new ReflectionProperty( $entity, '_type' );
 $prop->setAccessible( TRUE );
 $prop->setValue( $entity, 'test' );
@@ -26,13 +28,13 @@ echo $prop->getValue( $entity );
 class EntityBase
 {
     /** @var null|string  */
-    protected $_mapper = NULL;
+    protected $_model = NULL;
     
     /** @var null|string  */
-    private $_type = NULL;
+    protected $_type = NULL;
 
     /** @var null|string */
-    private $_identifier = NULL;
+    protected $_identifier = NULL;
 
     /** @var \wsCore\DbAccess\Relation_Interface[] */
     protected $_relations = array();
@@ -60,7 +62,7 @@ class EntityBase
 class EntityManager
 {
     /** @var \wsCore\DbAccess\Dao[] */
-    protected $mapper = array();
+    protected $models = array();
 
     /** @var EntityBase[] */
     protected $entities = array();
@@ -79,10 +81,8 @@ class EntityManager
      * @return EntityManager
      */
     public function registerDao( $dao ) {
-        $mapName = $this->getModelName( $dao );
-        $this->mapper[ $mapName ] = $dao;
-        $entityClass = $dao->getEntityClass();
-        $this->setupReflection( $entityClass );
+        $model = $this->getModelName( $dao );
+        $this->models[ $model ] = $dao;
         return $this;
     }
 
@@ -99,12 +99,12 @@ class EntityManager
             $refType->setAccessible( TRUE );
             $refId   = new ReflectionProperty( $class, '_identifier' );
             $refId->setAccessible( TRUE );
-            $refDao  = new ReflectionProperty( $class, '_mapper' );
-            $refDao->setAccessible( TRUE );
+            $refModel  = new ReflectionProperty( $class, '_model' );
+            $refModel->setAccessible( TRUE );
             $reflections = array(
-                'dao'  => $refDao,
-                'type' => $refType,
-                'id'   => $refId,
+                'model' => $refModel,
+                'type'  => $refType,
+                'id'    => $refId,
             );
             $this->reflections[ $class ] = $reflections;
         }
@@ -114,9 +114,9 @@ class EntityManager
      * @param $entity
      * @return wsCore\DbAccess\Dao
      */
-    public function getMapper( $entity ) {
-        $mapper = $this->getEntityProperty( $entity, '_mapper' );
-        return $this->mapper[ $mapper ];
+    public function getModel( $entity ) {
+        $mapper = $this->getEntityProperty( $entity, 'model' );
+        return $this->models[ $mapper ];
     }
 
     /**
@@ -182,7 +182,7 @@ class EntityManager
      */
     public function getEntity( $model, $id )
     {
-        $dao = $this->getMapper( $model );
+        $dao = $this->getModel( $model );
         /** @var $entity EntityBase */
         $entity = $dao->find( $id );
         $this->setEntityProperty( $entity, 'id'  , $id );
@@ -198,7 +198,7 @@ class EntityManager
      */
     public function newEntity( $model, $id=NULL )
     {
-        $dao = $this->getMapper( $model );
+        $dao = $this->getModel( $model );
         /** @var $entity EntityBase */
         $entity = $dao->getRecord();
         if( !$id ) $id = $this->newId++;
@@ -230,7 +230,7 @@ class EntityManager
         foreach( $this->entities as $entity )
         {
             $type  = $this->getEntityProperty( $entity, 'type' );
-            $dao   = $this->getMapper( $entity );
+            $dao   = $this->getModel( $entity );
             if( $type == 'new' ) {
                 $id = $dao->insert( $entity );
                 $this->setEntityProperty( $entity, 'id'  , $id );
