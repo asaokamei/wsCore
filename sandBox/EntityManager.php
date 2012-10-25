@@ -51,33 +51,6 @@ class EntityBase
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getType() {
-        return $this->_type;
-    }
-
-    /**
-     * @param null|string $type
-     */
-    public function setType( $type ) {
-        $this->_type = $type;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getIdentifier() {
-        return $this->_identifier;
-    }
-
-    /**
-     * @param null|string $identifier
-     */
-    public function setIdentifier( $identifier ) {
-        $this->_identifier = $identifier;
-    }
 }
 
 class EntityManager
@@ -87,6 +60,9 @@ class EntityManager
 
     /** @var EntityBase[] */
     protected $entities = array();
+
+    /** @var ReflectionProperty[][] */
+    protected $reflections = array();
 
     /** @var int */
     protected $newId = 1;
@@ -101,6 +77,19 @@ class EntityManager
     public function registerDao( $dao ) {
         $model = $this->getModelName( $dao );
         $this->dao[ $model ] = $dao;
+        $entityClass = $dao->getEntityClass();
+        if( !isset( $this->reflections[ $model ] ) )
+        {
+            $refType = new ReflectionProperty( $entityClass, '_type' );
+            $refType->setAccessible( true );
+            $refId   = new ReflectionProperty( $entityClass, '_identifier' );
+            $refId->setAccessible( true );
+            $reflections = array(
+                'type' => $refType,
+                'id'   => $refId,
+            );
+            $this->reflections[ $model ] = $reflections;
+        }
         return $this;
     }
 
@@ -154,6 +143,18 @@ class EntityManager
         return $this->$method( $model, $id );
     }
 
+    protected function setEntityProperty( $model, $prop, $entity, $value ) {
+        /** @var $ref ReflectionProperty */
+        $ref = $this->reflections[ $model ][ $prop ];
+        $ref->setValue( $entity, $value );
+    }
+
+    protected function getEntityProperty( $model, $prop, $entity ) {
+        /** @var $ref ReflectionProperty */
+        $ref = $this->reflections[ $model ][ $prop ];
+        return $ref->getValue( $entity );
+    }
+
     /**
      * TODO: think about getting DataRecord or EntityBase...
      * @param string $model
@@ -165,8 +166,8 @@ class EntityManager
         $dao = $this->getDao( $model );
         /** @var $entity EntityBase */
         $entity = $dao->find( $id );
-        $entity->setIdentifier( $id );
-        $entity->setType( 'get' );
+        $this->setEntityProperty( $model, 'id',   $entity, $id );
+        $this->setEntityProperty( $model, 'type', $entity, 'get' );
         $this->register( $entity );
         return $entity;
     }
@@ -182,8 +183,8 @@ class EntityManager
         /** @var $entity EntityBase */
         $entity = $dao->getRecord();
         if( !$id ) $id = $this->newId++;
-        $entity->setIdentifier( $id );
-        $entity->setType( 'new' );
+        $this->setEntityProperty( $model, 'id',   $entity, $id );
+        $this->setEntityProperty( $model, 'type', $entity, 'new' );
         return $entity;
     }
 
@@ -194,8 +195,8 @@ class EntityManager
     public function getCenaId( $entity )
     {
         $model  = $this->getModelName( $entity );
-        $type   = $entity->getType();
-        $id     = $entity->getIdentifier();
+        $id     = $this->getEntityProperty( $model, 'id',   $entity );
+        $type   = $this->getEntityProperty( $model, 'type', $entity );
         $cenaId = "$model.$type.$id";
         return $cenaId;
     }
@@ -209,15 +210,18 @@ class EntityManager
         if( empty( $this->entities ) ) return $this;
         foreach( $this->entities as $entity )
         {
-            $type = $entity->getType();
-            $dao  = $this->getDao( $entity );
+            $model = $this->getModelName( $entity );
+            $type  = $this->getEntityProperty( $model, 'type', $entity );
+            $dao   = $this->getDao( $entity );
             if( $type == 'new' ) {
                 $id = $dao->insert( $entity );
-                $entity->setIdentifier( $id );
-                $entity->setType( 'get' );
+                $this->setEntityProperty( $model, 'id',   $entity, $id );
+                $this->setEntityProperty( $model, 'type', $entity, 'get' );
             }
             elseif( $type == 'get' ) {
-                $dao->update( $entity->getIdentifier(), $entity );
+                // TODO: remove id from update.
+                $id     = $this->getEntityProperty( $model, 'id',   $entity );
+                $dao->update( $id, $entity );
             }
             else {
                 throw new RuntimeException( "Bad entity type: $type" );
