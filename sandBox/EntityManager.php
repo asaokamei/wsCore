@@ -237,13 +237,10 @@ class EntityManager
                 $this->setEntityProperty( $entity, 'id'  , $id );
                 $this->setEntityProperty( $entity, 'type', 'get' );
             }
-            elseif( $type == 'get' ) {
+            else {
                 // TODO: remove id from update.
                 $id     = $this->getEntityProperty( $entity, 'id' );
                 $dao->update( $id, $entity );
-            }
-            else {
-                throw new RuntimeException( "Bad entity type: $type" );
             }
         }
         return $this;
