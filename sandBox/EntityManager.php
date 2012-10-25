@@ -4,7 +4,7 @@
 
 $entity = new EntityBase();
 $prop = new ReflectionProperty( $entity, '_type' );
-$prop->setAccessible( true );
+$prop->setAccessible( TRUE );
 $prop->setValue( $entity, 'test' );
 echo $prop->getValue( $entity );
 // echo $prop->_type; // error!
@@ -21,14 +21,18 @@ echo $prop->getValue( $entity );
  */
 
 // TODO: EntityBase, yet another inheritance? Or, plain object? Or abstract/trait???
+// no problem.
 
 class EntityBase
 {
     /** @var null|string  */
-    protected $_type = null;
+    protected $_mapper = NULL;
+    
+    /** @var null|string  */
+    private $_type = NULL;
 
     /** @var null|string */
-    protected $_identifier = null;
+    private $_identifier = NULL;
 
     /** @var \wsCore\DbAccess\Relation_Interface[] */
     protected $_relations = array();
@@ -56,7 +60,7 @@ class EntityBase
 class EntityManager
 {
     /** @var \wsCore\DbAccess\Dao[] */
-    protected $dao = array();
+    protected $mapper = array();
 
     /** @var EntityBase[] */
     protected $entities = array();
@@ -75,31 +79,44 @@ class EntityManager
      * @return EntityManager
      */
     public function registerDao( $dao ) {
-        $model = $this->getModelName( $dao );
-        $this->dao[ $model ] = $dao;
+        $mapName = $this->getModelName( $dao );
+        $this->mapper[ $mapName ] = $dao;
         $entityClass = $dao->getEntityClass();
-        if( !isset( $this->reflections[ $model ] ) )
-        {
-            $refType = new ReflectionProperty( $entityClass, '_type' );
-            $refType->setAccessible( true );
-            $refId   = new ReflectionProperty( $entityClass, '_identifier' );
-            $refId->setAccessible( true );
-            $reflections = array(
-                'type' => $refType,
-                'id'   => $refId,
-            );
-            $this->reflections[ $model ] = $reflections;
-        }
+        $this->setupReflection( $entityClass );
         return $this;
     }
 
     /**
      * @param $entity
+     * @return EntityManager
+     */
+    public function setupReflection( $entity )
+    {
+        $class = is_object( $entity ) ? get_class( $entity ) : $entity;
+        if( !isset( $this->reflections[ $class ] ) )
+        {
+            $refType = new ReflectionProperty( $class, '_type' );
+            $refType->setAccessible( TRUE );
+            $refId   = new ReflectionProperty( $class, '_identifier' );
+            $refId->setAccessible( TRUE );
+            $refDao  = new ReflectionProperty( $class, '_mapper' );
+            $refDao->setAccessible( TRUE );
+            $reflections = array(
+                'dao'  => $refDao,
+                'type' => $refType,
+                'id'   => $refId,
+            );
+            $this->reflections[ $class ] = $reflections;
+        }
+        return $this;
+    }
+    /**
+     * @param $entity
      * @return wsCore\DbAccess\Dao
      */
-    public function getDao( $entity ) {
-        $model = $this->getModelName( $entity );
-        return $this->dao[ $model ];
+    public function getMapper( $entity ) {
+        $mapper = $this->getEntityProperty( $entity, '_mapper' );
+        return $this->mapper[ $mapper ];
     }
 
     /**
@@ -137,21 +154,23 @@ class EntityManager
      * @param null|string $id
      * @return \EntityBase
      */
-    public function entity( $model, $type, $id=null )
+    public function entity( $model, $type, $id=NULL )
     {
         $method = strtolower( $type ) . 'Entity';
         return $this->$method( $model, $id );
     }
 
-    protected function setEntityProperty( $model, $prop, $entity, $value ) {
+    protected function setEntityProperty( $entity, $prop, $value ) {
         /** @var $ref ReflectionProperty */
-        $ref = $this->reflections[ $model ][ $prop ];
+        $class = get_class( $entity );
+        $ref = $this->reflections[ $class ][ $prop ];
         $ref->setValue( $entity, $value );
     }
 
-    protected function getEntityProperty( $model, $prop, $entity ) {
+    protected function getEntityProperty( $entity, $prop ) {
         /** @var $ref ReflectionProperty */
-        $ref = $this->reflections[ $model ][ $prop ];
+        $class = get_class( $entity );
+        $ref = $this->reflections[ $class ][ $prop ];
         return $ref->getValue( $entity );
     }
 
@@ -163,11 +182,11 @@ class EntityManager
      */
     public function getEntity( $model, $id )
     {
-        $dao = $this->getDao( $model );
+        $dao = $this->getMapper( $model );
         /** @var $entity EntityBase */
         $entity = $dao->find( $id );
-        $this->setEntityProperty( $model, 'id',   $entity, $id );
-        $this->setEntityProperty( $model, 'type', $entity, 'get' );
+        $this->setEntityProperty( $entity, 'id'  , $id );
+        $this->setEntityProperty( $entity, 'type', 'get' );
         $this->register( $entity );
         return $entity;
     }
@@ -177,14 +196,14 @@ class EntityManager
      * @param null|string $id
      * @return \EntityBase
      */
-    public function newEntity( $model, $id=null )
+    public function newEntity( $model, $id=NULL )
     {
-        $dao = $this->getDao( $model );
+        $dao = $this->getMapper( $model );
         /** @var $entity EntityBase */
         $entity = $dao->getRecord();
         if( !$id ) $id = $this->newId++;
-        $this->setEntityProperty( $model, 'id',   $entity, $id );
-        $this->setEntityProperty( $model, 'type', $entity, 'new' );
+        $this->setEntityProperty( $entity, 'id'  , $id );
+        $this->setEntityProperty( $entity, 'type', 'new' );
         return $entity;
     }
 
@@ -195,8 +214,8 @@ class EntityManager
     public function getCenaId( $entity )
     {
         $model  = $this->getModelName( $entity );
-        $id     = $this->getEntityProperty( $model, 'id',   $entity );
-        $type   = $this->getEntityProperty( $model, 'type', $entity );
+        $id     = $this->getEntityProperty( $entity, 'id' );
+        $type   = $this->getEntityProperty( $entity, 'type' );
         $cenaId = "$model.$type.$id";
         return $cenaId;
     }
@@ -210,17 +229,16 @@ class EntityManager
         if( empty( $this->entities ) ) return $this;
         foreach( $this->entities as $entity )
         {
-            $model = $this->getModelName( $entity );
-            $type  = $this->getEntityProperty( $model, 'type', $entity );
-            $dao   = $this->getDao( $entity );
+            $type  = $this->getEntityProperty( $entity, 'type' );
+            $dao   = $this->getMapper( $entity );
             if( $type == 'new' ) {
                 $id = $dao->insert( $entity );
-                $this->setEntityProperty( $model, 'id',   $entity, $id );
-                $this->setEntityProperty( $model, 'type', $entity, 'get' );
+                $this->setEntityProperty( $entity, 'id'  , $id );
+                $this->setEntityProperty( $entity, 'type', 'get' );
             }
             elseif( $type == 'get' ) {
                 // TODO: remove id from update.
-                $id     = $this->getEntityProperty( $model, 'id',   $entity );
+                $id     = $this->getEntityProperty( $entity, 'id' );
                 $dao->update( $id, $entity );
             }
             else {
