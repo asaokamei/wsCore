@@ -155,6 +155,7 @@ class Dao
 
     /**
      * update data of primary key of $id.
+     * TODO: remove $id from argument.
      *
      * @param string $id
      * @param array $values
