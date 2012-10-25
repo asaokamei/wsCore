@@ -62,8 +62,10 @@ class Relation_HasRefs implements Relation_Interface
             !$this->source->isIdPermanent() ) {
             return $this;
         }
-        $value = $this->source->get( $this->sourceColumn );
-        $this->target->set( $this->targetColumn, $value );
+        $column = $this->sourceColumn;
+        $value = $this->source->$column;
+        $column = $this->targetColumn;
+        $this->target->$column = $value;
         $this->linked = true;
         if( $save ) {
             $this->target->save();
@@ -77,7 +79,8 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function del( $target=NULL ) {
         if( !is_null( $target ) ) {
-            $target->set( $this->targetColumn, NULL );
+            $column = $this->targetColumn;
+            $target->$column = NULL;
         }
         return $this;
     }

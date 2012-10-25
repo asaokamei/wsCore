@@ -58,7 +58,8 @@ class Relation_HasOne implements Relation_Interface
         if( !$this->target ) return $this;
         // TODO: check if id is permanent or tentative.
         $value = $this->target->get( $this->targetColumn );
-        $this->source->set( $this->sourceColumn, $value );
+        $column = $this->sourceColumn;
+        $this->source->$column = $value;
         $this->linked = true;
         if( $save ) {
             die( "save in link not supported yet." );
@@ -72,7 +73,8 @@ class Relation_HasOne implements Relation_Interface
      * @return Relation_HasOne
      */
     public function del( $target=NULL ) {
-        $this->source->set( $this->sourceColumn, NULL );
+        $column = $this->sourceColumn;
+        $this->source->$column = NULL;
         return $this;
     }
 

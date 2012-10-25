@@ -157,6 +157,9 @@ class DataRecord implements \ArrayAccess
     public function __set( $name, $value ) {
         $this->set( $name, $value );
     }
+    public function __get( $name ) {
+        return $this->get( $name );
+    }
 
     /**
      * returns it's property. 

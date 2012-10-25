@@ -95,9 +95,11 @@ class Relation_HasJoinDao implements Relation_Interface
         // adding new relation.
         // TODO: check if id is permanent or tentative.
         if( empty( $record ) ) {
+            $sourceColumn = $this->sourceColumn;
+            $targetColumn = $this->targetColumn;
             $values = array(
-                $this->joinSourceColumn => $this->source->get( $this->sourceColumn ),
-                $this->joinTargetColumn => $this->target->get( $this->targetColumn ),
+                $this->joinSourceColumn => $this->source->$sourceColumn,
+                $this->joinTargetColumn => $this->target->$targetColumn,
             );
             if( is_array( $this->values ) && !empty( $this->values ) ) {
                 $values = array_merge( $this->values, $values );
@@ -114,12 +116,14 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function del( $target=null ) 
     {
-        $sourceValue = $this->source->get( $this->sourceColumn );
+        $sourceColumn = $this->sourceColumn;
+        $sourceValue = $this->source->$sourceColumn;
         $query = $this->joinDao->query();
         $query->w( $this->joinSourceColumn )->eq( $sourceValue );
         if( !$target ) $target = $this->target;
         if( $target ) {
-            $targetValue = $target->get( $this->targetColumn );
+            $targetColumn = $this->targetColumn;
+            $targetValue = $target->$targetColumn;
             $query->w( $this->joinTargetColumn )->eq( $targetValue );
         }
         $query->makeDelete()->exec();
@@ -132,12 +136,14 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function getJoinRecord( $target=null )
     {
-        $sourceValue = $this->source->get( $this->sourceColumn );
+        $sourceColumn = $this->sourceColumn;
+        $sourceValue = $this->source->$sourceColumn;
         $query = $this->joinDao->query();
         $query->w( $this->joinSourceColumn )->eq( $sourceValue );
         if( !$target ) $target = $this->target;
         if( $target ) {
-            $targetValue = $target->get( $this->targetColumn );
+            $targetColumn = $this->targetColumn;
+            $targetValue = $target->$targetColumn;
             $query->w( $this->joinTargetColumn )->eq( $targetValue );
         }
         $record = $query->select();
@@ -151,12 +157,13 @@ class Relation_HasJoinDao implements Relation_Interface
     {
         $table  = $this->targetDao->getTable();
         $order  = ( $this->order ) ?: $this->joinDao->getIdName();
+        $column = $this->sourceColumn;
         $record = $this->targetDao->query()
             ->joinOn(
                 $this->joinTable,
                 "{$table}.{$this->targetColumn}={$this->joinTable}.{$this->joinTargetColumn}"
             )
-            ->w( $this->joinSourceColumn )->eq( $this->source->get( $this->sourceColumn ) )
+            ->w( $this->joinSourceColumn )->eq( $this->source->$column )
             ->order( $order )
             ->select();
         return $record;
