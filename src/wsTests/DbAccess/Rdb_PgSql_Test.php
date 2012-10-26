@@ -4,7 +4,7 @@ use \wsCore\DbAccess\Rdb as Rdb;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
-class Dba_Rdb_PgSql_Test extends \PHPUnit_Framework_TestCase
+class Rdb_PgSql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
     /** @var \wsCore\DbAccess\Rdb */
