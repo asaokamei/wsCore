@@ -28,7 +28,7 @@ class PdObjectDao {
     }
 }
 
-class PdObject_Test extends \PHPUnit_Framework_TestCase
+class PdObject_PgSql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
     
@@ -41,14 +41,14 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
+        $this->config = 'dsn=pgsql:host=localhost;dbname=test_wsCore;user=pg_admin;password=admin';
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
         $this->pdo = Core::get( '\wsCore\DbAccess\PdObject');
         $this->column_list = '
-            id int NOT NULL AUTO_INCREMENT,
-            name CHAR(30),
+            id SERIAL,
+            name VARCHAR(30),
             age  int,
             bdate date,
             no_null text NOT NULL,
@@ -82,7 +82,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     public function fill_columns( $max=10 )
     {
         $prepare = "
-            INSERT {$this->table}
+            INSERT INTO {$this->table}
                 ( name, age, bdate, no_null )
             VALUES
                 ( :name, :age, :bdate, :no_null );
@@ -211,7 +211,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     public function test_prepare_lastId_and_select()
     {
         $prepare = "
-            INSERT {$this->table}
+            INSERT INTO {$this->table}
                 ( name, age, bdate, no_null )
             VALUES
                 ( :name, :age, :bdate, :no_null );
@@ -223,7 +223,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
             ':no_null' => 'never null',
         );
         $this->pdo->exec( $prepare, $values );
-        $id1 = $this->pdo->lastId();
+        $id1 = $this->pdo->lastId( $this->table );
         $this->assertTrue( $id1 > 0 );
         
         $select = "SELECT * FROM {$this->table} WHERE id='{$id1}'";
@@ -238,11 +238,11 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     public function test_insert_lastId_and_select_data()
     {
         $data = $this->get_column_by_row( 1 );
-        $insert = "INSERT {$this->table} ( name, age, bdate, no_null ) VALUES (
+        $insert = "INSERT INTO {$this->table} ( name, age, bdate, no_null ) VALUES (
             '{$data{':name'}}', '{$data{':age'}}', '{$data{':bdate'}}', '{$data{':no_null'}}'
         )";
         $this->pdo->exec( $insert );
-        $id = $this->pdo->lastId();
+        $id = $this->pdo->lastId( $this->table );
         $this->assertEquals( '1', $id );
         
         $select = "SELECT * FROM {$this->table} WHERE id='{$id}'";
@@ -264,8 +264,9 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     function test_quote_with_quote()
     {
         $data   = 'tests\' more';
+        $pgQuoted = 'tests\'\' more';
         $quoted = $this->pdo->quote( $data );
-        $this->assertEquals( "'" . addslashes( $data ) . "'", $quoted );
+        $this->assertEquals( "'" . $pgQuoted . "'", $quoted );
     }
     function test_quote_with_array()
     {
@@ -273,15 +274,16 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
             'test',
             'tests\' more',
         );
+        $pgQuoted = 'tests\'\' more';
         $quoted = $this->pdo->quote( $data );
         $this->assertEquals( "'" . addslashes( $data[0] ) . "'", $quoted[0] );
-        $this->assertEquals( "'" . addslashes( $data[1] ) . "'", $quoted[1] );
+        $this->assertEquals( "'" . $pgQuoted . "'", $quoted[1] );
     }
     public function test_prepare_with_data_type()
     {
         // todo: not sure what to test. at least it worked without error/exception.
         $prepare = "
-            INSERT {$this->table}
+            INSERT INTO {$this->table}
                 ( name, age, bdate, no_null )
             VALUES
                 ( :name, :age, :bdate, :no_null );
@@ -298,7 +300,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
             ':no_null' => \PDO::PARAM_STR,
         );
         $this->pdo->exec( $prepare, $values, $types );
-        $id1 = $this->pdo->lastId();
+        $id1 = $this->pdo->lastId( $this->table );
         $this->assertTrue( $id1 > 0 );
 
         $select = "SELECT * FROM {$this->table} WHERE id='{$id1}'";
