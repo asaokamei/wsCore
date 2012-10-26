@@ -58,10 +58,13 @@ class PdObject
     {
         if( !$sql ) throw new \RuntimeException( "missing Sql statement." );
         if( empty( $prepared ) ) {
-            return $this->pdoObj->query( $sql );
+            $this->pdoStmt = $this->pdoObj->query( $sql );
         }
-        $this->execPrepare( $sql );
-        $this->execExecute( $prepared, $dataTypes );
+        else {
+            $this->execPrepare( $sql );
+            $this->execExecute( $prepared, $dataTypes );
+        }
+        $this->applyFetchMode();
         return $this->pdoStmt;
     }
 
@@ -88,14 +91,6 @@ class PdObject
      */
     public function execExecute( $prepared, $dataTypes=array() ) 
     {
-        if( $this->fetchMode ) {
-            if( $this->fetchMode === \PDO::FETCH_CLASS ) {
-                $this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass, $this->fetchConstArg );
-            }
-            else {
-                $this->pdoStmt->setFetchMode( $this->fetchMode );
-            }
-        }
         if( empty( $dataTypes ) ) {
             // data types are not specified. just execute the statement.
             $this->pdoStmt->execute( $prepared );
@@ -116,6 +111,21 @@ class PdObject
         return $this->pdoStmt;
     }
 
+    /**
+     * @return PdObject
+     */
+    public function applyFetchMode()
+    {
+        if( $this->fetchMode ) {
+            if( $this->fetchMode === \PDO::FETCH_CLASS ) {
+                $this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass, $this->fetchConstArg );
+            }
+            else {
+                $this->pdoStmt->setFetchMode( $this->fetchMode );
+            }
+        }
+        return $this;
+    }
     /**
      * @param integer $mode     \PDO's fetch mode
      * @param string $class       class name if mode is fetch_class
