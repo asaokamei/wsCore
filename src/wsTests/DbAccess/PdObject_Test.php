@@ -255,5 +255,27 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
             $this->assertEquals( $val, $result[ $key ] );
         }
     }
+    function test_quote()
+    {
+        $data   = 'test';
+        $quoted = $this->pdo->quote( $data );
+        $this->assertEquals( "'" . addslashes( $data ) . "'", $quoted );
+    }
+    function test_quote_with_quote()
+    {
+        $data   = 'tests\' more';
+        $quoted = $this->pdo->quote( $data );
+        $this->assertEquals( "'" . addslashes( $data ) . "'", $quoted );
+    }
+    function test_quote_with_array()
+    {
+        $data   = array(
+            'test',
+            'tests\' more',
+        );
+        $quoted = $this->pdo->quote( $data );
+        $this->assertEquals( "'" . addslashes( $data[0] ) . "'", $quoted[0] );
+        $this->assertEquals( "'" . addslashes( $data[1] ) . "'", $quoted[1] );
+    }
     // +----------------------------------------------------------------------+
 }
