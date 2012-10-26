@@ -277,5 +277,38 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( "'" . addslashes( $data[0] ) . "'", $quoted[0] );
         $this->assertEquals( "'" . addslashes( $data[1] ) . "'", $quoted[1] );
     }
+    public function test_prepare_with_data_type()
+    {
+        // todo: not sure what to test. at least it worked without error/exception. 
+        $prepare = "
+            INSERT {$this->table}
+                ( name, age, bdate, no_null )
+            VALUES
+                ( :name, :age, :bdate, :no_null );
+        ";
+        $values = array(
+            ':name' => 'test prepare',
+            ':age' => '41',
+            ':bdate' => '1980-02-03',
+            ':no_null' => 'never null',
+        );
+        $types = array(
+            ':name' => \PDO::PARAM_STR,
+            ':age' => \PDO::PARAM_INT,
+            ':no_null' => \PDO::PARAM_STR,
+        );
+        $this->pdo->exec( $prepare, $values, $types );
+        $id1 = $this->pdo->lastId();
+        $this->assertTrue( $id1 > 0 );
+
+        $select = "SELECT * FROM {$this->table} WHERE id='{$id1}'";
+        /** @var $ret \PdoStatement */
+        $ret = $this->pdo->exec( $select );
+        $result = $ret->fetch();
+        foreach( $values as $key => $val ) {
+            $key = substr( $key, 1 );
+            $this->assertEquals( $val, $result[ $key ] );
+        }
+    }
     // +----------------------------------------------------------------------+
 }
