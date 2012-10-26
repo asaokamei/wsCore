@@ -8,7 +8,7 @@ require_once( __DIR__ . '/../../autoloader.php' );
  * TODO: more test on Query. and check the overall design as well.
  */
 
-class Query_PgSql_Test extends \PHPUnit_Framework_TestCase
+class Query_PgSql_Quoted_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
     /** @var \wsCore\DbAccess\Query */
@@ -23,6 +23,7 @@ class Query_PgSql_Test extends \PHPUnit_Framework_TestCase
         Core::go();
         Core::setPdo( $this->config );
         /** @var \wsCore\DbAccess\Query */
+        \wsCore\DbAccess\Query::$pqDefault = 'quote';
         $this->query = Core::get( 'Query');
         $this->column_list = '
             id SERIAL,
