@@ -111,7 +111,6 @@ class Dao
     
     /**
      * prepares restricted properties. 
-     * TODO: improve {created|updated}_at implementation. 
      */
     public function prepare()
     {
