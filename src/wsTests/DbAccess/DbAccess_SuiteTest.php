@@ -11,6 +11,8 @@ class DbAccess_SuiteTests
         $folder = dirname( __FILE__ ) . '/';
         $suite->addTestFile( $folder . 'PdObject_Test.php' );
         $suite->addTestFile( $folder . 'Rdb_MySql_Test.php' );
+        $suite->addTestFile( $folder . 'Rdb_PgSql_Test.php' );
+        $suite->addTestFile( $folder . 'Rdb_Sqlite_Test.php' );
         $suite->addTestFile( $folder . 'Rdb_Test.php' );
         $suite->addTestFile( $folder . 'Query_Test.php' );
         $suite->addTestFile( $folder . 'Dao_MySql_Test.php' );
