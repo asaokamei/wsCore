@@ -118,8 +118,7 @@ class Dao
      */
     public function getRecord() {
         /** @var $record \wsCore\DbAccess\DataRecord */
-        $record = new $this->recordClassName();
-        $record->setDao( $this );
+        $record = new $this->recordClassName( $this, DataRecord::ID_TYPE_NEW );
         return $record;
     }
 
