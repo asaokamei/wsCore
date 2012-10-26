@@ -279,7 +279,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     }
     public function test_prepare_with_data_type()
     {
-        // todo: not sure what to test. at least it worked without error/exception. 
+        // todo: not sure what to test. at least it worked without error/exception.
         $prepare = "
             INSERT {$this->table}
                 ( name, age, bdate, no_null )
