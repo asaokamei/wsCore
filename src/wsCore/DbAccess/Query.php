@@ -77,10 +77,12 @@ class Query
     }
 
     /**
+     * @param null|string $name
      * @return string
      */
-    public function lastId() {
-        return $this->pdoObj->lastId();
+    public function lastId( $name=null ) {
+        if( !$name ) $name = $this->table;
+        return $this->pdoObj->lastId( $name );
     }
 
     /**

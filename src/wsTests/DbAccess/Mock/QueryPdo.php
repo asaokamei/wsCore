@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DbAccess;
 
-class QueryPdoMock
+class Mock_QueryPdo
 {
     var $config;
     var $sql, $prep, $type;

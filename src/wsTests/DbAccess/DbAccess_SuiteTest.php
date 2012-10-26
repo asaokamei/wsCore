@@ -9,10 +9,16 @@ class DbAccess_SuiteTests
     {
         $suite = new \PHPUnit_Framework_TestSuite( 'all tests for wsCore\'s DbAccess' );
         $folder = dirname( __FILE__ ) . '/';
-        $suite->addTestFile( $folder . 'PdObject_Test.php' );
-        $suite->addTestFile( $folder . 'Rdb_MySql_Test.php' );
         $suite->addTestFile( $folder . 'Rdb_Test.php' );
+        $suite->addTestFile( $folder . 'Rdb_MySql_Test.php' );
+        $suite->addTestFile( $folder . 'Rdb_PgSql_Test.php' );
+        $suite->addTestFile( $folder . 'Rdb_Sqlite_Test.php' );
+        $suite->addTestFile( $folder . 'PdObject_Test.php' );
+        $suite->addTestFile( $folder . 'PdObject_PgSql_Test.php' );
         $suite->addTestFile( $folder . 'Query_Test.php' );
+        $suite->addTestFile( $folder . 'Query_MySql_Test.php' );
+        $suite->addTestFile( $folder . 'Query_PgSql_Test.php' );
+        $suite->addTestFile( $folder . 'Query_PgSql_Quoted_Test.php' );
         $suite->addTestFile( $folder . 'Dao_MySql_Test.php' );
         $suite->addTestFile( $folder . 'DataRecord_MySql_Test.php' );
         $suite->addTestFile( $folder . 'Relation_MySql_Test.php' );

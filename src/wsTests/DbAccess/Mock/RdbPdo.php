@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DbAccess;
 
-class RdbMockPdo
+class Mock_RdbPdo
 {
     var $config;
     var $exec;

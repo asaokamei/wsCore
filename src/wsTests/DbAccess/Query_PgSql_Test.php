@@ -8,24 +8,24 @@ require_once( __DIR__ . '/../../autoloader.php' );
  * TODO: more test on Query. and check the overall design as well.
  */
 
-class Query_MySql_Test extends \PHPUnit_Framework_TestCase
+class Query_PgSql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
     /** @var \wsCore\DbAccess\Query */
     var $query = NULL;
-    var $table = 'test_wsCore';
+    var $table = 'test_query';
     var $column_list = '';
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
+        $this->config = 'dsn=pgsql:host=localhost;dbname=test_wsCore;user=pg_admin;password=admin';
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
         /** @var \wsCore\DbAccess\Query */
         $this->query = Core::get( 'Query');
         $this->column_list = '
-            id int NOT NULL AUTO_INCREMENT,
+            id SERIAL,
             name VARCHAR(30),
             age  int,
             bdate date,
@@ -112,11 +112,10 @@ class Query_MySql_Test extends \PHPUnit_Framework_TestCase
     public function test_driver_name()
     {
         $driver = $this->query->getDriverName();
-        $this->assertEquals( 'mysql', $driver );
+        $this->assertEquals( 'pgsql', $driver );
     }
     public function test_fetchRow()
     {
-        $this->setUp_TestTable_perm();
         $max = 12;
         $this->fill_columns( $max );
 
@@ -173,11 +172,11 @@ class Query_MySql_Test extends \PHPUnit_Framework_TestCase
         );
         $this->query->execPrepare( $prepare );
         $this->query->execExecute( $values );
-        $id1 = $this->query->lastId();
+        $id1 = $this->query->lastId( $this->table );
         $this->assertTrue( $id1 > 0 );
 
         $this->query->execExecute( $values );
-        $id2 = $this->query->lastId();
+        $id2 = $this->query->lastId( $this->table );
         $this->assertNotEquals( $id2, $id1 );
         $this->assertEquals( $id2, $id1 + 1 );
     }
@@ -190,11 +189,11 @@ class Query_MySql_Test extends \PHPUnit_Framework_TestCase
                 ( 'test query', 40, '1990-01-02', 'not null' );
         ";
         $this->query->execSQL( $insert );
-        $id1 = $this->query->lastId();
+        $id1 = $this->query->lastId( $this->table );
         $this->assertTrue( $id1 > 0 );
 
         $this->query->execSQL( $insert );
-        $id2 = $this->query->lastId();
+        $id2 = $this->query->lastId( $this->table );
         $this->assertNotEquals( $id2, $id1 );
         $this->assertEquals( $id2, $id1 + 1 );
     }

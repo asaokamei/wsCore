@@ -14,11 +14,33 @@ class Dao
     /** @var string                          name of primary key             */
     protected $id_name;
 
-    /** @var array                           define property and data type   */
+    /**
+     * define property and data type. from this data,
+     * properties, extraTypes and dataTypes are generated.
+     * definition = array(
+     *   column => [ name, data_type, extra_info ],
+     * )
+     *
+     * @var array
+     */
     protected $definition = array();
     
     /** @var array                           property names as key => name   */
     protected $properties = array();
+
+    /**
+     * extra information on property.
+     *    extraTypes = array(
+     *      type => column name,
+     *    );
+     * where types are:
+     *   - created_at: adds timestamps at insert.
+     *   - updated_at: adds timestamps at update.
+     *   - primaryKey: specifies primary key(s).
+     *
+     * @var array
+     */
+    protected $extraTypes = array();
     
     /** 
      * store data types for each properties as in 
@@ -89,7 +111,6 @@ class Dao
     
     /**
      * prepares restricted properties. 
-     * TODO: improve {created|updated}_at implementation. 
      */
     public function prepare()
     {
@@ -98,12 +119,22 @@ class Dao
                 $this->properties[ $key ] = $info[0];
                 $this->dataTypes[  $key ] = $info[1];
                 if( isset( $info[2] ) ) {
-                    $this->dataTypes[ '!' . $info[2] ] = $key;
+                    $this->extraTypes[ $info[2] ][] = $key;
                 }
             }
         }
-        array_push( $this->protected, $this->id_name );
-        // TODO: add relations as well. 
+        if( isset( $this->id_name ) ) {
+            array_push( $this->protected, $this->id_name );
+            $this->extraTypes[ 'primaryKey' ][] = $this->id_name;
+        }
+        if( !empty( $this->relations ) ) {
+            foreach( $this->relations as $relInfo ) {
+                if( $relInfo[ 'relation_type' ] == 'HasOne' ) {
+                    $column = ( $relInfo[ 'source_column' ] ) ?: $this->id_name;
+                    array_push( $this->protected, $column );
+                }
+            }
+        }
     }
     /**
      * @return \wsCore\DbAccess\Query
@@ -118,8 +149,7 @@ class Dao
      */
     public function getRecord() {
         /** @var $record \wsCore\DbAccess\DataRecord */
-        $record = new $this->recordClassName();
-        $record->setDao( $this );
+        $record = new $this->recordClassName( $this, DataRecord::ID_TYPE_NEW );
         return $record;
     }
 
@@ -155,7 +185,7 @@ class Dao
 
     /**
      * update data of primary key of $id.
-     * TODO: remove $id from argument.
+     * TODO: another method to update entity without $id argument?
      *
      * @param string $id
      * @param array $values
@@ -167,8 +197,10 @@ class Dao
         if( isset( $values[ $this->id_name ] ) ) {
             unset( $values[ $this->id_name ] );
         }
-        if( isset( $this->dataTypes[ '!updated_at' ] ) ) {
-            $values[ $this->dataTypes[ '!updated_at' ] ] = date( 'Y-m-d H:i:s' );
+        if( isset( $this->extraTypes[ 'updated_at' ] ) ) {
+            foreach( $this->extraTypes[ 'updated_at' ] as $column ) {
+                $values[ $column ] = date( 'Y-m-d H:i:s' );
+            }
         }
         $this->query()->id( $id )->update( $values );
         return $this;
@@ -183,11 +215,15 @@ class Dao
     public function insertValue( $values )
     {
         $values = $this->protect( $values );
-        if( isset( $this->dataTypes[ '!updated_at' ] ) ) {
-            $values[ $this->dataTypes[ '!updated_at' ] ] = date( 'Y-m-d H:i:s' );
+        if( isset( $this->extraTypes[ 'updated_at' ] ) ) {
+            foreach( $this->extraTypes[ 'updated_at' ] as $column ) {
+                $values[ $column ] = date( 'Y-m-d H:i:s' );
+            }
         }
-        if( isset( $this->dataTypes[ '!created_at' ] ) ) {
-            $values[ $this->dataTypes[ '!created_at' ] ] = date( 'Y-m-d H:i:s' );
+        if( isset( $this->extraTypes[ 'created_at' ] ) ) {
+            foreach( $this->extraTypes[ 'created_at' ] as $column ) {
+                $values[ $column ] = date( 'Y-m-d H:i:s' );
+            }
         }
         $this->query()->insert( $values );
         $id = $this->arrGet( $values, $this->id_name, TRUE );

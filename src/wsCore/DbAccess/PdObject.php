@@ -57,13 +57,20 @@ class PdObject
     public function exec( $sql, $prepared=array(), $dataTypes=array() )
     {
         if( !$sql ) throw new \RuntimeException( "missing Sql statement." );
-        $this->execPrepare( $sql );
-        $this->execExecute( $prepared, $dataTypes );
+        if( empty( $prepared ) ) {
+            $this->pdoStmt = $this->pdoObj->query( $sql );
+        }
+        else {
+            $this->execPrepare( $sql );
+            $this->execExecute( $prepared, $dataTypes );
+        }
+        $this->applyFetchMode();
         return $this->pdoStmt;
     }
 
     /**
      * @param string $sql
+     * @throws \RuntimeException
      * @return \PdoStatement
      */
     public function execPrepare( $sql ) {
@@ -71,7 +78,7 @@ class PdObject
             $this->pdoStmt->closeCursor();
         }
         $this->pdoStmt = $this->pdoObj->prepare( $sql, array(
-            \PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL
+        //    \PDO::ATTR_CURSOR => \PDO::CURSOR_SCROLL
         ) );
         return $this->pdoStmt;
     }
@@ -79,20 +86,13 @@ class PdObject
     /**
      * @param array  $prepared     place holders for prepared statement.
      * @param array  $dataTypes    data types for the place holders.
+     * @throws \RuntimeException
      * @return \PdoStatement
      */
     public function execExecute( $prepared, $dataTypes=array() ) 
     {
-        if( $this->fetchMode ) {
-            if( $this->fetchMode === \PDO::FETCH_CLASS ) {
-                $this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass, $this->fetchConstArg );
-            }
-            else {
-                $this->pdoStmt->setFetchMode( $this->fetchMode );
-            }
-        }
         if( empty( $dataTypes ) ) {
-            // data types are not specified. just execute the statement. 
+            // data types are not specified. just execute the statement.
             $this->pdoStmt->execute( $prepared );
         }
         else {
@@ -106,10 +106,26 @@ class PdObject
                     $this->pdoStmt->bindValue( $holder, $value );
                 }
             }
+            $this->pdoStmt->execute();
         }
         return $this->pdoStmt;
     }
 
+    /**
+     * @return PdObject
+     */
+    public function applyFetchMode()
+    {
+        if( $this->fetchMode ) {
+            if( $this->fetchMode === \PDO::FETCH_CLASS ) {
+                $this->pdoStmt->setFetchMode( $this->fetchMode, $this->fetchClass, $this->fetchConstArg );
+            }
+            else {
+                $this->pdoStmt->setFetchMode( $this->fetchMode );
+            }
+        }
+        return $this;
+    }
     /**
      * @param integer $mode     \PDO's fetch mode
      * @param string $class       class name if mode is fetch_class
@@ -126,10 +142,11 @@ class PdObject
     //  fetching result from the database.
     // +----------------------------------------------------------------------+
     /**
+     * @param null|string $name
      * @return string
      */
-    public function lastId() {
-        return $this->pdoObj->lastInsertId();
+    public function lastId( $name=null ) {
+        return $this->pdoObj->lastInsertId( $name . '_id_seq' );
     }
 
     // +----------------------------------------------------------------------+

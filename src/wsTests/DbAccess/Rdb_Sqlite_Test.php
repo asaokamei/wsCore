@@ -4,7 +4,7 @@ use \wsCore\DbAccess\Rdb as Rdb;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
-class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
+class Dba_Rdb_Sqlite_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
     /** @var \wsCore\DbAccess\Rdb */
@@ -12,7 +12,7 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->config = 'dsn=mysql:dbname=test_wsCore;charset=utf8 username=admin password=admin';
+        $this->config = 'dsn=sqlite::memory:';
         $this->rdb    = new Rdb();
     }
     // +----------------------------------------------------------------------+
@@ -54,6 +54,7 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
         $select = "SELECT * FROM test;";
         $stmt = $pdo->query( $select );
         $row = $stmt->fetch();
+        $stmt->closeCursor();
 
         $this->assertEquals( $id, $row['id'] );
         $this->assertEquals( $text, $row['text'] );
@@ -87,7 +88,7 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
     {
         $pdo = $this->rdb->connect( $this->config );
         $db  = $pdo->getAttribute( \PDO::ATTR_DRIVER_NAME );
-        $this->assertEquals( 'mysql', $db );
+        $this->assertEquals( 'sqlite', $db );
     }
 
     /**

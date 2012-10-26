@@ -33,7 +33,7 @@ class Rdb
         \PDO::ATTR_ORACLE_NULLS => \PDO::NULL_NATURAL,
         \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
     );
-    
+
     /** @var string    Pdo class name to generate */
     public $pdoClass = '\PDO';
 
@@ -99,25 +99,27 @@ class Rdb
      */
     private function parseDbCon( $db_con )
     {
-        $conn_str = array( 'db', 'dbname', 'port', 'host', 'username', 'password', 'charset' );
+        $conn_str = array( 'dsn', 'db', 'dbname', 'port', 'host', 'username', 'password', 'charset' );
         $config = array();
         foreach( $conn_str as $parameter ) 
         {
-            $pattern = "/{$parameter}\s*=\s*(\S+)/";
+            $pattern = "/{$parameter}=(\S+)/";
             if( preg_match( $pattern, $db_con, $matches ) ) {
                 $config[ "{$parameter}" ] = $matches[1];
+                $db_con = preg_replace( "/{$parameter}={$matches{1}}/", '', $db_con );
             }
         }
-        // charset is for PHP5.3.6 or above
-        if( !isset( $config[ 'charset' ] ) ) $config[ 'charset' ] = $this->charset;
-        $dsn = "{$config{'db'}}:";
-        $list = array( 'host', 'dbname', 'port', 'charset' );
-        foreach( $list as $item ) {
-            if( isset( $config[ $item ] ) ) {
-                $dsn .= "{$item}=" . $config[$item] . "; ";
+        // build dsn
+        if( !isset( $config[ 'dsn' ] ) ) {
+            $dsn = "{$config{'db'}}:";
+            $list = array( 'host', 'dbname', 'port', 'charset' );
+            foreach( $list as $item ) {
+                if( isset( $config[ $item ] ) ) {
+                    $dsn .= "{$item}=" . $config[$item] . ";";
+                }
             }
+            $config[ 'dsn' ] = $dsn;
         }
-        $config[ 'dsn' ] = $dsn;
         return $config;
     }
     // +----------------------------------------------------------------------+
