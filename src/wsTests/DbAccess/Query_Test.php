@@ -7,12 +7,12 @@ class Query_Test extends \PHPUnit_Framework_TestCase
 {
     /** @var \wsCore\DbAccess\Query */
     var $query;
-    /** @var QueryPdoMock */
+    /** @var Mock_QueryPdo|\wsCore\DbAccess\PdObject */
     var $pdo;
     function setUp()
     {
-        /** @var QueryPdoMock */
-        $this->pdo = new QueryPdoMock();
+        /** @var Mock_QueryPdo */
+        $this->pdo = new Mock_QueryPdo();
         /** @var \wsCore\DbAccess\Query */
         $this->query = new \wsCore\DbAccess\Query( $this->pdo );
     }
