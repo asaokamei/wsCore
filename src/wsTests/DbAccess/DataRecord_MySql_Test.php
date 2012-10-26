@@ -23,6 +23,7 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     function setUp()
     {
+        class_exists( '\wsCore\DbAccess\DataRecord' );
         $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
         Core::clear();
         Core::go();
@@ -63,6 +64,27 @@ class DataRecord_MySql_Test extends \PHPUnit_Framework_TestCase
     }
     // +----------------------------------------------------------------------+
 
+    function test_save_on_insert()
+    {
+        $rec1 = $this->friend->getRecord();
+        $rec1->set( Dao_SetUp::makeFriend() );
+        $rec1->friend_name = 'test save';
+        $rec1->save();
+        $id1 = $rec1->getId();
+
+        $rec2 = $this->friend->find( $id1 );
+        $this->assertEquals( $rec1->friend_name, $rec2->friend_name );
+    }
+    function test_save_on_update()
+    {
+        $id1  = $this->friend->insert( Dao_SetUp::makeFriend() );
+        $rec1 = $this->friend->find( $id1 );
+        $rec1->friend_name = 'test save';
+        $rec1->save();
+
+        $rec2 = $this->friend->find( $id1 );
+        $this->assertEquals( $rec1->friend_name, $rec2->friend_name );
+    }
     /**
      *
      */
