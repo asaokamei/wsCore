@@ -26,7 +26,7 @@ class Query_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->query = Core::get( 'Query');
         $this->column_list = '
             id int NOT NULL AUTO_INCREMENT,
-            name CHAR(30),
+            name VARCHAR(30),
             age  int,
             bdate date,
             no_null text NOT NULL,
@@ -59,7 +59,7 @@ class Query_MySql_Test extends \PHPUnit_Framework_TestCase
     public function fill_columns( $max=10 )
     {
         $prepare = "
-            INSERT {$this->table}
+            INSERT INTO {$this->table}
                 ( name, age, bdate, no_null )
             VALUES
                 ( :name, :age, :bdate, :no_null );
@@ -160,7 +160,7 @@ class Query_MySql_Test extends \PHPUnit_Framework_TestCase
     public function test_insert_using_prepare()
     {
         $prepare = "
-            INSERT {$this->table}
+            INSERT INTO {$this->table}
                 ( name, age, bdate, no_null )
             VALUES
                 ( :name, :age, :bdate, :no_null );
@@ -184,7 +184,7 @@ class Query_MySql_Test extends \PHPUnit_Framework_TestCase
     public function test_insert_with_last_id()
     {
         $insert = "
-            INSERT {$this->table}
+            INSERT INTO {$this->table}
                 ( name, age, bdate, no_null )
             VALUES
                 ( 'test query', 40, '1990-01-02', 'not null' );
