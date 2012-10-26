@@ -127,7 +127,14 @@ class Dao
             array_push( $this->protected, $this->id_name );
             $this->extraTypes[ 'primaryKey' ][] = $this->id_name;
         }
-        // TODO: add relations as well.
+        if( !empty( $this->relations ) ) {
+            foreach( $this->relations as $relInfo ) {
+                if( $relInfo[ 'relation_type' ] == 'HasOne' ) {
+                    $column = ( $relInfo[ 'source_column' ] ) ?: $this->id_name;
+                    array_push( $this->protected, $column );
+                }
+            }
+        }
     }
     /**
      * @return \wsCore\DbAccess\Query
