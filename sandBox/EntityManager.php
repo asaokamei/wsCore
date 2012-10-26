@@ -2,15 +2,6 @@
 
 // testing ReflectionProperty
 
-class SomEntity extends EntityBase {}
-
-$entity = new SomEntity();
-$prop = new ReflectionProperty( $entity, '_type' );
-$prop->setAccessible( TRUE );
-$prop->setValue( $entity, 'test' );
-echo $prop->getValue( $entity );
-// echo $prop->_type; // error!
-
 /*
  * Dao and Model has the same "name", that is 'yourModel' are common like:
  * \App\Dao\yourModel and \App\Model\yourModel.
@@ -22,10 +13,21 @@ echo $prop->getValue( $entity );
  * What to do with DataRecord, an ActiveRecord implementation???
  */
 
-// TODO: EntityBase, yet another inheritance? Or, plain object? Or abstract/trait???
-// no problem.
 
-class EntityBase
+/**
+ * Interface for Entity. 
+ * DataRecord should implement this interface as well. 
+ */
+interface InterfaceEntity
+{
+    public function _get_Model();
+    public function _get_Type();
+    public function _get_Id();
+    public function relation( $name );
+    public function setRelation( $name, $relation );
+}
+
+abstract class EntityBase implements InterfaceEntity
 {
     /** @var null|string  */
     protected $_model = NULL;
@@ -40,10 +42,31 @@ class EntityBase
     protected $_relations = array();
 
     /**
+     * @return null|string
+     */
+    public function _get_Model() {
+        return $this->_model;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function _get_Type() {
+        return $this->_type;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function _get_Id() {
+        return $this->_identifier;
+    }
+    
+    /**
      * @param $name
      * @return wsCore\DbAccess\Relation_Interface
      */
-    public function getRelation( $name ) {
+    public function relation( $name ) {
         return $this->_relations[ $name ];
     }
 
@@ -58,6 +81,16 @@ class EntityBase
     }
 
 }
+
+class SomEntity extends  EntityBase {}
+
+$entity = new SomEntity();
+$prop = new ReflectionProperty( $entity, '_type' );
+$prop->setAccessible( TRUE );
+$prop->setValue( $entity, 'test' );
+echo $prop->getValue( $entity );
+// echo $prop->_type; // error!
+
 
 class EntityManager
 {
@@ -112,17 +145,16 @@ class EntityManager
     }
     
     /**
-     * @param $entity
+     * @param InterfaceEntity $entity
      * @return wsCore\DbAccess\Dao
      */
     public function getModel( $entity ) {
-        $model = $this->getEntityProperty( $entity, 'model' );
-        return $this->models[ $model ];
+        return $this->models[ $entity->_get_Model() ];
     }
 
     /**
      * TODO: return without namespace part.
-     * @param $entity
+     * @param InterfaceEntity $entity
      * @return string
      */
     public function getModelName( $entity ) {
@@ -134,7 +166,7 @@ class EntityManager
     //  Managing Entities
     // +----------------------------------------------------------------------+
     /**
-     * @param EntityBase $entity
+     * @param InterfaceEntity $entity
      * @return \EntityManager
      */
     public function register( &$entity )
@@ -209,14 +241,14 @@ class EntityManager
     }
 
     /**
-     * @param EntityBase $entity
+     * @param InterfaceEntity $entity
      * @return string
      */
     public function getCenaId( $entity )
     {
-        $model  = $this->getModelName( $entity );
-        $id     = $this->getEntityProperty( $entity, 'id' );
-        $type   = $this->getEntityProperty( $entity, 'type' );
+        $model  = $entity->_get_Model();
+        $id     = $entity->_get_Id();
+        $type   = $entity->_get_Type();
         $cenaId = "$model.$type.$id";
         return $cenaId;
     }
@@ -230,7 +262,7 @@ class EntityManager
         if( empty( $this->entities ) ) return $this;
         foreach( $this->entities as $entity )
         {
-            $type  = $this->getEntityProperty( $entity, 'type' );
+            $type   = $entity->_get_Type();
             $dao   = $this->getModel( $entity );
             if( $type == 'new' ) {
                 $id = $dao->insert( $entity );
@@ -239,7 +271,7 @@ class EntityManager
             }
             else {
                 // TODO: remove id from update.
-                $id     = $this->getEntityProperty( $entity, 'id' );
+                $id     = $entity->_get_Id();
                 $dao->update( $id, $entity );
             }
         }
