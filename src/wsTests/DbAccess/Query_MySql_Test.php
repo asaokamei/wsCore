@@ -8,7 +8,7 @@ require_once( __DIR__ . '/../../autoloader.php' );
  * TODO: more test on Query. and check the overall design as well.
  */
 
-class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
+class Query_MySql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
     /** @var \wsCore\DbAccess\Query */
@@ -107,7 +107,7 @@ class Dba_Dba_MySql_Test extends \PHPUnit_Framework_TestCase
         // now check to see really added
         $return2 = $this->query->table( $this->table )
             ->where( 'id', $id )->select();
-        $this->assertEquals( 'wsCore\DbAccess\Query', get_class( $return2 ) );
+        $this->assertTrue( is_array( $return2 ) );
     }
     public function test_driver_name()
     {
