@@ -185,7 +185,7 @@ class Dao
 
     /**
      * update data of primary key of $id.
-     * TODO: remove $id from argument.
+     * TODO: another method to update entity without $id argument?
      *
      * @param string $id
      * @param array $values
