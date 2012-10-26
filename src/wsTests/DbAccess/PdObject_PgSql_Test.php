@@ -97,6 +97,7 @@ class PdObject_PgSql_Test extends \PHPUnit_Framework_TestCase
         $max = 1;
         $arg = new Mock_PdObjectData();
         $class = 'wsTests\DbAccess\Mock_PdObjectDao';
+        class_exists( $class );
         $this->fill_columns( $max );
         $this->pdo->setFetchMode( \PDO::FETCH_CLASS, $class, array( $arg ) );
         /** @var $ret \PdoStatement */

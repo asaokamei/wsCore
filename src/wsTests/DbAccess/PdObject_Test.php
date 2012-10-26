@@ -4,30 +4,6 @@ use \wsCore\Core;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
-class PdObjectData extends \stdClass {}
-
-class PdObjectDao {
-    protected $data = array();
-    protected $constructed = FALSE;
-    protected $id_name = NULL;
-    protected $id = NULL;
-    public function __construct( $arg1 ) {
-        $this->constructed = $arg1;
-        $this->id_name = 'id';
-    }
-    public function __set( $name, $value ) {
-        if( $name == $this->id_name ) {
-            $this->id = $value;
-        }
-        else {
-            $this->data[ $name ] = $value;
-        }
-    }
-    public function getConstructed() {
-        return $this->constructed;
-    }
-}
-
 class PdObject_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
@@ -119,8 +95,8 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     public function test_fetch_data_record_class()
     {
         $max = 1;
-        $arg = new PdObjectData();
-        $class = 'wsTests\DbAccess\PdObjectDao';
+        $arg = new Mock_PdObjectData();
+        $class = 'wsTests\DbAccess\Mock_PdObjectDao';
         $this->fill_columns( $max );
         $this->pdo->setFetchMode( \PDO::FETCH_CLASS, $class, array( $arg ) );
         /** @var $ret \PdoStatement */
@@ -135,7 +111,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     public function test_fetch_mode_class()
     {
         $max = 1;
-        $class = 'wsTests\DbAccess\PdObjectData';
+        $class = 'wsTests\DbAccess\Mock_PdObjectData';
         $this->fill_columns( $max );
         $this->pdo->setFetchMode( \PDO::FETCH_CLASS, $class );
         /** @var $ret \PdoStatement */
