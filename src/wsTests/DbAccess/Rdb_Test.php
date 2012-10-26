@@ -23,7 +23,7 @@ class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
         $db = 'Test';
         $dbname = 'test1';
         $name1 = "db={$db} dbname={$dbname}";
-        $dsn   = "{$db}:dbname={$dbname}; charset=utf8; ";
+        $dsn   = "{$db}:dbname={$dbname};";
         $pdo1 = $this->rdb->connect( $name1 );
         $this->assertEquals( $dsn, $pdo1->config[0] );
     }
@@ -58,7 +58,7 @@ class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
         /** @var $pdo \wsTests\DbAccess\RdbMockPdo */
         $pdo = $this->rdb->connect( $dsn );
 
-        $this->assertEquals( 'myTest:dbname=my_test; charset=utf8; ', $pdo->config[0] );
+        $this->assertEquals( 'myTest:dbname=my_test;', $pdo->config[0] );
 
     }
 }
