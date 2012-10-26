@@ -12,7 +12,7 @@ class Dba_Rdb_MySql_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
+        $this->config = 'dsn=mysql:dbname=test_wsCore;charset=utf8 username=admin password=admin';
         $this->rdb    = new Rdb();
     }
     // +----------------------------------------------------------------------+
