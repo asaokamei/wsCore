@@ -25,6 +25,7 @@ interface InterfaceEntity
     public function _get_Id();
     public function relation( $name );
     public function setRelation( $name, $relation );
+    public function isIdPermanent();
 }
 
 abstract class EntityBase implements InterfaceEntity
@@ -55,6 +56,12 @@ abstract class EntityBase implements InterfaceEntity
         return $this->_type;
     }
 
+    /**
+     * @return bool
+     */
+    public function isIdPermanent() {
+        return $this->_type == 'get';
+    }
     /**
      * @return null|string
      */
