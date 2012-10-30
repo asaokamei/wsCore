@@ -4,7 +4,7 @@ namespace wsTests\DataMapper;
 require_once( __DIR__ . '/../../autoloader.php' );
 use \wsCore\Core;
 
-class Em_Test extends \PHPUnit_Framework_TestCase
+class EntityManager extends \PHPUnit_Framework_TestCase
 {
     /** @var string */
     public $config;
@@ -78,9 +78,8 @@ class Em_Test extends \PHPUnit_Framework_TestCase
         $friend2 = $this->em->newEntity( 'Friend' );
         $id1 = $friend->_get_Id();
         $id2 = $friend2->_get_Id();
-        $this->assertTrue( false );
         $this->assertNotEquals( $id1, $id2 );
-        $this->assertEquals( $id1, $id2 );
+        $this->assertEquals( $id1+1, $id2 );
     }
     // +----------------------------------------------------------------------+
 }
