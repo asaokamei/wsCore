@@ -78,7 +78,7 @@ class Em_Test extends \PHPUnit_Framework_TestCase
         $friend2 = $this->em->newEntity( 'Friend' );
         $id1 = $friend->_get_Id();
         $id2 = $friend2->_get_Id();
-        $this->assertrue( false );
+        $this->assertTrue( false );
         $this->assertNotEquals( $id1, $id2 );
         $this->assertEquals( $id1, $id2 );
     }
