@@ -61,13 +61,15 @@ class EntityManager
     }
 
     /**
-     * TODO: return without namespace part.
-     * @param EntityInterface $entity
+     * @param EntityInterface|string $entity
      * @return string
      */
     public function getModelName( $entity ) {
-        if( is_object( $entity ) ) return get_class( $entity );
-        return $entity;
+        $model = ( is_object( $entity ) ) ? get_class( $entity ) : $entity;
+        if( strpos( $model, '\\' ) !== false ) {
+            $model = substr( $model, strrpos( $model, '\\' )+1 );
+        }
+        return $model;
     }
 
     // +----------------------------------------------------------------------+

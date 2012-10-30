@@ -46,5 +46,22 @@ class Em_Test extends \PHPUnit_Framework_TestCase
         $id = $this->em->getEntityProperty( $friend, 'id' );
         $this->assertEquals( null, $id );
     }
+    function test_getModelName()
+    {
+        $model = $this->em->getModelName( $this->friend );
+        $this->assertEquals( 'Friend', $model );
+
+        $model = $this->em->getModelName( 'some\namespace\Friend' );
+        $this->assertEquals( 'Friend', $model );
+
+        $model = $this->em->getModelName( 'Friend' );
+        $this->assertEquals( 'Friend', $model );
+    }
+    function test_register_dao_in_entity_manager()
+    {
+        $this->em->registerDao( $this->friend );
+        $models = $this->em->returnModels();
+        $this->assertArrayHasKey( 'Friend', $models );
+    }
     // +----------------------------------------------------------------------+
 }
