@@ -4,7 +4,7 @@ namespace wsTests\DataMapper\Model;
 class Friend extends \wsCore\DbAccess\Dao
 {
     /** @var string     name of database table     */
-    protected $table = 'friend';
+    protected $table = 'mapFriend';
 
     /** @var string     name of primary key        */
     protected $id_name = 'friend_id';

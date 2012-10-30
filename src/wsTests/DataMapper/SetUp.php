@@ -10,7 +10,7 @@ class SetUp
      * @param string $table
      * @return string
      */
-    static function clearFriend( $table='friend' ) {
+    static function clearFriend( $table='mapFriend' ) {
         $sql = "DROP TABLE IF EXISTS {$table}";
         return $sql;
     }
@@ -19,7 +19,7 @@ class SetUp
      * @param string $table
      * @return string
      */
-    static function setupFriend( $table='friend' )
+    static function setupFriend( $table='mapFriend' )
     {
         $sql = "
             CREATE TABLE {$table} (
@@ -60,7 +60,7 @@ class SetUp
      * @param string $table
      * @return string
      */
-    static function clearContact( $table='contact' ) {
+    static function clearContact( $table='mapContact' ) {
         $sql = "DROP TABLE IF EXISTS {$table}";
         return $sql;
     }
@@ -69,7 +69,7 @@ class SetUp
      * @param string $table
      * @return string
      */
-    static function setupContact( $table='contact' )
+    static function setupContact( $table='mapContact' )
     {
         $sql = "
             CREATE TABLE {$table} (
@@ -108,7 +108,7 @@ class SetUp
      * @param string $table
      * @return string
      */
-    static function clearGroup( $table='myGroup' ) {
+    static function clearGroup( $table='mapGroup' ) {
         $sql = "DROP TABLE IF EXISTS {$table}";
         return $sql;
     }
@@ -117,7 +117,7 @@ class SetUp
      * @param string $table
      * @return string
      */
-    static function setupGroup( $table='myGroup' )
+    static function setupGroup( $table='mapGroup' )
     {
         $sql = "
             CREATE TABLE {$table} (
@@ -156,7 +156,7 @@ class SetUp
      * @param string $table
      * @return string
      */
-    static function clearFriend2Group( $table='friend2group' ) {
+    static function clearFriend2Group( $table='mapFr2Gr' ) {
         $sql = "DROP TABLE IF EXISTS {$table}";
         return $sql;
     }
@@ -165,7 +165,7 @@ class SetUp
      * @param string $table
      * @return string
      */
-    static function setupFriend2Group( $table='friend2group' )
+    static function setupFriend2Group( $table='mapFr2Gr' )
     {
         $sql = "
             CREATE TABLE {$table} (
@@ -187,7 +187,7 @@ class SetUp
      * @param string $table
      * @return string
      */
-    static function clearNetwork( $table='network' ) {
+    static function clearNetwork( $table='mapNetwork' ) {
         $sql = "DROP TABLE IF EXISTS {$table}";
         return $sql;
     }
@@ -196,7 +196,7 @@ class SetUp
      * @param string $table
      * @return string
      */
-    static function setupNetwork( $table='network' )
+    static function setupNetwork( $table='mapNetwork' )
     {
         $sql = "
             CREATE TABLE {$table} (
