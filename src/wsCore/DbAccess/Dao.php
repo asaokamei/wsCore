@@ -145,7 +145,7 @@ class Dao
     }
 
     /**
-     * @return DataRecord
+     * @return \wsCore\DataMapper\EntityInterface|DataRecord
      */
     public function getRecord() {
         /** @var $record \wsCore\DbAccess\DataRecord */
