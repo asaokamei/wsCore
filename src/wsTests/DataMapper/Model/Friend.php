@@ -56,7 +56,7 @@ class Friend extends \wsCore\DbAccess\Dao
         ),
     );
 
-    protected $recordClassName = 'wsTests\DataMapper\Entity\Friend';
+    public $recordClassName = 'wsTests\DataMapper\Entity\Friend';
     
     // +----------------------------------------------------------------------+
     /**
