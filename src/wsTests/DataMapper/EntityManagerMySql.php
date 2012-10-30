@@ -31,19 +31,30 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         class_exists( '\wsTests\DataMapper\SetUp' );
         $this->setupFriend();
     }
+
     /**
      * @param string $table
+     * @param int $max
+     * @return void
      */
-    function setupFriend( $table='mapFriend' )
+    function setupFriend( $table='mapFriend', $max=3 )
     {
         $this->query->execSQL( SetUp::clearFriend( $table ) );
         $this->query->execSQL( SetUp::setupFriend( $table ) );
+        for( $idx = 0; $idx < $max; $idx ++ ) {
+            $data = SetUp::makeFriend( $idx );
+            $this->query->table( $table )->insert( $data );
+        }
     }
     // +----------------------------------------------------------------------+
-    function test_Dao_getRecord_returns_entity()
+    function test_em_getEntity_gets_an_entity()
     {
-        $friend = $this->friend->getRecord();
+        $this->em->registerModel( $this->friend );
+        $idx    = 1;
+        $friend = $this->em->getEntity( 'Friend', $idx );
         $this->assertEquals( 'wsTests\DataMapper\Entity\Friend', get_class( $friend ) );
+        $this->assertEquals( $idx, $this->em->getEntityProperty( $friend, 'id' ) );
+        $this->assertEquals( 'Friend', $this->em->getEntityProperty( $friend, 'model' ) );
     }
     // +----------------------------------------------------------------------+
 }
