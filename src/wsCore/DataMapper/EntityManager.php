@@ -101,7 +101,7 @@ class EntityManager
         return $this->$method( $model, $id );
     }
 
-    protected function setEntityProperty( $entity, $prop, $value ) {
+    public  function setEntityProperty( $entity, $prop, $value ) {
         /** @var $ref \ReflectionProperty */
         $class = get_class( $entity );
         $ref = $this->reflections[ $class ][ $prop ];
