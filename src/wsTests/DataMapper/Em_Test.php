@@ -22,7 +22,7 @@ class Em_Test extends \PHPUnit_Framework_TestCase
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
-        $this->em     = Core::get( '\wsCore\DataMapper\EntityManager' );
+        $this->em     = Core::get( '\wsTests\DataMapper\Mock\EntityManager' );
         $this->friend = Core::get( '\wsTests\DataMapper\Model\Friend' );
     }
     // +----------------------------------------------------------------------+
