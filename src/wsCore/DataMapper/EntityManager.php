@@ -1,113 +1,15 @@
 <?php
-
-// testing ReflectionProperty
-
-/*
- * Dao and Model has the same "name", that is 'yourModel' are common like:
- * \App\Dao\yourModel and \App\Model\yourModel.
- *
- * Dao will generate entity (not DataRecord).
- * when retrieved entities from db, register the entities to EntityManager:
- * $em->register( $entity );
- *
- * What to do with DataRecord, an ActiveRecord implementation???
- */
-
-
-/**
- * Interface for Entity. 
- * DataRecord should implement this interface as well. 
- */
-interface InterfaceEntity
-{
-    public function _get_Model();
-    public function _get_Type();
-    public function _get_Id();
-    public function relation( $name );
-    public function setRelation( $name, $relation );
-    public function isIdPermanent();
-}
-
-abstract class EntityBase implements InterfaceEntity
-{
-    /** @var null|string  */
-    protected $_model = NULL;
-    
-    /** @var null|string  */
-    protected $_type = NULL;
-
-    /** @var null|string */
-    protected $_identifier = NULL;
-
-    /** @var \wsCore\DbAccess\Relation_Interface[] */
-    protected $_relations = array();
-
-    /**
-     * @return null|string
-     */
-    public function _get_Model() {
-        return $this->_model;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function _get_Type() {
-        return $this->_type;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isIdPermanent() {
-        return $this->_type == 'get';
-    }
-    /**
-     * @return null|string
-     */
-    public function _get_Id() {
-        return $this->_identifier;
-    }
-    
-    /**
-     * @param $name
-     * @return wsCore\DbAccess\Relation_Interface
-     */
-    public function relation( $name ) {
-        return $this->_relations[ $name ];
-    }
-
-    /**
-     * @param $name
-     * @param $relation
-     * @return EntityBase
-     */
-    public function setRelation( $name, $relation ) {
-        $this->_relations[ $name ] = $relation;
-        return $this;
-    }
-
-}
-
-class SomEntity extends  EntityBase {}
-
-$entity = new SomEntity();
-$prop = new ReflectionProperty( $entity, '_type' );
-$prop->setAccessible( TRUE );
-$prop->setValue( $entity, 'test' );
-echo $prop->getValue( $entity );
-// echo $prop->_type; // error!
-
+namespace wsCore\DataMapper;
 
 class EntityManager
 {
     /** @var \wsCore\DbAccess\Dao[] */
     protected $models = array();
 
-    /** @var EntityBase[] */
+    /** @var EntityInterface[] */
     protected $entities = array();
 
-    /** @var ReflectionProperty[][] */
+    /** @var \ReflectionProperty[][] */
     protected $reflections = array();
 
     /** @var int */
@@ -127,14 +29,14 @@ class EntityManager
     }
 
     /**
-     * @param InterfaceEntity|string $entity
+     * @param EntityInterface|string $entity
      * @return EntityManager
      */
     public function setupReflection( $entity )
     {
         $class = is_object( $entity ) ? get_class( $entity ) : $entity;
         $reflect = function( $class, $prop ) {
-            $reflect = new ReflectionProperty( $class, $prop );
+            $reflect = new \ReflectionProperty( $class, $prop );
             $reflect->setAccessible( TRUE );
             return $reflect;
         };
@@ -150,8 +52,8 @@ class EntityManager
     }
     
     /**
-     * @param InterfaceEntity $entity
-     * @return wsCore\DbAccess\Dao
+     * @param EntityInterface $entity
+     * @return \wsCore\DbAccess\Dao
      */
     public function getModel( $entity ) {
         return $this->models[ $entity->_get_Model() ];
@@ -171,8 +73,8 @@ class EntityManager
     //  Managing Entities
     // +----------------------------------------------------------------------+
     /**
-     * @param InterfaceEntity $entity
-     * @return \EntityManager
+     * @param EntityInterface $entity
+     * @return EntityManager
      */
     public function register( &$entity )
     {
@@ -190,7 +92,7 @@ class EntityManager
      * @param string $model
      * @param string $type
      * @param null|string $id
-     * @return \EntityBase
+     * @return EntityInterface
      */
     public function entity( $model, $type, $id=NULL )
     {
@@ -199,14 +101,14 @@ class EntityManager
     }
 
     protected function setEntityProperty( $entity, $prop, $value ) {
-        /** @var $ref ReflectionProperty */
+        /** @var $ref \ReflectionProperty */
         $class = get_class( $entity );
         $ref = $this->reflections[ $class ][ $prop ];
         $ref->setValue( $entity, $value );
     }
 
     protected function getEntityProperty( $entity, $prop ) {
-        /** @var $ref ReflectionProperty */
+        /** @var $ref \ReflectionProperty */
         $class = get_class( $entity );
         $ref = $this->reflections[ $class ][ $prop ];
         return $ref->getValue( $entity );
@@ -216,12 +118,12 @@ class EntityManager
      * TODO: think about getting DataRecord or EntityBase...
      * @param string $model
      * @param string $id
-     * @return \EntityBase
+     * @return EntityInterface
      */
     public function getEntity( $model, $id )
     {
         $dao = $this->getModel( $model );
-        /** @var $entity EntityBase */
+        /** @var $entity EntityInterface */
         $entity = $dao->find( $id );
         $this->setEntityProperty( $entity, 'id'  , $id );
         $this->setEntityProperty( $entity, 'type', 'get' );
@@ -232,12 +134,12 @@ class EntityManager
     /**
      * @param string      $model
      * @param null|string $id
-     * @return \EntityBase
+     * @return EntityInterface
      */
     public function newEntity( $model, $id=NULL )
     {
         $dao = $this->getModel( $model );
-        /** @var $entity EntityBase */
+        /** @var $entity EntityInterface */
         $entity = $dao->getRecord();
         if( !$id ) $id = $this->newId++;
         $this->setEntityProperty( $entity, 'id'  , $id );
@@ -246,7 +148,7 @@ class EntityManager
     }
 
     /**
-     * @param InterfaceEntity $entity
+     * @param EntityInterface $entity
      * @return string
      */
     public function getCenaId( $entity )
@@ -268,7 +170,7 @@ class EntityManager
 
     /**
      * @return EntityManager
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     public function save()
     {
