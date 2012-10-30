@@ -56,5 +56,29 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $idx, $this->em->getEntityProperty( $friend, 'id' ) );
         $this->assertEquals( 'Friend', $this->em->getEntityProperty( $friend, 'model' ) );
     }
+    function test_em_saves_existing_entity_to_db()
+    {
+        $this->em->registerModel( $this->friend );
+        $idx    = 2;
+        /** @var $friend Entity\Friend */
+        $friend = $this->em->getEntity( 'Friend', $idx );
+        $friend->friend_name = 'my good friend';
+        $this->em->save();
+
+        /** @var $friend2 Entity\Friend */
+        $friend2 = $this->em->getEntity( 'Friend', $idx );
+        $this->assertEquals( $friend->friend_name, $friend2->friend_name );
+    }
+    function test_em_newEntity_saves_to_db()
+    {
+        /** @var $friend Entity\Friend */
+        $this->em->registerModel( $this->friend );
+        $friend = $this->em->newEntity( 'Friend' );
+        $friend->friend_name = 'my real friend';
+        $friend->friend_bday = '1989-01-31';
+        $this->em->save();
+        $id1 = $this->em->getEntityProperty( $friend, 'id' );
+        $this->assertEquals( '4', $id1 );
+    }
     // +----------------------------------------------------------------------+
 }
