@@ -25,6 +25,7 @@ class EntityManager
     public function registerModel( $dao ) {
         $model = $this->getModelName( $dao );
         $this->models[ $model ] = $dao;
+        $this->setupReflection( $dao->recordClassName );
         return $this;
     }
 

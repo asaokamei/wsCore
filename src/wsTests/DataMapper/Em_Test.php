@@ -1,5 +1,5 @@
 <?php
-namespace wsTests\Mapper;
+namespace wsTests\DataMapper;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 use \wsCore\Core;
@@ -68,6 +68,19 @@ class Em_Test extends \PHPUnit_Framework_TestCase
         $this->em->registerModel( $this->friend );
         $models = $this->em->returnModels();
         $this->assertArrayHasKey( 'Friend', $models );
+    }
+    function test_em_newEntity_returns_entity()
+    {
+        $this->em->registerModel( $this->friend );
+        $friend = $this->em->newEntity( 'Friend' );
+        $this->assertEquals( 'wsTests\DataMapper\Entity\Friend', get_class( $friend ) );
+
+        $friend2 = $this->em->newEntity( 'Friend' );
+        $id1 = $friend->_get_Id();
+        $id2 = $friend2->_get_Id();
+        $this->assertrue( false );
+        $this->assertNotEquals( $id1, $id2 );
+        $this->assertEquals( $id1, $id2 );
     }
     // +----------------------------------------------------------------------+
 }
