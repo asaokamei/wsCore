@@ -4,13 +4,13 @@ namespace wsCore\DataMapper;
 abstract class EntityBase implements EntityInterface
 {
     /** @var null|string  */
-    protected $_model = NULL;
+    protected $_model = null;
 
     /** @var null|string  */
-    protected $_type = NULL;
+    protected $_type = null;
 
     /** @var null|string */
-    protected $_identifier = NULL;
+    protected $_identifier = null;
 
     /** @var \wsCore\DbAccess\Relation_Interface[] */
     protected $_relations = array();
