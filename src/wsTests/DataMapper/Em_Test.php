@@ -15,6 +15,7 @@ class Em_Test extends \PHPUnit_Framework_TestCase
     /** @var \wsTests\DataMapper\Model\Friend  */
     public $friend;
 
+    // +----------------------------------------------------------------------+
     function setUp()
     {
         $this->config = 'dsn=mysql:dbname=test_wsCore username=admin password=admin';
@@ -24,6 +25,7 @@ class Em_Test extends \PHPUnit_Framework_TestCase
         $this->em     = Core::get( '\wsCore\DataMapper\EntityManager' );
         $this->friend = Core::get( '\wsTests\DataMapper\Model\Friend' );
     }
+    // +----------------------------------------------------------------------+
     function test_Dao_getRecord_returns_entity()
     {
         $friend = $this->friend->getRecord();
@@ -36,4 +38,14 @@ class Em_Test extends \PHPUnit_Framework_TestCase
         $id = $this->em->getEntityProperty( $friend, 'id' );
         $this->assertEquals( 1, $id );
     }
+    function test_new_entity_id_returns_null_if_not_registered()
+    {
+        $friend = $this->friend->getRecord();
+        $this->em->register( $friend );
+
+        $friend = $this->friend->getRecord();
+        $id = $this->em->getEntityProperty( $friend, 'id' );
+        $this->assertEquals( null, $id );
+    }
+    // +----------------------------------------------------------------------+
 }
