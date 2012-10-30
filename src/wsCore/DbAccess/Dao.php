@@ -179,7 +179,6 @@ class Dao
             ->id( $id )->limit(1)->select();
         $record = $record[0];
         /** @var $record DataRecord */
-        $record->resetId();
         return $record;
     }
 
