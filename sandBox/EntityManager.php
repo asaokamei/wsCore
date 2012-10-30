@@ -127,24 +127,22 @@ class EntityManager
     }
 
     /**
-     * @param $entity
+     * @param InterfaceEntity|string $entity
      * @return EntityManager
      */
     public function setupReflection( $entity )
     {
         $class = is_object( $entity ) ? get_class( $entity ) : $entity;
-        if( !isset( $this->reflections[ $class ] ) )
-        {
-            $refType = new ReflectionProperty( $class, '_type' );
-            $refType->setAccessible( TRUE );
-            $refId   = new ReflectionProperty( $class, '_identifier' );
-            $refId->setAccessible( TRUE );
-            $refModel  = new ReflectionProperty( $class, '_model' );
-            $refModel->setAccessible( TRUE );
+        $reflect = function( $class, $prop ) {
+            $reflect = new ReflectionProperty( $class, $prop );
+            $reflect->setAccessible( TRUE );
+            return $reflect;
+        };
+        if( !isset( $this->reflections[ $class ] ) ) {
             $reflections = array(
-                'model' => $refModel,
-                'type'  => $refType,
-                'id'    => $refId,
+                'model' => $reflect( $class, '_model' ),
+                'type'  => $reflect( $class, '_type' ),
+                'id'    => $reflect( $class, '_identifier' ),
             );
             $this->reflections[ $class ] = $reflections;
         }
