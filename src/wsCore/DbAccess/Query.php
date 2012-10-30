@@ -41,7 +41,7 @@ class Query
     // +----------------------------------------------------------------------+
     /**
      * @param PdObject $pdoObj
-     * @DimInjection  Get   \wsCore\DbAccess\PdObject
+     * @DimInjection  Fresh   \wsCore\DbAccess\PdObject
      */
     public function __construct( $pdoObj=NULL ) {
         $this->pdoObj = $pdoObj;
