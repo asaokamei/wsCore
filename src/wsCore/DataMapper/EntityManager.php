@@ -52,16 +52,17 @@ class EntityManager
     }
     
     /**
-     * @param EntityInterface $entity
+     * @param EntityInterface|string $entity
      * @return \wsCore\DbAccess\Dao
      */
     public function getModel( $entity ) {
-        return $this->models[ $entity->_get_Model() ];
+        $model = ( $entity instanceof EntityInterface ) ? $entity->_get_Model(): $entity;
+        return $this->models[ $model ];
     }
 
     /**
      * TODO: return without namespace part.
-     * @param InterfaceEntity $entity
+     * @param EntityInterface $entity
      * @return string
      */
     public function getModelName( $entity ) {
