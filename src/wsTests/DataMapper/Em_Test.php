@@ -9,7 +9,7 @@ class Em_Test extends \PHPUnit_Framework_TestCase
     /** @var string */
     public $config;
 
-    /** @var \wsCore\DataMapper\EntityManager */
+    /** @var \wsTests\DataMapper\Mock\EntityManager */
     public $em;
 
     /** @var \wsTests\DataMapper\Model\Friend  */
@@ -34,15 +34,14 @@ class Em_Test extends \PHPUnit_Framework_TestCase
     function test_Em_registers_new_entity()
     {
         $friend = $this->friend->getRecord();
+        $idEm = $this->em->returnNewId();
         $this->em->register( $friend );
         $id = $this->em->getEntityProperty( $friend, 'id' );
-        $this->assertEquals( 1, $id );
+        $this->assertEquals( $idEm, $id );
     }
     function test_new_entity_id_returns_null_if_not_registered()
     {
-        $friend = $this->friend->getRecord();
-        $this->em->register( $friend );
-
+        $this->em->setupReflection( 'wsTests\DataMapper\Entity\Friend' );
         $friend = $this->friend->getRecord();
         $id = $this->em->getEntityProperty( $friend, 'id' );
         $this->assertEquals( null, $id );
