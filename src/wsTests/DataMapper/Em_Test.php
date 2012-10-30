@@ -24,11 +24,14 @@ class Em_Test extends \PHPUnit_Framework_TestCase
         $this->em     = Core::get( '\wsCore\DataMapper\EntityManager' );
         $this->friend = Core::get( '\wsTests\DataMapper\Model\Friend' );
     }
-    function test_1()
+    function test_Dao_getRecord_returns_entity()
     {
         $friend = $this->friend->getRecord();
         $this->assertEquals( 'wsTests\DataMapper\Entity\Friend', get_class( $friend ) );
-
+    }
+    function test_Em_registers_new_entity()
+    {
+        $friend = $this->friend->getRecord();
         $this->em->register( $friend );
         $id = $this->em->getEntityProperty( $friend, 'id' );
         $this->assertEquals( 1, $id );
