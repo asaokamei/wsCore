@@ -254,8 +254,16 @@ class EntityManager
     public function getCenaId( $entity )
     {
         $model  = $entity->_get_Model();
-        $id     = $entity->_get_Id();
         $type   = $entity->_get_Type();
+        if( !$type ) {
+            $type = 'new';
+            $this->setEntityProperty( $entity, 'type', $type );
+        }
+        $id     = $entity->_get_Id();
+        if( !$id && $type == 'new' ) {
+            $id = $this->newId++;
+            $this->setEntityProperty( $entity, 'id', $id );
+        }
         $cenaId = "$model.$type.$id";
         return $cenaId;
     }
