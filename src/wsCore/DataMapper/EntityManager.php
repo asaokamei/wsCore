@@ -108,7 +108,7 @@ class EntityManager
         $ref->setValue( $entity, $value );
     }
 
-    protected function getEntityProperty( $entity, $prop ) {
+    public function getEntityProperty( $entity, $prop ) {
         /** @var $ref \ReflectionProperty */
         $class = get_class( $entity );
         $ref = $this->reflections[ $class ][ $prop ];
@@ -154,6 +154,7 @@ class EntityManager
      */
     public function getCenaId( $entity )
     {
+        $this->setupReflection( $entity );
         $model  = $entity->_get_Model();
         $type   = $entity->_get_Type();
         if( !$type ) {
