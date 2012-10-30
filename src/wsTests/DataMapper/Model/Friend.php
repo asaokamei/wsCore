@@ -1,7 +1,7 @@
 <?php
-namespace wsTests\DbAccess;
+namespace wsTests\DataMapper\Model;
 
-class Dao_Friend extends \wsCore\DbAccess\Dao
+class Friend extends \wsCore\DbAccess\Dao
 {
     /** @var string     name of database table     */
     protected $table = 'friend';
@@ -55,6 +55,8 @@ class Dao_Friend extends \wsCore\DbAccess\Dao
             'target_model'  => 'Dao_Friend',
         ),
     );
+
+    protected $recordClassName = 'wsTests\DataMapper\Entity\Friend';
     
     // +----------------------------------------------------------------------+
     /**

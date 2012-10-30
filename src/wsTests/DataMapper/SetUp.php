@@ -1,7 +1,7 @@
 <?php
-namespace wsTests\DbAccess;
+namespace wsTests\DataMapper;
 
-class Dao_SetUp
+class SetUp
 {
     // +----------------------------------------------------------------------+
     //  for Friend table
