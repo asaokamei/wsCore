@@ -22,7 +22,7 @@ class EntityManager
      * @param $dao
      * @return EntityManager
      */
-    public function registerDao( $dao ) {
+    public function registerModel( $dao ) {
         $model = $this->getModelName( $dao );
         $this->models[ $model ] = $dao;
         return $this;
