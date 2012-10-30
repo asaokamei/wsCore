@@ -15,6 +15,8 @@ abstract class EntityBase implements EntityInterface
     /** @var \wsCore\DbAccess\Relation_Interface[] */
     protected $_relations = array();
 
+    public function __construct() {}
+
     /**
      * @return null|string
      */
