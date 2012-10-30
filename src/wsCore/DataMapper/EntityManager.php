@@ -16,16 +16,16 @@ class EntityManager
     protected $newId = 1;
 
     // +----------------------------------------------------------------------+
-    //  Managing Dao.
+    //  Managing Model/Dao.
     // +----------------------------------------------------------------------+
     /**
-     * @param $dao
+     * @param \wsCore\DbAccess\Dao $model
      * @return EntityManager
      */
-    public function registerModel( $dao ) {
-        $model = $this->getModelName( $dao );
-        $this->models[ $model ] = $dao;
-        $this->setupReflection( $dao->recordClassName );
+    public function registerModel( $model ) {
+        $modelName = $this->getModelName( $model );
+        $this->models[ $modelName ] = $model;
+        $this->setupReflection( $model->recordClassName );
         return $this;
     }
 
@@ -67,7 +67,7 @@ class EntityManager
      */
     public function getModelName( $entity ) {
         $model = ( is_object( $entity ) ) ? get_class( $entity ) : $entity;
-        if( strpos( $model, '\\' ) !== false ) {
+        if( strpos( $model, '\\' ) !== FALSE ) {
             $model = substr( $model, strrpos( $model, '\\' )+1 );
         }
         return $model;
@@ -120,15 +120,15 @@ class EntityManager
 
     /**
      * TODO: think about getting DataRecord or EntityBase...
-     * @param string $model
+     * @param string $modelName
      * @param string $id
      * @return EntityInterface
      */
-    public function getEntity( $model, $id )
+    public function getEntity( $modelName, $id )
     {
-        $dao = $this->getModel( $model );
+        $model = $this->getModel( $modelName );
         /** @var $entity EntityInterface */
-        $entity = $dao->find( $id );
+        $entity = $model->find( $id );
         $this->setEntityProperty( $entity, 'id'  , $id );
         $this->setEntityProperty( $entity, 'type', 'get' );
         $this->register( $entity );
@@ -136,15 +136,15 @@ class EntityManager
     }
 
     /**
-     * @param string      $model
+     * @param string      $modelName
      * @param null|string $id
      * @return EntityInterface
      */
-    public function newEntity( $model, $id=NULL )
+    public function newEntity( $modelName, $id=NULL )
     {
-        $dao = $this->getModel( $model );
+        $model = $this->getModel( $modelName );
         /** @var $entity EntityInterface */
-        $entity = $dao->getRecord();
+        $entity = $model->getRecord();
         if( !$id ) $id = $this->newId++;
         $this->setEntityProperty( $entity, 'id'  , $id );
         $this->setEntityProperty( $entity, 'type', 'new' );
@@ -184,16 +184,16 @@ class EntityManager
         foreach( $this->entities as $entity )
         {
             $type   = $entity->_get_Type();
-            $dao   = $this->getModel( $entity );
+            $model  = $this->getModel( $entity );
             if( $type == 'new' ) {
-                $id = $dao->insert( (array) $entity );
+                $id = $model->insert( (array) $entity );
                 $this->setEntityProperty( $entity, 'id'  , $id );
                 $this->setEntityProperty( $entity, 'type', 'get' );
             }
             else {
                 // TODO: remove id from update.
-                $id     = $entity->_get_Id();
-                $dao->update( $id, (array) $entity );
+                $id = $entity->_get_Id();
+                $model->update( $id, (array) $entity );
             }
         }
         return $this;
