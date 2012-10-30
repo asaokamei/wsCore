@@ -81,5 +81,16 @@ class EntityManager extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals( $id1, $id2 );
         $this->assertEquals( $id1+1, $id2 );
     }
+    function test_em_register_same_entity_returns_one_entity()
+    {
+        $this->em->registerModel( $this->friend );
+        $friend1 = $this->em->newEntity( 'Friend', 1 );
+        $friend2 = $this->em->newEntity( 'Friend', 1 );
+        $this->assertNotSame( $friend1, $friend2 );
+
+        $this->em->register( $friend1 );
+        $this->em->register( $friend2 );
+        $this->assertSame( $friend1, $friend2 );
+    }
     // +----------------------------------------------------------------------+
 }
