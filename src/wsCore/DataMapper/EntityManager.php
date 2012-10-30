@@ -77,11 +77,17 @@ class EntityManager
     //  Managing Entities
     // +----------------------------------------------------------------------+
     /**
-     * @param EntityInterface $entity
+     * @param EntityInterface|EntityInterface[] $entity
      * @return EntityManager
      */
     public function register( &$entity )
     {
+        if( is_array( $entity ) ) {
+            foreach( $entity as &$ent ) {
+                $this->register( $ent );
+            }
+            return $this;
+        }
         $cenaId = $this->getCenaId( $entity );
         if( array_key_exists( $cenaId, $this->entities ) ) {
             $entity = $this->entities[ $cenaId ];
@@ -119,7 +125,6 @@ class EntityManager
     }
 
     /**
-     * TODO: think about getting DataRecord or EntityBase...
      * @param string $modelName
      * @param string $id
      * @return EntityInterface
@@ -191,7 +196,6 @@ class EntityManager
                 $this->setEntityProperty( $entity, 'type', 'get' );
             }
             else {
-                // TODO: remove id from update.
                 $id = $entity->_get_Id();
                 $model->update( $id, (array) $entity );
             }
