@@ -17,7 +17,7 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
 
     /** @var \wsTests\DataMapper\Model\Friend  */
     public $friend;
-
+    
     // +----------------------------------------------------------------------+
     function setUp()
     {
@@ -79,6 +79,17 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $this->em->save();
         $id1 = $this->em->getEntityProperty( $friend, 'id' );
         $this->assertEquals( '4', $id1 );
+    }
+    function test_em_registering_many_entities()
+    {
+        $friends = $this->friend->query()->select();
+        $this->assertTrue( is_array( $friends ) );
+        $this->assertEquals( 3, count( $friends ) );
+        
+        $this->em->register( $friends );
+        $registeredEntities = $this->em->returnEntities();
+        $this->assertEquals( 3, count( $registeredEntities ) );
+        $this->assertSame( $friends[0], $registeredEntities['Friend.get.1'] );
     }
     // +----------------------------------------------------------------------+
 }
