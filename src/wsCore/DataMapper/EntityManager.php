@@ -148,6 +148,7 @@ class EntityManager
         if( !$id ) $id = $this->newId++;
         $this->setEntityProperty( $entity, 'id'  , $id );
         $this->setEntityProperty( $entity, 'type', 'new' );
+        $this->register( $entity );
         return $entity;
     }
 
@@ -185,14 +186,14 @@ class EntityManager
             $type   = $entity->_get_Type();
             $dao   = $this->getModel( $entity );
             if( $type == 'new' ) {
-                $id = $dao->insert( $entity );
+                $id = $dao->insert( (array) $entity );
                 $this->setEntityProperty( $entity, 'id'  , $id );
                 $this->setEntityProperty( $entity, 'type', 'get' );
             }
             else {
                 // TODO: remove id from update.
                 $id     = $entity->_get_Id();
-                $dao->update( $id, $entity );
+                $dao->update( $id, (array) $entity );
             }
         }
         return $this;
