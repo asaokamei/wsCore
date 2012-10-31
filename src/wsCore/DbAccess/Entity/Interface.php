@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DataMapper;
 
-interface EntityInterface
+interface Entity_Interface
 {
     public function _get_Model();
     public function _get_Type();

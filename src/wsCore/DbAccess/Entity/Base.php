@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DataMapper;
 
-abstract class EntityBase implements EntityInterface
+abstract class Entity_Base implements EntityInterface
 {
     /** @var null|string  */
     protected $_model = null;
