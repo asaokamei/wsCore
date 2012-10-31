@@ -389,7 +389,7 @@ class Dao
     }
 
     /**
-     * @param \wsCore\DataMapper\EntityBase $entity
+     * @param \wsCore\DataMapper\EntityInterface $entity
      * @return null|string
      */
     public function getId( $entity ) {
