@@ -117,6 +117,7 @@ class EntityManager
             }
             return $this;
         }
+        $this->setupEntity( $entity );
         $cenaId = $this->getCenaId( $entity );
         if( array_key_exists( $cenaId, $this->entities ) ) {
             $entity = $this->entities[ $cenaId ];
@@ -128,6 +129,27 @@ class EntityManager
     }
 
     /**
+     * @param EntityInterface $entity
+     * @param string $type
+     * @param string $id
+     */
+    public function setupEntity( $entity, $type=null, $id=null )
+    {
+        if( !$entity->_get_Type() ) {
+            if( !$type ) $type = self::TYPE_NEW;
+            $this->setEntityProperty( $entity, 'type', $type );
+        }
+        $type = $entity->_get_Type();
+        if( !$entity->_get_Id() ) {
+            $model = $this->getModel( $entity->_get_Model() );
+            if( !$id ) {
+                if( $type == self::TYPE_NEW ) $id = $this->newId++;
+                else $id = $model->getId( $entity );
+            }
+            $this->setEntityProperty( $entity, 'id', $id );
+        }
+    }
+    /**
      * @param string $modelName
      * @param string $id
      * @return EntityInterface
@@ -137,8 +159,7 @@ class EntityManager
         $model = $this->getModel( $modelName );
         /** @var $entity EntityInterface */
         $entity = $model->find( $id );
-        $this->setEntityProperty( $entity, 'id'  , $id );
-        $this->setEntityProperty( $entity, 'type', self::TYPE_GET );
+        $this->setupEntity( $entity, self::TYPE_GET, $id );
         $this->register( $entity );
         return $entity;
     }
@@ -153,9 +174,7 @@ class EntityManager
         $model = $this->getModel( $modelName );
         /** @var $entity EntityInterface */
         $entity = $model->getRecord();
-        if( !$id ) $id = $this->newId++;
-        $this->setEntityProperty( $entity, 'id'  , $id );
-        $this->setEntityProperty( $entity, 'type', self::TYPE_NEW );
+        $this->setupEntity( $entity, self::TYPE_NEW, $id );
         $this->register( $entity );
         return $entity;
     }
@@ -170,17 +189,12 @@ class EntityManager
         $this->setupReflection( $entity );
         $model  = $entity->_get_Model();
         $type   = $entity->_get_Type();
-        if( !$type ) {
-            $type = self::TYPE_NEW;
-            $this->setEntityProperty( $entity, 'type', $type );
-        }
         $id     = $entity->_get_Id();
-        if( !$id && $type == self::TYPE_GET ) {
-            throw new \RuntimeException( 'id not set in entity from database' );
-        }
         if( !$id ) {
-            $id = $this->newId++;
-            $this->setEntityProperty( $entity, 'id', $id );
+            throw new \RuntimeException( 'entity without id' );
+        }
+        if( !$type ) {
+            throw new \RuntimeException( 'entity without type' );
         }
         $cenaId = "$model.$type.$id";
         return $cenaId;
