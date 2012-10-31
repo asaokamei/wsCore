@@ -379,7 +379,7 @@ class DataRecord implements \ArrayAccess
     public function relation( $name )
     {
         if( !isset( $this->relations[ $name ] ) ) {
-            $this->relations[ $name ] = Relation::getRelation( $this, $this->dao->getRelationInfo(), $name );
+            $this->relations[ $name ] = $this->dao->relation( $this, $name );
         }
         return $this->relations[ $name ];
     }

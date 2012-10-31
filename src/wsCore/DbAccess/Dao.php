@@ -441,5 +441,15 @@ class Dao
     public function getRelationInfo() {
         return $this->relations;
     }
+
+    /**
+     * @param \wsCore\DataMapper\EntityBase|DataRecord $source
+     * @param string $name
+     * @return Relation_Interface
+     */
+    public function relation( $source, $name )
+    {
+        return Relation::getRelation( $source, $this->relations, $name );
+    }
     // +----------------------------------------------------------------------+
 }
