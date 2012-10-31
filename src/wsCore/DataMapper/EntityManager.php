@@ -101,18 +101,6 @@ class EntityManager
         return $this;
     }
 
-    /**
-     * @param string $model
-     * @param string $type
-     * @param null|string $id
-     * @return EntityInterface
-     */
-    public function entity( $model, $type, $id=NULL )
-    {
-        $method = strtolower( $type ) . 'Entity';
-        return $this->$method( $model, $id );
-    }
-
     public  function setEntityProperty( $entity, $prop, $value ) {
         /** @var $ref \ReflectionProperty */
         $class = get_class( $entity );
