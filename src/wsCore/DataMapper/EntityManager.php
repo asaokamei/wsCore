@@ -132,22 +132,32 @@ class EntityManager
      * @param EntityInterface $entity
      * @param string $type
      * @param string $id
+     * @return \wsCore\DataMapper\EntityManager
      */
     public function setupEntity( $entity, $type=null, $id=null )
     {
-        if( !$entity->_get_Type() ) {
+        if( $type ) {
+            $this->setEntityProperty( $entity, 'type', $type );
+        }
+        elseif( !$entity->_get_Type() ) {
             if( !$type ) $type = self::TYPE_NEW;
             $this->setEntityProperty( $entity, 'type', $type );
         }
         $type = $entity->_get_Type();
-        if( !$entity->_get_Id() ) {
-            $model = $this->getModel( $entity->_get_Model() );
-            if( !$id ) {
-                if( $type == self::TYPE_NEW ) $id = $this->newId++;
-                else $id = $model->getId( $entity );
+        if( $id ) {
+            $this->setEntityProperty( $entity, 'id', $id );
+        }
+        elseif( !$entity->_get_Id() ) {
+            if( !$id && $type == self::TYPE_NEW ) {
+                $id = $this->newId++;
+            }
+            elseif( !$id && $type == self::TYPE_GET ) {
+                $model = $this->getModel( $entity->_get_Model() );
+                $id = $model->getId( $entity );
             }
             $this->setEntityProperty( $entity, 'id', $id );
         }
+        return $this;
     }
     /**
      * @param string $modelName
@@ -213,8 +223,7 @@ class EntityManager
             $model  = $this->getModel( $entity );
             if( $type == self::TYPE_NEW ) {
                 $id = $model->insert( (array) $entity );
-                $this->setEntityProperty( $entity, 'id'  , $id );
-                $this->setEntityProperty( $entity, 'type', self::TYPE_GET );
+                $this->setupEntity( $entity, self::TYPE_GET , $id );
             }
             else {
                 $id = $entity->_get_Id();
