@@ -33,6 +33,7 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     }
     function test_Em_registers_new_entity()
     {
+        $this->em->registerModel( $this->friend );
         $friend = $this->friend->getRecord();
         $idEm = $this->em->returnNewId();
         $this->em->register( $friend );
