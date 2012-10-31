@@ -3,6 +3,9 @@ namespace wsCore\DataMapper;
 
 class EntityManager
 {
+    const TYPE_GET = 'get';
+    const TYPE_NEW = 'new';
+
     /** @var \wsCore\DbAccess\Dao[] */
     protected $models = array();
 
@@ -135,7 +138,7 @@ class EntityManager
         /** @var $entity EntityInterface */
         $entity = $model->find( $id );
         $this->setEntityProperty( $entity, 'id'  , $id );
-        $this->setEntityProperty( $entity, 'type', 'get' );
+        $this->setEntityProperty( $entity, 'type', self::TYPE_GET );
         $this->register( $entity );
         return $entity;
     }
@@ -152,13 +155,14 @@ class EntityManager
         $entity = $model->getRecord();
         if( !$id ) $id = $this->newId++;
         $this->setEntityProperty( $entity, 'id'  , $id );
-        $this->setEntityProperty( $entity, 'type', 'new' );
+        $this->setEntityProperty( $entity, 'type', self::TYPE_NEW );
         $this->register( $entity );
         return $entity;
     }
 
     /**
      * @param EntityInterface $entity
+     * @throws \RuntimeException
      * @return string
      */
     public function getCenaId( $entity )
@@ -167,11 +171,14 @@ class EntityManager
         $model  = $entity->_get_Model();
         $type   = $entity->_get_Type();
         if( !$type ) {
-            $type = 'new';
+            $type = self::TYPE_NEW;
             $this->setEntityProperty( $entity, 'type', $type );
         }
         $id     = $entity->_get_Id();
-        if( !$id && $type == 'new' ) {
+        if( !$id && $type == self::TYPE_GET ) {
+            throw new \RuntimeException( 'id not set in entity from database' );
+        }
+        if( !$id ) {
             $id = $this->newId++;
             $this->setEntityProperty( $entity, 'id', $id );
         }
@@ -190,10 +197,10 @@ class EntityManager
         {
             $type   = $entity->_get_Type();
             $model  = $this->getModel( $entity );
-            if( $type == 'new' ) {
+            if( $type == self::TYPE_NEW ) {
                 $id = $model->insert( (array) $entity );
                 $this->setEntityProperty( $entity, 'id'  , $id );
-                $this->setEntityProperty( $entity, 'type', 'get' );
+                $this->setEntityProperty( $entity, 'type', self::TYPE_GET );
             }
             else {
                 $id = $entity->_get_Id();
