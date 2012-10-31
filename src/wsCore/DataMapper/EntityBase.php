@@ -23,15 +23,13 @@ abstract class EntityBase implements EntityInterface
      */
     public function __construct( $model=null, $type=null )
     {
-        if( $model ) {
-            if( !isset( $this->_identifier ) ) {
-                $this->_identifier = $model->getId( $this );
-            }
-        }
-        if( $type && !isset( $this->_type ) ) $this->_type = $type;
         if( !isset( $this->_model ) ) {
             throw new \RuntimeException( 'model must be defined in Entity' );
         }
+        if( $model ) {
+            $this->_identifier = $model->getId( $this );
+        }
+        if( $type ) $this->_type = $type;
     }
 
     /**
