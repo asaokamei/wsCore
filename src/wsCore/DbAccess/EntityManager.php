@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DataMapper;
+namespace wsCore\DbAccess;
 
 class EntityManager
 {
@@ -9,7 +9,7 @@ class EntityManager
     /** @var \wsCore\DbAccess\Dao[] */
     protected $models = array();
 
-    /** @var EntityInterface[] */
+    /** @var Entity_Interface[] */
     protected $entities = array();
 
     /** @var \ReflectionProperty[][] */
@@ -33,16 +33,16 @@ class EntityManager
     }
 
     /**
-     * @param EntityInterface|string $entity
+     * @param Entity_Interface|string $entity
      * @return \wsCore\DbAccess\Dao
      */
     public function getModel( $entity ) {
-        $model = ( $entity instanceof EntityInterface ) ? $entity->_get_Model(): $entity;
+        $model = ( $entity instanceof Entity_Interface ) ? $entity->_get_Model(): $entity;
         return $this->models[ $model ];
     }
 
     /**
-     * @param EntityInterface|string $entity
+     * @param Entity_Interface|string $entity
      * @return string
      */
     public function getModelName( $entity ) {
@@ -54,7 +54,7 @@ class EntityManager
     }
 
     /**
-     * @param EntityInterface|string $entity
+     * @param Entity_Interface|string $entity
      * @return EntityManager
      */
     public function setupReflection( $entity )
@@ -77,10 +77,10 @@ class EntityManager
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param Entity_Interface $entity
      * @param string $prop
      * @param string $value
-     * @return \wsCore\DataMapper\EntityManager
+     * @return \wsCore\DbAccess\EntityManager
      */
     public  function setEntityProperty( $entity, $prop, $value ) {
         /** @var $ref \ReflectionProperty */
@@ -91,7 +91,7 @@ class EntityManager
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param Entity_Interface $entity
      * @param string $prop
      * @return mixed
      */
@@ -106,7 +106,7 @@ class EntityManager
     //  Managing Entities
     // +----------------------------------------------------------------------+
     /**
-     * @param EntityInterface|EntityInterface[] $entity
+     * @param Entity_Interface|Entity_Interface[] $entity
      * @return EntityManager
      */
     public function register( &$entity )
@@ -129,12 +129,12 @@ class EntityManager
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param Entity_Interface $entity
      * @param string $type
      * @param string $id
-     * @return \wsCore\DataMapper\EntityManager
+     * @return \wsCore\DbAccess\EntityManager
      */
-    public function setupEntity( $entity, $type=null, $id=null )
+    public function setupEntity( $entity, $type=NULL, $id=NULL )
     {
         if( $type ) {
             $this->setEntityProperty( $entity, 'type', $type );
@@ -162,12 +162,12 @@ class EntityManager
     /**
      * @param string $modelName
      * @param string $id
-     * @return EntityInterface
+     * @return Entity_Interface
      */
     public function getEntity( $modelName, $id )
     {
         $model = $this->getModel( $modelName );
-        /** @var $entity EntityInterface */
+        /** @var $entity Entity_Interface */
         $entity = $model->find( $id );
         $this->setupEntity( $entity, self::TYPE_GET, $id );
         $this->register( $entity );
@@ -177,12 +177,12 @@ class EntityManager
     /**
      * @param string      $modelName
      * @param null|string $id
-     * @return EntityInterface
+     * @return Entity_Interface
      */
     public function newEntity( $modelName, $id=NULL )
     {
         $model = $this->getModel( $modelName );
-        /** @var $entity EntityInterface */
+        /** @var $entity Entity_Interface */
         $entity = $model->getRecord();
         $this->setupEntity( $entity, self::TYPE_NEW, $id );
         $this->register( $entity );
@@ -190,7 +190,7 @@ class EntityManager
     }
 
     /**
-     * @param EntityInterface $entity
+     * @param Entity_Interface $entity
      * @throws \RuntimeException
      * @return string
      */
@@ -234,8 +234,8 @@ class EntityManager
     }
 
     /**
-     * @param EntityInterface $entity
-     * @param string $name
+     * @param Entity_Interface $entity
+     * @param string           $name
      * @return \wsCore\DbAccess\Relation_Interface
      */
     public function relation( $entity, $name )

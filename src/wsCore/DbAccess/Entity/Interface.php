@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DataMapper;
+namespace wsCore\DbAccess;
 
 interface Entity_Interface
 {

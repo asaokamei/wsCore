@@ -145,7 +145,7 @@ class Dao
     }
 
     /**
-     * @return \wsCore\DataMapper\EntityInterface|DataRecord
+     * @return \wsCore\DataMapper\Entity_Interface|DataRecord
      */
     public function getRecord() {
         /** @var $record \wsCore\DbAccess\DataRecord */
@@ -389,12 +389,12 @@ class Dao
     }
 
     /**
-     * @param \wsCore\DataMapper\EntityInterface $entity
+     * @param \wsCore\DataMapper\Entity_Interface $entity
      * @return null|string
      */
     public function getId( $entity ) {
         $idName = $this->id_name;
-        $id = ( isset( $entity->$idName ) ) ? $entity->$idName: null;
+        $id = ( isset( $entity->$idName ) ) ? $entity->$idName: NULL;
         return $id;
     }
     /**
@@ -436,7 +436,7 @@ class Dao
     }
 
     /**
-     * @param \wsCore\DataMapper\EntityInterface|DataRecord $source
+     * @param \wsCore\DataMapper\Entity_Interface|DataRecord $source
      * @param string $name
      * @return Relation_Interface
      */

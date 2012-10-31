@@ -12,7 +12,7 @@ class Core
         'Validator' => '\wsCore\Validator\Validator',
         'DataIO'    => '\wsCore\Validator\DataIO',
         'Selector'  => '\wsCore\Html\Selector',
-        'EntityManager' => '\wsCore\DataMapper\EntityManager',
+        'EntityManager' => '\wsCore\DbAccess\EntityManager',
         '' => '',
     );
 
