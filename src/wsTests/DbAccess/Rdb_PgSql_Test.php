@@ -24,7 +24,7 @@ class Rdb_PgSql_Test extends \PHPUnit_Framework_TestCase
         $test = "DROP TABLE IF EXISTS test;";
         $pdo->query( $test );
 
-        $test = "CREATE TABLE IF NOT EXISTS test ( id int, text text );";
+        $test = "CREATE TABLE test ( id int, text text );";
         $pdo->query( $test );
         
         // insert and select
