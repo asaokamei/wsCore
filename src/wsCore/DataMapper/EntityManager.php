@@ -232,4 +232,17 @@ class EntityManager
         }
         return $this;
     }
+
+    /**
+     * @param EntityInterface $entity
+     * @param string $name
+     * @return \wsCore\DbAccess\Relation_Interface
+     */
+    public function relation( $entity, $name )
+    {
+        $model = $this->getModel( $entity->_get_Model() );
+        $relation = $model->relation( $entity, $name );
+        $entity->setRelation( $name, $relation );
+        return $relation;
+    }
 }

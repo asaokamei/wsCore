@@ -443,7 +443,7 @@ class Dao
     }
 
     /**
-     * @param \wsCore\DataMapper\EntityBase|DataRecord $source
+     * @param \wsCore\DataMapper\EntityInterface|DataRecord $source
      * @param string $name
      * @return Relation_Interface
      */
