@@ -436,13 +436,6 @@ class Dao
     }
 
     /**
-     * @return array
-     */
-    public function getRelationInfo() {
-        return $this->relations;
-    }
-
-    /**
      * @param \wsCore\DataMapper\EntityInterface|DataRecord $source
      * @param string $name
      * @return Relation_Interface
