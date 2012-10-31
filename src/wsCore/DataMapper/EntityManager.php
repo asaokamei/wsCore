@@ -34,6 +34,27 @@ class EntityManager
 
     /**
      * @param EntityInterface|string $entity
+     * @return \wsCore\DbAccess\Dao
+     */
+    public function getModel( $entity ) {
+        $model = ( $entity instanceof EntityInterface ) ? $entity->_get_Model(): $entity;
+        return $this->models[ $model ];
+    }
+
+    /**
+     * @param EntityInterface|string $entity
+     * @return string
+     */
+    public function getModelName( $entity ) {
+        $model = ( is_object( $entity ) ) ? get_class( $entity ) : $entity;
+        if( strpos( $model, '\\' ) !== FALSE ) {
+            $model = substr( $model, strrpos( $model, '\\' )+1 );
+        }
+        return $model;
+    }
+
+    /**
+     * @param EntityInterface|string $entity
      * @return EntityManager
      */
     public function setupReflection( $entity )
@@ -54,26 +75,31 @@ class EntityManager
         }
         return $this;
     }
-    
+
     /**
-     * @param EntityInterface|string $entity
-     * @return \wsCore\DbAccess\Dao
+     * @param EntityInterface $entity
+     * @param string $prop
+     * @param string $value
+     * @return \wsCore\DataMapper\EntityManager
      */
-    public function getModel( $entity ) {
-        $model = ( $entity instanceof EntityInterface ) ? $entity->_get_Model(): $entity;
-        return $this->models[ $model ];
+    public  function setEntityProperty( $entity, $prop, $value ) {
+        /** @var $ref \ReflectionProperty */
+        $class = get_class( $entity );
+        $ref = $this->reflections[ $class ][ $prop ];
+        $ref->setValue( $entity, $value );
+        return $this;
     }
 
     /**
-     * @param EntityInterface|string $entity
-     * @return string
+     * @param EntityInterface $entity
+     * @param string $prop
+     * @return mixed
      */
-    public function getModelName( $entity ) {
-        $model = ( is_object( $entity ) ) ? get_class( $entity ) : $entity;
-        if( strpos( $model, '\\' ) !== FALSE ) {
-            $model = substr( $model, strrpos( $model, '\\' )+1 );
-        }
-        return $model;
+    public function getEntityProperty( $entity, $prop ) {
+        /** @var $ref \ReflectionProperty */
+        $class = get_class( $entity );
+        $ref = $this->reflections[ $class ][ $prop ];
+        return $ref->getValue( $entity );
     }
 
     // +----------------------------------------------------------------------+
@@ -99,20 +125,6 @@ class EntityManager
             $this->entities[ $cenaId ] = $entity;
         }
         return $this;
-    }
-
-    public  function setEntityProperty( $entity, $prop, $value ) {
-        /** @var $ref \ReflectionProperty */
-        $class = get_class( $entity );
-        $ref = $this->reflections[ $class ][ $prop ];
-        $ref->setValue( $entity, $value );
-    }
-
-    public function getEntityProperty( $entity, $prop ) {
-        /** @var $ref \ReflectionProperty */
-        $class = get_class( $entity );
-        $ref = $this->reflections[ $class ][ $prop ];
-        return $ref->getValue( $entity );
     }
 
     /**
