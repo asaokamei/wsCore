@@ -15,7 +15,24 @@ abstract class EntityBase implements EntityInterface
     /** @var \wsCore\DbAccess\Relation_Interface[] */
     protected $_relations = array();
 
-    public function __construct() {}
+    /**
+     * TODO: think if this is the right place to set _type and _identifier.
+     * @param null|\wsCore\DbAccess\Dao $model
+     * @param null|string               $type
+     * @throws \RuntimeException
+     */
+    public function __construct( $model=null, $type=null )
+    {
+        if( $model ) {
+            if( !isset( $this->_identifier ) ) {
+                $this->_identifier = $model->getId( $this );
+            }
+        }
+        if( $type && !isset( $this->_type ) ) $this->_type = $type;
+        if( !isset( $this->_model ) ) {
+            throw new \RuntimeException( 'model must be defined in Entity' );
+        }
+    }
 
     /**
      * @return null|string

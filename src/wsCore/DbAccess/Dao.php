@@ -89,7 +89,7 @@ class Dao
     public function __construct( $query, $selector )
     {
         $this->query = $query;
-        $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this ) );
+        $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this, 'get' ) );
         $this->selectorObj= $selector;
         $this->prepare();
         // simple object pooling. 
@@ -140,7 +140,7 @@ class Dao
      * @return \wsCore\DbAccess\Query
      */
     public function query() {
-        $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this ) );
+        $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this, 'get' ) );
         return $this->query->table( $this->table, $this->id_name );
     }
 
@@ -388,6 +388,15 @@ class Dao
         return $this->id_name;
     }
 
+    /**
+     * @param \wsCore\DataMapper\EntityBase $entity
+     * @return null|string
+     */
+    public function getId( $entity ) {
+        $idName = $this->id_name;
+        $id = ( isset( $entity->$idName ) ) ? $entity->$idName: null;
+        return $id;
+    }
     /**
      * @param string $class
      * @return string

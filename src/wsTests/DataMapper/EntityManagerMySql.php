@@ -87,7 +87,7 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $this->em->register( $friend );
         $registeredEntities = $this->em->returnEntities();
         $this->assertEquals( 1, count( $registeredEntities ) );
-        //$this->assertSame( $friends[0], $registeredEntities['Friend.get.1'] );
+        $this->assertSame( $friend, $registeredEntities['Friend.get.1'] );
     }
     function test_em_registering_many_entities()
     {
@@ -98,7 +98,7 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $this->em->register( $friends );
         $registeredEntities = $this->em->returnEntities();
         $this->assertEquals( 3, count( $registeredEntities ) );
-        //$this->assertSame( $friends[0], $registeredEntities['Friend.get.1'] );
+        $this->assertSame( $friends[0], $registeredEntities['Friend.get.1'] );
     }
     // +----------------------------------------------------------------------+
 }
