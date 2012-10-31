@@ -172,11 +172,11 @@ class Query_PgSql_Test extends \PHPUnit_Framework_TestCase
         );
         $this->query->execPrepare( $prepare );
         $this->query->execExecute( $values );
-        $id1 = $this->query->lastId( $this->table );
+        $id1 = $this->query->lastId( $this->table . '_id_seq' );
         $this->assertTrue( $id1 > 0 );
 
         $this->query->execExecute( $values );
-        $id2 = $this->query->lastId( $this->table );
+        $id2 = $this->query->lastId( $this->table . '_id_seq' );
         $this->assertNotEquals( $id2, $id1 );
         $this->assertEquals( $id2, $id1 + 1 );
     }
@@ -189,11 +189,11 @@ class Query_PgSql_Test extends \PHPUnit_Framework_TestCase
                 ( 'test query', 40, '1990-01-02', 'not null' );
         ";
         $this->query->execSQL( $insert );
-        $id1 = $this->query->lastId( $this->table );
+        $id1 = $this->query->lastId( $this->table . '_id_seq' );
         $this->assertTrue( $id1 > 0 );
 
         $this->query->execSQL( $insert );
-        $id2 = $this->query->lastId( $this->table );
+        $id2 = $this->query->lastId( $this->table . '_id_seq' );
         $this->assertNotEquals( $id2, $id1 );
         $this->assertEquals( $id2, $id1 + 1 );
     }

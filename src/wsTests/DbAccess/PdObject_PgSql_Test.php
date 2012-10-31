@@ -200,7 +200,7 @@ class PdObject_PgSql_Test extends \PHPUnit_Framework_TestCase
             ':no_null' => 'never null',
         );
         $this->pdo->exec( $prepare, $values );
-        $id1 = $this->pdo->lastId( $this->table );
+        $id1 = $this->pdo->lastId( $this->table . '_id_seq' );
         $this->assertTrue( $id1 > 0 );
         
         $select = "SELECT * FROM {$this->table} WHERE id='{$id1}'";
@@ -219,7 +219,7 @@ class PdObject_PgSql_Test extends \PHPUnit_Framework_TestCase
             '{$data{':name'}}', '{$data{':age'}}', '{$data{':bdate'}}', '{$data{':no_null'}}'
         )";
         $this->pdo->exec( $insert );
-        $id = $this->pdo->lastId( $this->table );
+        $id = $this->pdo->lastId( $this->table . '_id_seq' );
         $this->assertEquals( '1', $id );
         
         $select = "SELECT * FROM {$this->table} WHERE id='{$id}'";
@@ -277,7 +277,7 @@ class PdObject_PgSql_Test extends \PHPUnit_Framework_TestCase
             ':no_null' => \PDO::PARAM_STR,
         );
         $this->pdo->exec( $prepare, $values, $types );
-        $id1 = $this->pdo->lastId( $this->table );
+        $id1 = $this->pdo->lastId( $this->table . '_id_seq' );
         $this->assertTrue( $id1 > 0 );
 
         $select = "SELECT * FROM {$this->table} WHERE id='{$id1}'";

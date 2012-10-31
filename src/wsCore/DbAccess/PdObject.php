@@ -146,7 +146,7 @@ class PdObject
      * @return string
      */
     public function lastId( $name=null ) {
-        return $this->pdoObj->lastInsertId( $name . '_id_seq' );
+        return $this->pdoObj->lastInsertId( $name );
     }
 
     // +----------------------------------------------------------------------+

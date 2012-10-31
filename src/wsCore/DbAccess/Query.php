@@ -81,7 +81,7 @@ class Query
      * @return string
      */
     public function lastId( $name=null ) {
-        if( !$name ) $name = $this->table;
+        if( !$name ) $name = $this->table . '_id_seq';
         return $this->pdoObj->lastId( $name );
     }
 
