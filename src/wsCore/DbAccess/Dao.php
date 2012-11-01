@@ -265,7 +265,7 @@ class Dao
      */
     public function insertId( $values )
     {
-        $this->unsetKey( $values, $this->id_name );
+        $values = $this->unsetKey( $values, $this->id_name );
         $this->insertValue( $values );
         $id = $this->query->lastId();
         $this->setKey( $values, $this->id_name, $id );
@@ -464,6 +464,7 @@ class Dao
         elseif( is_array( $arr ) ) {
             unset( $arr[ $key ] );
         }
+        return $arr;
     }
     
     public function setKey( $arr, $key, $val ) {
