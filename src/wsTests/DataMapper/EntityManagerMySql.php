@@ -17,6 +17,9 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
 
     /** @var \wsTests\DataMapper\Model\Friend  */
     public $friend;
+
+    /** @var \wsTests\DataMapper\Model\Contact */
+    public $contact;
     
     // +----------------------------------------------------------------------+
     function setUp()
@@ -28,8 +31,12 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $this->query  = Core::get( 'Query' );
         $this->em     = Core::get( '\wsTests\DataMapper\Mock\EntityManager' );
         $this->friend = Core::get( '\wsTests\DataMapper\Model\Friend' );
+        $this->contact= Core::get( '\wsTests\DataMapper\Model\Contact' );
+        $this->em->registerModel( $this->friend );
+        $this->em->registerModel( $this->contact );
         class_exists( '\wsTests\DataMapper\SetUp' );
         $this->setupFriend();
+        $this->setupContact();
     }
 
     /**
@@ -46,10 +53,23 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
             $this->query->table( $table )->insert( $data );
         }
     }
+
+    /**
+     * @param string $table
+     * @param int $max
+     */
+    function setupContact( $table='mapContact', $max=3 )
+    {
+        $this->query->execSQL( SetUp::clearContact( $table ) );
+        $this->query->execSQL( SetUp::setupContact( $table ) );
+        for( $idx = 0; $idx < $max; $idx ++ ) {
+            $data = SetUp::makeContact( $idx );
+            $this->query->table( $table )->insert( $data );
+        }
+    }
     // +----------------------------------------------------------------------+
     function test_em_getEntity_gets_an_entity()
     {
-        $this->em->registerModel( $this->friend );
         $idx    = 1;
         $friend = $this->em->getEntity( 'Friend', $idx );
         $this->assertEquals( 'wsTests\DataMapper\Entity\Friend', get_class( $friend ) );
@@ -58,7 +78,6 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
     }
     function test_em_saves_existing_entity_to_db()
     {
-        $this->em->registerModel( $this->friend );
         $idx    = 2;
         /** @var $friend Entity\Friend */
         $friend = $this->em->getEntity( 'Friend', $idx );
@@ -72,7 +91,6 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
     function test_em_newEntity_saves_to_db()
     {
         /** @var $friend Entity\Friend */
-        $this->em->registerModel( $this->friend );
         $friend = $this->em->newEntity( 'Friend' );
         $friend->friend_name = 'my real friend';
         $friend->friend_bday = '1989-01-31';
@@ -99,6 +117,31 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $registeredEntities = $this->em->returnEntities();
         $this->assertEquals( 3, count( $registeredEntities ) );
         $this->assertSame( $friends[0], $registeredEntities['Friend.get.1'] );
+    }
+    function test_basic_contact_model_and_entity()
+    {
+        /** @var $contact Entity\Contact */
+        /** @var $contact2 Entity\Contact */
+        /** @var $contact3 Entity\Contact */
+        $contact = $this->contact->find(1);
+        $this->assertEquals( 1, $contact->contact_id );
+        $contact->friend_id = 10;
+        $this->em->register( $contact );
+        $this->em->save();
+
+        $contact2 = $this->contact->find(1);
+        $this->assertEquals( 1, $contact2->contact_id );
+        $this->assertEquals( 10, $contact2->friend_id );
+
+        $contact3 = $this->em->newEntity( 'Contact' );
+        $contact3->contact_info = 'this is new contact';
+        $contact3->friend_id    = 15;
+        $this->em->save();
+
+        $contact2 = $this->contact->find(4);
+        $this->assertEquals( 4, $contact2->contact_id );
+        $this->assertEquals( 15, $contact2->friend_id );
+        $this->assertEquals( 'this is new contact', $contact2->contact_info );
     }
     // +----------------------------------------------------------------------+
 }
