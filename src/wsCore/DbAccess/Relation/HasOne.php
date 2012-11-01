@@ -82,7 +82,7 @@ class Relation_HasOne implements Relation_Interface
     }
 
     /**
-     * @return array|DataRecord
+     * @return Entity_Interface[]
      */
     public function get()
     {
@@ -92,7 +92,7 @@ class Relation_HasOne implements Relation_Interface
     }
 
     /**
-     * @return void|DataRecord[]
+     * @return void|Entity_Interface[]
      */
     public function getJoinRecord() {}
 

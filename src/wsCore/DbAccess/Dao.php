@@ -75,7 +75,7 @@ class Dao
     /** @var \wsCore\Html\Selector|\Closure                                  */
     protected $selectorObj;
 
-    /** @var \wsCore\DbAccess\DataRecord    return class from Pdo            */
+    /** @var \wsCore\DbAccess\Entity_Interface    return class from Pdo            */
     public $recordClassName = 'wsCore\DbAccess\Entity_Generic';
 
     /** @var array|Dao                                                       */
@@ -153,12 +153,12 @@ class Dao
 
     /**
      * @param array $data
-     * @return \wsCore\DbAccess\Entity_Interface|DataRecord
+     * @return \wsCore\DbAccess\Entity_Interface
      */
     public function getRecord( $data=array() ) 
     {
-        /** @var $record \wsCore\DbAccess\DataRecord */
-        $record = new $this->recordClassName( $this, DataRecord::ID_TYPE_NEW );
+        /** @var $record \wsCore\DbAccess\Entity_Interface */
+        $record = new $this->recordClassName( $this, 'new' );
         if( !empty( $data ) ) {
             foreach( $data as $key => $val ) {
                 $record->$key = $val;
@@ -186,13 +186,13 @@ class Dao
     // +----------------------------------------------------------------------+
     /**
      * @param string $id
-     * @return DataRecord
+     * @return Entity_Interface
      */
     public function find( $id ) {
         $record = $this->query()
             ->id( $id )->limit(1)->select();
         $record = $record[0];
-        /** @var $record DataRecord */
+        /** @var $record Entity_Interface */
         return $record;
     }
 
@@ -476,7 +476,7 @@ class Dao
     }
 
     /**
-     * @param \wsCore\DbAccess\Entity_Interface|DataRecord $source
+     * @param \wsCore\DbAccess\Entity_Interface $source
      * @param string $name
      * @return Relation_Interface
      */
