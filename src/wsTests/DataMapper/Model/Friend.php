@@ -34,9 +34,9 @@ class Friend extends \wsCore\DbAccess\Dao
     protected $relations = array(
         'contact' => array(
             'relation_type' => 'HasRefs',
-            'source_column' => null, // use id name of source. 
+            'source_column' => NULL, // use id name of source. 
             'target_model'  => 'Dao_Contact',
-            'target_column' => null, // use source column. 
+            'target_column' => NULL, // use source column. 
         ),
         'group' => array(
             'relation_type' => 'HasJoined',
@@ -60,14 +60,16 @@ class Friend extends \wsCore\DbAccess\Dao
     
     // +----------------------------------------------------------------------+
     /**
-     * @param $query \wsCore\DbAccess\Query
-     * @param $selector \wsCore\DiContainer\Dimplet
+     * @param \wsCore\DbAccess\EntityManager $em
+     * @param                                $query    \wsCore\DbAccess\Query
+     * @param                                $selector \wsCore\DiContainer\Dimplet
+     * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query
      * @DimInjection Get Raw  Selector
      */
-    public function __construct( $query, $selector )
+    public function __construct( $em, $query, $selector )
     {
-        parent::__construct( $query, $selector );
+        parent::__construct( $em, $query, $selector );
     }
     public function recordClassName() {
         return $this->recordClassName;

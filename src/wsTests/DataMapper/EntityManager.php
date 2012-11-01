@@ -22,7 +22,8 @@ class EntityManager extends \PHPUnit_Framework_TestCase
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
-        $this->em     = Core::get( '\wsTests\DataMapper\Mock\EntityManager' );
+        Core::set( 'EntityManager', '\wsTests\DataMapper\Mock\EntityManager' );
+        $this->em     = Core::get( 'EntityManager' );
         $this->friend = Core::get( '\wsTests\DataMapper\Model\Friend' );
     }
     // +----------------------------------------------------------------------+
@@ -33,7 +34,6 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     }
     function test_Em_registers_new_entity()
     {
-        $this->em->registerModel( $this->friend );
         $friend = $this->friend->getRecord();
         $idEm = $this->em->returnNewId();
         $this->em->register( $friend );
@@ -60,19 +60,16 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     }
     function test_getModel_from_string()
     {
-        $this->em->registerModel( $this->friend );
         $model = $this->em->getModel( 'Friend' );
         $this->assertSame( $this->friend, $model );
     }
     function test_register_model_in_entity_manager()
     {
-        $this->em->registerModel( $this->friend );
         $models = $this->em->returnModels();
         $this->assertArrayHasKey( 'Friend', $models );
     }
     function test_em_newEntity_returns_entity()
     {
-        $this->em->registerModel( $this->friend );
         $friend = $this->em->newEntity( 'Friend' );
         $this->assertEquals( 'wsTests\DataMapper\Entity\Friend', get_class( $friend ) );
 
@@ -84,7 +81,6 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     }
     function test_em_register_same_entity_returns_one_entity()
     {
-        $this->em->registerModel( $this->friend );
         $friend1 = $this->em->newEntity( 'Friend', 1 );
         $friend2 = $this->em->newEntity( 'Friend', 1 );
         $this->assertSame( $friend1, $friend2 );

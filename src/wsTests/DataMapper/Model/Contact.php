@@ -34,9 +34,9 @@ class Contact extends \wsCore\DbAccess\Dao
     protected $relations = array(
         'friend' => array(
             'relation_type' => 'HasOne',
-            'source_column' => null, // use target_column.
+            'source_column' => NULL, // use target_column.
             'target_model'  => 'Dao_Friend',
-            'target_column' => null, // use target id name. 
+            'target_column' => NULL, // use target id name. 
         ),
     );
 
@@ -44,14 +44,16 @@ class Contact extends \wsCore\DbAccess\Dao
 
     // +----------------------------------------------------------------------+
     /**
-     * @param $query \wsCore\DbAccess\Query
+     * @param $em       \wsCore\DbAccess\EntityManager
+     * @param $query    \wsCore\DbAccess\Query
      * @param $selector \wsCore\DiContainer\Dimplet
+     * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query
      * @DimInjection Get Raw  Selector
      */
-    public function __construct( $query, $selector )
+    public function __construct( $em, $query, $selector )
     {
-        parent::__construct( $query, $selector );
+        parent::__construct( $em, $query, $selector );
     }
     public function recordClassName() {
         return $this->recordClassName;

@@ -28,12 +28,11 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
+        Core::set( 'EntityManager', '\wsTests\DataMapper\Mock\EntityManager' );
         $this->query  = Core::get( 'Query' );
-        $this->em     = Core::get( '\wsTests\DataMapper\Mock\EntityManager' );
+        $this->em     = Core::get( 'EntityManager' );
         $this->friend = Core::get( '\wsTests\DataMapper\Model\Friend' );
         $this->contact= Core::get( '\wsTests\DataMapper\Model\Contact' );
-        $this->em->registerModel( $this->friend );
-        $this->em->registerModel( $this->contact );
         class_exists( '\wsTests\DataMapper\SetUp' );
         class_exists( '\wsCore\DbAccess\Relation' );
         class_exists( '\wsCore\DbAccess\Relation_HasOne' );
