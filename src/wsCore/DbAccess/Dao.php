@@ -76,7 +76,7 @@ class Dao
     protected $selectorObj;
 
     /** @var \wsCore\DbAccess\DataRecord    return class from Pdo            */
-    public $recordClassName = 'wsCore\DbAccess\DataRecord';
+    public $recordClassName = 'wsCore\DbAccess\Entity_Generic';
 
     /** @var array|Dao                                                       */
     static $daoObjects = array();
