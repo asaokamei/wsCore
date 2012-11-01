@@ -175,15 +175,20 @@ class EntityManager
     }
 
     /**
-     * @param string      $modelName
-     * @param null|string $id
+     * @param string        $modelName
+     * @param array|string  $data
+     * @param null|string   $id
      * @return Entity_Interface
      */
-    public function newEntity( $modelName, $id=NULL )
+    public function newEntity( $modelName, $data=array(), $id=NULL )
     {
+        if( !is_array( $data ) ) {
+            $id = $data;
+            $data = array();
+        }
         $model = $this->getModel( $modelName );
         /** @var $entity Entity_Interface */
-        $entity = $model->getRecord();
+        $entity = $model->getRecord( $data );
         $this->setupEntity( $entity, self::TYPE_NEW, $id );
         $this->register( $entity );
         return $entity;
