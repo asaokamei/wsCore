@@ -152,11 +152,18 @@ class Dao
     }
 
     /**
+     * @param array $data
      * @return \wsCore\DbAccess\Entity_Interface|DataRecord
      */
-    public function getRecord() {
+    public function getRecord( $data=array() ) 
+    {
         /** @var $record \wsCore\DbAccess\DataRecord */
         $record = new $this->recordClassName( $this, DataRecord::ID_TYPE_NEW );
+        if( !empty( $data ) ) {
+            foreach( $data as $key => $val ) {
+                $record->$key = $val;
+            }
+        }
         return $record;
     }
 
