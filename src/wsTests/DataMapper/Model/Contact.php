@@ -1,10 +1,10 @@
 <?php
-namespace wsTests\DbAccess;
+namespace wsTests\DataMapper\Model;
 
-class Dao_Contact extends \wsCore\DbAccess\Dao
+class Contact extends \wsCore\DbAccess\Dao
 {
     /** @var string     name of database table     */
-    protected $table = 'contact';
+    protected $table = 'mapContact';
 
     /** @var string     name of primary key        */
     protected $id_name = 'contact_id';
@@ -39,7 +39,9 @@ class Dao_Contact extends \wsCore\DbAccess\Dao
             'target_column' => null, // use target id name. 
         ),
     );
-    
+
+    public $recordClassName = 'wsTests\DataMapper\Entity\Contact';
+
     // +----------------------------------------------------------------------+
     /**
      * @param $query \wsCore\DbAccess\Query
