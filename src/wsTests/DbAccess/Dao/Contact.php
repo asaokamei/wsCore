@@ -42,14 +42,16 @@ class Dao_Contact extends \wsCore\DbAccess\Dao
     
     // +----------------------------------------------------------------------+
     /**
-     * @param $query \wsCore\DbAccess\Query
+     * @param $em       \wsCore\DbAccess\EntityManager
+     * @param $query    \wsCore\DbAccess\Query
      * @param $selector \wsCore\DiContainer\Dimplet
+     * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query
      * @DimInjection Get Raw  Selector
      */
-    public function __construct( $query, $selector )
+    public function __construct( $em, $query, $selector )
     {
-        parent::__construct( $query, $selector );
+        parent::__construct( $em, $query, $selector );
     }
     public function recordClassName() {
         return $this->recordClassName;
