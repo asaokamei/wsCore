@@ -60,9 +60,9 @@ class Friend extends \wsCore\DbAccess\Dao
     
     // +----------------------------------------------------------------------+
     /**
-     * @param \wsCore\DbAccess\EntityManager $em
-     * @param                                $query    \wsCore\DbAccess\Query
-     * @param                                $selector \wsCore\DiContainer\Dimplet
+     * @param $em       \wsCore\DbAccess\EntityManager
+     * @param $query    \wsCore\DbAccess\Query
+     * @param $selector \wsCore\DiContainer\Dimplet
      * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query
      * @DimInjection Get Raw  Selector
