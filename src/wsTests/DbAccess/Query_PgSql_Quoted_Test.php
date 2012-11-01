@@ -16,12 +16,19 @@ class Query_PgSql_Quoted_Test extends \PHPUnit_Framework_TestCase
     var $table = 'test_query';
     var $column_list = '';
     // +----------------------------------------------------------------------+
-    public function setUp()
+    /**
+     * This method is called before the first test of this test class is run.
+     *
+     * @since Method available since Release 3.4.0
+     */
+    public static function setUpBeforeClass()
     {
-        $this->config = 'dsn=pgsql:host=localhost;dbname=test_wsCore;user=pg_admin;password=admin';
         Core::clear();
         Core::go();
-        Core::setPdo( $this->config );
+        Core::setPdo( 'dsn=pgsql:host=localhost;dbname=test_wsCore;user=pg_admin;password=admin' );
+    }
+    public function setUp()
+    {
         /** @var \wsCore\DbAccess\Query */
         \wsCore\DbAccess\Query::$pqDefault = 'quote';
         $this->query = Core::get( 'Query');
