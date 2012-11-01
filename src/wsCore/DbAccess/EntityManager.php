@@ -109,7 +109,7 @@ class EntityManager
      * @param Entity_Interface|Entity_Interface[] $entity
      * @return EntityManager
      */
-    public function register( &$entity )
+    public function register( $entity )
     {
         if( is_array( $entity ) ) {
             foreach( $entity as &$ent ) {
@@ -227,7 +227,7 @@ class EntityManager
             $type   = $entity->_get_Type();
             $model  = $this->getModel( $entity );
             if( $type == self::TYPE_NEW ) {
-                $id = $model->insert( (array) $entity );
+                $id = $model->insert( $entity );
                 $this->setupEntity( $entity, self::TYPE_GET , $id );
             }
             else {
