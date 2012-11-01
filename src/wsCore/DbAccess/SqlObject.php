@@ -14,7 +14,7 @@ class SqlObject
     public $join = array();
 
     /** @var string|array     columns to select in array or string     */
-    public $columns;
+    public $columns = array();
 
     /** @var array            values for insert/update in array        */
     public $values = array();
