@@ -131,8 +131,8 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         );
         $id = $this->friend->insert( $values );
         $data = $this->friend->find( $id );
-        $this->assertEquals( $values[ 'friend_name' ], $data[ 'friend_name' ] );
-        $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
+        $this->assertEquals( $values[ 'friend_name' ], $data->friend_name );
+        $this->assertEquals( $values[ 'friend_bday' ], $data->friend_bday );
         $this->assertNotEquals( $values[ 'friend_id' ], $id );
 
         $update = array(
@@ -141,8 +141,8 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         );
         $this->friend->update( $id, $update );
         $data = $this->friend->find( $id );
-        $this->assertEquals( $update[ 'friend_name' ], $data[ 'friend_name' ] );
-        $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
+        $this->assertEquals( $update[ 'friend_name' ], $data->friend_name );
+        $this->assertEquals( $values[ 'friend_bday' ], $data->friend_bday );
     }
     /**
      *
@@ -160,8 +160,8 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->friend->update( $id, $update );
         $data = $this->friend->find( $id );
 
-        $this->assertEquals( $update[ 'friend_name' ], $data[ 'friend_name' ] );
-        $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
+        $this->assertEquals( $update[ 'friend_name' ], $data->friend_name );
+        $this->assertEquals( $values[ 'friend_bday' ], $data->friend_bday );
     }
     /**
      *
@@ -175,8 +175,8 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $id = $this->friend->insert( $values );
         $data = $this->friend->find( $id );
 
-        $this->assertEquals( $values[ 'friend_name' ], $data[ 'friend_name' ] );
-        $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
+        $this->assertEquals( $values[ 'friend_name' ], $data->friend_name );
+        $this->assertEquals( $values[ 'friend_bday' ], $data->friend_bday );
         $this->assertTrue( is_object( $data ) );
         $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
 
@@ -187,8 +187,8 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $id = $this->friend->insert( $values );
         $data = $this->friend->find( $id );
 
-        $this->assertEquals( $values[ 'friend_name' ], $data[ 'friend_name' ] );
-        $this->assertEquals( $values[ 'friend_bday' ], $data[ 'friend_bday' ] );
+        $this->assertEquals( $values[ 'friend_name' ], $data->friend_name );
+        $this->assertEquals( $values[ 'friend_bday' ], $data->friend_bday );
         $this->assertTrue( is_object( $data ) );
         $this->assertEquals( $this->friend->recordClassName(), get_class( $data ) );
     }
