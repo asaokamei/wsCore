@@ -230,15 +230,21 @@ class Dao
         $values = $this->protect( $values );
         if( isset( $this->extraTypes[ 'updated_at' ] ) ) {
             foreach( $this->extraTypes[ 'updated_at' ] as $column ) {
-                $values[ $column ] = date( 'Y-m-d H:i:s' );
+                $this->setKey( $values, $column, date( 'Y-m-d H:i:s' ) );
             }
         }
         if( isset( $this->extraTypes[ 'created_at' ] ) ) {
             foreach( $this->extraTypes[ 'created_at' ] as $column ) {
-                $values[ $column ] = date( 'Y-m-d H:i:s' );
+                $this->setKey( $values, $column, date( 'Y-m-d H:i:s' ) );
             }
         }
-        $this->query()->insert( $values );
+        if( !is_array( $values ) ) {
+            $data = get_object_vars( $values );
+        }
+        else {
+            $data = $values;
+        }
+        $this->query()->insert( $data );
         $id = $this->arrGet( $values, $this->id_name, TRUE );
         return $id;
     }
@@ -259,11 +265,10 @@ class Dao
      */
     public function insertId( $values )
     {
-        if( isset( $values[ $this->id_name ] ) ) {
-            unset( $values[ $this->id_name ] );
-        }
+        $this->unsetKey( $values, $this->id_name );
         $this->insertValue( $values );
         $id = $this->query->lastId();
+        $this->setKey( $values, $this->id_name, $id );
         return $id;
     }
 
@@ -443,10 +448,31 @@ class Dao
      * @return mixed
      */
     public function arrGet( $arr, $key, $default=NULL ) {
-        if( array_key_exists( $key, $arr ) ) {
+        if( is_array( $arr ) && array_key_exists( $key, $arr ) ) {
             return $arr[ $key ];
         }
+        elseif( is_object( $arr ) && isset( $arr->$key ) ) {
+            return $arr->$key;
+        }
         return $default;
+    }
+    
+    public function unsetKey( $arr, $key ) {
+        if( is_object( $arr ) ) {
+            $arr->$key = null;
+        }
+        elseif( is_array( $arr ) ) {
+            unset( $arr[ $key ] );
+        }
+    }
+    
+    public function setKey( $arr, $key, $val ) {
+        if( is_object( $arr ) ) {
+            $arr->$key = $val;
+        }
+        elseif( is_array( $arr ) ) {
+            $arr[ $key ] = $val;
+        }
     }
 
     /**
