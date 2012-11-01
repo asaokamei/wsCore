@@ -148,7 +148,7 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
     {
         $contact = $this->contact->find(1);
         $friend = $this->friend->find(1);
-        //$this->em->relation( $contact, 'friend' )->set( $friend );
+        $this->em->relation( $contact, 'friend' )->set( $friend );
     }
     // +----------------------------------------------------------------------+
 }

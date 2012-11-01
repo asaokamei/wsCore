@@ -456,7 +456,7 @@ class Dao
      */
     public function relation( $source, $name )
     {
-        return Relation::getRelation( $source, $this->relations, $name );
+        return Relation::getRelation( $this->em, $source, $this->relations, $name );
     }
     // +----------------------------------------------------------------------+
 }

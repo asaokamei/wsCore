@@ -3,46 +3,48 @@ namespace wsCore\DbAccess;
 
 class Relation_HasOne implements Relation_Interface
 {
-    /** @var DataRecord */
+    /** @var EntityManager */
+    protected $em;
+    
+    /** @var Entity_Interface */
     protected $source;
     protected $sourceColumn;
 
-    /** @var DataRecord */
+    /** @var Entity_Interface */
     protected $target;
-    /** @var Dao */
-    protected $targetDao;
     protected $targetModel;
     protected $targetColumn;
 
-    protected $linked = false;
+    protected $linked = FALSE;
 
     /**
-     * @param DataRecord   $source
+     * @param EntityManager $em
+     * @param Entity_Interface   $source
      * @param array        $relInfo
      */
-    public function __construct( $source, $relInfo )
+    public function __construct( $em, $source, $relInfo )
     {
+        $this->em     = $em;
         $this->source = $source;
         $this->targetModel  = $relInfo[ 'target_model' ];
-        $this->targetDao    = $this->source->getDao()->getInstance( $this->targetModel );
         $this->targetColumn = isset( $relInfo[ 'target_column' ] ) ?
-            $relInfo[ 'target_column' ] : $this->targetDao->getIdName();
+            $relInfo[ 'target_column' ] : $this->em->getModel( $this->targetModel )->getIdName();
         $this->sourceColumn = isset( $relInfo[ 'source_column' ] ) ?
             $relInfo[ 'source_column' ] : $this->targetColumn;
     }
 
     /**
-     * @param \wsCore\DbAccess\DataRecord $target
+     * @param Entity_Interface $target
      * @throws \RuntimeException
      * @return \wsCore\DbAccess\Relation_HasOne|\wsCore\DbAccess\Relation_Interface
      */
     public function set( $target ) 
     {
-        if( $target->getModel() != $this->targetModel ) {
+        if( $target->_get_Model() != $this->targetModel ) {
             throw new \RuntimeException( "target model not match! " );
         }
         $this->target = $target;
-        $this->linked = false;
+        $this->linked = FALSE;
         $this->link();
         return $this;
     }
@@ -51,16 +53,17 @@ class Relation_HasOne implements Relation_Interface
      * @param bool $save
      * @return Relation_HasOne
      */
-    public function link( $save=false )
+    public function link( $save=FALSE )
     {
         if( $this->linked )  return $this;
         if( !$this->source ) return $this;
         if( !$this->target ) return $this;
         // TODO: check if id is permanent or tentative.
-        $value = $this->target->get( $this->targetColumn );
+        $column = $this->targetColumn;
+        $value = $this->target->$column;
         $column = $this->sourceColumn;
         $this->source->$column = $value;
-        $this->linked = true;
+        $this->linked = TRUE;
         if( $save ) {
             die( "save in link not supported yet." );
             //$this->source->save();
@@ -83,8 +86,9 @@ class Relation_HasOne implements Relation_Interface
      */
     public function get()
     {
-        $value = $this->source->get( $this->sourceColumn );
-        return $this->targetDao->query()->w( $this->targetColumn )->eq( $value )->select();
+        $column = $this->sourceColumn;
+        $value = $this->source->$column;
+        return $this->em->getModel( $this->targetModel )->query()->w( $this->targetColumn )->eq( $value )->select();
     }
 
     /**

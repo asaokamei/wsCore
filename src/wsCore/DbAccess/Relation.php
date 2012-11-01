@@ -7,25 +7,26 @@ class Relation
     static $pool = array();
 
     /**
-     * @param DataRecord  $source
+     * @param EntityManager     $em
+     * @param Entity_Interface  $source
      * @param array       $relations
      * @param string      $name
      * @param null|string $type
-     * @return Relation_Interface
      * @throws \RuntimeException
+     * @return Relation_Interface
      */
-    static public function getRelation( $source, $relations, $name, $type=NULL )
+    static public function getRelation( $em, $source, $relations, $name, $type=NULL )
     {
         if( empty( $relations ) ) {
             throw new \RuntimeException( "no relations. " );
         }
-        $relation = null;
+        $relation = NULL;
         foreach( $relations as $relName => $relInfo ) {
             if( $relName == $name ) {
                 $relInfo[ 'relation_name' ] = $name;
                 $type = $relInfo[ 'relation_type' ];
                 $class = '\wsCore\DbAccess\Relation_' . ucwords( $type );
-                $relation = new $class( $source, $relInfo );
+                $relation = new $class( $em, $source, $relInfo );
             }
         }
         if( is_null( $relation ) ) {
