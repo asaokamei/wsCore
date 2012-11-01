@@ -35,6 +35,8 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $this->em->registerModel( $this->friend );
         $this->em->registerModel( $this->contact );
         class_exists( '\wsTests\DataMapper\SetUp' );
+        class_exists( '\wsCore\DbAccess\Relation' );
+        class_exists( '\wsCore\DbAccess\Relation_HasOne' );
         $this->setupFriend();
         $this->setupContact();
     }
@@ -142,6 +144,12 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $this->assertEquals( 4, $contact2->contact_id );
         $this->assertEquals( 15, $contact2->friend_id );
         $this->assertEquals( 'this is new contact', $contact2->contact_info );
+    }
+    function test_relation_hasOne_contact_to_friend()
+    {
+        $contact = $this->contact->find(1);
+        $friend = $this->friend->find(1);
+        //$this->em->relation( $contact, 'friend' )->set( $friend );
     }
     // +----------------------------------------------------------------------+
 }
