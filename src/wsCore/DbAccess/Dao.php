@@ -8,6 +8,9 @@ namespace wsCore\DbAccess;
  */
 class Dao
 {
+    /** @var EntityManager                   manager for model/entity        */
+    protected $em;
+    
     /** @var string                          name of database table          */
     protected $table;
 
@@ -81,13 +84,16 @@ class Dao
     //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+
     /**
-     * @param $query Query
+     * @param $em       EntityManager
+     * @param $query    Query
      * @param $selector \wsCore\DiContainer\Dimplet
+     * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query
      * @DimInjection Get Raw  Selector
      */
-    public function __construct( $query, $selector )
+    public function __construct( $em, $query, $selector )
     {
+        $this->em    = $em;
         $this->query = $query;
         $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this, 'get' ) );
         $this->selectorObj= $selector;
@@ -95,6 +101,7 @@ class Dao
         // simple object pooling. 
         $class = $this->makeModelName( get_called_class() );
         static::$daoObjects[ $class ] = $this;
+        $em->registerModel( $this );
     }
 
     /**
