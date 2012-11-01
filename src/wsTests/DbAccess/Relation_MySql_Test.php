@@ -12,6 +12,9 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
     /** @var \wsCore\DbAccess\Query */
     public $query;
 
+    /** @var \wsCore\DbAccess\EntityManager */
+    public $em;
+    
     /** @var Dao_Friend */
     public $friend;
 
@@ -29,8 +32,11 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->setupFriend();
         $this->setupContact();
 
+        $this->em      = Core::get( 'EntityManager' );
         $this->friend  = Core::get( '\wsTests\DbAccess\Dao_Friend' );
         $this->contact = Core::get( '\wsTests\DbAccess\Dao_Contact' );
+        class_exists( '\wsCore\DbAccess\Relation' );
+        class_exists( '\wsCore\DbAccess\Relation_HasRefs' );
     }
 
     /**
@@ -60,17 +66,17 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         // create a contact with a relation to the friend data.
         $dataContact = Dao_SetUp::makeContact();
         $contact = $this->contact->getRecord( $dataContact );
-        $contact->relation( 'friend' )->set( $friend );
-        $contact->insert();
-        $this->assertEquals( $id1, $contact->get( 'friend_id' ) );
+        $this->contact->relation( $contact, 'friend' )->set( $friend );
+        $this->contact->insert( $contact );
+        $this->assertEquals( $id1, $contact->friend_id );
 
         // read the contact, and get the friend data via relation
-        $id2 = $contact->getId();
+        $id2 = $contact->friend_id;
         $contact2 = $this->contact->find( $id2 );
-        $friend2 = $contact2->relation( 'friend' )->get();
+        $friend2 = $this->contact->relation( $contact2, 'friend' )->get();
         $this->assertTrue( is_array( $friend2 ) );
         $friend2 = $friend2[0];
-        $this->assertEquals( $id1, $friend2->getId() );
+        $this->assertEquals( $id1, $friend2->friend_id );
     }
     function test_simple_HasRefs()
     {
@@ -81,65 +87,63 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
 
         // create a contact with a relation with the friend.
         $dataContact = Dao_SetUp::makeContact();
-        $contact1 = $this->contact->getRecord();
-        $contact1->set( $dataContact );
-        $friend->relation( 'contact' )->set( $contact1 );
-        $contact1->insert();
+        $contact1 = $this->contact->getRecord( $dataContact );
+        $this->friend->relation( $friend, 'contact' )->set( $contact1 );
+        $this->contact->insert( $contact1 );
 
-        $this->assertEquals( $id1, $contact1->get( 'friend_id' ) );
+        $this->assertEquals( $id1, $contact1->friend_id );
 
         // create another contact with the friendship.
-        $contact2 = $this->contact->getRecord();
-        $contact2->set( Dao_SetUp::makeContact(2) );
-        $friend->relation( 'contact' )->set( $contact2 );
-        $contact2->insert();
+        $contact2 = $this->contact->getRecord( Dao_SetUp::makeContact(2) );
+        $this->friend->relation( $friend, 'contact' )->set( $contact2 );
+        $this->contact->insert( $contact2 );
 
-        $this->assertEquals( $id1, $contact2->get( 'friend_id' ) );
+        $this->assertEquals( $id1, $contact2->friend_id );
 
         // get contacts from friend.
-        $contacts = $friend->relation( 'contact' )->get();
+        $contacts = $this->friend->relation( $friend, 'contact' )->get();
         $con1 = $contacts[0];
         $con2 = $contacts[1];
-        $this->assertEquals( $contact1->getId(), $con1->getId() );
-        $this->assertEquals( $contact2->getId(), $con2->getId() );
-        $this->assertEquals( $contact1->get( 'contact_name' ), $con1->get( 'contact_name' ) );
-        $this->assertEquals( $contact2->get( 'contact_name' ), $con2->get( 'contact_name' ) );
+        $this->assertEquals( $contact1->contact_id, $con1->contact_id );
+        $this->assertEquals( $contact2->contact_id, $con2->contact_id );
+        $this->assertEquals( $contact1->contact_info, $con1->contact_info );
+        $this->assertEquals( $contact2->contact_info, $con2->contact_info );
     }
     function test_HasOne_del()
     {
         // make friend and contact
         $idFriend  = $this->friend->insert( Dao_SetUp::makeFriend() );
-        $friend    = $this->friend->find( $idFriend );
-        $contact   = $this->contact->getRecord();
-        $contact->set( Dao_SetUp::makeContact() )->relation( 'friend' )->set( $friend );
-        $contact->insert();
+        $friend    = $this->em->getEntity( 'Dao_Friend', $idFriend );
+        $contact   = $this->em->newEntity( 'Dao_Contact', Dao_SetUp::makeContact() );
+        $this->contact->relation( $contact, 'friend' )->set( $friend );
+        $this->em->save();
 
         // delete relation. 
-        $newContact = $this->contact->find( $contact->getId() );
-        $newContact->relation( 'friend' )->del();
-        $newContact->update();
+        $newContact = $this->em->getEntity( 'Dao_Contact', $contact->contact_id );
+        $this->contact->relation( $newContact, 'friend' )->del();
+        $this->em->save();
 
         // verify relation is deleted.
-        $finalContact = $this->contact->find( $contact->getId() );
-        $this->assertEquals( NULL, $finalContact->get( 'friend_id' ) );
+        $finalContact = $this->contact->find( $contact->_get_Id() );
+        $this->assertEquals( NULL, $finalContact->friend_id );
     }
     function test_HasRefs_del()
     {
         // make friend and contact
         $idFriend  = $this->friend->insert( Dao_SetUp::makeFriend() );
-        $friend    = $this->friend->find( $idFriend );
-        $contact   = $this->contact->getRecord();
-        $contact->set( Dao_SetUp::makeContact() )->relation( 'friend' )->set( $friend );
-        $contact->insert();
+        $friend    = $this->em->getEntity( 'Dao_Friend', $idFriend );
+        $contact   = $this->em->newEntity( 'Dao_Contact', Dao_SetUp::makeContact() );
+        $this->em->relation( $contact, 'friend' )->set( $friend );
+        $this->em->save();
         
         // delete relation. 
-        $newFriend = $this->friend->find( $idFriend );
-        $newFriend->relation( 'contact' )->del( $contact );
-        $contact->update();
+        $newFriend = $this->em->getEntity( 'Dao_Friend', $idFriend );
+        $this->em->relation( $newFriend, 'contact' )->del( $contact );
+        $this->em->save();
 
         // verify relation is deleted.
-        $finalContact = $this->contact->find( $contact->getId() );
-        $this->assertEquals( NULL, $finalContact->get( 'friend_id' ) );
+        $finalContact = $this->contact->find( $contact->_get_Id() );
+        $this->assertEquals( NULL, $finalContact->friend_id );
     }
 }
 
