@@ -65,7 +65,8 @@ abstract class Entity_Base implements Entity_Interface
      * @return \wsCore\DbAccess\Relation_Interface
      */
     public function relation( $name ) {
-        return $this->_relations[ $name ];
+        if( isset( $this->_relations[ $name ] ) ) return $this->_relations[ $name ];
+        return null;
     }
 
     /**
