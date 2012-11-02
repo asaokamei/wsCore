@@ -17,11 +17,11 @@ class Relation_HasJoined implements Relation_Interface
     /** @var \wsCore\DbAccess\Query */
     protected $query;
 
-    /** @var DataRecord */
+    /** @var Entity_Interface */
     protected $source;
     protected $sourceColumn;
     
-    /** @var DataRecord */
+    /** @var Entity_Interface */
     protected $target;
 
     /** @var \wsCore\DbAccess\Dao */
@@ -63,7 +63,7 @@ class Relation_HasJoined implements Relation_Interface
     }
 
     /**
-     * @param DataRecord $target
+     * @param Entity_Interface $target
      * @return Relation_Interface
      */
     public function set( $target )
@@ -77,7 +77,7 @@ class Relation_HasJoined implements Relation_Interface
 
     /**
      * @param array $values
-     * @return \wsCore\DbAccess\Relation_HasJoinDao
+     * @return \wsCore\DbAccess\Relation_Interface
      */
     public function setValues( $values )
     {
@@ -111,7 +111,7 @@ class Relation_HasJoined implements Relation_Interface
     }
 
     /**
-     * @param null|DataRecord $target
+     * @param null|Entity_Interface $target
      * @return Relation_HasOne
      */
     public function del( $target=null ) 
@@ -131,7 +131,7 @@ class Relation_HasJoined implements Relation_Interface
     }
 
     /**
-     * @param DataRecord $target
+     * @param Entity_Interface $target
      * @return bool|array
      */
     public function getJoinRecord( $target=null )
@@ -151,7 +151,7 @@ class Relation_HasJoined implements Relation_Interface
     }
 
     /**
-     * @return DataRecord[]
+     * @return Entity_Interface[]
      */
     public function get()
     {
@@ -172,7 +172,7 @@ class Relation_HasJoined implements Relation_Interface
 
     /**
      * @param string $order
-     * @return \wsCore\DbAccess\Relation_HasJoinDao
+     * @return \wsCore\DbAccess\Relation_Interface
      */
     public function setOrder( $order )
     {
