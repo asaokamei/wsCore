@@ -207,15 +207,14 @@ class Dao
     public function update( $id, $values )
     {
         $values = $this->protect( $values );
-        if( isset( $values[ $this->id_name ] ) ) {
-            unset( $values[ $this->id_name ] );
-        }
+        $values = $this->unsetKey( $values, $this->id_name );
         if( isset( $this->extraTypes[ 'updated_at' ] ) ) {
             foreach( $this->extraTypes[ 'updated_at' ] as $column ) {
-                $values[ $column ] = date( 'Y-m-d H:i:s' );
+                $values = $this->setKey( $values, $column, date( 'Y-m-d H:i:s' ) );
             }
         }
-        $this->query()->id( $id )->update( $values );
+        $data = $this->entityToArray( $values );
+        $this->query()->id( $id )->update( $data );
         return $this;
     }
 
@@ -238,12 +237,7 @@ class Dao
                 $this->setKey( $values, $column, date( 'Y-m-d H:i:s' ) );
             }
         }
-        if( !is_array( $values ) ) {
-            $data = get_object_vars( $values );
-        }
-        else {
-            $data = $values;
-        }
+        $data = $this->entityToArray( $values );
         $this->query()->insert( $data );
         $id = $this->arrGet( $values, $this->id_name, TRUE );
         return $id;
@@ -474,6 +468,17 @@ class Dao
         elseif( is_array( $arr ) ) {
             $arr[ $key ] = $val;
         }
+        return $arr;
+    }
+
+    public function entityToArray( $entity ) {
+        if( !is_array( $entity ) ) {
+            $data = get_object_vars( $entity );
+        }
+        else {
+            $data = $entity;
+        }
+        return $data;
     }
 
     /**
