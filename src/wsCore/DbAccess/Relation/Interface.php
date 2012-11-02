@@ -35,4 +35,17 @@ interface Relation_Interface
      * @return bool
      */
     public function isLinked();
+
+    /**
+     * @param string $order
+     * @return \wsCore\DbAccess\Relation_Interface
+     */
+    public function setOrder( $order );
+
+    /**
+     * @param array $values
+     * @return \wsCore\DbAccess\Relation_Interface
+     */
+    public function setValues( $values );
+
 }

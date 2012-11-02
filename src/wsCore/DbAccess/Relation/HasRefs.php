@@ -111,4 +111,20 @@ class Relation_HasRefs implements Relation_Interface
     public function isLinked() {
         return $this->linked;
     }
+
+    /**
+     * @param string $order
+     * @return \wsCore\DbAccess\Relation_Interface
+     */
+    public function setOrder( $order ) {
+        return $this;
+    }
+
+    /**
+     * @param array $values
+     * @return \wsCore\DbAccess\Relation_Interface
+     */
+    public function setValues( $values ) {
+        return $this;
+    }
 }
