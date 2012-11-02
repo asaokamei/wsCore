@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-abstract class Entity_Base implements Entity_Interface
+abstract class Entity_Abstract implements Entity_Interface
 {
     /** @var null|string  */
     protected $_model = null;
