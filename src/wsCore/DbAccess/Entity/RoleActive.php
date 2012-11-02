@@ -45,24 +45,6 @@ class Entity_RoleActive
     // +----------------------------------------------------------------------+
     /**
      * @param $name
-     * @param $value
-     */
-    public function __set( $name, $value ) {
-        $this->entity->$name = $value;
-        $this->setActionType( self::ACTION_SAVE );
-    }
-
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function __get( $name ) {
-        if( isset( $this->entity->$name ) ) return $this->entity->$name;
-        return NULL;
-    }
-
-    /**
-     * @param $name
      * @return Relation_Interface
      */
     public function relation( $name )
