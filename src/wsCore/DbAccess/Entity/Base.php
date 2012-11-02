@@ -12,6 +12,9 @@ abstract class Entity_Base implements Entity_Interface
     /** @var null|string */
     protected $_identifier = null;
 
+    /** @var bool */
+    protected $_toDelete = false;
+
     /** @var \wsCore\DbAccess\Relation_Interface[] */
     protected $_relations = array();
 
@@ -44,14 +47,19 @@ abstract class Entity_Base implements Entity_Interface
      * @return null|string
      */
     public function _get_Type() {
-        return $this->_type;
+        $type = $this->_type;
+        return $type;
+    }
+
+    public function toDelete() {
+        return $this->_toDelete;
     }
 
     /**
      * @return bool
      */
     public function isIdPermanent() {
-        return $this->_type == 'get';
+        return $this->_type == EntityManager::TYPE_GET;
     }
     /**
      * @return null|string

@@ -3,8 +3,8 @@ namespace wsCore\DbAccess;
 
 class EntityManager
 {
-    const TYPE_GET = 'get';
-    const TYPE_NEW = 'new';
+    const TYPE_GET  = 'get';   // a new record for insert.
+    const TYPE_NEW  = 'new';   // record from db for update.
 
     /** @var \wsCore\DbAccess\Dao[] */
     protected $models = array();
@@ -70,6 +70,7 @@ class EntityManager
                 'model' => $reflect( $class, '_model' ),
                 'type'  => $reflect( $class, '_type' ),
                 'id'    => $reflect( $class, '_identifier' ),
+                'del'   => $reflect( $class, '_toDelete' ),
             );
             $this->reflections[ $class ] = $reflections;
         }
@@ -236,7 +237,14 @@ class EntityManager
     {
         $type   = $entity->_get_Type();
         $model  = $this->getModel( $entity );
-        if( $type == self::TYPE_NEW ) {
+        $delete = $entity->toDelete();
+        if( $delete ) {
+            if( $type == self::TYPE_GET ) {
+                $model->delete( $entity->_get_Id() );
+            }
+            // ignore if type is new; just not saving the entity.
+        }
+        elseif( $type == self::TYPE_NEW ) {
             $id = $model->insert( $entity );
             $this->setupEntity( $entity, self::TYPE_GET , $id );
         }
@@ -245,6 +253,15 @@ class EntityManager
             $model->update( $id, (array) $entity );
         }
         return $this;
+    }
+
+    /**
+     * @param Entity_Interface $entity
+     * @param bool $delete
+     */
+    public function delete( $entity, $delete=true )
+    {
+        $this->setEntityProperty( $entity, 'del', $delete );
     }
 
     /**
