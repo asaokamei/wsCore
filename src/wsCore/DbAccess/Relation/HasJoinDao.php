@@ -6,13 +6,16 @@ namespace wsCore\DbAccess;
  */
 class Relation_HasJoinDao implements Relation_Interface
 {
+    /** @var EntityManager */
+    protected $em;
+
     /** @var string */
-    protected $joinModel;
+    protected $joinModelName;
     /** @var string */
     protected $joinTable;
 
     /** @var \wsCore\DbAccess\Dao */
-    protected $joinDao;
+    protected $joinModel;
     protected $joinSourceColumn;
     protected $joinTargetColumn;
 
@@ -24,8 +27,8 @@ class Relation_HasJoinDao implements Relation_Interface
     protected $target;
 
     /** @var \wsCore\DbAccess\Dao */
-    protected $targetDao;
     protected $targetModel;
+    protected $targetModelName;
     protected $targetColumn;
 
     protected $order  = null;    // select order for get
@@ -34,29 +37,32 @@ class Relation_HasJoinDao implements Relation_Interface
     protected $linked = false;
 
     /**
-     * @param DataRecord  $source
-     * @param array       $relInfo
+     * @param EntityManager $em
+     * @param Entity_Interface   $source
+     * @param $relInfo
      * @return \wsCore\DbAccess\Relation_HasJoinDao
      */
-    public function __construct( $source, $relInfo )
+    public function __construct( $em, $source, $relInfo )
     {
+        $this->em     = $em;
         // set up join table information.
         $this->source           = $source;
-        $this->joinModel        = $relInfo[ 'join_model' ];
-        $this->joinDao          = $this->source->getDao()->getInstance( $this->joinModel );
-        $this->joinTable        = $this->joinDao->getTable();
+        $this->joinModelName    = $relInfo[ 'join_model' ];
+        $this->joinModel        = $this->em->getModel( $this->joinModelName );
+        $this->joinTable        = $this->joinModel->getTable();
         // set up about source data.
+        $sourceModel = $em->getModel( $source->_get_Model() );
         $this->joinSourceColumn = isset( $relInfo[ 'join_source_column' ] ) ?
-            $relInfo[ 'join_source_column' ] : $source->getIdName();
+            $relInfo[ 'join_source_column' ] : $sourceModel->getIdName();
         $this->sourceColumn = isset( $relInfo[ 'sourceColumn' ] ) ?
-            $relInfo[ 'sourceColumn' ] : $source->getIdName();
+            $relInfo[ 'sourceColumn' ] : $sourceModel->getIdName();
         // set up about target data.
-        $this->targetModel      = $relInfo[ 'target_model' ];
-        $this->targetDao = $this->source->getDao()->getInstance( $this->targetModel );
+        $this->targetModelName      = $relInfo[ 'target_model' ];
+        $this->targetModel = $em->getModel( $this->targetModelName );
         $this->joinTargetColumn = isset( $relInfo[ 'join_target_column' ] ) ?
-            $relInfo[ 'join_target_column' ] : $this->targetDao->getIdName();
+            $relInfo[ 'join_target_column' ] : $this->targetModel->getIdName();
         $this->targetColumn     = isset( $relInfo[ 'target_column' ] ) ?
-            $relInfo[ 'target_column' ] : $this->targetDao->getIdName();
+            $relInfo[ 'target_column' ] : $this->targetModel->getIdName();
     }
 
     /**
@@ -104,7 +110,7 @@ class Relation_HasJoinDao implements Relation_Interface
             if( is_array( $this->values ) && !empty( $this->values ) ) {
                 $values = array_merge( $this->values, $values );
             }
-            $this->joinDao->insert( $values );
+            $this->joinModel->insert( $values );
         }
         $this->linked = true;
         return $this;
@@ -118,7 +124,7 @@ class Relation_HasJoinDao implements Relation_Interface
     {
         $sourceColumn = $this->sourceColumn;
         $sourceValue = $this->source->$sourceColumn;
-        $query = $this->joinDao->query();
+        $query = $this->joinModel->query();
         $query->w( $this->joinSourceColumn )->eq( $sourceValue );
         if( !$target ) $target = $this->target;
         if( $target ) {
@@ -138,7 +144,7 @@ class Relation_HasJoinDao implements Relation_Interface
     {
         $sourceColumn = $this->sourceColumn;
         $sourceValue = $this->source->$sourceColumn;
-        $query = $this->joinDao->query();
+        $query = $this->joinModel->query();
         $query->w( $this->joinSourceColumn )->eq( $sourceValue );
         if( !$target ) $target = $this->target;
         if( $target ) {
@@ -155,10 +161,10 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function get()
     {
-        $table  = $this->targetDao->getTable();
-        $order  = ( $this->order ) ?: $this->joinDao->getIdName();
+        $table  = $this->targetModel->getTable();
+        $order  = ( $this->order ) ?: $this->joinModel->getIdName();
         $column = $this->sourceColumn;
-        $record = $this->targetDao->query()
+        $record = $this->targetModel->query()
             ->joinOn(
                 $this->joinTable,
                 "{$table}.{$this->targetColumn}={$this->joinTable}.{$this->joinTargetColumn}"
