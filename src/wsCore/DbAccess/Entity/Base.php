@@ -72,7 +72,7 @@ abstract class Entity_Base implements Entity_Interface
     /**
      * @param $name
      * @param $relation
-     * @return EntityBase
+     * @return Entity_Interface
      */
     public function setRelation( $name, $relation ) {
         $this->_relations[ $name ] = $relation;
