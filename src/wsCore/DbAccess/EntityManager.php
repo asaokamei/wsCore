@@ -247,7 +247,6 @@ class EntityManager
     {
         $model = $this->getModel( $entity->_get_Model() );
         $relation = $model->relation( $entity, $name );
-        $entity->setRelation( $name, $relation );
         return $relation;
     }
 }

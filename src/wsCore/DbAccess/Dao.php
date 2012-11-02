@@ -483,7 +483,11 @@ class Dao
      */
     public function relation( $source, $name )
     {
-        return Relation::getRelation( $this->em, $source, $this->relations, $name );
+        if( !$relation = $source->relation( $name ) ) {
+            $relation = Relation::getRelation( $this->em, $source, $this->relations, $name );
+            $source->setRelation( $name, $relation );
+        }
+        return $relation;
     }
     // +----------------------------------------------------------------------+
 }
