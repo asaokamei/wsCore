@@ -51,6 +51,9 @@ abstract class Entity_Base implements Entity_Interface
         return $type;
     }
 
+    /**
+     * @return bool
+     */
     public function toDelete() {
         return $this->_toDelete;
     }
