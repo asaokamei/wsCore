@@ -107,25 +107,25 @@ class EntityManager
     // +----------------------------------------------------------------------+
     /**
      * @param Entity_Interface|Entity_Interface[] $entity
-     * @return EntityManager
+     * @return Entity_Interface|Entity_Interface[]
      */
     public function register( $entity )
     {
         if( is_array( $entity ) ) {
-            foreach( $entity as &$ent ) {
-                $this->register( $ent );
+            foreach( $entity as $key => $ent ) {
+                $entity[ $key ] = $this->register( $ent );
             }
-            return $this;
+            return $entity;
         }
         $this->setupEntity( $entity );
         $cenaId = $this->getCenaId( $entity );
         if( array_key_exists( $cenaId, $this->entities ) ) {
-            $entity = $this->entities[ $cenaId ];
+            $entity = & $this->entities[ $cenaId ];
         }
         else {
             $this->entities[ $cenaId ] = $entity;
         }
-        return $this;
+        return $entity;
     }
 
     /**
@@ -170,7 +170,7 @@ class EntityManager
         /** @var $entity Entity_Interface */
         $entity = $model->find( $id );
         $this->setupEntity( $entity, self::TYPE_GET, $id );
-        $this->register( $entity );
+        $entity = $this->register( $entity );
         return $entity;
     }
 
@@ -190,7 +190,7 @@ class EntityManager
         /** @var $entity Entity_Interface */
         $entity = $model->getRecord( $data );
         $this->setupEntity( $entity, self::TYPE_NEW, $id );
-        $this->register( $entity );
+        $entity = $this->register( $entity );
         return $entity;
     }
 
