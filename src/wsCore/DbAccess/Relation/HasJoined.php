@@ -6,6 +6,9 @@ namespace wsCore\DbAccess;
  */
 class Relation_HasJoined implements Relation_Interface
 {
+    /** @var EntityManager */
+    protected $em;
+
     /** @var string */
     protected $joinTable;
     protected $joinSourceColumn;
@@ -22,8 +25,8 @@ class Relation_HasJoined implements Relation_Interface
     protected $target;
 
     /** @var \wsCore\DbAccess\Dao */
-    protected $targetDao;
     protected $targetModel;
+    protected $targetModelName;
     protected $targetColumn;
 
     protected $order  = null;    // select order for get
@@ -32,28 +35,31 @@ class Relation_HasJoined implements Relation_Interface
     protected $linked = false;
 
     /**
-     * @param DataRecord  $source
-     * @param array       $relInfo
+     * @param EntityManager $em
+     * @param Entity_Interface   $source
+     * @param $relInfo
      * @return \wsCore\DbAccess\Relation_HasJoined
      */
-    public function __construct( $source, $relInfo )
+    public function __construct( $em, $source, $relInfo )
     {
+        $this->em     = $em;
         // set up join table information.
         $this->source           = $source;
-        $this->query            = clone $source->getDao()->query();
+        $sourceModel            = $em->getModel( $source->_get_Model() );
+        $this->query            = clone $sourceModel->query();
         $this->joinTable        = $relInfo[ 'join_table' ];
         // set up about source data.
         $this->joinSourceColumn = isset( $relInfo[ 'join_source_column' ] ) ?
-            $relInfo[ 'join_source_column' ] : $source->getIdName();
+            $relInfo[ 'join_source_column' ] : $sourceModel->getIdName();
         $this->sourceColumn = isset( $relInfo[ 'sourceColumn' ] ) ?
-            $relInfo[ 'sourceColumn' ] : $source->getIdName();
+            $relInfo[ 'sourceColumn' ] : $sourceModel->getIdName();
         // set up about target data.
-        $this->targetModel      = $relInfo[ 'target_model' ];
-        $this->targetDao = $this->source->getDao()->getInstance( $this->targetModel );
+        $this->targetModelName      = $relInfo[ 'target_model' ];
+        $this->targetModel = $em->getModel( $this->targetModelName );
         $this->joinTargetColumn = isset( $relInfo[ 'join_target_column' ] ) ?
-            $relInfo[ 'join_target_column' ] : $this->targetDao->getIdName();
+            $relInfo[ 'join_target_column' ] : $this->targetModel->getIdName();
         $this->targetColumn     = isset( $relInfo[ 'target_column' ] ) ?
-            $relInfo[ 'target_column' ] : $this->targetDao->getIdName();
+            $relInfo[ 'target_column' ] : $this->targetModel->getIdName();
     }
 
     /**
@@ -149,10 +155,10 @@ class Relation_HasJoined implements Relation_Interface
      */
     public function get()
     {
-        $table  = $this->targetDao->getTable();
+        $table  = $this->targetModel->getTable();
         $order  = isset( $this->order ) ? $this->order : $this->joinSourceColumn;
         $column = $this->sourceColumn;
-        $record = $this->targetDao->query()
+        $record = $this->targetModel->query()
             ->joinOn(
                 $this->joinTable,
                 "{$table}.{$this->targetColumn}={$this->joinTable}.{$this->joinTargetColumn}"
