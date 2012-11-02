@@ -5,7 +5,6 @@ class Entity_Active
 {
     const ACTION_NONE  = 'act-none';
     const ACTION_SAVE  = 'act-save';
-    const ACTION_DEL   = 'act-del';
 
     /** @var \wsCore\DbAccess\EntityManager */
     private $em;
@@ -34,17 +33,10 @@ class Entity_Active
 
     /**
      * @param string $actType
-     * @param bool $force
-     * @return \wsCore\DbAccess\Entity_Active
+     * @return Entity_Active
      */
-    protected function setActionType( $actType, $force=false )
-    {
-        if( ( $actType == self::ACTION_NONE && $force ) ||
-            ( $actType == self::ACTION_SAVE && $this->actType != self::ACTION_DEL ) ||
-            ( $actType == self::ACTION_DEL ) )
-        {
-            $this->action = $actType;
-        }
+    protected function setActionType( $actType ) {
+        $this->action = $actType;
         return $this;
     }
 
@@ -69,24 +61,41 @@ class Entity_Active
         return null;
     }
 
+    /**
+     * @param $name
+     * @return Relation_Interface
+     */
+    public function relation( $name )
+    {
+        if( !$relation = $this->entity->relation( $name ) ) {
+            $relation = $this->model->relation( $this->entity, $name );
+            $this->entity->setRelation( $name, $relation );
+        }
+        return $relation;
+    }
     // +----------------------------------------------------------------------+
     //  saving data to db using dao.
     // +----------------------------------------------------------------------+
     /**
+     * @param bool $delete
      * @return Entity_Active
      */
-    public function delete()
+    public function delete( $delete=true )
     {
-        return $this->setActionType( self::ACTION_DEL );
+        $this->em->delete( $this->entity, !!$delete );
+        $this->setActionType( self::ACTION_SAVE );
+        return $this;
     }
 
     /**
      * @param bool $saveRelations
-     * @return \wsCore\DbAccess\Entity_Active
+     * @return Entity_Active
      */
     public function save( $saveRelations=FALSE )
     {
-        $this->em->save();
+        if( $this->action == self::ACTION_SAVE ) {
+            $this->em->saveEntity( $this->entity );
+        }
         return $this;
     }
     // +----------------------------------------------------------------------+
