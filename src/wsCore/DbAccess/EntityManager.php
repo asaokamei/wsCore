@@ -222,18 +222,27 @@ class EntityManager
     public function save()
     {
         if( empty( $this->entities ) ) return $this;
-        foreach( $this->entities as $entity )
-        {
-            $type   = $entity->_get_Type();
-            $model  = $this->getModel( $entity );
-            if( $type == self::TYPE_NEW ) {
-                $id = $model->insert( $entity );
-                $this->setupEntity( $entity, self::TYPE_GET , $id );
-            }
-            else {
-                $id = $entity->_get_Id();
-                $model->update( $id, (array) $entity );
-            }
+        foreach( $this->entities as $entity ) {
+            $this->saveEntity( $entity );
+        }
+        return $this;
+    }
+
+    /**
+     * @param Entity_Interface $entity
+     * @return EntityManager
+     */
+    public function saveEntity( $entity )
+    {
+        $type   = $entity->_get_Type();
+        $model  = $this->getModel( $entity );
+        if( $type == self::TYPE_NEW ) {
+            $id = $model->insert( $entity );
+            $this->setupEntity( $entity, self::TYPE_GET , $id );
+        }
+        else {
+            $id = $entity->_get_Id();
+            $model->update( $id, (array) $entity );
         }
         return $this;
     }
