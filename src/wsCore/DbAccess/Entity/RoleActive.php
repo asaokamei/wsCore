@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Entity_ActiveRecord
+class Entity_RoleActive
 {
     const ACTION_NONE  = 'act-none';
     const ACTION_SAVE  = 'act-save';
@@ -33,7 +33,7 @@ class Entity_ActiveRecord
 
     /**
      * @param string $actType
-     * @return Entity_ActiveRecord
+     * @return Entity_RoleActive
      */
     protected function setActionType( $actType ) {
         $this->action = $actType;
@@ -58,7 +58,7 @@ class Entity_ActiveRecord
      */
     public function __get( $name ) {
         if( isset( $this->entity->$name ) ) return $this->entity->$name;
-        return null;
+        return NULL;
     }
 
     /**
@@ -78,9 +78,9 @@ class Entity_ActiveRecord
     // +----------------------------------------------------------------------+
     /**
      * @param bool $delete
-     * @return Entity_ActiveRecord
+     * @return Entity_RoleActive
      */
-    public function delete( $delete=true )
+    public function delete( $delete=TRUE )
     {
         $this->em->delete( $this->entity, !!$delete );
         $this->setActionType( self::ACTION_SAVE );
@@ -89,7 +89,7 @@ class Entity_ActiveRecord
 
     /**
      * @param bool $saveRelations
-     * @return Entity_ActiveRecord
+     * @return Entity_RoleActive
      */
     public function save( $saveRelations=FALSE )
     {

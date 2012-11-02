@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Entity_ActiveValue
+class Entity_RoleInput
 {
     /** @var \wsCore\DbAccess\EntityManager */
     private $em;
@@ -36,7 +36,7 @@ class Entity_ActiveValue
     // +----------------------------------------------------------------------+
     /**
      * @param array $data
-     * @return Entity_ActiveRecord
+     * @return Entity_RoleActive
      */
     public function loadData( $data )
     {
