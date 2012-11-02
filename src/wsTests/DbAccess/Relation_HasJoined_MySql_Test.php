@@ -75,10 +75,9 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
 
         // create a group with a relation to the friend data.
         $dataGroup = Dao_SetUp::makeGroup();
-        $group = $this->group->getRecord();
-        $group->set( $dataGroup );
-        $group->relation( 'friend' )->set( $friend );
-        $group->insert();
+        $group = $this->group->getRecord( $dataGroup );
+        $this->group->relation( $group, 'friend' )->set( $friend );
+        $this->group->insert( $group );
 
         // check if joined table is saved.
         $joined = $this->query->table( 'friend2group' )->w( 'group_code' )->eq( $dataGroup[ 'group_code' ] )->select();
@@ -89,29 +88,28 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
 
         // get group from friend.
         // but before that, add more groups
-        $group = $this->group->getRecord();
-        $group->set( Dao_SetUp::makeGroup(1) );
-        $group->insert();
+        $group = $this->group->getRecord( Dao_SetUp::makeGroup(1) );
+        $this->group->insert( $group );
         // now get group.
-        $groups = $friend->relation( 'group' )->get();
+        $groups = $this->friend->relation( $friend, 'group' )->get();
         $this->assertEquals( 1, count( $groups ) );
         $groups = $groups[0];
-        $this->assertEquals( $dataGroup[ 'group_code' ], $groups[ 'group_code' ] );
-        $this->assertEquals( $id1, $groups[ 'friend_id' ] );
+        $this->assertEquals( $dataGroup[ 'group_code' ], $groups->group_code );
+        $this->assertEquals( $id1, $groups->friend_id );
         
         // relate the new group with the friend.
-        $friend->relation( 'group' )->set( $group );
+        $this->friend->relation( $friend, 'group' )->set( $group );
         $manyFriends = $this->friend->find( $id1 );
-        $groups = $manyFriends->relation( 'group' )->get();
+        $groups = $this->friend->relation( $manyFriends, 'group' )->get();
         $this->assertEquals( 2, count( $groups ) );
         $group = $groups[0];
         $dataGroup = Dao_SetUp::makeGroup(0);
-        $this->assertEquals( $dataGroup[ 'group_code' ], $group[ 'group_code' ] );
-        $this->assertEquals( $id1, $group[ 'friend_id' ] );
+        $this->assertEquals( $dataGroup[ 'group_code' ], $group->group_code );
+        $this->assertEquals( $id1, $group->friend_id );
         $group = $groups[1];
         $dataGroup = Dao_SetUp::makeGroup(1);
-        $this->assertEquals( $dataGroup[ 'group_code' ], $group[ 'group_code' ] );
-        $this->assertEquals( $id1, $group[ 'friend_id' ] );
+        $this->assertEquals( $dataGroup[ 'group_code' ], $group->group_code );
+        $this->assertEquals( $id1, $group->friend_id );
         
     }
     function test_more_HasJoined()
@@ -123,21 +121,21 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $idGroup2 = $this->group->insert( Dao_SetUp::makeGroup(1) );
         $group1   = $this->group->find( $idGroup1 );
         $group2   = $this->group->find( $idGroup2 );
-        $friend->relation( 'group' )->setValues( array( 'created_date' => '1999-12-31' ) )->set( $group1 );
-        $friend->relation( 'group' )->set( $group2 );
+        $this->friend->relation( $friend, 'group' )->setValues( array( 'created_date' => '1999-12-31' ) )->set( $group1 );
+        $this->friend->relation( $friend, 'group' )->set( $group2 );
         
         // get groups using relations. 
-        $groups = $friend->relation( 'group' )->setOrder( 'myGroup.group_code DESC' )->get();
+        $groups = $this->friend->relation( $friend, 'group' )->setOrder( 'myGroup.group_code DESC' )->get();
         $group = $groups[1];
         $dataGroup = Dao_SetUp::makeGroup(0);
-        $this->assertEquals( $dataGroup[ 'group_code' ], $group[ 'group_code' ] );
-        $this->assertEquals( '1999-12-31', $group[ 'created_date' ] );
-        $this->assertEquals( $idFriend, $group[ 'friend_id' ] );
+        $this->assertEquals( $dataGroup[ 'group_code' ], $group->group_code );
+        $this->assertEquals( '1999-12-31', $group->created_date );
+        $this->assertEquals( $idFriend, $group->friend_id );
         $group = $groups[0];
         $dataGroup = Dao_SetUp::makeGroup(1);
-        $this->assertEquals( $dataGroup[ 'group_code' ], $group[ 'group_code' ] );
-        $this->assertEquals( '1999-12-31', $group[ 'created_date' ] );
-        $this->assertEquals( $idFriend, $group[ 'friend_id' ] );
+        $this->assertEquals( $dataGroup[ 'group_code' ], $group->group_code );
+        $this->assertEquals( '1999-12-31', $group->created_date );
+        $this->assertEquals( $idFriend, $group->friend_id );
     }
     function test_HasJoined_del()
     {
@@ -148,20 +146,20 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $idGroup2 = $this->group->insert( Dao_SetUp::makeGroup(1) );
         $group1   = $this->group->find( $idGroup1 );
         $group2   = $this->group->find( $idGroup2 );
-        $friend->relation( 'group' )->setValues( array( 'created_date' => '1999-12-31' ) )->set( $group1 );
-        $friend->relation( 'group' )->set( $group2 );
+        $this->friend->relation( $friend, 'group' )->setValues( array( 'created_date' => '1999-12-31' ) )->set( $group1 );
+        $this->friend->relation( $friend, 'group' )->set( $group2 );
         
         // get groups.
-        $groups1 = $friend->relation( 'group' )->get();
+        $groups1 = $this->friend->relation( $friend, 'group' )->get();
         $this->assertEquals( 2, count( $groups1 ) );
         
         // delete one of the group.
-        $friend->relation( 'group' )->del( $group1 );
+        $this->friend->relation( $friend, 'group' )->del( $group1 );
         
         // get groups, again. 
         $groups2 = $friend->relation( 'group' )->get();
         $this->assertEquals( 1, count( $groups2 ) );
-        $this->assertEquals( $groups1[1]->getId(), $groups2[0]->getId() );
+        $this->assertEquals( $groups1[1]->_get_Id(), $groups2[0]->_get_Id() );
     }
     // +----------------------------------------------------------------------+
 }
