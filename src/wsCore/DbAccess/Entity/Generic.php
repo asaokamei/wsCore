@@ -1,6 +1,6 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Entity_Generic extends Entity_Base
+class Entity_Generic extends Entity_Abstract
 {
 }

@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DataMapper\Entity;
 
-class Friend extends \wsCore\DbAccess\Entity_Base
+class Friend extends \wsCore\DbAccess\Entity_Abstract
 {
     protected $_model = 'Friend';
 
