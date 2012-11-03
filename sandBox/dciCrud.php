@@ -77,14 +77,10 @@ class entityManyForms extends Interaction
         $role = $this->applyContext( $entity, 'loadable' );
         
         // form1
-        $view->showForm1( $entity );
-        $role->load( 'input1' );
-        $role->verify( 'input1' );
+        $role->verify( 'form1' );
         
         // form2
-        $view->showForm2( $entity );
-        $role->load( 'input2' );
-        $role->verify( 'input2' );
+        $role->verify( 'form2' );
         
         // confirm
         // $role->verify();  // should not need it...
@@ -94,6 +90,37 @@ class entityManyForms extends Interaction
         $role = $this->applyContext( $entity, 'active' );
         $role->insert();
         
+        // done
+        $view->showDone( $entity );
+    }
+    /**
+     * @param string $control
+     * @param view $view
+     * @return \view
+     */
+    function entityAdd_1st( $control, $view )
+    {
+        // get entity
+        $entity = $this->restore( 'entity' );
+        $role = $this->applyContext( $entity, 'loadable' );
+
+        // form1
+        $view->showForm1( $entity );
+        $role->load( 'form1' );
+        $role->verify( 'form1' );
+
+        // form2
+        $view->showForm2( $entity );
+        $role->load( 'form2' );
+        $role->verify( 'form2' );
+
+        // confirm
+        $view->showConfirm( $entity );
+
+        // save
+        $role = $this->applyContext( $entity, 'active' );
+        $role->insert();
+
         // done
         $view->showDone( $entity );
     }
@@ -117,16 +144,15 @@ class entityManyForms extends Interaction
             $this->nextState();
             return $view->showForm1( $entity );
         }
-        $role->load( 'input1' );
-        $role->verify( 'input1' );
+        $role->load( 'form1' );
+        $role->verify( 'form1' );
 
         // form2
         $view->showForm2( $entity );
-        $role->load( 'input2' );
-        $role->verify( 'input2' );
+        $role->load( 'form2' );
+        $role->verify( 'form2' );
 
         // confirm
-        // $role->verify();  // should not need it...
         $view->showConfirm( $entity );
 
         // save
@@ -157,9 +183,9 @@ class entityManyForms extends Interaction
             return $view->showForm1( $entity );
         }
         if( $control == 'form1' ) {
-            $role->load( 'input1' );
+            $role->load( 'form1' );
         }
-        $ok = $role->verify( 'input1' );
+        $ok = $role->verify( 'form1' );
         if( !$ok ) {
             return $view->showForm1( $entity );
         }
@@ -169,11 +195,10 @@ class entityManyForms extends Interaction
             $this->nextState();
             return $view->showForm2( $entity );
         }
-        $role->load( 'input2' );
-        $role->verify( 'input2' );
+        $role->load( 'form2' );
+        $role->verify( 'form2' );
 
         // confirm
-        // $role->verify();  // should not need it...
         $view->showConfirm( $entity );
 
         // save
@@ -204,9 +229,9 @@ class entityManyForms extends Interaction
             return $view->showForm1( $entity );
         }
         if( $control == 'form1' ) {
-            $role->load( 'input1' );
+            $role->load( 'form1' );
         }
-        $ok = $role->verify( 'input1' );
+        $ok = $role->verify( 'form1' );
         if( !$ok ) {
             return $view->showForm1( $entity );
         }
@@ -217,14 +242,14 @@ class entityManyForms extends Interaction
             return $view->showForm2( $entity );
         }
         if( $control == 'form1' ) {
-            $role->load( 'input2' );
+            $role->load( 'form2' );
         }
-        $ok = $role->verify( 'input2' );
+        $ok = $role->verify( 'form2' );
         if( !$ok ) {
             return $view->showForm2( $entity );
         }
         // confirm
-        // $role->verify();  // should not need it...
+        // TODO: form1に戻った場合に処理が続かない。
         if( $this->checkState( 'confirm' ) ) {
             $this->nextState();
             return $view->showConfirm( $entity );
