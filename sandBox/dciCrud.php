@@ -1,45 +1,248 @@
 <?php
 
-
-class entityManyForms extends Reinvocation
+class Interaction
 {
-    function entityAdd( $control, $view )
+    protected $variables = array();
+    
+    protected $states = array();
+    // +----------------------------------------------------------------------+
+    //  object management
+    // +----------------------------------------------------------------------+
+    public function __construct() {
+    }
+    public static function load( $class ) {
+        $class = self::saveName( $class );
+        $object = unserialize( $_SESSION[ $class ] );
+        return $object;
+    }
+    public function save() {
+        $class = self::saveName( get_called_class() );
+        $_SESSION[ $class ] = serialize( $this );
+    }
+    protected static function saveName( $class ) {
+        $class = str_replace( '\\', '__', $class );
+        return $class;
+    }
+    // +----------------------------------------------------------------------+
+    public function setState( $states ) {
+        $this->states = $states;
+    }
+    public function checkState( $state ) {
+        if( $state == $this->states[0] ) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+    public function nextState() {
+        array_splice( $this->states, 0, 1 );
+    }
+    // +----------------------------------------------------------------------+
+    //  variables
+    // +----------------------------------------------------------------------+
+    public function register( $name, $data ) {
+        $this->variables[ $name ] = $data;
+    }
+    public function restore( $name ) {
+        return $this->variables[ $name ];
+    }
+    // +----------------------------------------------------------------------+
+    public function applyContext( $entity, $role ) {
+        return $entity;
+    }
+    public function contextGet( $entityName ) {
+        return $entityName;
+    }
+    // +----------------------------------------------------------------------+
+}
+
+class view 
+{
+    function showForm1() { return $this; }
+    function showForm2() { return $this; }
+    function showConfirm() { return $this; }
+    function showDone() { return $this; }
+    
+}
+
+class entityManyForms extends Interaction
+{
+    /**
+     * @param string $control
+     * @param view $view
+     */
+    function entityAdd_bare( $control, $view )
     {
-        if( $role = $this->restore( 'role' ) ) {
-            $role = $this->context->getActiveRole( 'entity' );
-            $this->register( 'role', $role );
+        // get entity
+        $entity = $this->restore( 'entity' );
+        $role = $this->applyContext( $entity, 'loadable' );
+        
+        // form1
+        $view->showForm1( $entity );
+        $role->load( 'input1' );
+        $role->verify( 'input1' );
+        
+        // form2
+        $view->showForm2( $entity );
+        $role->load( 'input2' );
+        $role->verify( 'input2' );
+        
+        // confirm
+        // $role->verify();  // should not need it...
+        $view->showConfirm( $entity );
+        
+        // save
+        $role = $this->applyContext( $entity, 'active' );
+        $role->insert();
+        
+        // done
+        $view->showDone( $entity );
+    }
+    /**
+     * @param string $control
+     * @param view $view
+     * @return \view
+     */
+    function entityAdd_2nd( $control, $view )
+    {
+        // get entity
+        $entity = $this->restore( 'entity' );
+        if( !$entity ) {
+            $entity = $this->contextGet( 'entity' );
+            $this->register( 'entity', $entity );
+            $this->setState( [ 'form1', 'form2', 'confirm', 'save', 'done' ] );
+        }
+        $role = $this->applyContext( $entity, 'loadable' );
+        // form1
+        if( $this->checkState( 'form1' ) ) {
+            $this->nextState();
+            return $view->showForm1( $entity );
+        }
+        $role->load( 'input1' );
+        $role->verify( 'input1' );
+
+        // form2
+        $view->showForm2( $entity );
+        $role->load( 'input2' );
+        $role->verify( 'input2' );
+
+        // confirm
+        // $role->verify();  // should not need it...
+        $view->showConfirm( $entity );
+
+        // save
+        $role = $this->applyContext( $entity, 'active' );
+        $role->insert();
+
+        // done
+        $view->showDone( $entity );
+    }
+    /**
+     * @param string $control
+     * @param view $view
+     * @return \view
+     */
+    function entityAdd_3rd( $control, $view )
+    {
+        // get entity
+        $entity = $this->restore( 'entity' );
+        if( !$entity ) {
+            $entity = $this->contextGet( 'entity' );
+            $this->register( 'entity', $entity );
+            $this->setState( [ 'form1', 'form2', 'confirm', 'save', 'done' ] );
+        }
+        $role = $this->applyContext( $entity, 'loadable' );
+        // form1
+        if( $this->checkState( 'form1' ) ) {
+            $this->nextState();
+            return $view->showForm1( $entity );
         }
         if( $control == 'form1' ) {
-            return $view->showForm1( $role );
+            $role->load( 'input1' );
         }
-        if( $control == 'form2' ) {
-            $role->loadInput1();
-            if( !$role->verify1() ) {
-                return $view->showForm1( $role );
-            }
-            return $view->showForm2( $role );
+        $ok = $role->verify( 'input1' );
+        if( !$ok ) {
+            return $view->showForm1( $entity );
         }
-        if( $control == 'confirm' ) {
-            $role->loadInput2();
-            if( !$role->verify2() ) {
-                return $view->showForm2( $role );
-            }
+
+        // form2
+        if( $this->checkState( 'form2' ) ) {
+            $this->nextState();
+            return $view->showForm2( $entity );
         }
-        $ok = $role->verify();
-        if( !$ok || $control == 'confirm' ) {
-            if( $ok ) $view->setToken( $this->setToken() );
-            return $view->showConfirm( $role );
+        $role->load( 'input2' );
+        $role->verify( 'input2' );
+
+        // confirm
+        // $role->verify();  // should not need it...
+        $view->showConfirm( $entity );
+
+        // save
+        $role = $this->applyContext( $entity, 'active' );
+        $role->insert();
+
+        // done
+        $view->showDone( $entity );
+    }
+    /**
+     * @param string $control
+     * @param view $view
+     * @return \view
+     */
+    function entityAdd( $control, $view )
+    {
+        // get entity
+        $entity = $this->restore( 'entity' );
+        if( !$entity ) {
+            $entity = $this->contextGet( 'entity' );
+            $this->register( 'entity', $entity );
+            $this->setState( [ 'form1', 'form2', 'confirm', 'save', 'done' ] );
         }
-        if( $control == 'insert' && $this->tokenOk() ) {
+        $role = $this->applyContext( $entity, 'loadable' );
+        // form1
+        if( $this->checkState( 'form1' ) ) {
+            $this->nextState();
+            return $view->showForm1( $entity );
+        }
+        if( $control == 'form1' ) {
+            $role->load( 'input1' );
+        }
+        $ok = $role->verify( 'input1' );
+        if( !$ok ) {
+            return $view->showForm1( $entity );
+        }
+
+        // form2
+        if( $this->checkState( 'form2' ) ) {
+            $this->nextState();
+            return $view->showForm2( $entity );
+        }
+        if( $control == 'form1' ) {
+            $role->load( 'input2' );
+        }
+        $ok = $role->verify( 'input2' );
+        if( !$ok ) {
+            return $view->showForm2( $entity );
+        }
+        // confirm
+        // $role->verify();  // should not need it...
+        if( $this->checkState( 'confirm' ) ) {
+            $this->nextState();
+            return $view->showConfirm( $entity );
+        }
+
+        // save
+        if( $this->checkState( 'save' ) ) {
+            $role = $this->applyContext( $entity, 'active' );
             $role->insert();
-            return $view->showReloadDone( $role );
+            $this->nextState();
         }
-        $role->getFromIdInSession();
-        return $view->showDone( $role );
+
+        // done
+        $view->showDone( $entity );
     }
 }
 
-class entity extends Reinvocation
+class entity extends Interaction
 {
     function entityAdd( $control, $view )
     {
