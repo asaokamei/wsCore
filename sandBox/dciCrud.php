@@ -181,7 +181,9 @@ class controlEntity extends Interaction
             $this->nextStateIf( 'form1' );
             return $view->showForm1( $entity );
         }
+        // load1
         if( $control == 'load1' ) $role->load( 'load1' );
+        
         if( !$role->verify( 'load1' ) ) return $view->showForm1( $entity );
 
         // form2
@@ -189,14 +191,18 @@ class controlEntity extends Interaction
             $this->nextStateIf( 'form2' );
             return $view->showForm2( $entity );
         }
+        // load2
         if( $control == 'load2' ) $role->load( 'load2' );
+        
         if( !$role->verify( 'load2' ) ) return $view->showForm1( $entity );
 
         if( $control == 'save' && $state == 'confirm' ) $this->nextState();
+        
         // confirm
         if( $state == 'confirm' ) {
             return $view->showConfirm( $entity );
         }
+        
         // save
         if( $state == 'save' ) {
             $role = $this->applyContext( $entity, 'active' );
