@@ -188,7 +188,8 @@ class controlEntity extends Interaction
         }
         $role = $this->applyContext( $entity, 'loadable' );
         // form1 state
-        if( $this->nextStateIf( 'form1' ) || $control == 'form1' ) {
+        if( $state == 'form1' || $control == 'form1' ) {
+            $this->nextStateIf( 'form1' );
             return $view->showForm1( $entity );
         }
         // load1
@@ -197,7 +198,8 @@ class controlEntity extends Interaction
         if( !$role->verify( 'load1' ) ) return $view->showForm1( $entity );
 
         // form2 state
-        if( $this->nextStateIf( 'form2' ) || $control == 'form2' ) {
+        if( $state == 'form2' || $control == 'form2' ) {
+            $this->nextStateIf( 'form2' );
             return $view->showForm2( $entity );
         }
         // load2
