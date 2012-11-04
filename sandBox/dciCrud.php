@@ -196,7 +196,7 @@ class controlEntity extends Interaction
         
         if( !$role->verify( 'load2' ) ) return $view->showForm1( $entity );
 
-        if( $control == 'save' && $state == 'confirm' ) $this->nextState();
+        if( $control == 'save' && $state == 'confirm' ) $state = $this->nextState();
         
         // confirm
         if( $state == 'confirm' ) {
