@@ -37,7 +37,13 @@ class Interaction
         return FALSE;
     }
     public function nextState() {
-        array_splice( $this->states, 0, 1 );
+        return array_splice( $this->states, 0, 1 );
+    }
+    public function nextStateIf( $state ) {
+        if( $state == $this->getState() ) {
+            return array_splice( $this->states, 0, 1 );
+        }
+        return null;
     }
     public function execStateOrControl( $control, $state ) {
         $status = FALSE;
@@ -76,8 +82,84 @@ class view
     
 }
 
+/*
+
+        ctrl    state
+form1     x       x
+load1     x
+form2     x       x   
+load2     x
+confirm   x       x
+save              x
+done      x       x
+
+
+ */
+
 class controlEntity extends Interaction
 {
+    /**
+     * @param string $control
+     * @param view $view
+     * @return \view
+     */
+    function entityAdd_bare( $control, $view )
+    {
+        // get entity
+        $entity = $this->restore( 'entity' );
+        $role = $this->applyContext( $entity, 'loadable' );
+
+        // form1
+        $role->verify( 'load1' );
+
+        // form2
+        $role->verify( 'load2' );
+
+        // confirm
+        $view->showConfirm( $entity );
+
+        // save
+        $role = $this->applyContext( $entity, 'active' );
+        $role->insert();
+
+        // done
+        $view->showDone( $entity );
+    }
+    /**
+     * @param string $control
+     * @param view $view
+     * @return \view
+     */
+    function entityAdd_forms( $control, $view )
+    {
+        // get entity
+        $entity = $this->restore( 'entity' );
+        $role = $this->applyContext( $entity, 'loadable' );
+
+        // form1
+        $view->showForm1( $entity );
+        // load1
+        $role->load( 'load1' );
+
+        $role->verify( 'load1' );
+
+        // form2
+        $view->showForm2( $entity );
+        // load2
+        $role->load( 'load2' );
+
+        $role->verify( 'load2' );
+
+        // confirm
+        $view->showConfirm( $entity );
+
+        // save
+        $role = $this->applyContext( $entity, 'active' );
+        $role->insert();
+
+        // done
+        $view->showDone( $entity );
+    }
     /**
      * @param string $control
      * @param view $view
@@ -96,7 +178,7 @@ class controlEntity extends Interaction
         $role = $this->applyContext( $entity, 'loadable' );
         // form1
         if( $control == 'form1' || $state == 'form1' ) {
-            $this->nextState();
+            $this->nextStateIf( 'form1' );
             return $view->showForm1( $entity );
         }
         if( $control == 'load1' ) $role->load( 'load1' );
@@ -104,18 +186,16 @@ class controlEntity extends Interaction
 
         // form2
         if( $control == 'form2' || $state == 'form2' ) {
-            $this->nextState();
+            $this->nextStateIf( 'form2' );
             return $view->showForm2( $entity );
         }
         if( $control == 'load2' ) $role->load( 'load2' );
         if( !$role->verify( 'load2' ) ) return $view->showForm1( $entity );
 
+        if( $control == 'save' && $state == 'confirm' ) $this->nextState();
         // confirm
         if( $state == 'confirm' ) {
-            if( $control != 'save' ) {
-                return $view->showConfirm( $entity );
-            }
-            $this->nextState();
+            return $view->showConfirm( $entity );
         }
         // save
         if( $state == 'save' ) {
@@ -125,7 +205,7 @@ class controlEntity extends Interaction
         }
 
         // done
-        $view->showDone( $entity );
+        return $view->showDone( $entity );
     }
     /**
      * @param string $control
@@ -147,14 +227,14 @@ class controlEntity extends Interaction
         if( $control == 'form1' ) {
             return $view->showForm1( $entity );
         }
-        if( $control == 'load1' ) $role->load( 'load1' );
+        if( $control == 'form2' ) $role->load( 'load1' );
         if( !$role->verify( 'load1' ) ) return $view->showForm1( $entity );
 
         // form2
         if( $control == 'form2' ) {
             return $view->showForm2( $entity );
         }
-        if( $control == 'load2' ) $role->load( 'load2' );
+        if( $control == 'confirm' ) $role->load( 'load2' );
         if( !$role->verify( 'load2' ) ) return $view->showForm1( $entity );
 
         // confirm
