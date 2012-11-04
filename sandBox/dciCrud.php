@@ -143,28 +143,28 @@ class controlEntity extends Interaction
         $entity = $this->restore( 'entity' );
         $role = $this->applyContext( $entity, 'loadable' );
 
-        // form1
+        // form1 state
         $view->showForm1( $entity );
         // load1
         $role->load( 'load1' );
 
         $role->verify( 'load1' );
 
-        // form2
+        // form2 state
         $view->showForm2( $entity );
         // load2
         $role->load( 'load2' );
 
         $role->verify( 'load2' );
 
-        // confirm
+        // confirm state
         $view->showConfirm( $entity );
 
-        // save
+        // save state
         $role = $this->applyContext( $entity, 'active' );
         $role->insert();
 
-        // done
+        // done state
         $view->showDone( $entity );
     }
 
@@ -185,7 +185,7 @@ class controlEntity extends Interaction
             $this->setState( [ 'form1', 'form2', 'confirm', 'save', 'done' ] );
         }
         $role = $this->applyContext( $entity, 'loadable' );
-        // form1
+        // form1 state
         if( $this->nextStateIf( 'form1' ) || $control == 'form1' ) {
             return $view->showForm1( $entity );
         }
@@ -194,7 +194,7 @@ class controlEntity extends Interaction
         
         if( !$role->verify( 'load1' ) ) return $view->showForm1( $entity );
 
-        // form2
+        // form2 state
         if( $this->nextStateIf( 'form2' ) || $control == 'form2' ) {
             return $view->showForm2( $entity );
         }
@@ -205,12 +205,12 @@ class controlEntity extends Interaction
 
         if( $control == 'save' && $state == 'confirm' ) $state = $this->nextState();
         
-        // confirm
+        // confirm state
         if( $state == 'confirm' ) {
             return $view->showConfirm( $entity );
         }
         
-        // save
+        // save state
         if( $state == 'save' ) {
             if( $this->isMethodGet() ) throw new RuntimeException( 'Cannot use get method to save data' );
             $role = $this->applyContext( $entity, 'active' );
@@ -218,7 +218,7 @@ class controlEntity extends Interaction
             $this->nextState();
         }
 
-        // done
+        // done state
         return $view->showDone( $entity );
     }
 
@@ -239,7 +239,7 @@ class controlEntity extends Interaction
             $this->setState( [ 'form1', 'form2', 'confirm', 'save', 'done' ] );
         }
         $role = $this->applyContext( $entity, 'loadable' );
-        // form1
+        // form1 state
         if( $this->nextStateIf( 'form1' ) ) {
             return $view->showForm1( $entity );
         }
@@ -250,7 +250,7 @@ class controlEntity extends Interaction
 
         if( !$role->verify( 'load1' ) ) return $view->showForm1( $entity );
 
-        // form2
+        // form2 state
         if( $this->nextStateIf( 'form2' ) ) {
             return $view->showForm2( $entity );
         }
@@ -263,12 +263,12 @@ class controlEntity extends Interaction
 
         if( $control == 'save' && $state == 'confirm' ) $state = $this->nextState();
 
-        // confirm
+        // confirm state
         if( $state == 'confirm' ) {
             return $view->showConfirm( $entity );
         }
 
-        // save
+        // save state
         if( $state == 'save' ) {
             if( $this->isMethodGet() ) throw new RuntimeException( 'Cannot use get method to save data' );
             $role = $this->applyContext( $entity, 'active' );
@@ -276,7 +276,7 @@ class controlEntity extends Interaction
             $this->nextState();
         }
 
-        // done
+        // done state
         return $view->showDone( $entity );
     }
     /**
