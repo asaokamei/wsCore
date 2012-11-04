@@ -114,6 +114,7 @@ class controlEntity extends Interaction
     {
         // get entity
         $entity = $this->restore( 'entity' );
+        $this->setState( [ 'form1', 'form2', 'confirm', 'save', 'done' ] );
         $role = $this->applyContext( $entity, 'loadable' );
 
         // form1
@@ -141,6 +142,7 @@ class controlEntity extends Interaction
     {
         // get entity
         $entity = $this->restore( 'entity' );
+        $this->setState( [ 'form1', 'form2', 'confirm', 'save', 'done' ] );
         $role = $this->applyContext( $entity, 'loadable' );
 
         // form1 state
