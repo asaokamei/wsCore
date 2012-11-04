@@ -167,9 +167,11 @@ class controlEntity extends Interaction
         // done
         $view->showDone( $entity );
     }
+
     /**
      * @param string $control
-     * @param view $view
+     * @param view   $view
+     * @throws RuntimeException
      * @return \view
      */
     function entityAdd( $control, $view )
@@ -212,6 +214,7 @@ class controlEntity extends Interaction
         
         // save
         if( $state == 'save' ) {
+            if( $this->isMethodGet() ) throw new RuntimeException( 'Cannot use get method to save data' );
             $role = $this->applyContext( $entity, 'active' );
             $role->insert();
             $this->nextState();
