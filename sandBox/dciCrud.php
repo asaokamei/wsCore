@@ -64,6 +64,13 @@ class Interaction
         return $this->variables[ $name ];
     }
     // +----------------------------------------------------------------------+
+    public function isMethodGet() {
+        return true;
+    }
+    public function isMethodPut() {
+        return true;
+    }
+    // +----------------------------------------------------------------------+
     public function applyContext( $entity, $role ) {
         return $entity;
     }
@@ -213,9 +220,11 @@ class controlEntity extends Interaction
         // done
         return $view->showDone( $entity );
     }
+
     /**
      * @param string $control
-     * @param view $view
+     * @param view   $view
+     * @throws RuntimeException
      * @return \view
      */
     function entityAddWithMethod( $control, $view )
@@ -230,22 +239,24 @@ class controlEntity extends Interaction
         }
         $role = $this->applyContext( $entity, 'loadable' );
         // form1
-        if( $control == 'form1' || $state == 'form1' ) {
-            $this->nextStateIf( 'form1' );
+        if( $this->nextStateIf( 'form1' ) ) {
             return $view->showForm1( $entity );
         }
-        // load1
-        if( $control == 'load1' ) $role->load( 'load1' );
+        if( $control == 'form1' ) {
+            if(     $this->isMethodGet() ) return $view->showForm1( $entity );
+            elseif( $this->ismethodPut() ) $role->load( 'load1' );
+        }
 
         if( !$role->verify( 'load1' ) ) return $view->showForm1( $entity );
 
         // form2
-        if( $control == 'form2' || $state == 'form2' ) {
-            $this->nextStateIf( 'form2' );
+        if( $this->nextStateIf( 'form2' ) ) {
             return $view->showForm2( $entity );
         }
-        // load2
-        if( $control == 'load2' ) $role->load( 'load2' );
+        if( $control == 'form2' ) {
+            if(     $this->isMethodGet() ) return $view->showForm2( $entity );
+            elseif( $this->ismethodPut() ) $role->load( 'load2' );
+        }
 
         if( !$role->verify( 'load2' ) ) return $view->showForm1( $entity );
 
@@ -258,6 +269,7 @@ class controlEntity extends Interaction
 
         // save
         if( $state == 'save' ) {
+            if( $this->isMethodGet() ) throw new RuntimeException( 'Cannot use get method to save data' );
             $role = $this->applyContext( $entity, 'active' );
             $role->insert();
             $this->nextState();
