@@ -218,6 +218,59 @@ class controlEntity extends Interaction
      * @param view $view
      * @return \view
      */
+    function entityAddWithMethod( $control, $view )
+    {
+        // get entity
+        $entity = $this->restore( 'entity' );
+        $state  = $this->getState();
+        if( !$state ) {
+            $entity = $this->contextGet( 'entity' );
+            $this->register( 'entity', $entity );
+            $this->setState( [ 'form1', 'form2', 'confirm', 'save', 'done' ] );
+        }
+        $role = $this->applyContext( $entity, 'loadable' );
+        // form1
+        if( $control == 'form1' || $state == 'form1' ) {
+            $this->nextStateIf( 'form1' );
+            return $view->showForm1( $entity );
+        }
+        // load1
+        if( $control == 'load1' ) $role->load( 'load1' );
+
+        if( !$role->verify( 'load1' ) ) return $view->showForm1( $entity );
+
+        // form2
+        if( $control == 'form2' || $state == 'form2' ) {
+            $this->nextStateIf( 'form2' );
+            return $view->showForm2( $entity );
+        }
+        // load2
+        if( $control == 'load2' ) $role->load( 'load2' );
+
+        if( !$role->verify( 'load2' ) ) return $view->showForm1( $entity );
+
+        if( $control == 'save' && $state == 'confirm' ) $state = $this->nextState();
+
+        // confirm
+        if( $state == 'confirm' ) {
+            return $view->showConfirm( $entity );
+        }
+
+        // save
+        if( $state == 'save' ) {
+            $role = $this->applyContext( $entity, 'active' );
+            $role->insert();
+            $this->nextState();
+        }
+
+        // done
+        return $view->showDone( $entity );
+    }
+    /**
+     * @param string $control
+     * @param view $view
+     * @return \view
+     */
     function entityAddSimple( $control, $view )
     {
         // get entity
