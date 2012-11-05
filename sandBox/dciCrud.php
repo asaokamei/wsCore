@@ -64,9 +64,19 @@ class Interaction
         return $this->variables[ $name ];
     }
     // +----------------------------------------------------------------------+
+    /**
+     * @param $entity
+     * @param $role
+     * @return \role
+     */
     public function applyContext( $entity, $role ) {
         return $entity;
     }
+
+    /**
+     * @param $entityName
+     * @return mixed
+     */
     public function contextGet( $entityName ) {
         return $entityName;
     }
@@ -82,6 +92,12 @@ class view
     
 }
 
+class role
+{
+    function load( $name=null ) { return true; }
+    function verify( $name=null ) { return true; }
+    function insert() { return true; }
+}
 /*
 
         ctrl    state
@@ -95,6 +111,129 @@ done      x       x
 
 
  */
+
+class stateEntity extends Interaction
+{
+    /**
+     * @param string $control
+     * @param \view $view
+     * @return mixed
+     */
+    function entity_do( $control, $view )
+    {
+        $state  = $this->getState();
+        $entity = $this->restore( 'entity' );
+        if( !$state ) {
+            $entity = $this->contextGet( 'entity' );
+            $this->register( 'entity', $entity );
+            $this->setState( [ 'form1', 'form2', 'confirmed', 'ready', 'done' ] );
+            $state  = $this->getState();
+        }
+        $method = 'state_' . $state;
+        return $this->$method( $control, $entity, $view );
+    }
+
+    /**
+     * @param $control
+     * @param $entity
+     * @param \view $view
+     * @return mixed
+     */
+    function state_form1( $control, $entity, $view )
+    {
+        $this->nextStateIf( 'form1' );
+        return $view->showForm1( $entity );
+    }
+
+    /**
+     * @param string $entity
+     * @return bool
+     */
+    function load1_entity( $entity )
+    {
+        $role = $this->applyContext( $entity, 'loadable' );
+        return $role->verify( 'load1' );
+    }
+
+    /**
+     * @param $control
+     * @param $entity
+     * @param \view $view
+     * @return \view
+     */
+    function state_form2( $control, $entity, $view )
+    {
+        if( $control == 'form1' ) {
+            return $this->state_form1( $control, $entity, $view );
+        }
+        $this->nextStateIf( 'form2' );
+        if( $this->load1_entity( $entity ) ) return $view->showForm1( $entity );
+        return $view->showForm2( $entity );
+    }
+
+    /**
+     * @param string $entity
+     * @return bool
+     */
+    function load2_entity( $entity )
+    {
+        $role = $this->applyContext( $entity, 'loadable' );
+        return $role->verify( 'load2' );
+    }
+
+    /**
+     * @param $control
+     * @param $entity
+     * @param \view $view
+     * @return \view
+     */
+    function state_confirmed( $control, $entity, $view )
+    {
+        if( in_array( $control, [ 'form1', 'form2' ] ) ) {
+            return $this->state_form2( $control, $entity, $view );
+        }
+        elseif( $control == 'load1' ) {
+            if( $this->load1_entity( $entity ) ) return $view->showForm2( $entity );;
+        }
+        elseif( $control == 'load2' ) {
+        if( $this->load2_entity( $entity ) ) return $view->showForm2( $entity );;
+    }
+        $role = $this->applyContext( $entity, 'loadable' );
+        // load2
+        if( $role->verify() ) $this->nextStateIf( 'confirmed' );
+
+        return $view->showConfirm( $entity );
+    }
+
+    /**
+     * @param $control
+     * @param $entity
+     * @param \view $view
+     * @return \view
+     */
+    function state_ready( $control, $entity, $view )
+    {
+        if( $control == 'save' ) {
+            $this->nextState();
+            $role = $this->applyContext( $entity, 'active' );
+            $role->insert();
+            return $view->showDone( $entity );
+        }
+        else {
+            return $this->state_confirmed( $control, $entity, $view );
+        }
+    }
+
+    /**
+     * @param $control
+     * @param $entity
+     * @param \view $view
+     * @return \view
+     */
+    function state_done( $control, $entity, $view ) {
+        return $view->showDone( $entity );
+    }
+}
 
 class controlEntity extends Interaction
 {
