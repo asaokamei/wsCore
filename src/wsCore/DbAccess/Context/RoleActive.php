@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Context_RoleActive
+class Context_RoleActive implements Context_Interface
 {
     const ACTION_NONE  = 'act-none';
     const ACTION_SAVE  = 'act-save';

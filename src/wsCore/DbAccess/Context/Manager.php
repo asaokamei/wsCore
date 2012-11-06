@@ -64,6 +64,13 @@ class Context_Manager
         else {
             $class = 'Context_Role' . ucwords( $role );
         }
+        $em   = clone $this->em;
+        $dio  = clone $this->dio;
+        $sel  = clone $this->selector;
+        /** @var $role Context_Interface */
+        $role = new $class( $em, $dio, $sel );
+        $role->register( $entity );
+        return $role;
     }
 
     /**

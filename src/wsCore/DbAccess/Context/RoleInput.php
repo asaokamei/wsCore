@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Context_RoleInput
+class Context_RoleInput implements Context_Interface
 {
     /** @var \wsCore\DbAccess\EntityManager */
     private $em;
@@ -53,7 +53,7 @@ class Context_RoleInput
     // +----------------------------------------------------------------------+
     /**
      * @param array $data
-     * @return Entity_RoleActive
+     * @return Context_RoleInput
      */
     public function loadData( $data )
     {
