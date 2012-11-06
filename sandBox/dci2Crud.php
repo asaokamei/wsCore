@@ -28,8 +28,8 @@ class Interaction
      * @param \wsCore\Web\Session $session
      * @return mixed
      */
-    public static function load( $session ) {
-        $class = self::saveName( get_called_class() );
+    public static function loadInstance( $session ) {
+        $class = self::getInstanceName( get_called_class() );
         if( $src = $session->get( $class ) ) {
             $object = unserialize( $src );
         }
@@ -43,8 +43,8 @@ class Interaction
     /**
      * saves the instance to session.
      */
-    public function save() {
-        $class = self::saveName( get_called_class() );
+    public function saveInstance() {
+        $class = self::getInstanceName( get_called_class() );
         $this->session->set( $class, serialize( $this ) );
     }
 
@@ -52,7 +52,7 @@ class Interaction
      * @param $class
      * @return mixed
      */
-    protected static function saveName( $class ) {
+    protected static function getInstanceName( $class ) {
         $class = str_replace( '\\', '__', $class );
         return $class;
     }
@@ -66,7 +66,7 @@ class Interaction
     public function run( $controller, $action, $view )
     {
         $view = $this->$controller( $action, $view );
-        $this->save();
+        $this->saveInstance();
         return $view;
     }
     // +----------------------------------------------------------------------+
