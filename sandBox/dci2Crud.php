@@ -141,8 +141,9 @@ class ControllerCrud extends Interaction
         if( !$load ) $load = $form;
         $role = $this->applyContext( $entity, 'loadable' );
         // check if this form has shown before.
-        if( !$this->restore( $form ) ) {
-            $this->register( $form, true );
+        $pinpoint = '_pin_' . $form;
+        if( !$this->restore( $pinpoint ) ) {
+            $this->register( $pinpoint, true );
             $this->view->showForm( $entity, $form );
             return true;
         }
