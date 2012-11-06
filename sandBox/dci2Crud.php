@@ -6,13 +6,7 @@ class Interaction
     /** @var array                          data to register as session data */
     protected $registeredData = array();
 
-    /** @var array                                      data from form post. */
-    protected $postData = array();
-
-    /** @var string */
-    protected $action = '';
-
-    /** @var \wsCore\Web\Session */
+    /** @var \wsCore\Web\Session             saves itself and token for CSRF */
     protected $session;
     // +----------------------------------------------------------------------+
     //  object management
@@ -98,7 +92,7 @@ class Interaction
      * @param string $name
      * @param mixed $data
      */
-    public function register( $name, $data ) {
+    public function registerData( $name, $data ) {
         $this->registeredData[ $name ] = $data;
     }
 
@@ -106,14 +100,14 @@ class Interaction
      * @param string $name
      * @return mixed
      */
-    public function restore( $name ) {
+    public function restoreData( $name ) {
         return $this->registeredData[ $name ];
     }
 
     /**
      * clears registered data
      */
-    public function clear() {
+    public function clearData() {
         $this->registeredData = array();
     }
     /**
@@ -156,24 +150,22 @@ class ControllerCrud extends Interaction
     /** @var view */
     protected $view;
 
-    function setView( $view ) {
-        $this->view = $view;
-    }
-
     /**
      * @param string $action
+     * @param \dci\view $view
      * @return \dci\view
      */
-    function addEntity( $action )
+    function addEntity( $action, $view )
     {
         // get entity
-        $entity = $this->restore( 'entity' );
+        $this->view = $view;
+        $entity = $this->restoreData( 'entity' );
         if( !$entity ) {
             $entity = $this->contextGet( 'entity' );
-            $this->clear();
-            $this->register( 'entity', $entity );
+            $this->clearData();
+            $this->registerData( 'entity', $entity );
         }
-        elseif( $this->restore( 'complete' ) ) {
+        elseif( $this->restoreData( 'complete' ) ) {
             goto done;
         }
         if( $this->actionFormAndLoad( $entity, $action, 'form1', 'load1' ) ) return $this->view;
@@ -206,8 +198,8 @@ class ControllerCrud extends Interaction
         $role = $this->applyContext( $entity, 'loadable' );
         // check if this form has shown before.
         $pinpoint = '_pin_' . $form;
-        if( !$this->restore( $pinpoint ) ) {
-            $this->register( $pinpoint, true );
+        if( !$this->restoreData( $pinpoint ) ) {
+            $this->registerData( $pinpoint, true );
             $this->view->showForm( $entity, $form );
             return true;
         }
