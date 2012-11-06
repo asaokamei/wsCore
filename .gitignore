@@ -1,5 +1,9 @@
 # ignore git
 
+#ignore composer's stuff.
+composer.lock
+composer.phar
+
 # DreamWeaver's sync xml file.
 dwsync.xml
 # netbean
