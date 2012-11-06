@@ -62,32 +62,32 @@ class Context_Manager
             $class = $role;
         }
         else {
-            $class = 'Entity_Role' . ucwords( $role );
+            $class = 'Context_Role' . ucwords( $role );
         }
     }
 
     /**
      * @param \wsCore\DbAccess\Entity_Interface $entity
-     * @return \wsCore\DbAccess\Entity_RoleActive
+     * @return \wsCore\DbAccess\Context_RoleActive
      */
     public function activeRole( $entity )
     {
         $em   = clone $this->em;
-        $role = new Entity_RoleActive( $em );
+        $role = new Context_RoleActive( $em );
         $role->register( $entity );
         return $role;
     }
 
     /**
      * @param \wsCore\DbAccess\Entity_Interface $entity
-     * @return Entity_RoleInput
+     * @return Context_RoleInput
      */
     public function inputRole( $entity )
     {
         $em   = clone $this->em;
         $dio  = clone $this->dio;
         $sel  = clone $this->selector;
-        $role = new Entity_RoleInput( $em, $dio, $sel );
+        $role = new Context_RoleInput( $em, $dio, $sel );
         $role->register( $entity );
         return $role;
     }

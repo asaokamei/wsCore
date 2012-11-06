@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Entity_RoleInput
+class Context_RoleInput
 {
     /** @var \wsCore\DbAccess\EntityManager */
     private $em;
