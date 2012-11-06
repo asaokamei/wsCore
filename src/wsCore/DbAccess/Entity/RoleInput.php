@@ -160,6 +160,8 @@ class Entity_RoleInput
      *     function( &$val ){ doSomething( $val ); },
      *   ]
      *
+     * TODO: simplify or move factory to Selector. 
+     * 
      * @param string $name
      * @return null|object
      */
