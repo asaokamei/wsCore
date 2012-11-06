@@ -8,3 +8,5 @@ nbproject/*
 .DS_Store
 # PHPStorm
 .idea/*
+#composer and other vendor staff
+vendor/*
