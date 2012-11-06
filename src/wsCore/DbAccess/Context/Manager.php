@@ -87,7 +87,7 @@ class Context_Manager
 
     /**
      * @param \wsCore\DbAccess\Entity_Interface $entity
-     * @return Context_RoleInput
+     * @return \wsCore\DbAccess\Context_RoleInput
      */
     public function inputRole( $entity )
     {
