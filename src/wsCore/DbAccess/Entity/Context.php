@@ -25,6 +25,48 @@ class Entity_Context
     }
 
     /**
+     * @param string $modelName
+     * @param string $id
+     * @return \wsCore\DbAccess\Entity_Interface
+     */
+    public function getEntity( $modelName, $id )
+    {
+        $entity = $this->em->getEntity( $modelName, $id );
+        return $entity;
+    }
+
+    /**
+     * @param string        $modelName
+     * @param array|string  $data
+     * @param null|string   $id
+     * @return \wsCore\DbAccess\Entity_Interface
+     */
+    public function newEntity( $modelName, $data=array(), $id=NULL )
+    {
+        $entity = $this->em->newEntity( $modelName, $data, $id );
+        return $entity;
+    }
+
+    /**
+     * @param \wsCore\DbAccess\Entity_Interface $entity
+     * @param string $role
+     * @return mixed
+     */
+    public function applyRole( $entity, $role )
+    {
+        if( method_exists( $this, strtolower( $role ) . 'Role' ) ) {
+            $method = strtolower( $role ) . 'Role';
+            return $this->$method( $entity );
+        }
+        if( strpos( $role, '\\' ) !== FALSE ) {
+            $class = $role;
+        }
+        else {
+            $class = 'Entity_Role' . ucwords( $role );
+        }
+    }
+
+    /**
      * @param \wsCore\DbAccess\Entity_Interface $entity
      * @return \wsCore\DbAccess\Entity_RoleActive
      */
