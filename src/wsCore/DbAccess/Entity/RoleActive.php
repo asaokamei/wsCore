@@ -21,16 +21,22 @@ class Entity_RoleActive
     // +----------------------------------------------------------------------+
     /**
      * @param \wsCore\DbAccess\EntityManager    $em
-     * @param \wsCore\DbAccess\Entity_Interface $entity
      */
-    public function __construct( $em, $entity )
+    public function __construct( $em )
     {
         $this->em = $em;
-        $this->em->register( $entity );
-        $this->entity = $entity;
-        $this->model = $em->getModel( $entity->_get_Model() );
     }
 
+    /**
+     * @param \wsCore\DbAccess\Entity_Interface    $entity
+     */
+    public function register( $entity )
+    {
+        $entity = $this->em->register( $entity );
+        $this->entity = $entity;
+        $this->model = $this->em->getModel( $entity->_get_Model() );
+    }
+    
     /**
      * @param string $actType
      * @return Entity_RoleActive
