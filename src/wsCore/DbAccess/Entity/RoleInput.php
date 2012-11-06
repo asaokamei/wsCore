@@ -12,24 +12,41 @@ class Entity_RoleInput
     /** @var \wsCore\DbAccess\Entity_Interface */
     private $entity;
 
+    /** @var \wsCore\Validator\DataIO */
+    private $dio;
+    
     /** @var array */
     private $errors = array();
 
     /** @var bool */
     private $is_valid = false;
 
+    /** @var \wsCore\Html\Selector */
+    private $selector;
+    
+    /** @var string                html, form, or ...? */
     private $html_type = 'html';
     // +----------------------------------------------------------------------+
     /**
      * @param \wsCore\DbAccess\EntityManager    $em
-     * @param \wsCore\DbAccess\Entity_Interface $entity
+     * @param \wsCore\Validator\DataIO          $dio
+     * @param \wsCore\Html\Selector             $selector
      */
-    public function __construct( $em, $entity )
+    public function __construct( $em, $dio, $selector )
     {
         $this->em = $em;
-        $this->em->register( $entity );
+        $this->dio = $dio;
+        $this->selector = $selector;
+    }
+
+    /**
+     * @param \wsCore\DbAccess\Entity_Interface    $entity
+     */
+    public function register( $entity ) 
+    {
+        $entity = $this->em->register( $entity );
         $this->entity = $entity;
-        $this->model = $em->getModel( $entity->_get_Model() );
+        $this->model = $this->em->getModel( $entity->_get_Model() );
     }
     // +----------------------------------------------------------------------+
     //  get/set properties, and ArrayAccess
@@ -46,31 +63,17 @@ class Entity_RoleInput
         }
         return $this;
     }
-
-    /**
-     * @param $name
-     * @return \wsCore\DbAccess\Relation_Interface
-     */
-    public function relation( $name )
-    {
-        if( !$relation = $this->entity->relation( $name ) ) {
-            $relation = $this->model->relation( $this->entity, $name );
-            $this->entity->setRelation( $name, $relation );
-        }
-        return $relation;
-    }
     // +----------------------------------------------------------------------+
     //  Validating data.
     // +----------------------------------------------------------------------+
     /**
-     * @param \wsCore\Validator\DataIO $dio
      * @return bool
      */
-    public function validate( $dio )
+    public function validate()
     {
-        $dio->source( $this->entity );
-        $this->model->validate( $dio );
-        $this->is_valid = !$dio->popErrors( $this->errors );
+        $this->dio->source( $this->entity );
+        $this->model->validate( $this->dio );
+        $this->is_valid = !$this->dio->popErrors( $this->errors );
         return $this->is_valid;
     }
 
@@ -97,7 +100,7 @@ class Entity_RoleInput
      * @param null|string $html_type
      * @return string
      */
-    public function setHtmlType( $html_type=NULL ) {
+    public function setHtmlType( $html_type=null ) {
         if( $html_type ) $this->html_type = $html_type;
         return $this->html_type;
     }
@@ -106,9 +109,16 @@ class Entity_RoleInput
      * @param null   $html_type
      * @return mixed
      */
-    public function popHtml( $name, $html_type=NULL ) {
+    public function popHtml( $name, $html_type=null ) {
         $html_type = ( $html_type ) ?: $this->html_type;
-        return $this->model->popHtml( $html_type, $name, $this->entity->$name );
+        $selector = $this->getSelInstance( $name );
+        if( $selector ) {
+            $html = $selector->popHtml( $html_type, $this->entity->$name );
+        }
+        else {
+            $html = $this->selector->popHtml( 'html', $this->entity->$name );
+        }
+        return $html;
     }
 
     /**
@@ -125,6 +135,52 @@ class Entity_RoleInput
      */
     public function popName( $name ) {
         return $this->model->propertyName( $name );
+    }
+
+    /**
+     * @param string $name
+     * @return null|object
+     */
+    public function getSelInstance( $name )
+    {
+        static $selInstances = array();
+        $modelName = $this->model->getModelName();
+        if( isset( $selInstances[ $modelName ][ $name ] ) ) {
+            return $selInstances[ $modelName ][ $name ];
+        }
+        return $selInstances[ $modelName ][ $name ] = $this->getSelector( $name );
+    }
+
+    /**
+     * creates selector object based on selectors array.
+     * $selector[ var_name ] = [
+     *     className,
+     *     styleName,
+     *     [ arg2, arg3, arg4 ],
+     *     function( &$val ){ doSomething( $val ); },
+     *   ]
+     *
+     * @param string $name
+     * @return null|object
+     */
+    public function getSelector( $name )
+    {
+        $selector = null;
+        if( $info = $this->model->getSelectInfo( $name ) ) {
+            if( $info[0] == 'Selector' ) {
+                $arg2     = $this->model->arrGet( $info, 2, NULL );
+                $arg3     = $this->model->arrGet( $info, 3, NULL );
+                $selector = $this->selector->getInstance( $info[1], $name, $arg2, $arg3 );
+            }
+            else {
+                $class = $info[0];
+                $arg1     = $this->model->arrGet( $info[1], 0, NULL );
+                $arg2     = $this->model->arrGet( $info[1], 1, NULL );
+                $arg3     = $this->model->arrGet( $info[1], 2, NULL );
+                $selector = new $class( $name, $arg1, $arg2, $arg3 );
+            }
+        }
+        return $selector;
     }
     // +----------------------------------------------------------------------+
 }

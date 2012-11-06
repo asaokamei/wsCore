@@ -281,6 +281,13 @@ class Dao
     //  Managing Selector for Html/Form Output. 
     // +----------------------------------------------------------------------+
     /**
+     * @param string $name
+     * @return null|array
+     */
+    public function getSelectInfo( $name ) {
+        return array_key_exists( $name, $this->selectors ) ? $this->selectors[ $name ] : NULL;
+    }
+    /**
      * @param string $type
      * @param string $var_name
      * @param mixed  $value
