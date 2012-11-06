@@ -1,5 +1,9 @@
 # ignore git
 
+#ignore composer's stuff.
+composer.lock
+composer.phar
+
 # DreamWeaver's sync xml file.
 dwsync.xml
 # netbean
@@ -8,3 +12,5 @@ nbproject/*
 .DS_Store
 # PHPStorm
 .idea/*
+#composer and other vendor staff
+vendor/*
