@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Context_Manager
+class Context
 {
     /** @var \wsCore\DbAccess\EntityManager */
     private $em;
