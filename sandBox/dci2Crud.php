@@ -3,51 +3,118 @@ namespace dci;
 
 class Interaction
 {
-    protected $variables = array();
+    /** @var array                          data to register as session data */
+    protected $registeredData = array();
 
+    /** @var array                                      data from form post. */
+    protected $postData = array();
+
+    /** @var string */
+    protected $action = '';
+
+    /** @var \wsCore\Web\Session */
+    protected $session;
     // +----------------------------------------------------------------------+
     //  object management
     // +----------------------------------------------------------------------+
+    /**
+     */
     public function __construct() {
     }
-    public static function load() {
+
+    /**
+     * @param \wsCore\Web\Session $session
+     */
+    public function setSession( $session ) {
+        $this->session = ($session) ?: $_SESSION;
+    }
+
+    /**
+     * load itself from session
+     * @param \wsCore\Web\Session $session
+     * @return mixed
+     */
+    public static function load( $session ) {
         $class = self::saveName( get_called_class() );
-        $object = unserialize( $_SESSION[ $class ] );
+        if( $src = $session->get( $class ) ) {
+            $object = unserialize( $src );
+        }
+        else {
+            $object = new static();
+        }
+        $object->setSession( $session );
         return $object;
     }
+
+    /**
+     * saves the instance to session.
+     */
     public function save() {
         $class = self::saveName( get_called_class() );
-        $_SESSION[ $class ] = serialize( $this );
+        $this->session->set( $class, serialize( $this ) );
     }
+
+    /**
+     * @param $class
+     * @return mixed
+     */
     protected static function saveName( $class ) {
         $class = str_replace( '\\', '__', $class );
         return $class;
     }
+
+    /**
+     * @param string $controller
+     * @param string $action
+     * @param view $view
+     * @return view
+     */
+    public function run( $controller, $action, $view )
+    {
+        $view = $this->$controller( $action, $view );
+        $this->save();
+        return $view;
+    }
     // +----------------------------------------------------------------------+
     //  manage token for CSRF.
     // +----------------------------------------------------------------------+
+    /**
+     * @return string
+     */
     public function makeToken() {
-        return 'token';
+        return $this->session->pushToken();
     }
+
+    /**
+     * @return bool
+     */
     public function verifyToken() {
-        return true;
-    }
-    public function isMethodGet() {
-        return true;
-    }
-    public function isMethodPost() {
-        return true;
+        return $this->session->verifyToken();
     }
     // +----------------------------------------------------------------------+
     //  manage variables
     // +----------------------------------------------------------------------+
+    /**
+     * @param string $name
+     * @param mixed $data
+     */
     public function register( $name, $data ) {
-        $this->variables[ $name ] = $data;
+        $this->registeredData[ $name ] = $data;
     }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
     public function restore( $name ) {
-        return $this->variables[ $name ];
+        return $this->registeredData[ $name ];
     }
+
+    /**
+     * clears registered data
+     */
     public function clear() {
+        $this->registeredData = array();
     }
     /**
      * @param $entity
@@ -71,8 +138,6 @@ class Interaction
 class view
 {
     function showForm( $entity, $formName=null ) { return $this; }
-    function showForm1() { return $this; }
-    function showForm2() { return $this; }
     function showConfirm() { return $this; }
     function showDone() { return $this; }
     function setToken( $token ) {}
@@ -136,9 +201,8 @@ class ControllerCrud extends Interaction
      * @param string $load
      * @return bool
      */
-    function actionFormAndLoad( $entity, $action, $form, $load=null )
+    function actionFormAndLoad( $entity, $action, $form, $load )
     {
-        if( !$load ) $load = $form;
         $role = $this->applyContext( $entity, 'loadable' );
         // check if this form has shown before.
         $pinpoint = '_pin_' . $form;
@@ -148,12 +212,12 @@ class ControllerCrud extends Interaction
             return true;
         }
         // show the form.
-        if( $action == $form && $this->isMethodGet() ) {
+        if( $action == $form ) {
             $this->view->showForm( $entity, $form );
             return true;
         }
         // load posted values from form.
-        if( $action == $load && $this->isMethodPost() ) {
+        if( $action == $load ) {
             $role->load( $load );
         }
         // always verify the input.
