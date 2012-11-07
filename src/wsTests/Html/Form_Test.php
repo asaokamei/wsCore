@@ -86,13 +86,13 @@ class Form_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( '<select name="lang[]" multiple="_multiple">
   <option value="eng">english</option>
   <optgroup label="europe">
-    <option value="ger" checked="checked">german</option>
+    <option value="ger" selected="selected">german</option>
     <option value="fra">french</option>
     <option value="spa">spanish</option>
   </optgroup>
   <option value="jpn">japanese</option>
   <optgroup label="asia">
-    <option value="zhi" checked="checked">chinese</option>
+    <option value="zhi" selected="selected">chinese</option>
     <option value="kor">korean</option>
   </optgroup>
 </select>' . "\n", $form );
@@ -107,7 +107,7 @@ class Form_Test extends \PHPUnit_Framework_TestCase
         $form = (string) $this->form->select( 'lang', $lang, 'ger' );
         $this->assertEquals( '<select name="lang">
   <option value="eng">english</option>
-  <option value="ger" checked="checked">german</option>
+  <option value="ger" selected="selected">german</option>
   <option value="fra">french</option>
 </select>' . "\n", $form );
     }
