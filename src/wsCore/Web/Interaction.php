@@ -120,6 +120,8 @@ class Interaction
      * @return \role
      */
     public function applyContext( $entity, $role ) {
+        $entity[ 'role' ] = $role;
+        $entity[ '_actions' ][] = $role;
         return $entity;
     }
 
@@ -128,7 +130,10 @@ class Interaction
      * @return mixed
      */
     public function contextGet( $entityName ) {
-        return $entityName;
+        return array(
+            'entityName' => $entityName,
+            '_actions' => array( 'created' ),
+        );
     }
     // +----------------------------------------------------------------------+
 
