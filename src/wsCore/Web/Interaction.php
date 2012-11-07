@@ -28,20 +28,31 @@ class Interaction
     }
 
     /**
-     * load itself from session
      * @param \wsCore\Web\Session $session
+     * @return Interaction
+     */
+    public static function newInstance( $session ) {
+        $class = self::getInstanceName( get_called_class() );
+        $object = new static();
+        $object->setSession( $session );
+        return $object;
+    }
+
+    /**
+     * load itself from session
+     *
+     * @param \wsCore\Web\Session $session
+     * @throws \RuntimeException
      * @return mixed
      */
     public static function loadInstance( $session ) {
         $class = self::getInstanceName( get_called_class() );
         if( $src = $session->get( $class ) ) {
             $object = unserialize( $src );
+            $object->setSession( $session );
+            return $object;
         }
-        else {
-            $object = new static();
-        }
-        $object->setSession( $session );
-        return $object;
+        throw new \RuntimeException( 'Object not saved: '.$class );
     }
 
     /**
@@ -105,7 +116,7 @@ class Interaction
      * @return mixed
      */
     public function restoreData( $name ) {
-        return $this->registeredData[ $name ];
+        return \wsCore\Utilities\Tools::getKey( $this->registeredData, $name );
     }
 
     /**
@@ -120,8 +131,8 @@ class Interaction
      * @return \role
      */
     public function applyContext( $entity, $role ) {
-        $entity[ 'role' ] = $role;
-        $entity[ '_actions' ][] = $role;
+        $entity->role = $role;
+        $entity->_actions[] = $role;
         return $entity;
     }
 
@@ -130,10 +141,10 @@ class Interaction
      * @return mixed
      */
     public function contextGet( $entityName ) {
-        return array(
-            'entityName' => $entityName,
-            '_actions' => array( 'created' ),
-        );
+        $entity = new \interaction\entity();
+        $entity->entityName = $entityName;
+        $entity->_actions[] = 'created';
+        return $entity;
     }
     // +----------------------------------------------------------------------+
 
