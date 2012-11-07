@@ -13,6 +13,7 @@ class Core
         'DataIO'    => '\wsCore\Validator\DataIO',
         'Selector'  => '\wsCore\Html\Selector',
         'EntityManager' => '\wsCore\DbAccess\EntityManager',
+        'Session'   => '\wsCore\Web\Session',
         '' => '',
     );
 
