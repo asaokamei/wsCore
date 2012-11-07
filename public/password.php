@@ -25,6 +25,7 @@ $item_count = array(
     array( '10', '10 passwords' ),
     array( '15', '15 passwords' ),
 );
+if( !$input[ 'symbol' ] ) $input[ 'symbol' ] = false;
 
 // get inputs from post.
 function get_inputs()
@@ -76,7 +77,7 @@ function generate_password( $input )
             <dt>length of password</dt>
             <dd><?php echo $form->input( 'text', 'length', $input[ 'length' ] ) ?></dd>
             <dt>use symbols</dt>
-            <dd><label><?php echo $form->input( 'checkbox', 'symbol', $input[ 'symbol' ] ) ?> check if you want password to have some symbols. </label></dd>
+            <dd><label><?php echo $form->input( 'checkbox', 'symbol', 'checked' )->checked( $input[ 'symbol' ] ); ?> check if you want password to have some symbols. </label></dd>
             <dt>get # of passwords</dt>
             <dd><?php echo $form->select( 'count', $item_count, array( $input['count']) ); ?></dd>
         </dl>
