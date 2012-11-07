@@ -65,9 +65,9 @@ class Tools
             $password .= $select( $symbol, mt_rand( 1, 2 ) );
         }
         // create rest of password with alphabets. only one vows.
+        $letter .= $select( $letter, mt_rand( 1, 2 ) ); // duplicate one chars.
         $alphabet  = $select( $vows, 1 );
-        $alphabet .= $alphabet[ mt_rand( 0, strlen( $alphabet ) - 1 ) ]; // duplicate one chars.
-        $alphabet .= $select( $letter, $length - strlen( $password ) - 1 );
+        $alphabet .= $select( $letter, $length - strlen( $password ) - strlen( $alphabet ) );
         $alphabet  = str_shuffle( $alphabet );
 
         // make some of the alphabets to upper case
@@ -76,8 +76,8 @@ class Tools
         $lower = substr( $alphabet, $divide );
 
         // put together and shuffle the password.
-        $password .= $password . $lower . $upper;
-        $password  = str_shuffle( $password );
+        $password = $password . $lower . $upper;
+        $password = str_shuffle( $password );
         return $password;
     }
 }
