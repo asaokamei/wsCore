@@ -1,45 +1,22 @@
 <?php
 require_once( __DIR__ . '/../src/autoloader.php' );
+require_once( __DIR__ . '/interaction/interact.config.php' );
 use wsCore\Core;
 
-class interact extends \wsCore\Web\Interaction
-{
+Core::go();
+$session = Core::get( 'Session' );
 
-    /**
-     * @param string $action
-     * @param \dci\view $view
-     * @return \dci\view
-     */
-    function insertData( $action, $view )
-    {
-        // get entity
-        $entity = $this->restoreData( 'entity' );
-        if( !$entity ) {
-            $entity = $this->contextGet( 'entity' );
-            $this->clearData();
-            $this->registerData( 'entity', $entity );
-        }
-        elseif( $this->restoreData( 'complete' ) ) {
-            goto done;
-        }
-        if( $this->actionFormAndLoad( $view, $entity, $action, 'form', 'load' ) ) return $view;
-
-        // show confirm except for save.
-        if( $action != 'save' ) {
-            $view->setToken( $this->makeToken() );
-            return $view->showConfirm( $entity );
-        }
-        // save entity.
-        if( $action == 'save' && $this->verifyToken() ) {
-            $role = $this->applyContext( $entity, 'active' );
-            $role->insert();
-        }
-        // done
-        done :
-        return $view->showDone( $entity );
-    }
-    
+if( !wsCore\Utilities\Tools::getKey( $_REQUEST, 'action' ) ) {
+    $intAct = interaction\interact::newInstance( $session );
+    $action = 'form';
 }
+else {
+    $intAct = interaction\interact::loadInstance( $session );
+    $action = $_REQUEST[ 'action' ];
+}
+
+$view = new interaction\view();
+$intAct->run( 'insertData', $action, $view );
 
 ?>
 <!DOCTYPE html>
@@ -61,11 +38,16 @@ class interact extends \wsCore\Web\Interaction
     <hr>
     <h1>Interaction demo#1</h1>
     <p>Interaction with simple steps for inserting a data. The steps go through form -> confirm -> insert. </p>
-    <form name="password" method="post" action="interaction1.php">
+    <h3>title: <?php echo $view->view[ 'title' ]; ?></h3>
+    <form name="password" method="post" action="interaction1.php?action=<?php echo $view->view['action']; ?>">
         <dl>
+            <dd>error!?</dd>
+            <dt><label><input type="checkbox" name="error" value="error" >
+            click this checkbox to generate validation error. </label></dt>
         </dl>
-        <input type="submit" name="generate" class="btn btn-primary" value="interact data">
+        <input type="submit" name="interAction" class="btn btn-primary" value="<?php echo $view->view['action']; ?>">
     </form>
+    <?php var_dump( $view->view['entity'] ); ?>
     <footer class="footer">
         <hr>
         <p>WScore Developed by WorkSpot.JP<br />
