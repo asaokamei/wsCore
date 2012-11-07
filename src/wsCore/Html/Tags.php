@@ -172,6 +172,7 @@ class Tags
             }
             return $this;
         }
+        if( $value === false ) return $this; // ignore the property.
         if( empty( $value ) ) { // value is not set.
             $value = $name;     // i.e. required='required'
         }
