@@ -71,21 +71,21 @@ class view extends \wsCore\Html\PageView
         $message = $this->get( 'alert-success' );
         if( !$message ) return '';
         $title   = 'Message:';
-        return $this->bootstrapAlert( 'error', $message, $title );
+        return $this->bootstrapAlert( 'alert-success', $message, $title );
     }
 
     public function bootstrapAlertInfo() {
         $message = $this->get( 'alert-info' );
         if( !$message ) return '';
         $title   = 'Notice:';
-        return $this->bootstrapAlert( 'error', $message, $title );
+        return $this->bootstrapAlert( 'alert-info', $message, $title );
     }
 
     public function bootstrapAlertError() {
         $message = $this->get( 'alert-error' );
         if( !$message ) return '';
         $title   = 'Error Message:';
-        return $this->bootstrapAlert( 'error', $message, $title );
+        return $this->bootstrapAlert( 'alert-error', $message, $title );
     }
 
     public function bootstrapAlert( $type, $message, $title=null ) {
@@ -168,10 +168,10 @@ class interact extends \wsCore\Web\Interaction
             $this->clearData();
             $this->registerData( 'entity', $entity );
         }
-        elseif( $this->restoreData( 'complete' ) ) {
+        $role = $this->context->applyLoadable( $entity );
+        if( $this->restoreData( 'complete' ) ) {
             goto done;
         }
-        $role = $this->context->applyLoadable( $entity );
         if( $this->actionFormAndLoad( $view, $role, $action, 'form', 'load' ) ) return $view;
 
         // show confirm except for save.
@@ -182,12 +182,16 @@ class interact extends \wsCore\Web\Interaction
         }
         // save entity.
         if( $action == 'save' && $this->verifyToken() ) {
-            $active = $this->applyContext( $entity, 'active' );
-            $active->insert();
+            $active = $this->context->applyActive( $entity, 'active' );
+            $active->save();
+            $this->registerData( 'complete', true );
             $view->set( 'alert-success', 'your friendship has been saved. ' );
+            $view->showDone( $role );
+            return $view;
         }
         // done
         done :
+        $view->set( 'alert-info', 'your friendship has already been saved. ' );
         $view->showDone( $role );
         return $view;
     }
