@@ -169,7 +169,7 @@ class Interaction
             $role->$loadData( $load );
         }
         // always verify the input.
-        if( !$role->verify( $load ) ) {
+        if( !$role->validate( $load ) ) {
             $showForm = $this->showForm;
             $view->$showForm( $entity, $form ); // validation failed.
             return TRUE;
