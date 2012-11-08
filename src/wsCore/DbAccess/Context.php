@@ -16,6 +16,9 @@ class Context
      * @param \wsCore\DbAccess\EntityManager    $em
      * @param \wsCore\Validator\DataIO          $dio
      * @param \wsCore\Html\Selector             $selector
+     * @DimInjection get  EntityManager
+     * @DimInjection get  DataIO
+     * @DimInjection get  Selector
      */
     public function __construct( $em, $dio, $selector )
     {
@@ -77,7 +80,7 @@ class Context
      * @param \wsCore\DbAccess\Entity_Interface $entity
      * @return \wsCore\DbAccess\Context_RoleActive
      */
-    public function activeRole( $entity )
+    public function applyActive( $entity )
     {
         $em   = clone $this->em;
         $role = new Context_RoleActive( $em );
@@ -89,7 +92,7 @@ class Context
      * @param \wsCore\DbAccess\Entity_Interface $entity
      * @return \wsCore\DbAccess\Context_RoleInput
      */
-    public function inputRole( $entity )
+    public function applyLoadable( $entity )
     {
         $em   = clone $this->em;
         $dio  = clone $this->dio;
