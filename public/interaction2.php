@@ -4,11 +4,12 @@ require_once( __DIR__ . '/Interaction/interact.config.php' );
 use wsCore\Core;
 
 Core::go();
+Core::get( 'Interaction\model' );
 $session = Core::get( 'Session' );
 
 if( !wsCore\Utilities\Tools::getKey( $_REQUEST, 'action' ) ) {
     $intAct = Interaction\interact::newInstance( $session );
-    $action = 'form';
+    $action = 'wizard1';
 }
 else {
     $intAct = Interaction\interact::loadInstance( $session );
@@ -16,7 +17,7 @@ else {
 }
 
 $view = new interaction\view();
-$intAct->run( 'insertData', $action, $view );
+$intAct->run( 'wizard', $action, $view );
 
 ?>
 <!DOCTYPE html>
@@ -39,7 +40,7 @@ $intAct->run( 'insertData', $action, $view );
     <h1>Interaction demo#1</h1>
     <p>Interaction with simple steps for inserting a data. The steps go through form -> confirm -> insert. </p>
     <h3>title: <?php echo $view->view[ 'title' ]; ?></h3>
-    <form name="password" method="post" action="interaction1.php?action=<?php echo $view->view['action']; ?>">
+    <form name="password" method="post" action="interaction2.php?action=<?php echo $view->view['action']; ?>">
         <dl>
             <dd>error!?</dd>
             <dt><label><input type="checkbox" name="error" value="error" >
