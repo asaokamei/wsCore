@@ -12,53 +12,34 @@ class Interaction
     /** @var \wsCore\DbAccess\Context */
     protected $context;
     
-    protected $showForm = 'showForm';
-    
-    protected $loadData = 'loadData';
+    public $showForm = 'showForm';
+
+    public $loadData = 'loadData';
     // +----------------------------------------------------------------------+
     //  object management
     // +----------------------------------------------------------------------+
     /**
-     */
-    public function __construct() {
-    }
-
-    /**
      * @param \wsCore\Web\Session $session
-     */
-    public function setSession( $session ) {
-        $this->session = ($session) ?: $_SESSION;
-    }
-
-    /**
      * @param \wsCore\DbAccess\Context $context
+     * @DimInjection Fresh Session
+     * @DimInjection Get   \wsCore\DbAccess\Context
      */
-    public function setContext( $context ) {
+    public function __construct( $session, $context ) {
+        $this->session = ($session) ?: $_SESSION;
         $this->context = $context;
-    }
-    /**
-     * @param \wsCore\Web\Session $session
-     * @return Interaction
-     */
-    public static function newInstance( $session ) {
-        $class = self::getInstanceName( get_called_class() );
-        $object = new static();
-        $object->setSession( $session );
-        return $object;
     }
 
     /**
      * load itself from session
      *
-     * @param \wsCore\Web\Session $session
      * @throws \RuntimeException
      * @return mixed
      */
-    public static function loadInstance( $session ) {
+    public function loadRegistered() {
         $class = self::getInstanceName( get_called_class() );
-        if( $src = $session->get( $class ) ) {
+        if( $src = $this->session->get( $class ) ) {
             $object = unserialize( $src );
-            $object->setSession( $session );
+            $this->registeredData = $object;
             return $object;
         }
         throw new \RuntimeException( 'Object not saved: '.$class );
@@ -67,9 +48,9 @@ class Interaction
     /**
      * saves the instance to session.
      */
-    public function saveInstance() {
+    public function saveRegistered() {
         $class = self::getInstanceName( get_called_class() );
-        $this->session->set( $class, serialize( $this ) );
+        $this->session->set( $class, serialize( $this->registeredData ) );
     }
 
     /**
@@ -90,7 +71,7 @@ class Interaction
     public function run( $controller, $action, $view )
     {
         $view = $this->$controller( $action, $view );
-        $this->saveInstance();
+        $this->saveRegistered();
         return $view;
     }
     // +----------------------------------------------------------------------+
@@ -150,7 +131,7 @@ class Interaction
      * @return mixed
      */
     public function contextGet( $entityName ) {
-        $entity = new \interaction\entity();
+        $entity = new \stdClass();
         $entity->entityName = $entityName;
         $entity->_actions[] = 'created';
         return $entity;
