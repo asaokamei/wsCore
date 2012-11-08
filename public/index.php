@@ -44,6 +44,7 @@
     <ul>
         <li><a href="password.php" >generate password</a></li>
         <li><a href="interaction1.php" >interaction demo #1</a></li>
+        <li><a href="interaction2.php" >interaction demo #2</a></li>
     </ul>
     <footer class="footer">
         <hr>
