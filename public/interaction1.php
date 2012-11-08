@@ -47,9 +47,9 @@ $entity = $view->get( 'entity' );
     <p>Interaction with simple steps for inserting a data. The steps go through form -> confirm -> insert. </p>
     <h3>title: <?php echo $view->get( 'title' ); ?></h3>
     <?php
-    $view->bootstrapAlertError();
-    $view->bootstrapAlertInfo();
-    $view->bootstrapAlertSuccess();
+    echo $view->bootstrapAlertError();
+    echo $view->bootstrapAlertInfo();
+    echo $view->bootstrapAlertSuccess();
     ?>
     <form name="password" method="post" action="interaction1.php?action=<?php echo $view->get( 'action' ); ?>">
         <dl>
