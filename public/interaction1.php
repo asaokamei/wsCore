@@ -1,21 +1,22 @@
 <?php
 require_once( __DIR__ . '/../src/autoloader.php' );
-require_once( __DIR__ . '/interaction/interact.config.php' );
+require_once( __DIR__ . '/Interaction/interact.config.php' );
 use wsCore\Core;
 
 Core::go();
-$session = Core::get( 'Session' );
+Core::setPdo( 'dsn=sqlite::memory:' );
+$model   = Core::get( 'Interaction\model' );
+/** @var $intAct Interaction\interact */
+$intAct = Core::get( 'Interaction\interact' );
 
-if( !wsCore\Utilities\Tools::getKey( $_REQUEST, 'action' ) ) {
-    $intAct = interaction\interact::newInstance( $session );
+if( !$action = wsCore\Utilities\Tools::getKey( $_REQUEST, 'action' ) ) {
     $action = 'form';
 }
 else {
-    $intAct = interaction\interact::loadInstance( $session );
-    $action = $_REQUEST[ 'action' ];
+    $intAct->loadRegistered();
 }
 
-$view = new interaction\view();
+$view    = Core::get( 'interaction\view' );
 $intAct->run( 'insertData', $action, $view );
 
 ?>
@@ -38,16 +39,16 @@ $intAct->run( 'insertData', $action, $view );
     <hr>
     <h1>Interaction demo#1</h1>
     <p>Interaction with simple steps for inserting a data. The steps go through form -> confirm -> insert. </p>
-    <h3>title: <?php echo $view->view[ 'title' ]; ?></h3>
-    <form name="password" method="post" action="interaction1.php?action=<?php echo $view->view['action']; ?>">
+    <h3>title: <?php echo $view->get( 'title' ); ?></h3>
+    <form name="password" method="post" action="interaction1.php?action=<?php echo $view->get( 'action' ); ?>">
         <dl>
             <dd>error!?</dd>
             <dt><label><input type="checkbox" name="error" value="error" >
             click this checkbox to generate validation error. </label></dt>
         </dl>
-        <input type="submit" name="interAction" class="btn btn-primary" value="<?php echo $view->view['action']; ?>">
+        <input type="submit" name="interAction" class="btn btn-primary" value="<?php echo $view->get( 'action' ); ?>">
     </form>
-    <?php var_dump( $view->view['entity'] ); ?>
+    <?php var_dump( $view->get( 'entity' ) ); ?>
     <footer class="footer">
         <hr>
         <p>WScore Developed by WorkSpot.JP<br />
