@@ -19,6 +19,9 @@ else {
 $view    = Core::get( 'interaction\view' );
 $intAct->run( 'insertData', $action, $view );
 
+/** @var $entity \wsCore\DbAccess\Context_RoleInput */
+$entity = $view->get( 'entity' );
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -29,7 +32,10 @@ $intAct->run( 'insertData', $action, $view );
     <link rel="stylesheet" type="text/css" href="./common/css/main.css" />
     <title>WScore Public Demo</title>
     <style type="text/css">
+        select { width:auto;}
+        .formError { color: red; margin-left: 10px; }
     </style>
+    <script type="text/javascript" src="./common/js/bootstrap.js"></script>
 </head>
 <body>
 <div class="container-narrow">
@@ -40,15 +46,27 @@ $intAct->run( 'insertData', $action, $view );
     <h1>Interaction demo#1</h1>
     <p>Interaction with simple steps for inserting a data. The steps go through form -> confirm -> insert. </p>
     <h3>title: <?php echo $view->get( 'title' ); ?></h3>
+    <?php
+    if( !$entity->isValid() ) echo '
+      <div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        check the input!
+      </div>';
+    ?>
     <form name="password" method="post" action="interaction1.php?action=<?php echo $view->get( 'action' ); ?>">
         <dl>
-            <dd>error!?</dd>
-            <dt><label><input type="checkbox" name="error" value="error" >
-            click this checkbox to generate validation error. </label></dt>
+            <?php
+            $properties = array( 'friend_name', 'friend_bday' );
+            foreach( $properties as $prop ) {
+            ?>
+            <dt><?php echo $entity->popName( $prop ); ?></dt>
+            <dd><?php echo $entity->popHtml( $prop ); ?>
+            <?php if( $err = $entity->popError( $prop ) ) echo " <span class='formError' >{$err}</span>"; ?></dd>
+            <?php } ?>
         </dl>
         <input type="submit" name="interAction" class="btn btn-primary" value="<?php echo $view->get( 'action' ); ?>">
     </form>
-    <?php var_dump( $view->get( 'entity' ) ); ?>
+    <?php var_dump( $entity->retrieve() ); ?>
     <footer class="footer">
         <hr>
         <p>WScore Developed by WorkSpot.JP<br />
