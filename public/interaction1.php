@@ -69,7 +69,11 @@ $entity = $view->get( 'entity' );
         <?php echo $view->bootstrapButtonPrimary( 'button-primary' ); ?>
         <?php echo $view->bootstrapButtonSub( 'button-sub' ); ?>
     </form>
-    <?php // var_dump( $entity->retrieve() ); ?>
+    <?php if( $view->get( 'currAction' ) == 'done' ) { ?>
+    <div style="text-align: center;">
+        <button type="button" class="btn btn-primary" onclick="location.href='index.php'">back to main demo page</button>
+    </div>
+    <?php } ?>
     <footer class="footer">
         <hr>
         <p>WScore Developed by WorkSpot.JP<br />
