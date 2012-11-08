@@ -143,6 +143,40 @@ class Dao
             }
         }
     }
+
+    /**
+     * restrict keys in the property list.
+     *
+     * @param array $values
+     * @return array
+     */
+    public function restrict( $values )
+    {
+        if( empty( $values ) ) return $values;
+        foreach( $values as $key => $val ) {
+            if( !array_key_exists( $key, $this->properties ) ) {
+                unset( $values[ $key ] );
+            }
+        }
+        return $values;
+    }
+
+    /**
+     * protect data not to overwrite id or relation fields.
+     *
+     * @param $values
+     * @return mixed
+     */
+    public function protect( $values )
+    {
+        if( empty( $values ) ) return $values;
+        foreach( $values as $key => $val ) {
+            if( !array_key_exists( $key, $this->protected ) ) {
+                unset( $values[ $key ] );
+            }
+        }
+        return $values;
+    }
     /**
      * @return \wsCore\DbAccess\Query
      */
@@ -206,7 +240,7 @@ class Dao
      */
     public function update( $id, $values )
     {
-        $values = $this->protect( $values );
+        $values = $this->restrict( $values );
         $values = $this->unsetKey( $values, $this->id_name );
         if( isset( $this->extraTypes[ 'updated_at' ] ) ) {
             foreach( $this->extraTypes[ 'updated_at' ] as $column ) {
@@ -226,7 +260,7 @@ class Dao
      */
     public function insertValue( $values )
     {
-        $values = $this->protect( $values );
+        $values = $this->restrict( $values );
         if( isset( $this->extraTypes[ 'updated_at' ] ) ) {
             foreach( $this->extraTypes[ 'updated_at' ] as $column ) {
                 $this->setKey( $values, $column, date( 'Y-m-d H:i:s' ) );
@@ -380,23 +414,6 @@ class Dao
     public function propertyName( $var_name )
     {
         return $this->arrGet( $this->properties, $var_name , NULL );
-    }
-
-    /**
-     * protect values: only the keys in the property list.
-     * 
-     * @param array $values
-     * @return array
-     */
-    public function protect( $values )
-    {
-        if( empty( $values ) ) return $values;
-        foreach( $values as $key => $val ) {
-            if( !array_key_exists( $key, $this->properties ) ) {
-                unset( $values[ $key ] );
-            }
-        }
-        return $values;
     }
 
     /**
