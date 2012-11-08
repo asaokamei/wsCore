@@ -16,6 +16,7 @@ else {
     $intAct->loadRegistered();
 }
 
+/** @var $view \Interaction\view */
 $view    = Core::get( 'interaction\view' );
 $intAct->run( 'insertData', $action, $view );
 
@@ -35,17 +36,19 @@ $entity = $view->get( 'entity' );
         select { width:auto;}
         .formError { color: red; margin-left: 10px; }
     </style>
-    <script type="text/javascript" src="./common/js/bootstrap.js"></script>
 </head>
 <body>
+<script type="text/javascript">
+
+</script>
 <div class="container-narrow">
     <div class="masthead">
         <h3 class="muted"><a href="index.php" >WScore Public Demo</a></h3>
     </div>
     <hr>
-    <h1>Interaction demo#1</h1>
+    <h3>Interaction demo#1</h3>
     <p>Interaction with simple steps for inserting a data. The steps go through form -> confirm -> insert. </p>
-    <h3>title: <?php echo $view->get( 'title' ); ?></h3>
+    <h1><?php echo $view->get( 'title' ); ?></h1>
     <?php
     echo $view->bootstrapAlertError();
     echo $view->bootstrapAlertInfo();
@@ -63,14 +66,21 @@ $entity = $view->get( 'entity' );
             <?php } ?>
         </dl>
         <?php echo $view->getHiddenTag( \wsCore\Web\Session::TOKEN_NAME ); ?>
-        <input type="submit" name="interAction" class="btn btn-primary" value="<?php echo $view->get( 'action' ); ?>">
+        <?php echo $view->bootstrapButtonPrimary( 'button-primary' ); ?>
+        <?php echo $view->getButton( 'button-sub' ); ?>
     </form>
-    <?php var_dump( $entity->retrieve() ); ?>
+    <?php // var_dump( $entity->retrieve() ); ?>
     <footer class="footer">
         <hr>
         <p>WScore Developed by WorkSpot.JP<br />
             thanks, bootstrap. </p>
     </footer>
 </div>
+<script type="text/javascript" src="./common/js/jQuery.js"></script>
+<script type="text/javascript" src="./common/js/bootstrap.js"></script>
+<script type="text/javascript">
+    $(".alert").alert();
+    $('.nav-tabs').button();
+</script>
 </body>
 </html>

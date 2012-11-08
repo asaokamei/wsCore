@@ -3,8 +3,6 @@ namespace Interaction;
 
 class view extends \wsCore\Html\PageView
 {
-    public $view = array();
-
     /**
      * @param \wsCore\DbAccess\Context_RoleInput $entity
      * @param string $form
@@ -29,7 +27,9 @@ class view extends \wsCore\Html\PageView
     {
         $entity->setHtmlType( 'form' );
         $this->set( 'action', 'load' );
-        $this->view[ 'title' ] = 'Friend Form';
+        $this->set( 'title', 'Friend Form' );
+        $this->set( 'button-primary', 'confirm information' );
+        $this->set( 'button-sub', 'reset' );
     }
     public function showForm_wizard1( $entity )
     {
@@ -53,6 +53,8 @@ class view extends \wsCore\Html\PageView
         $this->set( 'entity', $entity );
         $this->set( 'title', 'Confirmation of Inputs' );
         $this->set( 'action', 'save' );
+        $this->set( 'button-primary', 'save the information' );
+        $this->set( 'button-sub', 'back' );
     }
     public function showDone( $entity )
     {
@@ -93,6 +95,17 @@ class view extends \wsCore\Html\PageView
             <button type=\"button\" class=\"close\" data-dismiss=\"alert\">×</button>
             {$message}
           </div>";
+        return $html;
+    }
+
+    public function bootstrapButtonPrimary( $name, $loading='' ) {
+        $title = $this->get( $name );
+        if( !$title ) return '';
+        return $this->bootstrapButton( 'submit', $title, 'primary', $loading );
+    }
+    public function bootstrapButton( $type, $title, $class, $loading='' ) {
+        if( $loading ) $loading = " data-loading-text=\"{$loading}\"";
+        $html = "<button type=\"{$type}\" class=\"but btn-{$class}\" {$loading} >{$title}</button>";
         return $html;
     }
 }
