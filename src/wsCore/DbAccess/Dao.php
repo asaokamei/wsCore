@@ -171,7 +171,7 @@ class Dao
     {
         if( empty( $values ) ) return $values;
         foreach( $values as $key => $val ) {
-            if( !array_key_exists( $key, $this->protected ) ) {
+            if( array_key_exists( $key, $this->protected ) ) {
                 unset( $values[ $key ] );
             }
         }
