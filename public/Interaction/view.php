@@ -103,9 +103,30 @@ class view extends \wsCore\Html\PageView
         if( !$title ) return '';
         return $this->bootstrapButton( 'submit', $title, 'primary', $loading );
     }
+
+    public function bootstrapButtonSub( $name ) {
+        $type = $this->get( $name );
+        if( !$type ) return '';
+        if( $type == 'reset' )     { $title = 'reset form'; }
+        elseif( $type == 'back' )  { $title = 'back'; }
+        else {
+            $title = $type;
+            $type  = 'submit';
+        }
+        return $this->bootstrapButton( $type, $title, '' );
+    }
+
     public function bootstrapButton( $type, $title, $class, $loading='' ) {
-        if( $loading ) $loading = " data-loading-text=\"{$loading}\"";
-        $html = "<button type=\"{$type}\" class=\"but btn-{$class}\" {$loading} >{$title}</button>";
+        $extra = '';
+        if( $loading ) $extra .= " data-loading-text=\"{$loading}\"";
+        if( $type == 'back' ) {
+            $extra .= ' onClick="history.back();"';
+            $type = 'button';
+        }
+        if( $type == 'reset' ) {
+            $extra .= ' onClick="return window.confirm( \'reset the inputs?\');"';
+        }
+        $html = "<button type=\"{$type}\" class=\"but btn-{$class}\" {$extra} >{$title}</button>";
         return $html;
     }
 }

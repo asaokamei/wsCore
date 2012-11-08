@@ -67,7 +67,7 @@ $entity = $view->get( 'entity' );
         </dl>
         <?php echo $view->getHiddenTag( \wsCore\Web\Session::TOKEN_NAME ); ?>
         <?php echo $view->bootstrapButtonPrimary( 'button-primary' ); ?>
-        <?php echo $view->getButton( 'button-sub' ); ?>
+        <?php echo $view->bootstrapButtonSub( 'button-sub' ); ?>
     </form>
     <?php // var_dump( $entity->retrieve() ); ?>
     <footer class="footer">
