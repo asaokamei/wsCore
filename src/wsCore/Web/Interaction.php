@@ -148,19 +148,21 @@ class Interaction
      */
     function actionFormAndLoad( $view, $entity, $action, $form, $load )
     {
+        /** @var $role \wsCore\DbAccess\Context_RoleInput */
         $role = $this->applyContext( $entity, 'loadable' );
         // check if this form has shown before.
         $pinpoint = '_pin_' . $form;
         if( !$this->restoreData( $pinpoint ) ) {
-            $this->registerData( $pinpoint, TRUE );
+            $this->registerData( $pinpoint, true );
+            $role->resetValidation( true );
             $showForm = $this->showForm;
-            $view->$showForm( $entity, $form );
+            $view->$showForm( $role, $form );
             return TRUE;
         }
         // show the form.
         if( $action == $form ) {
             $showForm = $this->showForm;
-            $view->$showForm( $entity, $form );
+            $view->$showForm( $role, $form );
             return TRUE;
         }
         // load posted values from form.
@@ -171,7 +173,7 @@ class Interaction
         // always verify the input.
         if( !$role->validate( $load ) ) {
             $showForm = $this->showForm;
-            $view->$showForm( $entity, $form ); // validation failed.
+            $view->$showForm( $role, $form ); // validation failed.
             return TRUE;
         }
         return FALSE;
