@@ -139,17 +139,15 @@ class Interaction
     // +----------------------------------------------------------------------+
 
     /**
-     * @param \wsCore\Html\PageView              $view
-     * @param \wsCore\DbAccess\Entity_Interface  $entity
+     * @param \wsCore\Html\PageView               $view
+     * @param \wsCore\DbAccess\Context_RoleInput  $role
      * @param string $action
      * @param string $form
      * @param string $load
      * @return bool
      */
-    function actionFormAndLoad( $view, $entity, $action, $form, $load )
+    function actionFormAndLoad( $view, $role, $action, $form, $load )
     {
-        /** @var $role \wsCore\DbAccess\Context_RoleInput */
-        $role = $this->applyContext( $entity, 'loadable' );
         // check if this form has shown before.
         $pinpoint = '_pin_' . $form;
         if( !$this->restoreData( $pinpoint ) ) {
