@@ -27,8 +27,8 @@ class model extends \wsCore\DbAccess\Dao
     /** @var array      for selector construction      */
     protected $selectors  = array(
         'friend_id'   => array( 'Selector', 'text' ),
-        'friend_name' => array( 'Selector', 'text', 'width:43' ),
-        'friend_bday' => array( 'Selector', 'DateYMD' ),
+        'friend_name' => array( 'Selector', 'text', 'placeholder:your friends name | class:span5' ),
+        'friend_bday' => array( 'Selector', 'date' ),
     );
 
     public $recordClassName = 'Interaction\entity';
