@@ -8,6 +8,9 @@ class Interaction
 
     /** @var \wsCore\Web\Session             saves itself and token for CSRF */
     protected $session;
+
+    /** @var \wsCore\DbAccess\Context */
+    protected $context;
     
     protected $showForm = 'showForm';
     
@@ -27,6 +30,12 @@ class Interaction
         $this->session = ($session) ?: $_SESSION;
     }
 
+    /**
+     * @param \wsCore\DbAccess\Context $context
+     */
+    public function setContext( $context ) {
+        $this->context = $context;
+    }
     /**
      * @param \wsCore\Web\Session $session
      * @return Interaction
