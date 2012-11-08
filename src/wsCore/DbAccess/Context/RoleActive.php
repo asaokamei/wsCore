@@ -36,7 +36,14 @@ class Context_RoleActive implements Context_Interface
         $this->entity = $entity;
         $this->model = $this->em->getModel( $entity->_get_Model() );
     }
-    
+
+
+    /**
+     * @return Entity_Interface
+     */
+    public function retrieve() {
+        return $this->entity;
+    }
     /**
      * @param string $actType
      * @return Context_RoleActive
