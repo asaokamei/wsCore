@@ -47,11 +47,9 @@ $entity = $view->get( 'entity' );
     <p>Interaction with simple steps for inserting a data. The steps go through form -> confirm -> insert. </p>
     <h3>title: <?php echo $view->get( 'title' ); ?></h3>
     <?php
-    if( !$entity->isValid() ) echo '
-      <div class="alert alert-error">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        check the input!
-      </div>';
+    $view->bootstrapAlertError();
+    $view->bootstrapAlertInfo();
+    $view->bootstrapAlertSuccess();
     ?>
     <form name="password" method="post" action="interaction1.php?action=<?php echo $view->get( 'action' ); ?>">
         <dl>
@@ -64,6 +62,7 @@ $entity = $view->get( 'entity' );
             <?php if( $err = $entity->popError( $prop ) ) echo " <span class='formError' >{$err}</span>"; ?></dd>
             <?php } ?>
         </dl>
+        <?php echo $view->getHiddenTag( \wsCore\Web\Session::TOKEN_NAME ); ?>
         <input type="submit" name="interAction" class="btn btn-primary" value="<?php echo $view->get( 'action' ); ?>">
     </form>
     <?php var_dump( $entity->retrieve() ); ?>
