@@ -28,7 +28,7 @@ class Tags_Test extends \PHPUnit_Framework_TestCase
     }
     public function test_input_required()
     {
-        $text = (string)  $this->tags->input()->required();
+        $text = (string)  $this->tags->input()->required( true );
         $this->assertContains( '<input required="required" />', $text );
     }
     public function test_div_in_div_box()
