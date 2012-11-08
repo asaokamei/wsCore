@@ -61,6 +61,7 @@ class Session
     public function start()
     {
         if( !$this->session_start ) {
+            ob_start();
             session_start();
             $this->session_start = TRUE;
         }
@@ -141,6 +142,9 @@ class Session
         }
     }
 
+    public function popTokenTagName() {
+        return static::TOKEN_NAME;
+    }
     /**
      * @return string
      */
