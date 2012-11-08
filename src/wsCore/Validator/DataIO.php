@@ -76,7 +76,7 @@ class DataIO
     }
 
     /**
-     * @param array $data
+     * @param array|\wsCore\DbAccess\Entity_Interface $data
      */
     public function source( $data=array() ) {
         $this->source = $data;
@@ -197,6 +197,22 @@ class DataIO
     public function popErrors( &$errors=array() ) {
         $errors = $this->errors;
         return $this->err_num;
+    }
+
+    /**
+     * @param null|string $name
+     * @return array|mixed
+     */
+    public function popError( $name=null ) {
+        if( $name ) return \wsCore\Utilities\Tools::getKey( $this->errors, $name, null );
+        return $this->errors;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValid() {
+        return !$this->err_num;
     }
     // +----------------------------------------------------------------------+
     /**
