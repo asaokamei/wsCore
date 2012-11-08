@@ -59,13 +59,18 @@ class Context_RoleInput implements Context_Interface
     //  get/set properties, and ArrayAccess
     // +----------------------------------------------------------------------+
     /**
-     * @param array $data
+     * @param null|string $name
+     * @param array       $data
      * @return Context_RoleInput
      */
-    public function loadData( $data )
+    public function loadData( $name=null, $data=array() )
     {
-        // protect data.
+        if( is_array(  $name ) ) $data = $name;
+        if( empty( $data ) ) $data = $_POST;
+        // populate the input data
+        $data = $this->model->protect( $data );
         foreach( $data as $key => $value ) {
+            if( substr( $key, 0, 1 ) == '_' ) continue; // ignore protected/private
             $this->entity->$key = $value;
         }
         return $this;
@@ -80,15 +85,17 @@ class Context_RoleInput implements Context_Interface
     {
         $this->dio->source( $this->entity );
         $this->model->validate( $this->dio );
-        $this->is_valid = !$this->dio->popErrors( $this->errors );
+        $this->errors = $this->dio->popError();
+        $this->is_valid = $this->dio->isValid();
         return $this->is_valid;
     }
 
     /**
-     * @return DataRecord
+     * @param bool $valid
+     * @return Context_RoleInput
      */
-    public function resetValidation() {
-        $this->is_valid = FALSE;
+    public function resetValidation( $valid=false ) {
+        $this->is_valid = $valid;
         return $this;
     }
 
