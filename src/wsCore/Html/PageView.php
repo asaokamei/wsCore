@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\Html;
 
-class PageView
+class PageView implements \ArrayAccess
 {
     public $newResource = array(
         '_links' => array(),
@@ -125,6 +125,39 @@ class PageView
                 break;
         }
         return $button;
+    }
+    // +-----------------------------------------------------------+
+    /**
+     */
+    public function offsetExists( $offset )
+    {
+        return array_key_exists( $offset, $this->contents );
+    }
+
+    /**
+     */
+    public function offsetGet( $offset )
+    {
+        return array_key_exists( $offset, $this->contents ) ? $this->contents[ $offset ]: null;
+    }
+
+    /**
+     */
+    public function offsetSet( $offset, $value )
+    {
+        if( is_null( $offset ) ) {
+            $this->contents = $value;
+        }
+        else {
+            $this->contents[ $offset ] = $value;
+        }
+    }
+
+    /**
+     */
+    public function offsetUnset( $offset )
+    {
+        unset( $this->contents[ $offset ] );
     }
     // +-----------------------------------------------------------+
 }
