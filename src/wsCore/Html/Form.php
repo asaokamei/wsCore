@@ -121,7 +121,7 @@ class Form extends Tags
             $value = $item[0];
             $label = $item[1];
             $option = $this::_()->option( $label )->value( $value );
-            if( in_array( $value, $checked ) ) $option->selected();
+            if( in_array( $value, $checked ) ) $option->selected( true );
             if( isset( $item[2] ) ) 
             {
                 $group = $item[2];
@@ -242,7 +242,7 @@ class Form extends Tags
             $label = $item[1];
             /** @var $check Form */
             $check = $this()->$style( $name, $value, $attributes );
-            if( in_array( $value, $checked ) ) $check->checked();
+            if( in_array( $value, $checked ) ) $check->checked( true );
             $list->contain_(
                 $this::_()->li( $this::_()->label( $check . $label )
                 ));

@@ -107,6 +107,7 @@ class Tags
      * @return string
      */
     public static function safe_( $value ) {
+        if( empty( $value ) ) return $value;
         return htmlentities( $value, ENT_QUOTES, static::$encoding );
     }
 
@@ -172,10 +173,11 @@ class Tags
             }
             return $this;
         }
-        if( $value === false ) return $this; // ignore the property.
-        if( empty( $value ) ) { // value is not set.
-            $value = $name;     // i.e. required='required'
+        elseif( is_array( $value ) ) {
+            $value = '';
         }
+        if( $value === false ) return $this; // ignore the property.
+        if( $value === true  ) $value = $name; // copy the attribute name (checked="checked")
         $name = $this->normalize_( $name );
         // set connector if it is not set.
         if( $connector === NULL ) {
@@ -254,7 +256,7 @@ class Tags
      */
     public function __call( $name, $args ) 
     {
-        // attribute or tag if not set. 
+        // attribute or tag if not set.
         if( is_null( $this->tagName ) ) { // set it as a tag name
             return new static( $name, $args );
         }
