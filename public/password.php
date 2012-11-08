@@ -7,16 +7,16 @@ use wsCore\Html\Form;
 Core::go();
 
 // get inputs and passwords if generate button is clicked.
+$input = array(
+    'length' => '12',
+    'symbol' => '',
+    'count'  => '5',
+);
 if( $_REQUEST[ 'generate' ] ) {
-    $input     = get_inputs();
+    $input     = array_merge( $input, get_inputs() );
     $passwords = generate_password( $input );
 }
 else {
-    $input = array(
-        'length' => '12',
-        'symbol' => '',
-        'count'  => '10',
-    );
 }
 // build forms.
 $form = new Form();
@@ -33,11 +33,11 @@ function get_inputs()
     /** @var $dio wsCore\Validator\DataIO */
     $dio = Core::get( 'DataIO' );
     $dio->source( $_POST );
-    $dio->pushValue( 'length' );
-    $dio->pushValue( 'symbol' );
-    $dio->pushValue( 'count' );
+    $dio->push( 'length', 'number' );
+    $dio->push( 'symbol', 'text' );
+    $dio->push( 'count', 'number' );
 
-    $input = $dio->pop();
+    $input = $dio->popSafe();
     return $input;
 }
 
