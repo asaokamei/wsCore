@@ -31,6 +31,10 @@ class view extends \wsCore\Html\PageView
         $this->set( 'button-primary', 'confirm information' );
         $this->set( 'button-sub', 'reset' );
     }
+
+    /**
+     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     */
     public function showForm_wizard1( $entity )
     {
         $entity->setHtmlType( 'form' );
@@ -38,6 +42,10 @@ class view extends \wsCore\Html\PageView
         $this->set( 'button-primary', 'next' );
         $this->set( 'button-sub', '' );
     }
+
+    /**
+     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     */
     public function showForm_wizard2( $entity )
     {
         $entity->setHtmlType( 'form' );
@@ -45,6 +53,10 @@ class view extends \wsCore\Html\PageView
         $this->set( 'button-primary', 'next' );
         $this->set( 'button-sub', 'interaction2.php?action=wizard1' );
     }
+
+    /**
+     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     */
     public function showForm_wizard3( $entity )
     {
         $entity->setHtmlType( 'form' );
@@ -52,6 +64,10 @@ class view extends \wsCore\Html\PageView
         $this->set( 'button-primary', 'confirm inputs' );
         $this->set( 'button-sub', 'interaction2.php?action=wizard2' );
     }
+
+    /**
+     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     */
     public function showConfirm( $entity )
     {
         $entity->setHtmlType( 'html' );
@@ -62,6 +78,10 @@ class view extends \wsCore\Html\PageView
         $this->set( 'button-primary', 'save the information' );
         $this->set( 'button-sub', 'interaction2.php?action=wizard3' );
     }
+
+    /**
+     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     */
     public function showDone( $entity )
     {
         $entity->setHtmlType( 'html' );
@@ -139,7 +159,7 @@ class view extends \wsCore\Html\PageView
         if( $type == 'reset' ) {
             $extra .= ' onClick="return window.confirm( \'reset the inputs?\');"';
         }
-        $html = "<button type=\"{$type}\" class=\"but btn-{$class}\" {$extra} >{$title}</button>";
+        $html = "<button type=\"{$type}\" class=\"but btn-{$class}\" " . $extra . " >{$title}</button>";
         return $html;
     }
 }
