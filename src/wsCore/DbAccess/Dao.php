@@ -99,6 +99,7 @@ class Dao
      */
     public function prepare()
     {
+        // create properties and dataTypes from definition.
         if( !empty( $this->definition ) ) {
             foreach( $this->definition as $key => $info ) {
                 $this->properties[ $key ] = $info[0];
@@ -108,10 +109,19 @@ class Dao
                 }
             }
         }
+        // set up primaryKey if id_name is set.
         if( isset( $this->id_name ) ) {
-            array_push( $this->protected, $this->id_name );
             $this->extraTypes[ 'primaryKey' ][] = $this->id_name;
         }
+        // protect some properties in extraTypes.
+        foreach( $this->extraTypes as $type => $list ) {
+            if( in_array( $type, array( 'primaryKey', 'created_at', 'updated_at' ) ) ) {
+                foreach( $list as $key ) {
+                    array_push( $this->protected, $key );
+                }
+            }
+        }
+        // protect properties used for relation.
         if( !empty( $this->relations ) ) {
             foreach( $this->relations as $relInfo ) {
                 if( $relInfo[ 'relation_type' ] == 'HasOne' ) {
@@ -284,6 +294,18 @@ class Dao
      */
     public function getSelectInfo( $name ) {
         return array_key_exists( $name, $this->selectors ) ? $this->selectors[ $name ] : NULL;
+    }
+
+    /**
+     * @param string $name
+     * @return null|array
+     */
+    public function getValidateInfo( $name ) {
+        return array_key_exists( $name, $this->validators ) ? $this->validators[ $name ] : NULL;
+    }
+
+    public function getPropertyList( $name=null ) {
+
     }
     // +----------------------------------------------------------------------+
     //  Managing Validation and Properties. 
