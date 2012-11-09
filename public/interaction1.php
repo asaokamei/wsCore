@@ -5,6 +5,7 @@ use wsCore\Core;
 
 Core::go();
 Core::setPdo( 'dsn=sqlite::memory:' );
+/** @var $model Interaction\model */
 $model   = Core::get( 'Interaction\model' );
 /** @var $intAct Interaction\interact */
 $intAct = Core::get( 'Interaction\interact' );
@@ -59,10 +60,10 @@ $entity = $view->get( 'entity' );
     <form name="password" method="post" action="interaction1.php?action=<?php echo $view->get( 'action' ); ?>">
         <dl>
             <?php
-            $properties = array( 'friend_name', 'friend_gender', 'friend_bday', 'friend_memo' );
-            foreach( $properties as $prop ) {
+            $properties = $model->getPropertyList();
+            foreach( $properties as $prop => $name ) {
             ?>
-            <dt><?php echo $entity->popName( $prop ); ?></dt>
+            <dt><?php echo $name; ?></dt>
             <dd><?php echo $entity->popHtml( $prop ); ?>
             <?php if( $err = $entity->popError( $prop ) ) echo " <span class='formError'>&lt;{$err}&gt;</span>"; ?></dd>
             <?php } ?>
