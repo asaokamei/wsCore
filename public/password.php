@@ -20,7 +20,7 @@ $page->run( $act, $view );
     <h1>generate password</h1>
     <p>specify length of password, check to use symbols (!@#$ etc.), <br />and click generate password button. </p>
     <form name="password" method="post" action="password.php">
-        <dl>
+        <dl class="dl-horizontal">
             <dt>length of password</dt>
             <dd><?php echo $view->get( 'length' ); ?><br />
             (minimum length of password is 5)

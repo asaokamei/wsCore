@@ -41,7 +41,7 @@ $entity = $view->get( 'entity' );
     echo $view->bootstrapAlertSuccess();
     ?>
     <form name="password" method="post" action="interaction1.php?action=<?php echo $view->get( 'action' ); ?>">
-        <dl>
+        <dl class="dl-horizontal">
             <?php
             $properties = $model->getPropertyList();
             foreach( $properties as $prop => $name ) {
