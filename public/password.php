@@ -22,7 +22,9 @@ $page->run( $act, $view );
     <form name="password" method="post" action="password.php">
         <dl>
             <dt>length of password</dt>
-            <dd><?php echo $view->get( 'length' ); ?></dd>
+            <dd><?php echo $view->get( 'length' ); ?><br />
+            (minimum length of password is 5)
+            </dd>
             <dt>use symbols</dt>
             <dd><label><?php echo $view->get( 'symbol' ); ?> check if you want password to have some symbols. </label></dd>
             <dt>get # of passwords</dt>

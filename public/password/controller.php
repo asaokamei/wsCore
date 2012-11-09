@@ -72,6 +72,7 @@ class controller
         $this->dio->push( 'count', 'number' );
 
         $input = $this->dio->popSafe();
+        if( $input[ 'length' ] < 5 ) $input[ 'length' ] = $this->input[ 'length' ];
         $this->input = array_merge( $this->input, $input );
         $this->makeForm( $view );
         $view->set( 'passwords', $this->generate_password( $input ) );
