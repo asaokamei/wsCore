@@ -2,8 +2,6 @@
 require_once( __DIR__ . '/../src/autoloader.php' );
 require_once( __DIR__ . '/password/config.php' );
 use wsCore\Core;
-use wsCore\Utilities\Tools;
-use wsCore\Html\Form;
 
 Core::go();
 /** @var $page \wsCore\Web\PageMC */
