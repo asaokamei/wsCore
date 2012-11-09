@@ -62,6 +62,7 @@ $entity = $view->get( 'entity' );
         <button type="button" class="btn btn-primary" onclick="location.href='index.php'">back to main demo page</button>
     </div>
     <?php } ?>
+    <div style="clear:both"></div>
 <script type="text/javascript" src="./common/js/jQuery.js"></script>
 <script type="text/javascript" src="./common/js/bootstrap.js"></script>
 <script type="text/javascript">
