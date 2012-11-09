@@ -34,7 +34,7 @@ class model extends \wsCore\DbAccess\Dao
         'friend_name' => array( 'Selector', 'text', 'placeholder:your friends name | class:span5' ),
         'friend_gender' => array( 'Selector', '\Interaction\selGender', ),
         'friend_bday' => array( 'Selector', 'date' ),
-        'friend_memo' => array( 'Selector', 'textarea', 'placeholder:about your friend...' ),
+        'friend_memo' => array( 'Selector', 'textarea', 'rows:4 | class:span5 | placeholder:about your friend...' ),
     );
 
     public $recordClassName = 'Interaction\entity';
