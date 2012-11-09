@@ -129,22 +129,19 @@ class PageView implements \ArrayAccess
     // +-----------------------------------------------------------+
     /**
      */
-    public function offsetExists( $offset )
-    {
+    public function offsetExists( $offset ) {
         return array_key_exists( $offset, $this->contents );
     }
 
     /**
      */
-    public function offsetGet( $offset )
-    {
+    public function offsetGet( $offset ) {
         return array_key_exists( $offset, $this->contents ) ? $this->contents[ $offset ]: null;
     }
 
     /**
      */
-    public function offsetSet( $offset, $value )
-    {
+    public function offsetSet( $offset, $value ) {
         if( is_null( $offset ) ) {
             $this->contents = $value;
         }
@@ -155,9 +152,45 @@ class PageView implements \ArrayAccess
 
     /**
      */
-    public function offsetUnset( $offset )
-    {
+    public function offsetUnset( $offset ) {
         unset( $this->contents[ $offset ] );
+    }
+    // +-----------------------------------------------------------+
+    /**
+     * @param null|string $type
+     * @return null|string
+     */
+    public function getMessage( &$type=null )
+    {
+        $list = array( 'error', 'info', 'success' );
+        foreach( $list as $name ) {
+            if( $message = $this->get( 'alert-' . $name ) ) {
+                $type = $name;
+                return $message;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param string $message
+     */
+    public function success( $message ) {
+        $this->set( 'alert-success', $message );
+    }
+
+    /**
+     * @param string $message
+     */
+    public function notice( $message ) {
+        $this->set( 'alert-info', $message );
+    }
+
+    /**
+     * @param string $message
+     */
+    public function error( $message ) {
+        $this->set( 'alert-error', $message );
     }
     // +-----------------------------------------------------------+
 }
