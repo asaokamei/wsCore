@@ -286,7 +286,7 @@ class Dao
         return $this->insertId( $values );
     }
     // +----------------------------------------------------------------------+
-    //  Managing Selector for Html/Form Output. 
+    //  Managing information about selector, validator, and property list.
     // +----------------------------------------------------------------------+
     /**
      * @param string $name
@@ -304,6 +304,10 @@ class Dao
         return array_key_exists( $name, $this->validators ) ? $this->validators[ $name ] : NULL;
     }
 
+    /**
+     * @param null|string $name
+     * @return array
+     */
     public function getPropertyList( $name=null ) {
         $list = $this->protect( $this->properties );
         return $list;
@@ -311,27 +315,6 @@ class Dao
     // +----------------------------------------------------------------------+
     //  Managing Validation and Properties. 
     // +----------------------------------------------------------------------+
-    /**
-     * checks input data using pggCheck.
-     * $validators[ $var_name ] = [
-     *     dataType or methodName,
-     *     'filter rules',
-     *   ]
-     * @param \wsCore\Validator\DataIo $dio
-     * @return mixed|null
-     */
-    public function validate( $dio )
-    {
-        if( empty( $this->validators ) ) return $this;
-        foreach( $this->validators as $var_name => $info )
-        {
-            $type   = $this->arrGet( $info, 0, NULL );
-            $filter = $this->arrGet( $info, 1, '' );
-            $dio->push( $var_name, $type, $filter );
-        }
-        return $this;
-    }
-
     /**
      * returns name of property, if set.
      *
