@@ -56,7 +56,7 @@ class Selector
         'raw'  => 'raw'
     );
     protected static $formStyle = array(
-        'textArea'    => 'textArea',
+        'textarea'    => 'textarea',
         'select'      => 'select',
         'mult_select' => 'select',
         'check'       => 'check',
