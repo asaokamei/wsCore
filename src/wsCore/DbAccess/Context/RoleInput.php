@@ -18,8 +18,12 @@ class Context_RoleInput implements Context_Interface
     /** @var array */
     private $errors = array();
 
-    /** @var bool */
-    private $is_valid = false;
+    /**
+     * result of validation; need to be true as default for multiple forms.
+     *
+     * @var bool
+     */
+    private $is_valid = true;
 
     /** @var \wsCore\Html\Selector */
     private $selector;
