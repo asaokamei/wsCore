@@ -53,23 +53,7 @@ function generate_password( $input )
 }
 
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="./common/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="./common/css/bootstrap-responsive.css" />
-    <link rel="stylesheet" type="text/css" href="./common/css/main.css" />
-    <title>WScore Public Demo</title>
-    <style type="text/css">
-    </style>
-</head>
-<body>
-<div class="container-narrow">
-    <div class="masthead">
-        <h3 class="muted"><a href="index.php" >WScore Public Demo</a></h3>
-    </div>
-    <hr>
+<?php include( './common/menu/header.php' ); ?>
     <h1>generate password</h1>
     <p>specify length of password, check to use symbols (!@#$ etc.), <br />and click generate password button. </p>
     <form name="password" method="post" action="password.php">
@@ -84,11 +68,4 @@ function generate_password( $input )
         <input type="submit" name="generate" class="btn btn-primary" value="generate password">
     </form>
     <?php if( isset( $passwords ) ) var_dump( $passwords ); ?>
-    <footer class="footer">
-        <hr>
-        <p>WScore Developed by WorkSpot.JP<br />
-            thanks, bootstrap. </p>
-    </footer>
-</div>
-</body>
-</html>
+<?php include( './common/menu/footer.php' ); ?>
