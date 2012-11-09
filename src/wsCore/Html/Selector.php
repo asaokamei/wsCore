@@ -198,7 +198,10 @@ class Selector
     {
         if( !is_array( $value ) ) $value = array( $value );
         foreach( $value as $key => &$val ) {
-            if( $this->findValueFromItems( $val ) ) {
+            if( $string = $this->findValueFromItems( $val ) ) {
+                $value[ $key ] = $string;
+            }
+            else {
                 $value[ $key ] = $this->err_msg_empty;
             }
         }
@@ -215,8 +218,7 @@ class Selector
     {
         foreach( $this->item_data as $item ) {
             if( $value == $item[0] ) {
-                $value = $item[1];
-                return TRUE;
+                return $item[1];
             }
         }
         return FALSE;
