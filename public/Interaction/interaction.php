@@ -18,7 +18,7 @@ class interact extends \wsCore\Web\Interaction
     /**
      * @param string $action
      * @param \Interaction\view $view
-     * @return \Interaction\view
+     * @return \Interaction\entity
      */
     function wizard( $action, $view )
     {
@@ -32,33 +32,33 @@ class interact extends \wsCore\Web\Interaction
         elseif( $this->restoreData( 'complete' ) ) {
             goto done;
         }
-        if( $this->actionFormAndLoad( $view, $entity, $action, 'wizard1', 'load1' ) ) return $view;
-        if( $this->actionFormAndLoad( $view, $entity, $action, 'wizard2', 'load2' ) ) return $view;
-        if( $this->actionFormAndLoad( $view, $entity, $action, 'wizard3', 'load3' ) ) return $view;
+        if( $this->actionFormAndLoad( $view, $entity, $action, 'wizard1', 'load1' ) ) return $entity;
+        if( $this->actionFormAndLoad( $view, $entity, $action, 'wizard2', 'load2' ) ) return $entity;
+        if( $this->actionFormAndLoad( $view, $entity, $action, 'wizard3', 'load3' ) ) return $entity;
 
         // show confirm except for save.
         if( $action != 'save' ) {
             $view->set( $this->session->popTokenTagName(), $this->session->pushToken() );
             $view->showConfirm( $entity );
-            return $view;
+            return $entity;
         }
         // save entity.
         if( $action == 'save' && $this->verifyToken() ) {
-            $role = $this->applyContext( $entity, 'active' );
-            $role->insert();
+            $active = $this->context->applyActive( $entity );
+            $active->save();
             $this->registerData( 'complete', true );
         }
         // done
         done :
         $view->showDone( $role );
-        return $view;
+        return $entity;
     }
     /**
      * insert data with steps: form -> confirm -> insert
      *
      * @param string $action
      * @param \Interaction\View $view
-     * @return \Interaction\View
+     * @return \Interaction\entity
      */
     function insertData( $action, $view )
     {
@@ -73,28 +73,28 @@ class interact extends \wsCore\Web\Interaction
         if( $this->restoreData( 'complete' ) ) {
             goto done;
         }
-        if( $this->actionFormAndLoad( $view, $role, $action, 'form', 'load' ) ) return $view;
+        if( $this->actionFormAndLoad( $view, $role, $action, 'form', 'load' ) ) return $entity;
 
         // show confirm except for save.
         if( $action != 'save' ) {
             $view->set( $this->session->popTokenTagName(), $this->session->pushToken() );
             $view->showConfirm( $role );
-            return $view;
+            return $entity;
         }
         // save entity.
         if( $action == 'save' && $this->verifyToken() ) {
-            $active = $this->context->applyActive( $entity, 'active' );
+            $active = $this->context->applyActive( $entity );
             $active->save();
             $this->registerData( 'complete', true );
             $view->set( 'alert-success', 'your friendship has been saved. ' );
             $view->showDone( $role );
-            return $view;
+            return $entity;
         }
         // done
         done :
         $view->set( 'alert-info', 'your friendship has already been saved. ' );
         $view->showDone( $role );
-        return $view;
+        return $entity;
     }
 
 }
