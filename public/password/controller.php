@@ -47,9 +47,18 @@ class controller
         );
         if( !$this->input[ 'symbol' ] ) $this->input[ 'symbol' ] = false;
 
-        $view->set( 'length', $this->form->input( 'text', 'length', $this->input[ 'length' ] )->_class( 'span1' ) );
-        $view->set( 'symbol', $this->form->input( 'checkbox', 'symbol', 'checked' )->checked( $this->input[ 'symbol' ] ) );
-        $view->set( 'count', $this->form->select( 'count', $item_count, array( $this->input['count']) ) );
+        $view->set( 'length',
+            $this->form->input( 'range', 'length', $this->input[ 'length' ] )
+                ->min(5)->max(24)->_class( 'span4' )
+        );
+        $view->set( 'symbol',
+            $this->form->input( 'checkbox', 'symbol', 'checked' )
+                ->checked( $this->input[ 'symbol' ] )
+        );
+        $view->set( 'count',
+            $this->form->select( 'count', $item_count, array( $this->input['count'] ) )
+                ->_class( 'span2' )
+        );
     }
 
     /**
