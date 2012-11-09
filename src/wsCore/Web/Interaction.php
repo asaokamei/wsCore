@@ -149,6 +149,15 @@ class Interaction
     function actionFormAndLoad( $view, $role, $action, $form, $load )
     {
         // check if this form has shown before.
+        if( strpos( $form, '|' ) !== false ) {
+            $formList = explode( '|', $form );
+            $form = $formList[0];
+        }
+        else {
+            $formList = array( $form );
+        }
+        /** @var $formList array  */
+
         $pinpoint = '_pin_' . $form;
         if( !$this->restoreData( $pinpoint ) ) {
             $this->registerData( $pinpoint, true );
@@ -158,7 +167,7 @@ class Interaction
             return TRUE;
         }
         // show the form.
-        if( $action == $form ) {
+        if( in_array( $action, $formList ) ) {
             $showForm = $this->showForm;
             $view->$showForm( $role, $form );
             return TRUE;
@@ -169,7 +178,7 @@ class Interaction
             $role->$loadData( $load );
         }
         // always verify the input.
-        if( !$role->validate( $load ) ) {
+        if( !$role->validate( $form ) ) {
             $showForm = $this->showForm;
             $view->$showForm( $role, $form ); // validation failed.
             return TRUE;
