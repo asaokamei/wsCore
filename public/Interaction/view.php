@@ -36,21 +36,21 @@ class view extends \wsCore\Html\PageView
         $entity->setHtmlType( 'form' );
         $this->set( 'action', 'load1' );
         $this->set( 'button-primary', 'next' );
-        $this->set( 'button-sub', 'back' );
+        $this->set( 'button-sub', '' );
     }
     public function showForm_wizard2( $entity )
     {
         $entity->setHtmlType( 'form' );
         $this->set( 'action', 'load2' );
         $this->set( 'button-primary', 'next' );
-        $this->set( 'button-sub', 'back' );
+        $this->set( 'button-sub', 'interaction2.php?action=wizard1' );
     }
     public function showForm_wizard3( $entity )
     {
         $entity->setHtmlType( 'form' );
         $this->set( 'action', 'load3' );
         $this->set( 'button-primary', 'confirm inputs' );
-        $this->set( 'button-sub', 'back' );
+        $this->set( 'button-sub', 'interaction2.php?action=wizard2' );
     }
     public function showConfirm( $entity )
     {
@@ -60,7 +60,7 @@ class view extends \wsCore\Html\PageView
         $this->set( 'title', 'Confirmation of Inputs' );
         $this->set( 'action', 'save' );
         $this->set( 'button-primary', 'save the information' );
-        $this->set( 'button-sub', 'back' );
+        $this->set( 'button-sub', 'interaction2.php?action=wizard3' );
     }
     public function showDone( $entity )
     {
@@ -120,6 +120,13 @@ class view extends \wsCore\Html\PageView
             $type  = 'submit';
         }
         return $this->bootstrapButton( $type, $title, '' );
+    }
+
+    public function bootstrapButtonJump( $name, $title='Go Back' ) {
+        $href = $this->get( $name );
+        if( !$href ) return '';
+        $html = "<button type=\"button\" class=\"but\" onclick=\"location.href='{$href}'\">{$title}</button>";
+        return $html;
     }
 
     public function bootstrapButton( $type, $title, $class, $loading='' ) {

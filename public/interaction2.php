@@ -69,7 +69,7 @@ $entity = $view->get( 'entity' );
         <div style="float: right; ">
             <?php echo $view->bootstrapButtonPrimary( 'button-primary' ); ?>
         </div>
-        <?php echo $view->bootstrapButtonSub( 'button-sub' ); ?>
+        <?php echo $view->bootstrapButtonJump( 'button-sub' ); ?>
     </form>
     <?php if( $view->get( 'currAction' ) == 'done' ) { ?>
     <div style="text-align: center;">
