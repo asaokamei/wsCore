@@ -84,7 +84,13 @@ class Context_RoleInput implements Context_Interface
     public function validate()
     {
         $this->dio->source( $this->entity );
-        $this->model->validate( $this->dio );
+        $list = $this->model->getPropertyList();
+        foreach( $list as $propName => $name ) {
+            $validateInfo = $this->model->getValidateInfo( $propName );
+            $type   = array_key_exists( 0, $validateInfo ) ? $validateInfo[0] : null ;
+            $filter = array_key_exists( 1, $validateInfo ) ? $validateInfo[1] : '' ;
+            $this->dio->push( $propName, $type, $filter );
+        }
         $this->errors = $this->dio->popError();
         $this->is_valid = $this->dio->isValid();
         return $this->is_valid;
