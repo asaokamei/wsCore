@@ -25,7 +25,7 @@ class model extends \wsCore\DbAccess\Dao
         'friend_name' => array( 'text', 'required' ),
         'friend_gender' => array( 'text', 'required | pattern:[FM]', ),
         'friend_bday' => array( 'date', 'required' ),
-        'friend_memo' => array( 'date', '' ),
+        'friend_memo' => array( 'text', '' ),
     );
 
     /** @var array      for selector construction      */
