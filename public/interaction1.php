@@ -59,7 +59,7 @@ $entity = $view->get( 'entity' );
     <form name="password" method="post" action="interaction1.php?action=<?php echo $view->get( 'action' ); ?>">
         <dl>
             <?php
-            $properties = array( 'friend_name', 'friend_gender', 'friend_bday' );
+            $properties = array( 'friend_name', 'friend_gender', 'friend_bday', 'friend_memo' );
             foreach( $properties as $prop ) {
             ?>
             <dt><?php echo $entity->popName( $prop ); ?></dt>
