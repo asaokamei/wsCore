@@ -140,7 +140,7 @@ class Context_RoleInput implements Context_Interface
      * @return mixed
      */
     public function popError( $name ) {
-        return $this->errors[ $name ];
+        return array_key_exists( $name, $this->errors ) ? $this->errors[ $name ] : null;
     }
 
     /**
