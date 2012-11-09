@@ -49,9 +49,11 @@ class model extends \wsCore\DbAccess\Dao
 
     /**
      * do nothing! fake insert method.
+     *
+     * @param $values
      * @return bool|string
      */
-    public function insert() {
-        return true;
+    public function insert( $values ) {
+        return TRUE;
     }
 }
