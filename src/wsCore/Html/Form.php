@@ -234,7 +234,7 @@ class Form extends Tags
      */
     public function doBox( $style, $name, $items, $checked=array(), $attributes=array() )
     {
-        if( $checked && !is_array( $checked ) ) $checked = array( $checked ); 
+        if( !is_array( $checked ) ) $checked = array( $checked );
         $list = $this::_()->nl();
         $div = $this::_()->div( $list )->_class( 'formListBox' );
         foreach( $items as $item ) {
