@@ -20,8 +20,8 @@ $page->run( $act, $view );
     <form name="password" method="post" action="password.php">
         <dl class="dl-horizontal">
             <dt>length of password</dt>
-            <dd><?php echo $view->get( 'length' ); ?><br />
-            (minimum length of password is 5)
+            <dd><?php echo $view->get( 'length' ); ?>
+            &nbsp;<p class="muted">(minimum length of password is 5)</p>
             </dd>
             <dt>use symbols</dt>
             <dd><label><?php echo $view->get( 'symbol' ); ?> check if you want password to have some symbols. </label></dd>
