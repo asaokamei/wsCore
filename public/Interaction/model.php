@@ -12,6 +12,7 @@ class model extends \wsCore\DbAccess\Dao
     protected $definition = array(
         'friend_id'     => array( 'friend code', 'number', ),
         'friend_name'   => array( 'name',        'string', ),
+        'friend_gender' => array( 'gender',      'string', ),
         'friend_bday'   => array( 'birthday',    'string', ),
         'new_dt_friend' => array( 'created at',  'string', 'created_at'),
         'mod_dt_friend' => array( 'updated at',  'string', 'updated_at'),
@@ -21,6 +22,7 @@ class model extends \wsCore\DbAccess\Dao
     protected $validators = array(
         'friend_id'   => array( 'number' ),
         'friend_name' => array( 'text', 'required' ),
+        'friend_gender' => array( 'text', 'required | pattern:[FM]', ),
         'friend_bday' => array( 'date', 'required' ),
     );
 
@@ -28,6 +30,7 @@ class model extends \wsCore\DbAccess\Dao
     protected $selectors  = array(
         'friend_id'   => array( 'Selector', 'text' ),
         'friend_name' => array( 'Selector', 'text', 'placeholder:your friends name | class:span5' ),
+        'friend_gender' => array( 'Selector', '\Interaction\selGender', ),
         'friend_bday' => array( 'Selector', 'date' ),
     );
 

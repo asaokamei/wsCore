@@ -35,6 +35,8 @@ $entity = $view->get( 'entity' );
     <style type="text/css">
         select { width:auto;}
         .formError { color: red; margin-left: 10px; }
+        div.formListBox { overflow: auto; }
+        div.formListBox li { float: left; list-style: none; margin-right: 1.5em; }
     </style>
 </head>
 <body>
@@ -57,12 +59,12 @@ $entity = $view->get( 'entity' );
     <form name="password" method="post" action="interaction1.php?action=<?php echo $view->get( 'action' ); ?>">
         <dl>
             <?php
-            $properties = array( 'friend_name', 'friend_bday' );
+            $properties = array( 'friend_name', 'friend_gender', 'friend_bday' );
             foreach( $properties as $prop ) {
             ?>
             <dt><?php echo $entity->popName( $prop ); ?></dt>
             <dd><?php echo $entity->popHtml( $prop ); ?>
-            <?php if( $err = $entity->popError( $prop ) ) echo " <span class='formError' >{$err}</span>"; ?></dd>
+            <?php if( $err = $entity->popError( $prop ) ) echo " <span class='formError'>&lt;{$err}&gt;</span>"; ?></dd>
             <?php } ?>
         </dl>
         <?php echo $view->getHiddenTag( \wsCore\Web\Session::TOKEN_NAME ); ?>
