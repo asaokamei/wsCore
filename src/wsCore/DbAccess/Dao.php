@@ -72,9 +72,6 @@ class Dao
     /** @var Query                                                           */
     protected $query;
 
-    /** @var \wsCore\Html\Selector|\Closure                                  */
-    protected $selectorObj;
-
     /** @var \wsCore\DbAccess\Entity_Interface    return class from Pdo            */
     public $recordClassName = 'wsCore\DbAccess\Entity_Generic';
 
@@ -86,17 +83,14 @@ class Dao
     /**
      * @param $em       EntityManager
      * @param $query    Query
-     * @param $selector \wsCore\DiContainer\Dimplet
      * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query
-     * @DimInjection Get Raw  Selector
      */
-    public function __construct( $em, $query, $selector )
+    public function __construct( $em, $query )
     {
         $this->em    = $em;
         $this->query = $query;
         $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this, 'get' ) );
-        $this->selectorObj= $selector;
         $this->prepare();
         // simple object pooling. 
         $class = $this->makeModelName( get_called_class() );
@@ -201,20 +195,6 @@ class Dao
         return $record;
     }
 
-    /**
-     * @return \wsCore\Html\Selector
-     */
-    public function selector() {
-        /** @noinspection PhpUndefinedMethodInspection */
-        if( $this->selectorObj instanceof \Closure ) {
-            $selector = $this->selectorObj;
-            $retSel   = $selector();
-        }
-        else {
-            $retSel   = $this->selectorObj;
-        }
-        return $retSel;
-    }
     // +----------------------------------------------------------------------+
     //  Basic DataBase Access.
     // +----------------------------------------------------------------------+
