@@ -1,6 +1,6 @@
 <?php
 require_once( __DIR__ . '/../src/autoloader.php' );
-require_once( __DIR__ . '/Interaction/interact.config.php' );
+require_once( __DIR__ . '/Interaction/config.php' );
 use wsCore\Core;
 
 Core::go();
