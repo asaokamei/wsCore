@@ -74,17 +74,14 @@ class Dao
 
     /** @var \wsCore\DbAccess\Entity_Interface    return class from Pdo            */
     public $recordClassName = 'wsCore\DbAccess\Entity_Generic';
-
-    /** @var array|Dao                                                       */
-    static $daoObjects = array();
     // +----------------------------------------------------------------------+
     //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+
     /**
-     * @param $em       EntityManager
-     * @param $query    Query
-     * @DimInjection Get      EntityManager
-     * @DimInjection Fresh    Query
+     * @param \wsCore\DbAccess\EntityManager $em
+     * @param \wsCore\DbAccess\Query         $query
+     * @DimInjection   Get      EntityManager
+     * @DimInjection   Fresh    Query
      */
     public function __construct( $em, $query )
     {
@@ -94,22 +91,9 @@ class Dao
         $this->prepare();
         // simple object pooling. 
         $class = $this->makeModelName( get_called_class() );
-        static::$daoObjects[ $class ] = $this;
         $em->registerModel( $this );
     }
 
-    /**
-     * @param string $model
-     * @throws \RuntimeException
-     * @return \wsCore\DbAccess\Dao
-     */
-    public function getInstance( $model ) {
-        if( isset( static::$daoObjects[ $model ] ) ) {
-            return static::$daoObjects[ $model ];
-        }
-        throw new \RuntimeException( "instance of {$model} not set" );
-    }
-    
     /**
      * prepares restricted properties. 
      */
