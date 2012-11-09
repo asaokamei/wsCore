@@ -33,9 +33,9 @@ class interact extends \wsCore\Web\Interaction
         if( $this->restoreData( 'complete' ) ) {
             goto done;
         }
-        if( $this->actionFormAndLoad( $view, $role, $action, 'wizard1', 'load1' ) ) return $entity;
-        if( $this->actionFormAndLoad( $view, $role, $action, 'wizard2', 'load2' ) ) return $entity;
-        if( $this->actionFormAndLoad( $view, $role, $action, 'wizard3', 'load3' ) ) return $entity;
+        if( $this->actionFormAndLoad( $view, $role, $action, 'wizard1',       'load1' ) ) return $entity;
+        if( $this->actionFormAndLoad( $view, $role, $action, 'wizard2|load1', 'load2' ) ) return $entity;
+        if( $this->actionFormAndLoad( $view, $role, $action, 'wizard3|load2', 'load3' ) ) return $entity;
 
         // show confirm except for save.
         if( $action != 'save' ) {
