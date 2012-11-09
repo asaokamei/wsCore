@@ -321,66 +321,6 @@ class Dao
     public function getSelectInfo( $name ) {
         return array_key_exists( $name, $this->selectors ) ? $this->selectors[ $name ] : NULL;
     }
-    /**
-     * @param string $type
-     * @param string $var_name
-     * @param mixed  $value
-     * @return mixed
-     */
-    public function popHtml( $type, $var_name, $value=NULL )
-    {
-        $sel = $this->getSelInstance( $var_name );
-        $val = $sel->popHtml( $type, $value );
-        return $val;
-    }
-    
-    /**
-     * @param string $var_name
-     * @return null|object
-     */
-    public function getSelInstance( $var_name )
-    {
-        static $selInstances = array();
-        $self = get_called_class();
-        if( isset( $selInstances[ $self ][ $var_name ] ) ) {
-            return $selInstances[ $self ][ $var_name ];
-        }
-        return $selInstances[ $self ][ $var_name ] = $this->getSelector( $var_name );
-    }
-
-    /**
-     * creates selector object based on selectors array.
-     * $selector[ var_name ] = [
-     *     className,
-     *     styleName,
-     *     [ arg2, arg3, arg4 ],
-     *     function( &$val ){ doSomething( $val ); },
-     *   ]
-     *
-     * @param string $var_name
-     * @return null|object
-     */
-    public function getSelector( $var_name )
-    {
-        $sel = NULL;
-        if( isset( $this->selectors[ $var_name ] ) ) {
-            $info  = $this->selectors[ $var_name ];
-            if( $info[0] == 'Selector' ) {
-                $selector = $this->selector();
-                $arg2     = $this->arrGet( $info, 2, NULL );
-                $arg3     = $this->arrGet( $info, 3, NULL );
-                $sel = $selector->getInstance( $info[1], $var_name, $arg2, $arg3 );
-            }
-            else {
-                $class = $info[0];
-                $arg1     = $this->arrGet( $info[1], 0, NULL );
-                $arg2     = $this->arrGet( $info[1], 1, NULL );
-                $arg3     = $this->arrGet( $info[1], 2, NULL );
-                $sel = new $class( $var_name, $arg1, $arg2, $arg3 );
-            }
-        }
-        return $sel;
-    }
     // +----------------------------------------------------------------------+
     //  Managing Validation and Properties. 
     // +----------------------------------------------------------------------+

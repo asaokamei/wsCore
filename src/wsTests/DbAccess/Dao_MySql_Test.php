@@ -49,56 +49,6 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         ";
         $this->query->execSQL( $sql );
     }
-    // +----------------------------------------------------------------------+
-    function test_old_style_selector_by_class()
-    {
-        $this->friend->setSelector( 
-            'friend_name', 
-            array( 'wsTests\DbAccess\Dao_SelSomething', array( 'aa', 'bb', 'cc' ) ) 
-        );
-        $sel = $this->friend->getSelector( 'friend_name' );
-        $this->assertTrue( is_object( $sel ) );
-        $this->assertEquals( 'wsTests\DbAccess\Dao_SelSomething', get_class( $sel ) );
-        $this->assertEquals( 'friend_name', $sel->a );
-        $this->assertEquals( 'aa', $sel->b );
-        $this->assertEquals( 'bb', $sel->c );
-        $this->assertEquals( 'cc', $sel->d );
-    }
-    /**
-     * 
-     */
-    function test_popHtml()
-    {
-        $name = $this->friend->popHtml( 'html', 'friend_name', 'my good friend' );
-        $this->assertEquals( 'my good friend', $name );
-        
-        $form = (string) $this->friend->popHtml( 'form', 'friend_name', 'my good friend' );
-        $this->assertContains( '<input type="text" name="friend_name" ', $form );
-        $this->assertContains( 'value="my good friend"', $form );
-    }
-    /**
-     *
-     */
-    function test_getSelInstance()
-    {
-        $sel1 = $this->friend->getSelInstance( 'friend_name' );
-        $sel2 = $this->friend->getSelInstance( 'friend_name' );
-        $this->assertSame( $sel1, $sel2 );
-    }
-    /**
-     *
-     */
-    function test_getSelector()
-    {
-        $sel = $this->friend->getSelector( 'friend_name' );
-        $this->assertTrue( is_object( $sel ) );
-        $this->assertEquals( 'wsCore\Html\Selector_Text', get_class( $sel ) );
-        $this->assertEquals( '43', $sel->attributes[ 'width'] );
-
-        $sel = $this->friend->getSelector( 'friend_bday' );
-        $this->assertTrue( is_object( $sel ) );
-        $this->assertEquals( 'wsCore\Html\Selector_DateYMD', get_class( $sel ) );
-    }
     /**
      *
      */
