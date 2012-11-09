@@ -54,6 +54,23 @@ class model extends \wsCore\DbAccess\Dao
     }
 
     /**
+     * @param null|string $name
+     * @return array
+     */
+    public function getPropertyList( $name=null ) {
+        if( $name == 'wizard1' || $name == 'load1' ) {
+            return $list = parent::protect( $this->properties, array( 'friend_name' ) );
+        }
+        elseif( $name == 'wizard2' || $name == 'load2' ) {
+            return $list = parent::protect( $this->properties, array( 'friend_gender' ) );
+        }
+        elseif( $name == 'wizard3' || $name == 'load3' ) {
+            return $list = parent::protect( $this->properties, array( 'friend_bday', 'friend_memo' ) );
+        }
+        return $list = parent::protect( $this->properties );
+    }
+
+    /**
      * do nothing! fake insert method.
      *
      * @param $values

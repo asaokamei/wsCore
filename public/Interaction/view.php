@@ -35,16 +35,22 @@ class view extends \wsCore\Html\PageView
     {
         $entity->setHtmlType( 'form' );
         $this->set( 'action', 'load1' );
+        $this->set( 'button-primary', 'next' );
+        $this->set( 'button-sub', 'back' );
     }
     public function showForm_wizard2( $entity )
     {
         $entity->setHtmlType( 'form' );
         $this->set( 'action', 'load2' );
+        $this->set( 'button-primary', 'next' );
+        $this->set( 'button-sub', 'back' );
     }
     public function showForm_wizard3( $entity )
     {
         $entity->setHtmlType( 'form' );
         $this->set( 'action', 'load3' );
+        $this->set( 'button-primary', 'confirm inputs' );
+        $this->set( 'button-sub', 'back' );
     }
     public function showConfirm( $entity )
     {

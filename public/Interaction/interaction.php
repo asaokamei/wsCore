@@ -25,21 +25,22 @@ class interact extends \wsCore\Web\Interaction
         // get entity
         $entity = $this->restoreData( 'entity' );
         if( !$entity ) {
-            $entity = $this->context->newEntity( 'entity' );
+            $entity = $this->context->newEntity( 'model' );
             $this->clearData();
             $this->registerData( 'entity', $entity );
         }
-        elseif( $this->restoreData( 'complete' ) ) {
+        $role = $this->context->applyLoadable( $entity );
+        if( $this->restoreData( 'complete' ) ) {
             goto done;
         }
-        if( $this->actionFormAndLoad( $view, $entity, $action, 'wizard1', 'load1' ) ) return $entity;
-        if( $this->actionFormAndLoad( $view, $entity, $action, 'wizard2', 'load2' ) ) return $entity;
-        if( $this->actionFormAndLoad( $view, $entity, $action, 'wizard3', 'load3' ) ) return $entity;
+        if( $this->actionFormAndLoad( $view, $role, $action, 'wizard1', 'load1' ) ) return $entity;
+        if( $this->actionFormAndLoad( $view, $role, $action, 'wizard2', 'load2' ) ) return $entity;
+        if( $this->actionFormAndLoad( $view, $role, $action, 'wizard3', 'load3' ) ) return $entity;
 
         // show confirm except for save.
         if( $action != 'save' ) {
             $view->set( $this->session->popTokenTagName(), $this->session->pushToken() );
-            $view->showConfirm( $entity );
+            $view->showConfirm( $role );
             return $entity;
         }
         // save entity.
@@ -47,9 +48,13 @@ class interact extends \wsCore\Web\Interaction
             $active = $this->context->applyActive( $entity );
             $active->save();
             $this->registerData( 'complete', true );
+            $view->set( 'alert-success', 'your friendship has been saved. ' );
+            $view->showDone( $role );
+            return $entity;
         }
         // done
         done :
+        $view->set( 'alert-info', 'your friendship has already been saved. ' );
         $view->showDone( $role );
         return $entity;
     }
