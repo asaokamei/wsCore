@@ -40,12 +40,25 @@
             Wishes wishes wishes. </p>
         <hr>
     </header>
-    <h3>simple page without front controller</h3>
-    <ul>
-        <li><a href="password.php" >generate password</a></li>
-        <li><a href="interaction1.php" >interaction demo #1</a></li>
-        <li><a href="interaction2.php" >interaction demo #2</a></li>
-    </ul>
+    <div class="row-fluid marketing">
+        <div class="span6">
+            <h4>building forms</h4>
+            <p>demo for building form elements and using page based controller. </p>
+            <ul>
+                <li><a href="password.php" >generate password</a></li>
+            </ul>
+            <h4>interaction with forms</h4>
+            <p>data mapper demo for using models and entities, then interaction. </p>
+            <ul>
+                <li><a href="interaction1.php" >demo #1: insert friend's data</a></li>
+                <li><a href="interaction2.php" >demo #2: interaction like a wizard</a></li>
+            </ul>
+        </div>
+        <div class="span6">
+            <h4>more demo</h4>
+            more demo should come up, maybe soon...
+        </div>
+    </div>
     <footer class="footer">
         <hr>
         <p>WScore Developed by WorkSpot.JP<br />

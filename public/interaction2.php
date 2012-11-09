@@ -32,7 +32,7 @@ $entity = $view->get( 'entity' );
     div.formListBox { overflow: auto; }
     div.formListBox li { float: left; list-style: none; margin-right: 1.5em; }
 </style>
-    <h3>Interaction demo#2</h3>
+    <h4>demo #2: interaction like a wizard</h4>
     <p>Wizard like steps to insert a data. steps are: form1 -> form2 -> form3 -> confirm -> save. </p>
     <h1><?php echo $view->get( 'title' ); ?></h1>
     <?php

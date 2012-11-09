@@ -3,12 +3,16 @@ require_once( __DIR__ . '/../src/autoloader.php' );
 require_once( __DIR__ . '/Interaction/config.php' );
 use wsCore\Core;
 
+/** @var $model Interaction\model */
+/** @var $intAct Interaction\interact */
+/** @var $view \Interaction\view */
+/** @var $entity \wsCore\DbAccess\Context_RoleInput */
+
 Core::go();
 Core::setPdo( 'dsn=sqlite::memory:' );
-/** @var $model Interaction\model */
 $model   = Core::get( 'Interaction\model' );
-/** @var $intAct Interaction\interact */
-$intAct = Core::get( 'Interaction\interact' );
+$intAct  = Core::get( 'Interaction\interact' );
+$view    = Core::get( 'interaction\view' );
 
 if( !$action = wsCore\Utilities\Tools::getKey( $_REQUEST, 'action' ) ) {
     $action = 'form';
@@ -17,11 +21,7 @@ else {
     $intAct->loadRegistered();
 }
 
-/** @var $view \Interaction\view */
-$view    = Core::get( 'interaction\view' );
 $intAct->run( 'insertData', $action, $view );
-
-/** @var $entity \wsCore\DbAccess\Context_RoleInput */
 $entity = $view->get( 'entity' );
 
 ?>
@@ -32,7 +32,7 @@ $entity = $view->get( 'entity' );
     div.formListBox { overflow: auto; }
     div.formListBox li { float: left; list-style: none; margin-right: 1.5em; }
 </style>
-    <h3>Interaction demo#1</h3>
+    <h4>demo #1: insert friend's data</h4>
     <p>Interaction with simple steps for inserting a data. The steps go through form -> confirm -> insert. </p>
     <h1><?php echo $view->get( 'title' ); ?></h1>
     <?php
