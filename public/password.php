@@ -12,7 +12,7 @@ $input = array(
     'symbol' => '',
     'count'  => '5',
 );
-if( $_REQUEST[ 'generate' ] ) {
+if( isset( $_REQUEST[ 'generate' ] ) ) {
     $input     = array_merge( $input, get_inputs() );
     $passwords = generate_password( $input );
 }
@@ -83,7 +83,7 @@ function generate_password( $input )
         </dl>
         <input type="submit" name="generate" class="btn btn-primary" value="generate password">
     </form>
-    <?php var_dump( $passwords ); ?>
+    <?php if( isset( $passwords ) ) var_dump( $passwords ); ?>
     <footer class="footer">
         <hr>
         <p>WScore Developed by WorkSpot.JP<br />
