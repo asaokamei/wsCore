@@ -153,13 +153,17 @@ class Dao
      * protect data not to overwrite id or relation fields.
      *
      * @param $values
+     * @param array $onlyTo
      * @return mixed
      */
-    public function protect( $values )
+    public function protect( $values, $onlyTo=array() )
     {
         if( empty( $values ) ) return $values;
         foreach( $values as $key => $val ) {
             if( in_array( $key, $this->protected ) ) {
+                unset( $values[ $key ] );
+            }
+            elseif( !empty( $onlyTo ) && !in_array( $key, $onlyTo ) ) {
                 unset( $values[ $key ] );
             }
         }
