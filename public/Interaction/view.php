@@ -41,6 +41,7 @@ class view extends \wsCore\Html\PageView
         $this->set( 'action', 'load1' );
         $this->set( 'button-primary', 'next' );
         $this->set( 'button-sub', '' );
+        $this->set( 'title', 'Friend Form#1' );
     }
 
     /**
@@ -52,6 +53,7 @@ class view extends \wsCore\Html\PageView
         $this->set( 'action', 'load2' );
         $this->set( 'button-primary', 'next' );
         $this->set( 'button-sub', 'interaction2.php?action=wizard1' );
+        $this->set( 'title', 'Friend Form#2' );
     }
 
     /**
@@ -63,6 +65,7 @@ class view extends \wsCore\Html\PageView
         $this->set( 'action', 'load3' );
         $this->set( 'button-primary', 'confirm inputs' );
         $this->set( 'button-sub', 'interaction2.php?action=wizard2' );
+        $this->set( 'title', 'Friend Form#3' );
     }
 
     /**
