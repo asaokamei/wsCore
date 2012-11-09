@@ -18,7 +18,7 @@ else {
 }
 
 /** @var $view \Interaction\view */
-$view    = Core::get( 'interaction\view' );
+$view    = Core::get( 'interaction\view2' );
 $intAct->run( 'wizard', $action, $view );
 
 /** @var $entity \wsCore\DbAccess\Context_RoleInput */

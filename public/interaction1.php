@@ -12,7 +12,7 @@ Core::go();
 Core::setPdo( 'dsn=sqlite::memory:' );
 $model   = Core::get( 'Interaction\model' );
 $intAct  = Core::get( 'Interaction\interact' );
-$view    = Core::get( 'interaction\view' );
+$view    = Core::get( 'interaction\view1' );
 
 if( !$action = wsCore\Utilities\Tools::getKey( $_REQUEST, 'action' ) ) {
     $action = 'form';

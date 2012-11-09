@@ -10,7 +10,9 @@ class entity extends \wsCore\DbAccess\Entity_Abstract
     public $friend_name = '';
 
     public $friend_gender = '';
-
+    
     public $friend_bday = null;
+
+    public $friend_memo = '';
 }
 
