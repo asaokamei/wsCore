@@ -17,7 +17,7 @@ class interact extends \wsCore\Web\Interaction
 
     /**
      * @param string $action
-     * @param \Interaction\view $view
+     * @param \Interaction\view1 $view
      * @return \Interaction\entity
      */
     function wizard( $action, $view )
@@ -62,7 +62,7 @@ class interact extends \wsCore\Web\Interaction
      * insert data with steps: form -> confirm -> insert
      *
      * @param string $action
-     * @param \Interaction\View $view
+     * @param \Interaction\view1 $view
      * @return \Interaction\entity
      */
     function insertData( $action, $view )
