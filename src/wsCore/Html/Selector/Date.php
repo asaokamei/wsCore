@@ -10,5 +10,9 @@ class Selector_Date extends Selector
     {
         parent::__construct( $form );
         $this->style = 'date';
+        // shows date like 2012/01/23.
+        $this->htmlFilter = function( $val ) {
+            return str_replace( '-', '/', $val );
+        };
     }
 }
