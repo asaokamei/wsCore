@@ -1,5 +1,5 @@
 <?php
-namespace Interaction;
+namespace wsCore\Alt\Html;
 
 class View_Bootstrap extends \wsCore\Html\PageView
 {
