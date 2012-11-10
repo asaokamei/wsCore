@@ -5,7 +5,7 @@ use wsCore\Core;
 
 /** @var $model Interaction\model */
 /** @var $intAct Interaction\interact */
-/** @var $view \Interaction\view */
+/** @var $view \Interaction\view1 */
 /** @var $entity \wsCore\DbAccess\Context_RoleInput */
 
 Core::go();
@@ -22,6 +22,7 @@ else {
 }
 
 $intAct->run( 'insertData', $action, $view );
+$view = $view->getView();
 $entity = $view->get( 'entity' );
 
 ?>

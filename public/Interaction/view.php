@@ -1,8 +1,48 @@
 <?php
 namespace Interaction;
 
-class view1 extends View_Bootstrap
+class view1 
 {
+    private $view;
+
+    /**
+     * @param \Interaction\View_Bootstrap $view
+     * @DimInjection Fresh \Interaction\View_Bootstrap
+     */
+    public function __construct( $view ) {
+        $this->view = $view;
+    }
+
+    /**
+     * @return \Interaction\View_Bootstrap
+     */
+    public function getView() {
+        return $this->view;
+    }
+
+    /**
+     * set state of the resource.
+     *
+     * @param $name
+     * @param $value
+     * @return view1
+     */
+    public function set( $name, $value )
+    {
+        $this->view->set( $name, $value );
+        return $this;
+    }
+
+    /**
+     * get state of the top resources.
+     *
+     * @param $name
+     * @return mixed
+     */
+    public function get( $name ) {
+        return $this->view->get( $name );
+    }
+    
     /**
      * @param \wsCore\DbAccess\Context_RoleInput $entity
      * @param string $form
