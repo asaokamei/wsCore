@@ -1,6 +1,14 @@
 <?php
 namespace wsCore\Html;
 
+/**
+ * TODO: think about new view structure
+ *  - Html/View  <- PaveView
+ *  - Web/PageView   <- new! delegates Html/View
+ *  - Web/PageView_Interface
+ *  - wsModule/Alt/Html/View/Bootstrap  <- new! for bootstrap. 
+ * 
+ */
 class PageView implements \ArrayAccess
 {
     public $newResource = array(
