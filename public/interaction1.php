@@ -3,13 +3,14 @@ require_once( __DIR__ . '/../src/autoloader.php' );
 require_once( __DIR__ . '/Interaction/config.php' );
 use wsCore\Core;
 
+Core::go();
+Core::setPdo( 'dsn=sqlite::memory:' );
+
 /** @var $model Interaction\model */
 /** @var $intAct Interaction\interact */
 /** @var $view \Interaction\view1 */
 /** @var $entity \wsCore\DbAccess\Context_RoleInput */
 
-Core::go();
-Core::setPdo( 'dsn=sqlite::memory:' );
 $model   = Core::get( 'Interaction\model' );
 $intAct  = Core::get( 'Interaction\interact' );
 $view    = Core::get( 'interaction\view1' );

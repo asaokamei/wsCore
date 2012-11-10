@@ -6,9 +6,13 @@ use wsCore\Core;
 Core::go();
 Core::setPdo( 'dsn=sqlite::memory:' );
 /** @var $model Interaction\model */
-$model   = Core::get( 'Interaction\model' );
 /** @var $intAct Interaction\interact */
+/** @var $view \Interaction\view2 */
+/** @var $entity \wsCore\DbAccess\Context_RoleInput */
+
+$model  = Core::get( 'Interaction\model' );
 $intAct = Core::get( 'Interaction\interact' );
+$view   = Core::get( 'interaction\view2' );
 
 if( !$action = wsCore\Utilities\Tools::getKey( $_REQUEST, 'action' ) ) {
     $action = 'form';
@@ -17,11 +21,7 @@ else {
     $intAct->loadRegistered();
 }
 
-/** @var $view \Interaction\view */
-$view    = Core::get( 'interaction\view2' );
 $intAct->run( 'wizard', $action, $view );
-
-/** @var $entity \wsCore\DbAccess\Context_RoleInput */
 $entity = $view->get( 'entity' );
 
 ?>

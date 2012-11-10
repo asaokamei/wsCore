@@ -5,11 +5,12 @@ use wsCore\Core;
 
 Core::go();
 /** @var $page \wsCore\Web\PageMC */
-$page = Core::get( '\wsCore\Web\PageMC' );
 /** @var $view \wsCore\Html\PageView */
+
+$page = Core::get( '\wsCore\Web\PageMC' );
 $view = Core::get( '\wsCore\Html\PageView' );
 $page->setController( Core::get( '\password\controller' ) );
-$act = $page->getActFromPost();
+$act  = $page->getActFromPost();
 
 $page->run( $act, $view );
 
