@@ -6,15 +6,15 @@ class view1
     private $view;
 
     /**
-     * @param \Interaction\View_Bootstrap $view
-     * @DimInjection Fresh \Interaction\View_Bootstrap
+     * @param \wsModule\Alt\Html\View_Bootstrap $view
+     * @DimInjection Fresh \wsModule\Alt\Html\View_Bootstrap
      */
     public function __construct( $view ) {
         $this->view = $view;
     }
 
     /**
-     * @return \Interaction\View_Bootstrap
+     * @return \wsModule\Alt\Html\View_Bootstrap
      */
     public function getView() {
         return $this->view;
@@ -98,7 +98,7 @@ class view1
     }
 }
 
-class view2 extends View_Bootstrap
+class view2 extends \wsModule\Alt\Html\View_Bootstrap
 {
     /**
      * @param \wsCore\DbAccess\Context_RoleInput $entity
