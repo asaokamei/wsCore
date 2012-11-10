@@ -30,9 +30,9 @@ class Selector_DateYMD extends SelectDiv
         if( array_key_exists( 'default', $option ) ) unset( $option[ 'default' ] );
         
         $this->num_div = 3;
-        $selY = new Selector_Year(  $this->form );        $selY->set( "{$this->name}_y", $option );
-        $selM = new Selector_Month( $this->form );        $selM->set( "{$this->name}_m", $option );
-        $selD = new Selector_Day(   $this->form );        $selD->set( "{$this->name}_d", $option );
+        $selY = new Selector_DateYear(  $this->form );        $selY->set( "{$this->name}_y", $option );
+        $selM = new Selector_DateMonth( $this->form );        $selM->set( "{$this->name}_m", $option );
+        $selD = new Selector_DateDay(   $this->form );        $selD->set( "{$this->name}_d", $option );
         $this->d_forms[] = $selY;
         $this->d_forms[] = $selM;
         $this->d_forms[] = $selD;
