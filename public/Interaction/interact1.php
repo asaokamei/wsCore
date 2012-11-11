@@ -29,9 +29,12 @@ class interact1 extends \wsCore\Web\Interaction
             $this->clearData();
             $this->registerData( 'entity', $entity );
         }
+        if( $this->restoreData( 'done' ) ) {
+            $action = 'save';
+        }
         $steps = array(
             array( 'formLoad',    'form',     'load',  ),
-            array( 'pushToken',   'confirm',    ),
+            array( 'pushToken',   'confirm',  'save'  ),
             array( 'verifyToken', 'save',     'done' ),
         );
         $result = $this->webFormWizard( $entity, $action, $steps );
