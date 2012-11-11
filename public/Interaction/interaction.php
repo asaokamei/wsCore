@@ -4,18 +4,6 @@ namespace Interaction;
 class interact extends \wsCore\Web\Interaction
 {
     /**
-     * @param $entity
-     * @param $role
-     * @return \role
-     */
-    public function applyContext( $entity, $role ) {
-        if( $role == 'loadable' ) {
-            return $this->context->applyLoadable( $entity );
-        }
-        return $entity;
-    }
-
-    /**
      * @param string $action
      * @param \Interaction\view1 $view
      * @return \Interaction\entity
