@@ -174,7 +174,7 @@ class Interaction
     private function getStepInfo( $step ) {
         $task     = $step[0];
         $formName = $step[1];
-        $loadName = $step[2];
+        $loadName = array_key_exists( 2, $step ) ? $step[2] : null;
         return array( $task, $formName, $loadName );
     }
 
