@@ -80,6 +80,22 @@ class Interaction
         $this->saveRegistered();
         return $view;
     }
+
+    /**
+     * @param string      $controller
+     * @param null|string $default
+     * @return \wsCore\Html\PageView
+     */
+    public function action( $controller, $default=null )
+    {
+        $action = $default;
+        if( array_key_exists( $this->actionName, $_REQUEST ) ) {
+            $action = $_REQUEST[ $this->actionName ];
+            $this->loadRegistered();
+        }
+        $this->$controller( $action );
+        return $this->view;
+    }
     // +----------------------------------------------------------------------+
     //  manage token for CSRF.
     // +----------------------------------------------------------------------+
