@@ -4,7 +4,8 @@ namespace Interaction;
 require_once( __DIR__ . '/model.php' );
 require_once( __DIR__ . '/entity.php' );
 require_once( __DIR__ . '/view.php' );
-require_once( __DIR__ . '/interaction.php' );
+require_once( __DIR__ . '/interact1.php' );
+require_once( __DIR__ . '/interact2.php' );
 
 class selGender extends \wsCore\Html\Selector
 {

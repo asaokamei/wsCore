@@ -6,12 +6,12 @@ use wsCore\Core;
 Core::go();
 Core::setPdo( 'dsn=sqlite::memory:' );
 /** @var $model Interaction\model */
-/** @var $intAct Interaction\interact */
+/** @var $intAct Interaction\interact2 */
 /** @var $view \Interaction\view2 */
 /** @var $entity \wsCore\DbAccess\Context_RoleInput */
 
 $model  = Core::get( 'Interaction\model' );
-$intAct = Core::get( 'Interaction\interact' );
+$intAct = Core::get( 'Interaction\interact2' );
 $view   = Core::get( 'interaction\view2' );
 
 if( !$action = wsCore\Utilities\Tools::getKey( $_REQUEST, 'action' ) ) {
@@ -21,7 +21,7 @@ else {
     $intAct->loadRegistered();
 }
 
-$intAct->run( 'wizard2', $action, $view );
+$intAct->run( 'wizard', $action, $view );
 $entity = $view->get( 'entity' );
 
 ?>

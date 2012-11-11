@@ -7,12 +7,12 @@ Core::go();
 Core::setPdo( 'dsn=sqlite::memory:' );
 
 /** @var $model Interaction\model */
-/** @var $intAct Interaction\interact */
+/** @var $intAct Interaction\interact1 */
 /** @var $view \Interaction\view1 */
 /** @var $entity \wsCore\DbAccess\Context_RoleInput */
 
 $model   = Core::get( 'Interaction\model' );
-$intAct  = Core::get( 'Interaction\interact' );
+$intAct  = Core::get( 'Interaction\interact1' );
 $view    = Core::get( 'interaction\view1' );
 
 if( !$action = wsCore\Utilities\Tools::getKey( $_REQUEST, 'action' ) ) {
