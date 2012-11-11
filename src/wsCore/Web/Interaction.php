@@ -189,10 +189,10 @@ class Interaction
     }
     
     private function getStepInfo( $step ) {
-        $formName = $step[0];
-        $loadName = $step[1];
-        $token    = (isset( $step[2] ))? $step[2] : null;
-        return array( $formName, $loadName, $token );
+        $task     = $step[0];
+        $formName = $step[1];
+        $loadName = $step[2];
+        return array( $task, $formName, $loadName );
     }
 
     /**
@@ -201,52 +201,50 @@ class Interaction
      * returns just false.
      *
      * $steps = array(
-     *    [ 'formName',    'loadName',   null     ],
-     *    [ 'formName2',   'loadName2'   null     ],
+     *    [ taskType, formName, loadName ], 
+     *    [ 'formLoad',    'formName',    'loadName'    ],
+     *    [ 'formLoad',    'formName2',   'loadName2'   ],
      *    ...
-     *    [ 'confirmName', 'finalAction', 'push'    ],
-     *    [ 'finalAction', 'doneName',    'verify'  ],
+     *    [ 'pushToken',   'confirmName', 'finalAction' ],
+     *    [ 'verifyToken', 'finalAction', 'doneName'    ],
      * );
      *
-     * about return value: boolen or Entity_Interface.
+     * about return value: boolean or Entity_Interface.
      * returns true if view is taken care of. 
      * 
      * @param \wsCore\Html\PageView             $view
      * @param \wsCore\DbAccess\Entity_Interface $entity
      * @param string                            $action
      * @param array                             $steps
-     * @return bool|\wsCore\DbAccess\Entity_Interface
+     * @return bool|string
      */
     public function webFormWizard( $view, $entity, $action, $steps )
     {
         $role = $this->context->applyLoadable( $entity );
         $showForm = $this->showForm;
-        $lastStep = array_pop( $steps );
-        list( $formName, $loadName, $token ) = $this->getStepInfo( $lastStep );
-        if( $this->restoreData( $loadName ) ) {
-            return false;
-        }
-        if( $action == $formName ) {
-            $this->registerData( $loadName, true );
-            if( $token == 'verify' && !$this->verifyToken() ) {
-                return false;
-            }
-            return $entity;
-        }
         
         reset( $steps );
         $prevLoadName = null;
         foreach( $steps as $step ) 
         {
-            list( $formName, $loadName, $token ) = $this->getStepInfo( $step );
+            list( $task, $formName, $loadName ) = $this->getStepInfo( $step );
             $view->set( $this->actionName, $loadName );
-            if( $action == $formName && $token == 'push' ) {
-                $view->set( $this->session->popTokenTagName(), $this->session->pushToken() );
+            if( $task == 'pushToken' && ( $action == $formName || $action == $prevLoadName ) ) {
                 $view->$showForm( $role, $formName );
-                return true;
+                return $formName;
             }
-            $formName .= $prevLoadName ? '|' . $prevLoadName: '';
-            if( $this->actionFormAndLoad( $view, $role, $action, $formName, $loadName ) ) return true;
+            if( $task == 'verifyToken' && $action == $formName ) {
+                $this->registerData( $loadName, true );
+                $view->$showForm( $role, $loadName );
+                if( $this->verifyToken() ) {
+                    return $action;
+                }
+                return false;
+            }
+            if( $task == 'formLoad' ) {
+                $formName .= $prevLoadName ? '|' . $prevLoadName: '';
+                if( $this->actionFormAndLoad( $view, $role, $action, $formName, $loadName ) ) return $action;
+            }
             $prevLoadName = $loadName;
         }
         return false;
