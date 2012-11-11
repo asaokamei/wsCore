@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Context
+class Role
 {
     /** @var \wsCore\DbAccess\EntityManager */
     private $em;
@@ -44,7 +44,7 @@ class Context
      * @param null|string   $id
      * @return \wsCore\DbAccess\Entity_Interface
      */
-    public function newEntity( $modelName, $data=array(), $id=NULL )
+    public function newEntity( $modelName, $data=array(), $id=null )
     {
         $entity = $this->em->newEntity( $modelName, $data, $id );
         return $entity;
@@ -61,7 +61,7 @@ class Context
             $method = strtolower( $role ) . 'Role';
             return $this->$method( $entity );
         }
-        if( strpos( $role, '\\' ) !== FALSE ) {
+        if( strpos( $role, '\\' ) !== false ) {
             $class = $role;
         }
         else {
@@ -70,7 +70,7 @@ class Context
         $em   = clone $this->em;
         $dio  = clone $this->dio;
         $sel  = clone $this->selector;
-        /** @var $role Context_Interface */
+        /** @var $role Role_Interface */
         $role = new $class( $em, $dio, $sel );
         $role->register( $entity );
         return $role;
@@ -78,26 +78,26 @@ class Context
 
     /**
      * @param \wsCore\DbAccess\Entity_Interface $entity
-     * @return \wsCore\DbAccess\Context_RoleActive
+     * @return \wsCore\DbAccess\Role_Active
      */
     public function applyActive( $entity )
     {
         $em   = clone $this->em;
-        $role = new Context_RoleActive( $em );
+        $role = new Role_Active( $em );
         $role->register( $entity );
         return $role;
     }
 
     /**
      * @param \wsCore\DbAccess\Entity_Interface $entity
-     * @return \wsCore\DbAccess\Context_RoleInput
+     * @return \wsCore\DbAccess\Role_Input
      */
     public function applyLoadable( $entity )
     {
         $em   = clone $this->em;
         $dio  = clone $this->dio;
         $sel  = clone $this->selector;
-        $role = new Context_RoleInput( $em, $dio, $sel );
+        $role = new Role_Input( $em, $dio, $sel );
         $role->register( $entity );
         return $role;
     }

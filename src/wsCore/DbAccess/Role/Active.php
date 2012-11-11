@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Context_RoleActive implements Context_Interface
+class Role_Active implements Role_Interface
 {
     const ACTION_NONE  = 'act-none';
     const ACTION_SAVE  = 'act-save';
@@ -46,7 +46,7 @@ class Context_RoleActive implements Context_Interface
     }
     /**
      * @param string $actType
-     * @return Context_RoleActive
+     * @return Role_Active
      */
     protected function setActionType( $actType ) {
         $this->action = $actType;
@@ -73,9 +73,9 @@ class Context_RoleActive implements Context_Interface
     // +----------------------------------------------------------------------+
     /**
      * @param bool $delete
-     * @return Context_RoleActive
+     * @return Role_Active
      */
-    public function delete( $delete=TRUE )
+    public function delete( $delete=true )
     {
         $this->em->delete( $this->entity, !!$delete );
         $this->setActionType( self::ACTION_SAVE );
@@ -84,9 +84,9 @@ class Context_RoleActive implements Context_Interface
 
     /**
      * @param bool $saveRelations
-     * @return Context_RoleActive
+     * @return Role_Active
      */
-    public function save( $saveRelations=FALSE )
+    public function save( $saveRelations=false )
     {
         if( $this->action == self::ACTION_SAVE ) {
             $this->em->saveEntity( $this->entity );

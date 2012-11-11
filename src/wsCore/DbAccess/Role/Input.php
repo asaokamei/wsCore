@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-class Context_RoleInput implements Context_Interface
+class Role_Input implements Role_Interface
 {
     /** @var \wsCore\DbAccess\EntityManager */
     private $em;
@@ -65,7 +65,7 @@ class Context_RoleInput implements Context_Interface
     /**
      * @param null|string $name
      * @param array       $data
-     * @return Context_RoleInput
+     * @return Role_Input
      */
     public function loadData( $name=null, $data=array() )
     {
@@ -103,7 +103,7 @@ class Context_RoleInput implements Context_Interface
 
     /**
      * @param bool $valid
-     * @return Context_RoleInput
+     * @return Role_Input
      */
     public function resetValidation( $valid=false ) {
         $this->is_valid = $valid;
@@ -195,15 +195,15 @@ class Context_RoleInput implements Context_Interface
         $selector = null;
         if( $info = $this->model->getSelectInfo( $name ) ) {
             if( $info[0] == 'Selector' ) {
-                $arg2     = $this->model->arrGet( $info, 2, NULL );
-                $arg3     = $this->model->arrGet( $info, 3, NULL );
+                $arg2     = $this->model->arrGet( $info, 2, null );
+                $arg3     = $this->model->arrGet( $info, 3, null );
                 $selector = $this->selector->getInstance( $info[1], $name, $arg2, $arg3 );
             }
             else {
                 $class = $info[0];
-                $arg1     = $this->model->arrGet( $info[1], 0, NULL );
-                $arg2     = $this->model->arrGet( $info[1], 1, NULL );
-                $arg3     = $this->model->arrGet( $info[1], 2, NULL );
+                $arg1     = $this->model->arrGet( $info[1], 0, null );
+                $arg2     = $this->model->arrGet( $info[1], 1, null );
+                $arg3     = $this->model->arrGet( $info[1], 2, null );
                 $selector = new $class( $name, $arg1, $arg2, $arg3 );
             }
         }
