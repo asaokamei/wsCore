@@ -15,6 +15,8 @@ class Interaction
     public $showForm = 'showForm';
 
     public $loadData = 'loadData';
+    
+    public $actionName = 'action';
     // +----------------------------------------------------------------------+
     //  object management
     // +----------------------------------------------------------------------+
@@ -164,16 +166,16 @@ class Interaction
             $role->resetValidation( true );
             $showForm = $this->showForm;
             $view->$showForm( $role, $form );
-            return TRUE;
+            return true;
         }
         // show the form.
         if( in_array( $action, $formList ) ) {
             $showForm = $this->showForm;
             $view->$showForm( $role, $form );
-            return TRUE;
+            return true;
         }
         // load posted values from form.
-        if( $action == $load ) {
+        if( $load && $action == $load ) {
             $loadData = $this->loadData;
             $role->$loadData( $load );
         }
@@ -181,9 +183,73 @@ class Interaction
         if( !$role->validate( $form ) ) {
             $showForm = $this->showForm;
             $view->$showForm( $role, $form ); // validation failed.
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
+    }
+    
+    private function getStepInfo( $step ) {
+        $formName = $step[0];
+        $loadName = $step[1];
+        $token    = (isset( $step[2] ))? $step[2] : null;
+        return array( $formName, $loadName, $token );
+    }
+
+    /**
+     * generic form and load steps for web-interaction.
+     * returns the entity if all the steps are successful, otherwise
+     * returns just false.
+     *
+     * $steps = array(
+     *    [ 'formName',    'loadName',   null     ],
+     *    [ 'formName2',   'loadName2'   null     ],
+     *    ...
+     *    [ 'confirmName', 'finalAction', 'push'    ],
+     *    [ 'finalAction', 'doneName',    'verify'  ],
+     * );
+     *
+     * about return value: boolen or Entity_Interface.
+     * returns true if view is taken care of. 
+     * 
+     * @param \wsCore\Html\PageView             $view
+     * @param \wsCore\DbAccess\Entity_Interface $entity
+     * @param string                            $action
+     * @param array                             $steps
+     * @return bool|\wsCore\DbAccess\Entity_Interface
+     */
+    public function webFormWizard( $view, $entity, $action, $steps )
+    {
+        $role = $this->context->applyLoadable( $entity );
+        $showForm = $this->showForm;
+        $lastStep = array_pop( $steps );
+        list( $formName, $loadName, $token ) = $this->getStepInfo( $lastStep );
+        if( $this->restoreData( $loadName ) ) {
+            return false;
+        }
+        if( $action == $formName ) {
+            $this->registerData( $loadName, true );
+            if( $token == 'verify' && !$this->verifyToken() ) {
+                return false;
+            }
+            return $entity;
+        }
+        
+        reset( $steps );
+        $prevLoadName = null;
+        foreach( $steps as $step ) 
+        {
+            list( $formName, $loadName, $token ) = $this->getStepInfo( $step );
+            $view->set( $this->actionName, $loadName );
+            if( $action == $formName && $token == 'push' ) {
+                $view->set( $this->session->popTokenTagName(), $this->session->pushToken() );
+                $view->$showForm( $role, $formName );
+                return true;
+            }
+            $formName .= $prevLoadName ? '|' . $prevLoadName: '';
+            if( $this->actionFormAndLoad( $view, $role, $action, $formName, $loadName ) ) return true;
+            $prevLoadName = $loadName;
+        }
+        return false;
     }
     // +----------------------------------------------------------------------+
 }

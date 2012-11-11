@@ -20,6 +20,41 @@ class interact extends \wsCore\Web\Interaction
      * @param \Interaction\view1 $view
      * @return \Interaction\entity
      */
+    function wizard2( $action, $view )
+    {
+        $entity = $this->restoreData( 'entity' );
+        if( !$entity ) {
+            $entity = $this->context->newEntity( 'model' );
+            $this->clearData();
+            $this->registerData( 'entity', $entity );
+        }
+        $steps = array(
+            array( 'wizard1',  'load1',  ),
+            array( 'wizard2',  'load2',  ),
+            array( 'wizard3',  'load3',  ),
+            array( 'confirm',   null,      'push'   ),
+            array( 'save',     'complete', 'verify' ),
+        );
+        $result = $this->webFormWizard( $view, $entity, $action, $steps );
+        if( $result === true ) {
+            return $entity;
+        }
+        $role = $this->context->applyLoadable( $entity );
+        $view->showDone( $role );
+        if( $result instanceof \wsCore\DbAccess\Entity_Interface ) {
+            $active = $this->context->applyActive( $entity );
+            $active->save();
+            $view->set( 'alert-success', 'your friendship has been saved. ' );
+        }
+        $view->set( 'alert-info', 'your friendship has already been saved. ' );
+        return $entity;
+    }
+    
+    /**
+     * @param string $action
+     * @param \Interaction\view1 $view
+     * @return \Interaction\entity
+     */
     function wizard( $action, $view )
     {
         // get entity
@@ -40,7 +75,7 @@ class interact extends \wsCore\Web\Interaction
         // show confirm except for save.
         if( $action != 'save' ) {
             $view->set( $this->session->popTokenTagName(), $this->session->pushToken() );
-            $view->showConfirm( $role );
+            $view->showForm( $role, 'confirm' );
             return $entity;
         }
         // save entity.

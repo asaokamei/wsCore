@@ -156,7 +156,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     /**
      * @param \wsCore\DbAccess\Context_RoleInput $entity
      */
-    public function showConfirm( $entity )
+    public function showForm_confirm( $entity )
     {
         $entity->setHtmlType( 'html' );
         $this->set( 'currAction', 'confirm' );
