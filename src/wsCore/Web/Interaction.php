@@ -9,7 +9,7 @@ class Interaction
     /** @var \wsCore\Web\Session             saves itself and token for CSRF */
     protected $session;
 
-    /** @var \wsCore\DbAccess\Context */
+    /** @var \wsCore\DbAccess\Role */
     protected $context;
     
     /** @var \wsCore\Html\PageView */
@@ -25,9 +25,9 @@ class Interaction
     // +----------------------------------------------------------------------+
     /**
      * @param \wsCore\Web\Session $session
-     * @param \wsCore\DbAccess\Context $context
+     * @param \wsCore\DbAccess\Role $context
      * @DimInjection Fresh Session
-     * @DimInjection Get   \wsCore\DbAccess\Context
+     * @DimInjection Get   \wsCore\DbAccess\Role
      */
     public function __construct( $session, $context ) {
         $this->session = ($session) ?: $_SESSION;
@@ -143,7 +143,7 @@ class Interaction
     // +----------------------------------------------------------------------+
 
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput  $role
+     * @param \wsCore\DbAccess\Role_Input  $role
      * @param string $action
      * @param array $formList
      * @param string $load

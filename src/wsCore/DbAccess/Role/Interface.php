@@ -1,7 +1,7 @@
 <?php
 namespace wsCore\DbAccess;
 
-interface Context_Interface
+interface Role_Interface
 {
     /**
      * @param \wsCore\DbAccess\Entity_Interface    $entity
