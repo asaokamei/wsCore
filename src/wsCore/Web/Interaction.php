@@ -187,7 +187,11 @@ class Interaction
         }
         return false;
     }
-    
+
+    /**
+     * @param array $step
+     * @return array
+     */
     private function getStepInfo( $step ) {
         $task     = $step[0];
         $formName = $step[1];
@@ -196,21 +200,23 @@ class Interaction
     }
 
     /**
-     * generic form and load steps for web-interaction.
-     * returns the entity if all the steps are successful, otherwise
-     * returns just false.
+     * generic web-interaction based on steps.
      *
      * $steps = array(
-     *    [ taskType, formName, loadName ], 
+     *    [  taskType,      formName,      loadName ], 
      *    [ 'formLoad',    'formName',    'loadName'    ],
      *    [ 'formLoad',    'formName2',   'loadName2'   ],
      *    ...
-     *    [ 'pushToken',   'confirmName', 'finalAction' ],
+     *    [ 'pushToken',   'confirmName' ],
      *    [ 'verifyToken', 'finalAction', 'doneName'    ],
      * );
-     *
-     * about return value: boolean or Entity_Interface.
-     * returns true if view is taken care of. 
+     * 
+     * available taskTypes are: formLoad, pushToken, and verifyToken.
+     * 
+     * about return value: formName or false.
+     * returns formName if task was successfully performed. 
+     * returns false if no task was performed (no action for this steps), 
+     * or failed to perform the task in verifyToken. 
      * 
      * @param \wsCore\Html\PageView             $view
      * @param \wsCore\DbAccess\Entity_Interface $entity
@@ -223,13 +229,13 @@ class Interaction
         $role = $this->context->applyLoadable( $entity );
         $showForm = $this->showForm;
         
-        reset( $steps );
         $prevLoadName = null;
         foreach( $steps as $step ) 
         {
             list( $task, $formName, $loadName ) = $this->getStepInfo( $step );
             $view->set( $this->actionName, $loadName );
-            if( $task == 'pushToken' && ( $action == $formName || $action == $prevLoadName ) ) {
+            if( $task == 'pushToken' && in_array( $action, array( $formName, $prevLoadName ) ) ) {
+                $view->set( $this->session->popTokenTagName(), $this->session->pushToken() );
                 $view->$showForm( $role, $formName );
                 return $formName;
             }
@@ -237,13 +243,13 @@ class Interaction
                 $this->registerData( $loadName, true );
                 $view->$showForm( $role, $loadName );
                 if( $this->verifyToken() ) {
-                    return $action;
+                    return $formName;
                 }
                 return false;
             }
             if( $task == 'formLoad' ) {
                 $formName .= $prevLoadName ? '|' . $prevLoadName: '';
-                if( $this->actionFormAndLoad( $view, $role, $action, $formName, $loadName ) ) return $action;
+                if( $this->actionFormAndLoad( $view, $role, $action, $formName, $loadName ) ) return $formName;
             }
             $prevLoadName = $loadName;
         }

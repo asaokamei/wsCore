@@ -41,9 +41,6 @@ class interact extends \wsCore\Web\Interaction
             $active->save();
             $view->set( 'alert-success', 'your friendship has been saved. ' );
         }
-        elseif( $result == 'confirm' ) {
-            $view->set( $this->session->popTokenTagName(), $this->session->pushToken() );
-        }
         elseif( $result === false ) {
             $view->set( 'alert-info', 'your friendship has already been saved. ' );
         }
