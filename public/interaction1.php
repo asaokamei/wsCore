@@ -26,6 +26,8 @@ $intAct->run( 'insertData', $action, $view );
 $view = $view->getView();
 $entity = $view->get( 'entity' );
 
+/** @var $view \wsModule\Alt\Html\View_Bootstrap */
+
 ?>
 <?php include( './common/menu/header.php' ); ?>
 <style type="text/css">
