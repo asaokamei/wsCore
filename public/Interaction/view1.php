@@ -44,7 +44,7 @@ class view1
     }
     
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     * @param \wsCore\DbAccess\Role_Input $entity
      * @param string $form
      * @return void
      */
@@ -61,7 +61,7 @@ class view1
     }
 
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     * @param \wsCore\DbAccess\Role_Input $entity
      */
     public function showForm_form( $entity )
     {
@@ -72,7 +72,7 @@ class view1
         $this->set( 'button-sub', 'reset' );
     }
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     * @param \wsCore\DbAccess\Role_Input $entity
      */
     public function showForm_confirm( $entity )
     {
@@ -86,7 +86,7 @@ class view1
     }
 
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     * @param \wsCore\DbAccess\Role_Input $entity
      */
     public function showForm_done( $entity )
     {

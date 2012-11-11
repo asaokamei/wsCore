@@ -5,10 +5,10 @@ class interact2 extends \wsCore\Web\Interaction
 {
     /**
      * @param \wsCore\Web\Session $session
-     * @param \wsCore\DbAccess\Context $context
+     * @param \wsCore\DbAccess\Role $context
      * @param \Interaction\view2 $view
      * @DimInjection Fresh Session
-     * @DimInjection Get   \wsCore\DbAccess\Context
+     * @DimInjection Get   \wsCore\DbAccess\Role
      * @DimInjection Get   \Interaction\view2
      */
     public function __construct( $session, $context, $view ) {

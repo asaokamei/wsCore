@@ -4,7 +4,7 @@ namespace Interaction;
 class view2 extends \wsModule\Alt\Html\View_Bootstrap
 {
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     * @param \wsCore\DbAccess\Role_Input $entity
      * @param string $form
      * @return void
      */
@@ -21,7 +21,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     * @param \wsCore\DbAccess\Role_Input $entity
      */
     public function showForm_wizard1( $entity )
     {
@@ -33,7 +33,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     * @param \wsCore\DbAccess\Role_Input $entity
      */
     public function showForm_wizard2( $entity )
     {
@@ -45,7 +45,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     * @param \wsCore\DbAccess\Role_Input $entity
      */
     public function showForm_wizard3( $entity )
     {
@@ -57,7 +57,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     * @param \wsCore\DbAccess\Role_Input $entity
      */
     public function showForm_confirm( $entity )
     {
@@ -71,7 +71,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \wsCore\DbAccess\Context_RoleInput $entity
+     * @param \wsCore\DbAccess\Role_Input $entity
      */
     public function showForm_done( $entity )
     {

@@ -8,7 +8,7 @@ Core::setPdo( 'dsn=sqlite::memory:' );
 /** @var $model Interaction\model */
 /** @var $intAct Interaction\interact2 */
 /** @var $view \Interaction\view2 */
-/** @var $entity \wsCore\DbAccess\Context_RoleInput */
+/** @var $entity \wsCore\DbAccess\Role_Input */
 
 $model  = Core::get( 'Interaction\model' );
 $intAct = Core::get( 'Interaction\interact2' );
