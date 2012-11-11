@@ -12,6 +12,9 @@ class Interaction
     /** @var \wsCore\DbAccess\Context */
     protected $context;
     
+    /** @var \wsCore\Html\PageView */
+    protected $view;
+    
     public $showForm = 'showForm';
 
     public $loadData = 'loadData';
@@ -72,7 +75,8 @@ class Interaction
      */
     public function run( $controller, $action, $view )
     {
-        $view = $this->$controller( $action, $view );
+        $this->view = $view;
+        $this->$controller( $action );
         $this->saveRegistered();
         return $view;
     }
@@ -82,8 +86,10 @@ class Interaction
     /**
      * @return string
      */
-    public function makeToken() {
-        return $this->session->pushToken();
+    public function pushToken() {
+        $token = $this->session->pushToken();
+        $this->view->set( $this->session->popTokenTagName(), $token );
+        return $token;
     }
 
     /**
@@ -120,14 +126,13 @@ class Interaction
     // +----------------------------------------------------------------------+
 
     /**
-     * @param \wsCore\Html\PageView               $view
      * @param \wsCore\DbAccess\Context_RoleInput  $role
      * @param string $action
      * @param string $form
      * @param string $load
      * @return bool
      */
-    function actionFormAndLoad( $view, $role, $action, $form, $load )
+    function actionFormAndLoad( $role, $action, $form, $load )
     {
         // check if this form has shown before.
         if( strpos( $form, '|' ) !== false ) {
@@ -144,13 +149,13 @@ class Interaction
             $this->registerData( $pinpoint, true );
             $role->resetValidation( true );
             $showForm = $this->showForm;
-            $view->$showForm( $role, $form );
+            $this->view->$showForm( $role, $form );
             return true;
         }
         // show the form.
         if( in_array( $action, $formList ) ) {
             $showForm = $this->showForm;
-            $view->$showForm( $role, $form );
+            $this->view->$showForm( $role, $form );
             return true;
         }
         // load posted values from form.
@@ -161,7 +166,7 @@ class Interaction
         // always verify the input.
         if( !$role->validate( $form ) ) {
             $showForm = $this->showForm;
-            $view->$showForm( $role, $form ); // validation failed.
+            $this->view->$showForm( $role, $form ); // validation failed.
             return true;
         }
         return false;
@@ -197,13 +202,12 @@ class Interaction
      * returns false if no task was performed (no action for this steps), 
      * or failed to perform the task in verifyToken. 
      * 
-     * @param \wsCore\Html\PageView             $view
      * @param \wsCore\DbAccess\Entity_Interface $entity
      * @param string                            $action
      * @param array                             $steps
      * @return bool|string
      */
-    public function webFormWizard( $view, $entity, $action, $steps )
+    public function webFormWizard( $entity, $action, $steps )
     {
         $role = $this->context->applyLoadable( $entity );
         $showForm = $this->showForm;
@@ -212,14 +216,14 @@ class Interaction
         foreach( $steps as $step ) 
         {
             list( $task, $formName, $loadName ) = $this->getStepInfo( $step );
-            $view->set( $this->actionName, $loadName );
+            $this->view->set( $this->actionName, $loadName );
             if( $task == 'pushToken' && in_array( $action, array( $formName, $prevLoadName ) ) ) {
-                $view->set( $this->session->popTokenTagName(), $this->session->pushToken() );
-                $view->$showForm( $role, $formName );
+                $this->pushToken();
+                $this->view->$showForm( $role, $formName );
                 return $formName;
             }
             if( $task == 'verifyToken' && $action == $formName ) {
-                $view->$showForm( $role, $loadName );
+                $this->view->$showForm( $role, $loadName );
                 if( $this->verifyToken() ) {
                     return $formName;
                 }
@@ -227,7 +231,7 @@ class Interaction
             }
             if( $task == 'formLoad' ) {
                 $formName .= $prevLoadName ? '|' . $prevLoadName: '';
-                if( $this->actionFormAndLoad( $view, $role, $action, $formName, $loadName ) ) return $formName;
+                if( $this->actionFormAndLoad( $role, $action, $formName, $loadName ) ) return $formName;
             }
             $prevLoadName = $loadName;
         }

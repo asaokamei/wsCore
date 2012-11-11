@@ -5,10 +5,9 @@ class interact2 extends \wsCore\Web\Interaction
 {
     /**
      * @param string $action
-     * @param \Interaction\view1 $view
      * @return \Interaction\entity
      */
-    function wizard( $action, $view )
+    function wizard( $action )
     {
         $entity = $this->restoreData( 'entity' );
         if( !$entity ) {
@@ -23,14 +22,14 @@ class interact2 extends \wsCore\Web\Interaction
             array( 'pushToken',   'confirm',  'load3',    ),
             array( 'verifyToken', 'save',     'done' ),
         );
-        $result = $this->webFormWizard( $view, $entity, $action, $steps );
+        $result = $this->webFormWizard( $entity, $action, $steps );
         if( $result == 'save' ) {
             $active = $this->context->applyActive( $entity );
             $active->save();
-            $view->set( 'alert-success', 'your friendship has been saved. ' );
+            $this->view->set( 'alert-success', 'your friendship has been saved. ' );
         }
         elseif( $result === false ) {
-            $view->set( 'alert-info', 'your friendship has already been saved. ' );
+            $this->view->set( 'alert-info', 'your friendship has already been saved. ' );
         }
         return $entity;
     }
