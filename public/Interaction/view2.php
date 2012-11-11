@@ -26,7 +26,6 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     public function showForm_wizard1( $entity )
     {
         $entity->setHtmlType( 'form' );
-        $this->set( 'action', 'load1' );
         $this->set( 'button-primary', 'next' );
         $this->set( 'button-sub', '' );
         $this->set( 'title', 'Friend Form#1' );
@@ -38,7 +37,6 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     public function showForm_wizard2( $entity )
     {
         $entity->setHtmlType( 'form' );
-        $this->set( 'action', 'load2' );
         $this->set( 'button-primary', 'next' );
         $this->set( 'button-sub', 'interaction2.php?action=wizard1' );
         $this->set( 'title', 'Friend Form#2' );
@@ -50,7 +48,6 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     public function showForm_wizard3( $entity )
     {
         $entity->setHtmlType( 'form' );
-        $this->set( 'action', 'load3' );
         $this->set( 'button-primary', 'confirm inputs' );
         $this->set( 'button-sub', 'interaction2.php?action=wizard2' );
         $this->set( 'title', 'Friend Form#3' );
@@ -62,10 +59,8 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     public function showForm_confirm( $entity )
     {
         $entity->setHtmlType( 'html' );
-        $this->set( 'currAction', 'confirm' );
         $this->set( 'entity', $entity );
         $this->set( 'title', 'Confirmation of Inputs' );
-        $this->set( 'action', 'save' );
         $this->set( 'button-primary', 'save the information' );
         $this->set( 'button-sub', 'interaction2.php?action=wizard3' );
     }
@@ -76,10 +71,8 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     public function showForm_done( $entity )
     {
         $entity->setHtmlType( 'html' );
-        $this->set( 'currAction', 'done' );
         $this->set( 'entity', $entity );
         $this->set( 'title', 'Completed' );
-        $this->set( 'action', 'done' );
     }
 }
 

@@ -66,7 +66,6 @@ class view1
     public function showForm_form( $entity )
     {
         $entity->setHtmlType( 'form' );
-        $this->set( 'action', 'load' );
         $this->set( 'title', 'Friend Form' );
         $this->set( 'button-primary', 'confirm information' );
         $this->set( 'button-sub', 'reset' );
@@ -77,10 +76,8 @@ class view1
     public function showForm_confirm( $entity )
     {
         $entity->setHtmlType( 'html' );
-        $this->set( 'currAction', 'confirm' );
         $this->set( 'entity', $entity );
         $this->set( 'title', 'Confirmation of Inputs' );
-        $this->set( 'action', 'save' );
         $this->set( 'button-primary', 'save the information' );
         $this->set( 'button-sub', 'back' );
     }
@@ -91,10 +88,8 @@ class view1
     public function showForm_done( $entity )
     {
         $entity->setHtmlType( 'html' );
-        $this->set( 'currAction', 'done' );
         $this->set( 'entity', $entity );
         $this->set( 'title', 'Completed' );
-        $this->set( 'action', 'done' );
     }
 }
 
