@@ -136,14 +136,16 @@ class Interaction
     {
         $form = $formList[0];
         $pinpoint = '_pin_' . $form;
-        if( !$this->restoreData( $pinpoint ) ) {
-            $this->registerData( $pinpoint, true );
+        // show formName at least once. 
+        if( !$this->restoreData( $pinpoint ) )  // formName not pin-pointed. show the form.
+        {
+            $this->registerData( $pinpoint, true ); // pin point. 
             $role->resetValidation( true );
             $showForm = $this->showForm;
             $this->view->$showForm( $role, $form );
             return true;
         }
-        // show the form.
+        // action to show the form. either the formName, or previous loadName. 
         if( in_array( $action, $formList ) ) {
             $showForm = $this->showForm;
             $this->view->$showForm( $role, $form );
@@ -202,7 +204,6 @@ class Interaction
     {
         $role = $this->context->applyLoadable( $entity );
         $showForm = $this->showForm;
-        
         $prevLoadName = null;
         foreach( $steps as $step ) 
         {
@@ -214,7 +215,8 @@ class Interaction
                 return $formName;
             }
             if( $task == 'verifyToken' && $action == $formName ) {
-                $this->view->$showForm( $role, $loadName );
+                $doneName = $loadName ?: $formName;
+                $this->view->$showForm( $role, $doneName );
                 if( $this->verifyToken() ) {
                     return $formName;
                 }
