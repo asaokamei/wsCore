@@ -4,6 +4,19 @@ namespace Interaction;
 class interact2 extends \wsCore\Web\Interaction
 {
     /**
+     * @param \wsCore\Web\Session $session
+     * @param \wsCore\DbAccess\Context $context
+     * @param \Interaction\view2 $view
+     * @DimInjection Fresh Session
+     * @DimInjection Get   \wsCore\DbAccess\Context
+     * @DimInjection Get   \Interaction\view2
+     */
+    public function __construct( $session, $context, $view ) {
+        parent::__construct( $session, $context );
+        $this->view    = $view;
+    }
+
+    /**
      * @param string $action
      * @return \Interaction\entity
      */
