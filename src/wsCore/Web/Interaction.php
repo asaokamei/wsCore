@@ -94,6 +94,7 @@ class Interaction
             $this->loadRegistered();
         }
         $this->$controller( $action );
+        $this->saveRegistered();
         return $this->view;
     }
     // +----------------------------------------------------------------------+
