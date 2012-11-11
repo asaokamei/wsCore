@@ -240,7 +240,6 @@ class Interaction
                 return $formName;
             }
             if( $task == 'verifyToken' && $action == $formName ) {
-                $this->registerData( $loadName, true );
                 $view->$showForm( $role, $loadName );
                 if( $this->verifyToken() ) {
                     return $formName;
