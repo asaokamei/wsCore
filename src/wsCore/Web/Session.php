@@ -167,17 +167,17 @@ class Session
      */
     public function verifyToken()
     {
+        if( !isset( $_POST[ static::TOKEN_NAME ] ) ) return false;
+        if( empty( $this->_session[ static::TOKEN_ID ] ) ) return false;
         $token = $_POST[ static::TOKEN_NAME ];
-        if( $token && !empty( $this->_session[ static::TOKEN_ID ] ) ) {
-            if( in_array( $token, $this->_session[ static::TOKEN_ID ] ) ) {
-                foreach( $this->_session[ static::TOKEN_ID ] as $k=>$v ) {
-                    if( $v === $token ) {
-                        unset( $this->_session[ static::TOKEN_ID ][$k] );
-                    }
+        if( in_array( $token, $this->_session[ static::TOKEN_ID ] ) ) {
+            foreach( $this->_session[ static::TOKEN_ID ] as $k=>$v ) {
+                if( $v === $token ) {
+                    unset( $this->_session[ static::TOKEN_ID ][$k] );
                 }
-                $this->_session[ static::TOKEN_ID ] = array_values( $this->_session[ static::TOKEN_ID ] );
-                return TRUE;
             }
+            $this->_session[ static::TOKEN_ID ] = array_values( $this->_session[ static::TOKEN_ID ] );
+            return TRUE;
         }
         return FALSE;
     }
