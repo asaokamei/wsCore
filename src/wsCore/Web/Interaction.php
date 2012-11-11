@@ -226,6 +226,10 @@ class Interaction
         {
             list( $task, $formName, $loadName ) = $this->getStepInfo( $step );
             $this->view->set( $this->actionName, $loadName );
+            if( $task == 'showData' && $action == $formName ) {
+                $this->view->$showForm( $role, $formName );
+                return $formName;
+            }
             if( $task == 'pushToken' && in_array( $action, array( $formName, $prevLoadName ) ) ) {
                 $this->pushToken();
                 $this->view->$showForm( $role, $formName );
