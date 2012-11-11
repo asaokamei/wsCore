@@ -29,24 +29,24 @@ class interact extends \wsCore\Web\Interaction
             $this->registerData( 'entity', $entity );
         }
         $steps = array(
-            array( 'wizard1',  'load1',  ),
-            array( 'wizard2',  'load2',  ),
-            array( 'wizard3',  'load3',  ),
-            array( 'confirm',   null,      'push'   ),
-            array( 'save',     'complete', 'verify' ),
+            array( 'formLoad',    'wizard1',  'load1',  ),
+            array( 'formLoad',    'wizard2',  'load2',  ),
+            array( 'formLoad',    'wizard3',  'load3',  ),
+            array( 'pushToken',   'confirm',  'load3',    ),
+            array( 'verifyToken', 'save',     'done' ),
         );
         $result = $this->webFormWizard( $view, $entity, $action, $steps );
-        if( $result === true ) {
-            return $entity;
-        }
-        $role = $this->context->applyLoadable( $entity );
-        $view->showDone( $role );
-        if( $result instanceof \wsCore\DbAccess\Entity_Interface ) {
+        if( $result == 'save' ) {
             $active = $this->context->applyActive( $entity );
             $active->save();
             $view->set( 'alert-success', 'your friendship has been saved. ' );
         }
-        $view->set( 'alert-info', 'your friendship has already been saved. ' );
+        elseif( $result == 'confirm' ) {
+            $view->set( $this->session->popTokenTagName(), $this->session->pushToken() );
+        }
+        elseif( $result === false ) {
+            $view->set( 'alert-info', 'your friendship has already been saved. ' );
+        }
         return $entity;
     }
     
