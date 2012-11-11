@@ -5,14 +5,6 @@ class PageMcException extends \Exception {}
 
 class PageMC
 {
-    const ERR_NONE       =     0;
-    const ERR_NOTICE     =    10;
-    const ERR_WARNING    =    50;
-    const ERR_ERROR      =   100;
-    const ERR_FATAL      =   200;
-
-    const TOKEN_ID = '_token_id_by_PageMC';
-
     /** @var object             object for Pager.  */
     protected $controller = NULL;
 
@@ -43,7 +35,6 @@ class PageMC
     {
         $this->request = $request;
         $this->session = $session;
-        if( !isset( $_SESSION[ static::TOKEN_ID ] ) ) $_SESSION[ static::TOKEN_ID ] = array();
     }
 
     /**
