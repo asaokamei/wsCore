@@ -170,7 +170,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     /**
      * @param \wsCore\DbAccess\Context_RoleInput $entity
      */
-    public function showDone( $entity )
+    public function showForm_done( $entity )
     {
         $entity->setHtmlType( 'html' );
         $this->set( 'currAction', 'done' );

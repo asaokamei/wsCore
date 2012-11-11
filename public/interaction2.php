@@ -21,7 +21,7 @@ else {
     $intAct->loadRegistered();
 }
 
-$intAct->run( 'wizard', $action, $view );
+$intAct->run( 'wizard2', $action, $view );
 $entity = $view->get( 'entity' );
 
 ?>
