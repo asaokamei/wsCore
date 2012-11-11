@@ -22,7 +22,7 @@ else {
     $intAct->loadRegistered();
 }
 
-$intAct->run( 'insertData', $action, $view );
+$intAct->run( 'wizard', $action, $view );
 $view = $view->getView();
 $entity = $view->get( 'entity' );
 

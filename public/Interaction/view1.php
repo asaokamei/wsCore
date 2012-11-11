@@ -74,7 +74,7 @@ class view1
     /**
      * @param \wsCore\DbAccess\Context_RoleInput $entity
      */
-    public function showConfirm( $entity )
+    public function showForm_confirm( $entity )
     {
         $entity->setHtmlType( 'html' );
         $this->set( 'currAction', 'confirm' );
@@ -88,7 +88,7 @@ class view1
     /**
      * @param \wsCore\DbAccess\Context_RoleInput $entity
      */
-    public function showDone( $entity )
+    public function showForm_done( $entity )
     {
         $entity->setHtmlType( 'html' );
         $this->set( 'currAction', 'done' );
