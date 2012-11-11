@@ -10,7 +10,7 @@ class Interaction
     protected $session;
 
     /** @var \wsCore\DbAccess\Role */
-    protected $context;
+    protected $role;
     
     /** @var \wsCore\Html\PageView */
     protected $view;
@@ -25,13 +25,13 @@ class Interaction
     // +----------------------------------------------------------------------+
     /**
      * @param \wsCore\Web\Session $session
-     * @param \wsCore\DbAccess\Role $context
+     * @param \wsCore\DbAccess\Role $role
      * @DimInjection Fresh Session
      * @DimInjection Get   \wsCore\DbAccess\Role
      */
-    public function __construct( $session, $context ) {
+    public function __construct( $session, $role ) {
         $this->session = ($session) ?: $_SESSION;
-        $this->context = $context;
+        $this->role = $role;
     }
 
     /**
@@ -219,7 +219,7 @@ class Interaction
      */
     public function webFormWizard( $entity, $action, $steps )
     {
-        $role = $this->context->applyLoadable( $entity );
+        $role = $this->role->applyLoadable( $entity );
         $showForm = $this->showForm;
         $prevLoadName = null;
         foreach( $steps as $step ) 

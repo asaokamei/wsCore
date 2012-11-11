@@ -5,14 +5,14 @@ class interact2 extends \wsCore\Web\Interaction
 {
     /**
      * @param \wsCore\Web\Session $session
-     * @param \wsCore\DbAccess\Role $context
+     * @param \wsCore\DbAccess\Role $role
      * @param \Interaction\view2 $view
      * @DimInjection Fresh Session
      * @DimInjection Get   \wsCore\DbAccess\Role
      * @DimInjection Get   \Interaction\view2
      */
-    public function __construct( $session, $context, $view ) {
-        parent::__construct( $session, $context );
+    public function __construct( $session, $role, $view ) {
+        parent::__construct( $session, $role );
         $this->view    = $view;
     }
 
@@ -24,7 +24,7 @@ class interact2 extends \wsCore\Web\Interaction
     {
         $entity = $this->restoreData( 'entity' );
         if( !$entity ) {
-            $entity = $this->context->newEntity( 'model' );
+            $entity = $this->role->newEntity( 'model' );
             $this->clearData();
             $this->registerData( 'entity', $entity );
         }
@@ -40,7 +40,7 @@ class interact2 extends \wsCore\Web\Interaction
         );
         $result = $this->webFormWizard( $entity, $action, $steps );
         if( $result == 'save' ) {
-            $active = $this->context->applyActive( $entity );
+            $active = $this->role->applyActive( $entity );
             $active->save();
             $this->view->set( 'alert-success', 'your friendship has been saved. ' );
         }
