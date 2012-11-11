@@ -117,27 +117,6 @@ class Interaction
     public function clearData() {
         $this->registeredData = array();
     }
-    /**
-     * @param $entity
-     * @param $role
-     * @return \role
-     */
-    public function applyContext( $entity, $role ) {
-        $entity->role = $role;
-        $entity->_actions[] = $role;
-        return $entity;
-    }
-
-    /**
-     * @param $entityName
-     * @return mixed
-     */
-    public function contextGet( $entityName ) {
-        $entity = new \stdClass();
-        $entity->entityName = $entityName;
-        $entity->_actions[] = 'created';
-        return $entity;
-    }
     // +----------------------------------------------------------------------+
 
     /**
