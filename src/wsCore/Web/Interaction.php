@@ -128,22 +128,13 @@ class Interaction
     /**
      * @param \wsCore\DbAccess\Context_RoleInput  $role
      * @param string $action
-     * @param string $form
+     * @param array $formList
      * @param string $load
      * @return bool
      */
-    function actionFormAndLoad( $role, $action, $form, $load )
+    function actionFormAndLoad( $role, $action, $formList, $load )
     {
-        // check if this form has shown before.
-        if( strpos( $form, '|' ) !== false ) {
-            $formList = explode( '|', $form );
-            $form = $formList[0];
-        }
-        else {
-            $formList = array( $form );
-        }
-        /** @var $formList array  */
-
+        $form = $formList[0];
         $pinpoint = '_pin_' . $form;
         if( !$this->restoreData( $pinpoint ) ) {
             $this->registerData( $pinpoint, true );
@@ -230,8 +221,8 @@ class Interaction
                 return false;
             }
             if( $task == 'formLoad' ) {
-                $formName .= $prevLoadName ? '|' . $prevLoadName: '';
-                if( $this->actionFormAndLoad( $role, $action, $formName, $loadName ) ) return $formName;
+                $formList = array( $formName, $prevLoadName );
+                if( $this->actionFormAndLoad( $role, $action, $formList, $loadName ) ) return $formName;
             }
             $prevLoadName = $loadName;
         }
