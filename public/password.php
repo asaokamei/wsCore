@@ -32,5 +32,29 @@ $page->run( $act, $view );
         <input type="hidden" name="_act" value="generate">
         <input type="submit" name="generate" class="btn btn-primary" value="generate password">
     </form>
-    <?php if( $passwords = $view->get( 'passwords' ) ) var_dump( $passwords ); ?>
+    <?php 
+if( $passwords = $view->get( 'passwords' ) ) 
+{
+    /** @var $tags \wsCore\Html\Tags */
+    /** @var $table \wsCore\Html\Tags */
+    $tags = Core::get( '\wsCore\Html\Tags' );
+    $table = $tags->table()->_class( 'table' )->contain_(
+        $tags->tr(
+            $tags->th( '#' ),
+            $tags->th( 'generated password' )
+        )
+    );
+    $counter = 0;
+    foreach( $passwords as $pwd ) {
+        $table->contain_(
+            $tags->tr(
+                $tags->td( ++$counter ),
+                $tags->td( $tags->span( $pwd )->style( 'font-family: courier') )
+            )
+        );
+    }
+    echo $table;
+}
+
+?>
 <?php include( './common/menu/footer.php' ); ?>
