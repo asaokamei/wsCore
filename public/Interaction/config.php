@@ -5,8 +5,7 @@ require_once( __DIR__ . '/model.php' );
 require_once( __DIR__ . '/entity.php' );
 require_once( __DIR__ . '/view1.php' );
 require_once( __DIR__ . '/view2.php' );
-require_once( __DIR__ . '/interact1.php' );
-require_once( __DIR__ . '/interact2.php' );
+require_once( __DIR__ . '/interact.php' );
 
 class selGender extends \wsCore\Html\Selector
 {

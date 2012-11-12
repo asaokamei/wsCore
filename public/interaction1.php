@@ -7,13 +7,14 @@ Core::go();
 Core::setPdo( 'dsn=sqlite::memory:' );
 
 /** @var $model Interaction\model */
-/** @var $intAct Interaction\interact1 */
+/** @var $intAct Interaction\interact */
 /** @var $view \Interaction\view1 */
 /** @var $entity \wsCore\DbAccess\Role_Input */
 
+Core::set( 'interactView', '\Interaction\view1' );
 $model   = Core::get( 'Interaction\model' );
-$intAct  = Core::get( 'Interaction\interact1' );
-$view = $intAct->action( 'wizard', 'form' );
+$intAct  = Core::get( 'Interaction\interact' );
+$view = $intAct->action( 'insert', 'form' );
 $view = $view->getView();
 $entity = $view->get( 'entity' );
 
