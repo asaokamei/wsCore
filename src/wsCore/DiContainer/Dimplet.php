@@ -84,7 +84,7 @@ class Dimplet
                 $found = $this->get( $found );
             }
             ***/
-            elseif( class_exists( $found ) ) {
+            elseif( is_string( $found ) && class_exists( $found ) ) {
                 $found = $this->injectConstruction( $found );
             }
         }
