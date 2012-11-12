@@ -1,7 +1,7 @@
 <?php
-namespace Interaction;
+namespace task\views;
 
-class view1 
+class taskView
 {
     private $view;
 
@@ -25,7 +25,7 @@ class view1
      *
      * @param $name
      * @param $value
-     * @return view1
+     * @return taskView
      */
     public function set( $name, $value )
     {
@@ -95,6 +95,14 @@ class view1
         $this->set( 'entity', $entity );
         $this->set( 'title', 'Completed' );
         $this->set( 'action', 'done' );
+    }
+
+    public function __toString()
+    {
+        $view = $this->view;
+        ob_start();
+        include( __DIR__ . '/template.php' );
+        return ob_get_clean();
     }
 }
 

@@ -1,0 +1,17 @@
+Options +FollowSymLinks
+IndexIgnore */*
+
+# Turn on the RewriteEngine
+RewriteEngine On
+#  Rules
+
+#for testing purpose, all files are hidden.
+#for real site, activate following RewriteCond
+#so that existing files can be served via Apache.
+
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME} !"\.(css|js|jpg|gif|png)$"
+
+#RewriteRule ^task$ myTakss.php
+RewriteRule ^task/$ myTasks.php
