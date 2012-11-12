@@ -20,6 +20,11 @@ namespace wsCore\Html;
  * @method \wsCore\Html\Tags label
  * @method \wsCore\Html\Tags nl
  * @method \wsCore\Html\Tags li
+ * @method \wsCore\Html\Tags table
+ * @method \wsCore\Html\Tags tr
+ * @method \wsCore\Html\Tags th
+ * @method \wsCore\Html\Tags td
+ * @method \wsCore\Html\Tags span
  */
 class Tags
 {
