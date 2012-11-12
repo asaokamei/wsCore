@@ -1,13 +1,13 @@
 <?php
 namespace task\model;
 
-class task extends \wsCore\DbAccess\Dao
+class tasks extends \wsCore\DbAccess\Dao
 {
     /** @var string     name of database table     */
     protected $table = 'demoTask';
 
     /** @var string     name of primary key        */
-    protected $id_name = 'demo_id';
+    protected $id_name = 'task_id';
 
     protected $definition = array(
         'task_id'     => array( 'task id',     'number', ),
@@ -56,13 +56,29 @@ class task extends \wsCore\DbAccess\Dao
         return $list = parent::protect( $this->properties );
     }
 
-    /**
-     * do nothing! fake insert method.
-     *
-     * @param $values
-     * @return bool|string
-     */
-    public function insert( $values ) {
-        return TRUE;
+    public function getCreateSql() {
+        $sql = "
+        CREATE TABLE {$this->table} (
+          task_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+          task_memo text NOT NULL DEFAULT '',
+          task_date date,
+          task_status char(1) NOT NULL DEFAULT '1',
+          new_dt_task text,
+          mod_dt_task text
+        );
+        ";
+        return $sql;
+    }
+    public function getClearSql() {
+        $sql = "DROP TABLE IF EXISTS {$this->table}";
+        return $sql;
+    }
+    public function getSampleTasks( $idx=1 ) {
+        $task = array(
+            'task_memo' => 'task #' . $idx,
+            'task_status' => '1',
+            'task_date' => sprintf( '2012-11-%02d', $idx + 1 ),
+        );
+        return $task;
     }
 }

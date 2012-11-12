@@ -1,18 +1,20 @@
 <?php
-namespace Interaction;
+namespace task\entity;
 
-class entity extends \wsCore\DbAccess\Entity_Abstract
+class task extends \wsCore\DbAccess\Entity_Abstract
 {
-    protected $_model = 'model';
+    protected $_model = 'tasks';
 
-    public $friend_id = null;
+    public $task_id = null;
 
-    public $friend_name = '';
+    public $task_memo = '';
 
-    public $friend_gender = '';
-    
-    public $friend_bday = null;
+    public $task_date = '';
 
-    public $friend_memo = '';
+    public $task_status = '';
+
+    public $new_dt_task;
+
+    public $mod_dt_task;
 }
 
