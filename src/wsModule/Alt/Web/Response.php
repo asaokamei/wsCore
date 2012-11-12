@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Web;
+namespace wsModule\Alt\Web;
 
 class Response
 {
@@ -8,7 +8,7 @@ class Response
     protected $status_code = 200;
     protected $http_headers = array();
     /** @var string ResponseHelper */
-    protected $helper = '\wsCore\Web\ResponseHelper';
+    protected $helper = '\wsModule\Alt\Web\ResponseHelper';
 
     public function send()
     {

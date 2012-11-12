@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Web;
+namespace wsModule\Alt\Web;
 
 /**
  * simple front-end mini-controller.
@@ -10,13 +10,13 @@ class FrontMC
     /** @var \wsCore\DiContainer\Dimplet */
     protected $container;
 
-    /** @var \wsCore\Web\Request */
+    /** @var \wsModule\Alt\Web\Request */
     public $request;
 
-    /** @var \wsCore\Web\Router */
+    /** @var \wsModule\Alt\Web\Router */
     public $router;
 
-    /** @var \wsCore\Web\Response */
+    /** @var \wsModule\Alt\Web\Response */
     public $response;
 
     public $namespace;
@@ -25,13 +25,13 @@ class FrontMC
 
     /**
      * @param \wsCore\DiContainer\Dimplet $container
-     * @param \wsCore\Web\Request $request
-     * @param \wsCore\Web\Router  $router
-     * @param \wsCore\Web\Response  $response
+     * @param \wsModule\Alt\Web\Request $request
+     * @param \wsModule\Alt\Web\Router  $router
+     * @param \wsModule\Alt\Web\Response  $response
      * @DimInjection get Container
-     * @DimInjection Fresh \wsCore\Web\Request
-     * @DimInjection Fresh \wsCore\Web\Router
-     * @DimInjection Fresh \wsCore\Web\Response
+     * @DimInjection Fresh \wsModule\Alt\Web\Request
+     * @DimInjection Fresh \wsModule\Alt\Web\Router
+     * @DimInjection Fresh \wsModule\Alt\Web\Response
      */
     public function __construct( $container, $request, $router, $response )
     {

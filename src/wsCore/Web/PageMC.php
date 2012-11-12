@@ -19,21 +19,15 @@ class PageMC
 
     /** @var \wsCore\Web\Session */
     public $session;
-
-    /** @var \wsCore\Web\Request */
-    public $request;
     // +-----------------------------------------------------------+
     /**
      * starts PageMC with object as Controller.
      *
-     * @param \wsCore\Web\Request $request
      * @param \wsCore\Web\Session $session
-     * @DimInjection get \wsCore\Web\Request
      * @DimInjection fresh Session
      */
-    public function __construct( $request, $session=null )
+    public function __construct( $session )
     {
-        $this->request = $request;
         $this->session = $session;
     }
 
@@ -72,9 +66,7 @@ class PageMC
     }
 
     public function getActFromPost() {
-        $name = $this->act_name;
-        $act  = $this->request->getPost( $name );
-        if( !$act ) $act = $this->default;
+        $act  = isset( $_POST[ $this->act_name ] ) ? $_POST[ $this->act_name ] : $this->default;
         return $act;
     }
     /**

@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Web;
+namespace wsModule\Alt\Web;
 
 /**
  * Request class

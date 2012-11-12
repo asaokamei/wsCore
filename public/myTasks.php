@@ -7,7 +7,7 @@ Core::setPdo( array( 'dsn' => 'sqlite:' . __DIR__ . '/task/data/tasks.sqlite' ) 
 
 /** @var $front wsCore\Web\FrontMC */
 Core::get( '\task\model\tasks' );
-$front = Core::get( '\wsCore\Web\FrontMC' );
+$front = Core::get( '\wsModule\Alt\Web\FrontMC' );
 $front->debug = true;
 $front->namespace = 'task';
 $routes = array(
