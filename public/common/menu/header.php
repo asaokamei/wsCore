@@ -1,10 +1,16 @@
+<?php
+
+/** @var $view \wsModule\Alt\Html\View_Bootstrap */
+$baseUrl = ( isset( $view ) ) ? $view->get( 'baseUrl' ) : './' ;
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="./common/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="./common/css/bootstrap-responsive.css" />
-    <link rel="stylesheet" type="text/css" href="./common/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>common/css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>common/css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>common/css/main.css" />
     <title>WScore Public Demo</title>
 </head>
 <body>
