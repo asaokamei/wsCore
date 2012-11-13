@@ -58,7 +58,7 @@ class FrontMC
             }
             // do the action.
             $action  = 'act' . ucwords( $params[ 'action' ] );
-            $content = $controller->$action( $action, $params );
+            $content = $controller->$action( $params );
             $this->response->setContent( $content );
 
         } catch( \RuntimeException $e ) {
@@ -76,7 +76,8 @@ class FrontMC
         $this->response->setStatusCode( 404, 'Not Found' );
         $message = 'Page Not Found.';
         if( $this->debug ) {
-            $message = $e->getMessage() . '<br />';
+            $message  = $e->getMessage() . '<br />';
+            $message .= 'file:' . $e->getFile() . ', line#' . $e->getLine();
             ob_start();
             var_dump( $e->getTrace() );
             $message .= ob_get_clean();
