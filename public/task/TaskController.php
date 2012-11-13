@@ -34,7 +34,7 @@ class TaskController
      */
     public function pre_action( $front ) {
         $this->front = $front;
-        $this->view->set( 'baseUrl', $front->request->getBaseUrl() );
+        $this->view->set( 'baseUrl', $front->request->getBaseUrl() . '' );
         if( $front->request->isPost() ) {
             $front->parameter[ 'action' ] .= '_post';
         }
@@ -69,6 +69,7 @@ class TaskController
     {
         $entity = $this->em->newEntity( 'tasks' );
         $entity = $this->role->applyLoadable( $entity );
+        $this->view->set( 'title', 'New Task' );
         $this->view->showForm_form( $entity );
         return $this->view;
     }
@@ -107,6 +108,7 @@ class TaskController
         $id = $args[ 'id' ];
         $entity = $this->em->getEntity( 'tasks', $id );
         $entity = $this->role->applyLoadable( $entity );
+        $this->view->set( 'title', 'Details' );
         $this->view->showForm_form( $entity );
         return $this->view;
     }
@@ -154,5 +156,8 @@ class TaskController
             $this->em->newEntity( 'tasks', $task );
         }
         $this->em->save();
+        $baseUrl = $this->view->get( 'baseUrl' );
+        header( "Location: $baseUrl/myTasks" );
+        exit;
     }
 }
