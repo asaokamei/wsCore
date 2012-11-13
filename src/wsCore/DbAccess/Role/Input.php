@@ -63,6 +63,19 @@ class Role_Input implements Role_Interface
     //  get/set properties, and ArrayAccess
     // +----------------------------------------------------------------------+
     /**
+     * @return null|string
+     */
+    public function getId() {
+        return $this->model->getId( $this->entity );
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdName() {
+        return $this->model->getIdName();
+    }
+    /**
      * @param null|string $name
      * @param array       $data
      * @return Role_Input
