@@ -18,6 +18,20 @@ class EntityManager
     /** @var int */
     protected $newId = 1;
 
+    /** @var \wsCore\DiContainer\Dimplet */
+    protected $container;
+
+    /**
+     * @param \wsCore\DiContainer\Dimplet $container
+     * @DimInjection Fresh Container
+     */
+    public function __construct( $container ) {
+        $this->container = $container;
+    }
+
+    public function container() {
+        return $this->container;
+    }
     // +----------------------------------------------------------------------+
     //  Managing Model/Dao.
     // +----------------------------------------------------------------------+
