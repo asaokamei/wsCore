@@ -32,3 +32,8 @@ dl.dl-horizontal dd { margin-top: 10px; }
     font-size: 85%;
     color: #666666;
 }
+
+.formError {
+    color: red;
+    font-size: 90%;
+}

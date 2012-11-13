@@ -22,7 +22,7 @@ class tasks extends \wsCore\DbAccess\Dao
     protected $validators = array(
         'task_id'     => array( 'number' ),
         'task_memo'   => array( 'text', 'required' ),
-        'task_date'   => array( 'date', 'required | pattern:[FM]', ),
+        'task_date'   => array( 'date', '', ),
         'task_status' => array( 'text', 'required' ),
     );
 

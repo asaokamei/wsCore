@@ -15,11 +15,15 @@ $baseUrl = $view->get( 'baseUrl' );
     </style>
 <ul class="subMenu">
     <li><a href="<?php echo $baseUrl; ?>myTasks" >list tasks</a></li>
+    <li><a href="<?php echo $baseUrl; ?>myTasks/new" >new tasks</a></li>
     <li><a href="<?php echo $baseUrl; ?>myTasks/setup" >setup</a></li>
 </ul>
 <div style="clear:both">
 </div>
+<h1><?= $view->get( 'title' ); ?></h1>
 <?php
+
+echo $view->bootstrapShowAlert();
 
 // show contents.
 $content = $view->get( 'content' );

@@ -12,16 +12,21 @@ class TaskController
     /** @var \task\views\taskView */
     protected $view;
 
+    /** @var \wsCore\DbAccess\Role */
+    protected $role;
     /**
      * @param \wsCore\DbAccess\EntityManager $em
-     * @param \task\views\taskView $view
+     * @param \task\views\taskView           $view
+     * @param \wsCore\DbAccess\Role          $role
      * @DimInjection get EntityManager
      * @DimInjection get \task\views\taskView
+     * @DimInjection get \wsCore\DbAccess\Role
      */
-    public function __construct( $em, $view )
+    public function __construct( $em, $view, $role )
     {
         $this->em = $em;
         $this->view = $view;
+        $this->role = $role;
     }
 
     /**
@@ -30,8 +35,14 @@ class TaskController
     public function pre_action( $front ) {
         $this->front = $front;
         $this->view->set( 'baseUrl', $front->request->getBaseUrl() );
+        if( $front->request->isPost() ) {
+            $front->parameter[ 'action' ] .= '_post';
+        }
     }
 
+    // +----------------------------------------------------------------------+
+    //  show list
+    // +----------------------------------------------------------------------+
     /**
      * @return string
      */
@@ -39,25 +50,93 @@ class TaskController
     {
         $model = $this->em->getModel( 'tasks' );
         $all   = $model->query()->select();
-        /** @var $role \wsCore\DbAccess\Role */
-        $role = $this->em->container()->get( '\wsCore\DbAccess\Role' );
         $entities = array();
         foreach( $all as $row ) {
-            $entities[] = $role->applyLoadable( $row );
+            $entities[] = $this->role->applyLoadable( $row );
         }
         $this->view->showForm_list( $entities, 'list' );
         return $this->view;
     }
 
+    // +----------------------------------------------------------------------+
+    //  insert/put/addition
+    // +----------------------------------------------------------------------+
+    /**
+     * @param array $args
+     * @return views\taskView
+     */
+    public function actNew( $args )
+    {
+        $entity = $this->em->newEntity( 'tasks' );
+        $entity = $this->role->applyLoadable( $entity );
+        $this->view->showForm_form( $entity );
+        return $this->view;
+    }
+
+    /**
+     * @param array $args
+     * @return views\taskView
+     */
+    public function actNew_post( $args )
+    {
+        $entity = $this->em->newEntity( 'tasks' );
+        $entity = $this->role->applyLoadable( $entity );
+        $entity->loadData();
+        if( $entity->validate() ) {
+            $this->em->save();
+            $baseUrl = $this->view->get( 'baseUrl' );
+            header( "Location: $baseUrl/myTasks" );
+            exit;
+        }
+        else {
+            $this->view->set( 'alert-error', 'insert failed...' );
+        }
+        $this->view->showForm_form( $entity );
+        return $this->view;
+    }
+
+    // +----------------------------------------------------------------------+
+    //  update/post/modification
+    // +----------------------------------------------------------------------+
+    /**
+     * @param array $args
+     * @return views\taskView
+     */
     public function actTask( $args )
     {
         $id = $args[ 'id' ];
         $entity = $this->em->getEntity( 'tasks', $id );
-        $role = $this->em->container()->get( '\wsCore\DbAccess\Role' );
-        $entity = $role->applyLoadable( $entity );
+        $entity = $this->role->applyLoadable( $entity );
         $this->view->showForm_form( $entity );
         return $this->view;
     }
+
+    /**
+     * @param array $args
+     * @return views\taskView
+     */
+    public function actTask_post( $args )
+    {
+        $id = $args[ 'id' ];
+        $entity = $this->em->getEntity( 'tasks', $id );
+        $entity = $this->role->applyLoadable( $entity );
+        $entity->loadData();
+        if( $entity->validate() ) {
+            $this->em->save();
+            $baseUrl = $this->view->get( 'baseUrl' );
+            header( "Location: $baseUrl/myTasks" );
+            exit;
+        }
+        else {
+            $this->view->set( 'alert-error', 'update failed...' );
+        }
+        $this->view->showForm_form( $entity );
+        return $this->view;
+    }
+
+    // +----------------------------------------------------------------------+
+    //  show details
+    // +----------------------------------------------------------------------+
     /**
      * @return string
      */
@@ -75,6 +154,5 @@ class TaskController
             $this->em->newEntity( 'tasks', $task );
         }
         $this->em->save();
-        return 'setup';
     }
 }

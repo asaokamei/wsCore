@@ -69,10 +69,8 @@ class taskView
     public function showForm_list( $entity )
     {
         $this->set( 'action', 'load' );
-        $this->set( 'button-primary', 'confirm information' );
-        $this->set( 'button-sub', 'reset' );
+        $this->set( 'title', 'My Tasks' );
         $contents = array();
-        $contents[] = $this->tags->h1( 'My Tasks' );
         $table = $this->tableView( $entity, 'html' );
         $contents[] = $table;
         $this->set( 'content', $contents );
@@ -86,14 +84,16 @@ class taskView
         if( !$entity->isValid() ) {
             $this->set( 'alert-error', 'please submit the form again. ' );
         }
+        $this->set( 'title', 'Details' );
+        $baseUrl = $this->get( 'baseUrl' );
         $entity->setHtmlType( 'form' );
-        $this->set( 'action', 'load' );
-        $this->set( 'button-primary', 'confirm information' );
-        $this->set( 'button-sub', 'reset' );
         $contents = array();
-        $contents[] = $this->tags->h1( 'Details' );
-        $table = $this->tableForm( $entity, 'form' );
-        $contents[] = $table;
+        $form = $this->tags->form(
+            $this->tableForm( $entity, 'form' ),
+            $this->view->bootstrapButton( 'submit', 'modify task', 'primary' ),
+            $this->view->bootstrapButton( 'reset', 'reset','' )
+        )->method( 'post' )->action( '' );
+        $contents[] = $form;
         $this->set( 'content', $contents );
     }
 
@@ -135,11 +135,14 @@ class taskView
         $dl = $this->tags->dl();
         $dl->contain_(
             $this->tags->dt( $entity->popName( 'task_memo' ) ),
-            $this->tags->dd( $entity->popHtml( 'task_memo' ) ),
+            $this->tags->dd( $entity->popHtml( 'task_memo' ) . '<br />' 
+                . $this->tags->span( $entity->popError( 'task_memo' ) ) )->_class( 'formError' ),
             $this->tags->dt( $entity->popName( 'task_date' ) ),
-            $this->tags->dd( $entity->popHtml( 'task_date' ) ),
+            $this->tags->dd( $entity->popHtml( 'task_date' ) . '<br />' 
+                . $this->tags->span( $entity->popError( 'task_date' ) ) )->_class( 'formError' ),
             $this->tags->dt( $entity->popName( 'task_status' ) ),
-            $this->tags->dd( $entity->popHtml( 'task_status' ) )
+            $this->tags->dd( $entity->popHtml( 'task_status' ) ) . '<br />'
+                . $this->tags->span( $entity->popError( 'task_status' ) )->_class( 'formError' )
         );
         return $dl;
     }
