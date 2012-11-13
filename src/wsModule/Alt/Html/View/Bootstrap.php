@@ -4,6 +4,13 @@ namespace wsModule\Alt\Html;
 class View_Bootstrap extends \wsCore\Html\PageView
 {
     // boot strap thingy.
+    public function bootstrapShowAlert() {
+        if( $alert = $this->bootstrapAlertError() ) return $alert;
+        if( $alert = $this->bootstrapAlertInfo() ) return $alert;
+        if( $alert = $this->bootstrapAlertSuccess() ) return $alert;
+        return '';
+            
+    }
     public function bootstrapAlertSuccess() {
         $message = $this->get( 'alert-success' );
         if( !$message ) return '';
