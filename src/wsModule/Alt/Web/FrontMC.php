@@ -19,6 +19,9 @@ class FrontMC
     /** @var \wsModule\Alt\Web\Response */
     public $response;
 
+    /** @var array */
+    public $parameter;
+    
     public $namespace;
 
     public $debug = false;
@@ -44,12 +47,12 @@ class FrontMC
     public function run()
     {
         try {
-            $params = $this->router->match( $this->request->getPathInfo() );
-            if( $params === false ) {
+            $this->parameter = $this->router->match( $this->request->getPathInfo() );
+            if( $this->parameter === false ) {
                 throw new \RuntimeException( 'No route found for ' . $this->request->getPathInfo() );
             }
 
-            $controller_name  = $params[ 'controller' ];
+            $controller_name  = $this->parameter[ 'controller' ];
             $controller_class = $this->namespace . '\\' . ucfirst( $controller_name ) . 'Controller';
             $controller       = $this->container->fresh( $controller_class );
             // set up pre_action method if exists.
@@ -57,8 +60,8 @@ class FrontMC
                 $controller->pre_action( $this );
             }
             // do the action.
-            $action  = 'act' . ucwords( $params[ 'action' ] );
-            $content = $controller->$action( $params );
+            $action  = 'act' . ucwords( $this->parameter[ 'action' ] );
+            $content = $controller->$action( $this->parameter );
             $this->response->setContent( $content );
 
         } catch( \RuntimeException $e ) {
