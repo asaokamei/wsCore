@@ -27,3 +27,8 @@ dl.dl-horizontal dd { margin-top: 10px; }
 .marketing p + h4 {
     margin-top: 28px;
 }
+
+.memo {
+    font-size: 85%;
+    color: #666666;
+}

@@ -50,7 +50,7 @@
             <h4>task/todo application</h4>
             <p>simple demo application using data mapper and simple mvc. </p>
             <ul><li><a href="myTasks" >task/todo</a></li></ul>
-            <p>make sure current <code>./task/data</code> folder is writable for web server to store sqlite file. </p>
+            <p class="memo">make sure current <code>./task/data</code> folder is writable for web server to store sqlite file. </p>
             <h4>interaction with forms</h4>
             <p>data mapper demo for using models and entities, then interaction. </p>
             <ul>
