@@ -158,6 +158,7 @@ class taskView
                 $this->tags->th( 'mod' )
             )
         );
+        $baseUrl = $this->view->get( 'baseUrl' );
         foreach( $entity as $row ) {
             $id = $row->getId();
             $row->setHtmlType( $type );
@@ -167,7 +168,7 @@ class taskView
                     $this->tags->td( $row->popHtml( 'task_memo' ) ),
                     $this->tags->td( $row->popHtml( 'task_date' ) ),
                     $this->tags->td( $row->popHtml( 'task_status' ) ),
-                    $this->tags->td( $this->tags->a( 'modify' )->href( 'myTasks/task/'.$id )->_class( 'btn' ) )
+                    $this->tags->td( $this->tags->a( 'modify' )->href( $baseUrl . 'myTasks/task/'.$id )->_class( 'btn' ) )
                 )
             );
         }

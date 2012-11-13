@@ -16,6 +16,6 @@ $baseUrl = ( isset( $view ) ) ? $view->get( 'baseUrl' ) : './' ;
 <body>
 <div class="container-narrow">
     <div class="masthead">
-        <h3 class="muted"><a href="index.php" >WScore Public Demo</a></h3>
+        <h3 class="muted"><a href="<?php echo $baseUrl ?>index.php" >WScore Public Demo</a></h3>
     </div>
     <hr>
