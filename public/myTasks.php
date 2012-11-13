@@ -15,6 +15,7 @@ $routes = array(
     'myTasks/new'      => array( 'controller' => 'task', 'action' => 'new' ),
     'myTasks/task/:id'      => array( 'controller' => 'task', 'action' => 'task' ),
     'myTasks/:action/:act' => array( 'controller' => 'task', 'act' => '' ),
+    'myTasks/' => array( 'controller' => 'task', 'action' => 'index' ),
     'myTasks' => array( 'controller' => 'task', 'action' => 'index' ),
 );
 $front->router->set( $routes );

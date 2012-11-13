@@ -14,7 +14,7 @@ $baseUrl = $view->get( 'baseUrl' );
         ul.subMenu li { float: left; list-style-type: none; padding: 0 1em; margin: 0 1px; background-color: #eef0f8; }
     </style>
 <ul class="subMenu">
-    <li><a href="<?php echo $baseUrl; ?>myTasks" >list tasks</a></li>
+    <li><a href="<?php echo $baseUrl; ?>myTasks/" >list tasks</a></li>
     <li><a href="<?php echo $baseUrl; ?>myTasks/new" >new tasks</a></li>
     <li><a href="<?php echo $baseUrl; ?>myTasks/setup" >setup</a></li>
 </ul>
