@@ -25,6 +25,13 @@ namespace wsCore\Html;
  * @method \wsCore\Html\Tags th
  * @method \wsCore\Html\Tags td
  * @method \wsCore\Html\Tags span
+ * @method \wsCore\Html\Tags dl
+ * @method \wsCore\Html\Tags dd
+ * @method \wsCore\Html\Tags dt
+ * @method \wsCore\Html\Tags h1
+ * @method \wsCore\Html\Tags h2
+ * @method \wsCore\Html\Tags h3
+ * @method \wsCore\Html\Tags h4
  */
 class Tags
 {
