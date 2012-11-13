@@ -11,7 +11,7 @@ class task extends \wsCore\DbAccess\Entity_Abstract
 
     public $task_date = '';
 
-    public $task_status = '';
+    public $task_status = '1';
 
     public $new_dt_task;
 
