@@ -81,11 +81,6 @@ class taskView
      */
     public function showForm_form( $entity )
     {
-        if( !$entity->isValid() ) {
-            $this->set( 'alert-error', 'please submit the form again. ' );
-        }
-        $this->set( 'title', 'Details' );
-        $baseUrl = $this->get( 'baseUrl' );
         $entity->setHtmlType( 'form' );
         $contents = array();
         $form = $this->tags->form(
