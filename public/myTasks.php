@@ -5,14 +5,14 @@ use wsCore\Core;
 Core::go();
 Core::setPdo( array( 'dsn' => 'sqlite:' . __DIR__ . '/task/data/tasks.sqlite' ) );
 
-/** @var $front wsCore\Web\FrontMC */
+/** @var $front wsModule\Alt\Web\FrontMC */
 Core::get( '\task\model\tasks' );
 $front = Core::get( '\wsModule\Alt\Web\FrontMC' );
 $front->debug = true;
 $front->namespace = 'task';
 $routes = array(
+    'myTasks/task/:id'      => array( 'controller' => 'task', 'action' => 'task' ),
     'myTasks/:action/:act' => array( 'controller' => 'task', 'act' => '' ),
-    'myTasks/:action'      => array( 'controller' => 'task' ),
     'myTasks' => array( 'controller' => 'task', 'action' => 'index' ),
 );
 $front->router->set( $routes );

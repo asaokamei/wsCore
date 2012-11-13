@@ -31,7 +31,7 @@ class tasks extends \wsCore\DbAccess\Dao
         'task_id'     => array( 'Selector', 'text' ),
         'task_memo'   => array( 'Selector', 'text', 'placeholder:your tasks here | class:span5' ),
         'task_date'   => array( 'Selector', 'date', ),
-        'task_status' => array( 'Selector', 'number' ),
+        'task_status' => array( 'Selector', 'text' ),
     );
 
     public $recordClassName = 'task\entity\task';

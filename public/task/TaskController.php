@@ -6,7 +6,7 @@ class TaskController
     /** @var \wsCore\DbAccess\EntityManager */
     protected $em;
 
-    /** @var \wsCore\Web\FrontMC */
+    /** @var \wsModule\Alt\Web\FrontMC */
     protected $front;
 
     /** @var \task\views\taskView */
@@ -25,7 +25,7 @@ class TaskController
     }
 
     /**
-     * @param \wsCore\Web\FrontMC $front
+     * @param \wsModule\Alt\Web\FrontMC $front
      */
     public function pre_action( $front ) {
         $this->front = $front;
@@ -39,13 +39,25 @@ class TaskController
     {
         $model = $this->em->getModel( 'tasks' );
         $all   = $model->query()->select();
-        ob_start();
-        var_dump( $all );
-        $content = ob_get_clean();
-        $this->view->set( 'content', $content );
+        /** @var $role \wsCore\DbAccess\Role */
+        $role = $this->em->container()->get( '\wsCore\DbAccess\Role' );
+        $entities = array();
+        foreach( $all as $row ) {
+            $entities[] = $role->applyLoadable( $row );
+        }
+        $this->view->showForm_list( $entities, 'list' );
         return $this->view;
     }
 
+    public function actTask( $args )
+    {
+        $id = $args[ 'id' ];
+        $entity = $this->em->getEntity( 'tasks', $id );
+        $role = $this->em->container()->get( '\wsCore\DbAccess\Role' );
+        $entity = $role->applyLoadable( $entity );
+        $this->view->showForm_form( $entity );
+        return $this->view;
+    }
     /**
      * @return string
      */
