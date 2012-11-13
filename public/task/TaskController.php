@@ -89,9 +89,7 @@ class TaskController
             header( "Location: $baseUrl/myTasks" );
             exit;
         }
-        else {
-            $this->view->set( 'alert-error', 'insert failed...' );
-        }
+        $this->view->set( 'alert-error', 'insert failed...' );
         $this->view->showForm_form( $entity );
         return $this->view;
     }
@@ -129,9 +127,7 @@ class TaskController
             header( "Location: $baseUrl/myTasks" );
             exit;
         }
-        else {
-            $this->view->set( 'alert-error', 'update failed...' );
-        }
+        $this->view->set( 'alert-error', 'update failed...' );
         $this->view->showForm_form( $entity );
         return $this->view;
     }
