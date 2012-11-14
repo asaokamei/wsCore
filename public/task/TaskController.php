@@ -41,6 +41,22 @@ class TaskController
         }
     }
 
+    /**
+     * @param \wsCore\DbAccess\Entity_Interface $entity
+     * @return views\taskView
+     */
+    public function contextLoadAndSave( $entity )
+    {
+        $role   = $this->role->applyLoadable( $entity );
+        $role->loadData();
+        if( $role->validate() ) {
+            $this->em->save();
+            $taskUrl = $this->view->get( 'taskUrl' );
+            header( "Location: $taskUrl" );
+            exit;
+        }
+        return false;
+    }
     // +----------------------------------------------------------------------+
     //  show list
     // +----------------------------------------------------------------------+
@@ -69,9 +85,9 @@ class TaskController
     public function actNew( $args )
     {
         $entity = $this->em->newEntity( 'tasks' );
-        $entity = $this->role->applyLoadable( $entity );
+        $role   = $this->role->applyLoadable( $entity );
         $this->view->set( 'title', 'New Task' );
-        $this->view->showForm_form( $entity );
+        $this->view->showForm_form( $role );
         return $this->view;
     }
 
@@ -82,16 +98,10 @@ class TaskController
     public function actNew_post( $args )
     {
         $entity = $this->em->newEntity( 'tasks' );
-        $entity = $this->role->applyLoadable( $entity );
-        $entity->loadData();
-        if( $entity->validate() ) {
-            $this->em->save();
-            $taskUrl = $this->view->get( 'taskUrl' );
-            header( "Location: $taskUrl" );
-            exit;
-        }
+        $this->contextLoadAndSave( $entity );
         $this->view->set( 'alert-error', 'insert failed...' );
-        $this->view->showForm_form( $entity );
+        $role   = $this->role->applyLoadable( $entity );
+        $this->view->showForm_form( $role );
         return $this->view;
     }
 
@@ -120,16 +130,10 @@ class TaskController
     {
         $id = $args[ 'id' ];
         $entity = $this->em->getEntity( 'tasks', $id );
-        $entity = $this->role->applyLoadable( $entity );
-        $entity->loadData();
-        if( $entity->validate() ) {
-            $this->em->save();
-            $taskUrl = $this->view->get( 'taskUrl' );
-            header( "Location: $taskUrl" );
-            exit;
-        }
+        $this->contextLoadAndSave( $entity );
         $this->view->set( 'alert-error', 'update failed...' );
-        $this->view->showForm_form( $entity );
+        $role   = $this->role->applyLoadable( $entity );
+        $this->view->showForm_form( $role );
         return $this->view;
     }
 
@@ -143,8 +147,10 @@ class TaskController
     {
         /** @var $model \task\model\tasks */
         $model = $this->em->getModel( 'tasks' );
+        // clear the current tasks (drop the table)
         $sql = $model->getClearSql();
         $model->query()->execSQL( $sql );
+        // create the new task table.
         $sql = $model->getCreateSql();
         $model->query()->execSQL( $sql );
         // using em. this works just fine.
