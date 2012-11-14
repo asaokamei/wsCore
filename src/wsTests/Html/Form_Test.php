@@ -161,7 +161,7 @@ class Form_Test extends \PHPUnit_Framework_TestCase
     function test_check_in_label()
     {
         $form = (string) $this->form->checkLabel( 'OK', 'YES', 'really?' );
-        $this->assertEquals( '<label><input type="checkbox" name="OK[]" value="YES" />' . "\n".
+        $this->assertEquals( '<label><input type="checkbox" name="OK" value="YES" />' . "\n".
             'really?</label>'."\n", $form );
 
         // check if radio does NOT have [] in the name. 
@@ -177,7 +177,7 @@ class Form_Test extends \PHPUnit_Framework_TestCase
     function test_check()
     {
         $form = (string) $this->form->check( 'user_OK', 'YES' );
-        $this->assertEquals( '<input type="checkbox" name="user_OK[]" value="YES" />'."\n", $form );
+        $this->assertEquals( '<input type="checkbox" name="user_OK" value="YES" />'."\n", $form );
 
         // check if radio does NOT have [] in the name. 
         $form = (string) $this->form->radio( 'user_OK', 'YES' );
