@@ -14,15 +14,15 @@ class Form extends Tags
     /** @var null|string        overwrites name ex: name[1] */
     static $var_format = NULL;
 
-    protected $style = NULL;
-    
-    protected $type = NULL;
+    public $style = NULL;
 
-    protected $name = NULL;
+    public $type = NULL;
 
-    protected $value = NULL;
+    public $name = NULL;
 
-    protected $items = array();
+    public $value = NULL;
+
+    public $items = array();
 
     public $multiple = FALSE;
     
@@ -121,7 +121,10 @@ class Form extends Tags
             $value = $item[0];
             $label = $item[1];
             $option = $this::_()->option( $label )->value( $value );
-            if( in_array( $value, $checked ) ) $option->selected( true );
+            if( in_array( $value, $checked ) ) {
+                /** @noinspection PhpUndefinedMethodInspection */
+                $option->selected( true );
+            }
             if( isset( $item[2] ) ) 
             {
                 $group = $item[2];
@@ -167,7 +170,6 @@ class Form extends Tags
     public function check( $name, $value, $attributes=array() ) 
     {
         $form = $this->input( 'checkbox', $name, $value, $attributes );
-        $form->multiple = TRUE;
         $form->style = 'checkbox';
         return $form;
     }
@@ -244,9 +246,16 @@ class Form extends Tags
             $check = $this()->$style( $name, $value, $attributes );
             if( in_array( $value, $checked ) ) $check->checked( true );
             $list->contain_(
-                $this::_()->li( $this::_()->label( $check . $label )
+                $this::_()->li( $this::_()->label( $check, $label )
                 ));
         }
+        $addMultiple = function( $form ) {
+            /** @var $form Form */
+            if( $form->name ) { $form->name .= '[]'; }
+            if( isset( $form->attributes[ 'name' ] ) ) { $form->attributes[ 'name' ].= '[]'; }
+        };
+        /** @var $div Form */
+        $div->walk( $addMultiple );
         return $div;
     }
 
@@ -334,6 +343,24 @@ class Form extends Tags
         $this->name = $name;
         $this->setAttribute_( 'name', $name );
         return $this;
+    }
+
+    /**
+     * @param \Closure $func
+     * @param string $attribute
+     */
+    public function walk( $func, $attribute=null )
+    {
+        if( !$attribute || $this->$attribute || isset( $this->attributes[ $attribute ] ) ) {
+            $func( $this );
+        }
+        if( !empty( $this->contents ) ) {
+            foreach( $this->contents as $content ) {
+                if( $content instanceof self ) {
+                    $content->walk( $func, $attribute );
+                }
+            }
+        }
     }
     // +----------------------------------------------------------------------+
 }
