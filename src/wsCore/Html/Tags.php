@@ -42,7 +42,7 @@ class Tags
     protected $contents   = array();
     
     /** @var array                 array of attributes       */
-    protected $attributes = array();
+    public $attributes = array();
     
     /** @var bool                  for form element's name   */
     protected $multiple = FALSE;
