@@ -39,6 +39,11 @@ class TaskController
     }
 
     /**
+     * a generic method to load post data into entity,
+     * validates the entity values, saves to database,
+     * and jump back to the task list if successful.
+     * returns false if save fails.
+     *
      * @param \wsCore\DbAccess\Entity_Interface $entity
      * @return views\taskView
      */
@@ -58,6 +63,8 @@ class TaskController
     //  show list
     // +----------------------------------------------------------------------+
     /**
+     * list of tasks.
+     *
      * @return string
      */
     public function actIndex()
@@ -76,6 +83,8 @@ class TaskController
     //  insert/put/addition
     // +----------------------------------------------------------------------+
     /**
+     * shows the form for inserting task, or insert task if post method.
+     *
      * @param array $args
      * @return views\taskView
      */
@@ -95,6 +104,8 @@ class TaskController
     //  update/post/modification
     // +----------------------------------------------------------------------+
     /**
+     * shows the form for update task, or update task if post method.
+     *
      * @param array $args
      * @return views\taskView
      */
@@ -115,6 +126,8 @@ class TaskController
     //  show details
     // +----------------------------------------------------------------------+
     /**
+     * initialize the task database.
+     *
      * @return string
      */
     public function actSetup()
