@@ -181,7 +181,6 @@ class taskView
         /** @var $form \wsCore\Html\Tags */
         $this->set( 'title', 'Confirm Initializing Tasks' );
         $check = $this->tags->checkLabel( 'initDb', 'yes', 'check this box and click initialize button' );
-        $check->multiple = false;
         $form = $this->tags->form()->method( 'post' )->action( '' );
         $form->contain_(
             $this->tags->p( 'really initialize database?' ),
