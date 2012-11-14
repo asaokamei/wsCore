@@ -338,6 +338,7 @@ class Tags
             // short tag such as <tag>only one content</tag>
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ">";
             $html .= $this->toContents_();
+            if( substr( $html, -1 ) == "\n" ) $html .= $head;
             $html .= "</{$this->tagName}>";
         }
         else { // create tag with contents inside.
