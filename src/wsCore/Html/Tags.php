@@ -331,10 +331,10 @@ class Tags
     {
         $html = $head;
         if( in_array( $this->tagName, static::$tag_no_body ) ) {
-            // create tag without content, such as <tag attritutes... />
+            // create tag without content, such as <tag attributes... />
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ' />';
         }
-        elseif( count( $this->contents ) == 1 ) {
+        elseif( in_array( $this->tagName, static::$tag_span ) || count( $this->contents ) == 1 ) {
             // short tag such as <tag>only one content</tag>
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ">";
             $html .= $this->toContents_();
