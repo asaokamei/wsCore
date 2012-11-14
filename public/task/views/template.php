@@ -17,7 +17,7 @@ $taskUrl = $view->get( 'taskUrl' );
     <li><a href="<?php echo $taskUrl; ?>setup" >setup</a></li>
 </ul>
 <h4>task/todo demo</h4>
-<p>simple task/todo application for demonstrating data mapper, basic mvc. </p>
+<p>task/todo application using data mapper and basic MVC. </p>
 <div style="clear:both">
 </div>
 <h1><?= $view->get( 'title' ); ?></h1>
