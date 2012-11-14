@@ -118,7 +118,8 @@ class Form_Test extends \PHPUnit_Framework_TestCase
             array( '20', 'twenties' ),
             array( '30', 'thirtish' ),
         );
-        $form = (string) $this->form->checkBox( 'user_age', $ages, '20' );
+        $form = $this->form->checkBox( 'user_age', $ages, '20' );
+        $form = (string) $form;
         $this->assertEquals( '<div class="formListBox"><nl>
   <li><label><input type="checkbox" name="user_age[]" value="10" />
 teenage</label>
