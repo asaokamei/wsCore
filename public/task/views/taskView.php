@@ -78,14 +78,16 @@ class taskView
 
     /**
      * @param \wsCore\DbAccess\Role_Input $entity
+     * @param null|string $submitTitle
      */
-    public function showForm_form( $entity )
+    public function showForm_form( $entity, $submitTitle=null )
     {
+        $submitTitle = $submitTitle ?: 'save task';
         $entity->setHtmlType( 'form' );
         $contents = array();
         $form = $this->tags->form(
             $this->tableForm( $entity, 'form' ),
-            $this->view->bootstrapButton( 'submit', 'modify task', 'primary' ),
+            $this->view->bootstrapButton( 'submit', $submitTitle, 'primary' ),
             $this->view->bootstrapButton( 'reset', 'reset','' )
         )->method( 'post' )->action( '' );
         $contents[] = $form;
