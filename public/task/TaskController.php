@@ -60,7 +60,7 @@ class TaskController
         return false;
     }
     // +----------------------------------------------------------------------+
-    //  show list
+    //  basic action methods.
     // +----------------------------------------------------------------------+
     /**
      * list of tasks.
@@ -79,11 +79,9 @@ class TaskController
         return $this->view;
     }
 
-    // +----------------------------------------------------------------------+
-    //  insert/put/addition
-    // +----------------------------------------------------------------------+
     /**
-     * shows the form for inserting task, or insert task if post method.
+     * for adding a new task.
+     * shows insert form, or insert task if post method.
      *
      * @param array $args
      * @return views\taskView
@@ -100,11 +98,9 @@ class TaskController
         return $this->view;
     }
 
-    // +----------------------------------------------------------------------+
-    //  update/post/modification
-    // +----------------------------------------------------------------------+
     /**
-     * shows the form for update task, or update task if post method.
+     * for modifying an existing task.
+     * shows update form, or update task if post method.
      *
      * @param array $args
      * @return views\taskView
@@ -123,15 +119,31 @@ class TaskController
     }
 
     // +----------------------------------------------------------------------+
-    //  show details
+    //  initialize database
     // +----------------------------------------------------------------------+
     /**
      * initialize the task database.
      *
      * @return string
      */
-    public function actSetup()
+    public function actSetup() {
+        if( $this->front->request->isPost() ) {
+            $this->initDb( $this->front->request->getPost( 'initDb' ) );
+        }
+        $this->view->showSetup();
+        return $this->view;
+    }
+
+    /**
+     * @param string $initDb
+     */
+    public function initDb( $initDb )
     {
+        if( $initDb !== 'yes' ) {
+            $taskUrl = $this->view->get( 'taskUrl' );
+            header( "Location: $taskUrl" );
+            exit;
+        }
         /** @var $model \task\model\tasks */
         $model = $this->em->getModel( 'tasks' );
         // clear the current tasks (drop the table)

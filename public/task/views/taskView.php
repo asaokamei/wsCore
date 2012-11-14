@@ -10,9 +10,9 @@ class taskView
     private $tags;
     /**
      * @param \wsModule\Alt\Html\View_Bootstrap $view
-     * @param \wsCore\Html\Tags $tags
+     * @param \wsCore\Html\Form $tags
      * @DimInjection Fresh \wsModule\Alt\Html\View_Bootstrap
-     * @DimInjection Fresh \wsCore\Html\Tags
+     * @DimInjection Fresh \wsCore\Html\Form
      */
     public function __construct( $view, $tags ) {
         $this->view = $view;
@@ -175,6 +175,22 @@ class taskView
             );
         }
         return $table;
+    }
+
+    public function showSetup() {
+        /** @var $form \wsCore\Html\Tags */
+        $this->set( 'title', 'Confirm Initializing Tasks' );
+        $check = $this->tags->checkLabel( 'initDb', 'yes', 'check this box and click initialize button' );
+        $check->multiple = false;
+        $form = $this->tags->form()->method( 'post' )->action( '' );
+        $form->contain_(
+            $this->tags->p( 'really initialize database?' ),
+            $this->tags->p( 'all the current tasks will be removed...' ),
+            $check,
+            '<br />',
+            $this->view->bootstrapButton( 'submit', 'initialize', 'primary' )
+        );
+        $this->set( 'content', $form );
     }
 
     public function __toString()
