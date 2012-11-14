@@ -121,16 +121,19 @@ class Form_Test extends \PHPUnit_Framework_TestCase
         $form = $this->form->checkBox( 'user_age', $ages, '20' );
         $form = (string) $form;
         $this->assertEquals( '<div class="formListBox"><nl>
-  <li><label><input type="checkbox" name="user_age[]" value="10" />
-teenage</label>
-</li>
-  <li><label><input type="checkbox" name="user_age[]" value="20" checked="checked" />
-twenties</label>
-</li>
-  <li><label><input type="checkbox" name="user_age[]" value="30" />
-thirtish</label>
-</li></nl>
-</div>'."\n", $form );    
+  <li><label>
+  <input type="checkbox" name="user_age[]" value="10" />
+  teenage</label>
+  </li>
+  <li><label>
+  <input type="checkbox" name="user_age[]" value="20" checked="checked" />
+  twenties</label>
+  </li>
+  <li><label>
+  <input type="checkbox" name="user_age[]" value="30" />
+  thirtish</label>
+  </li></nl>
+</div>'."\n", $form );
     }
     function test_radio_in_box()
     {
@@ -141,15 +144,18 @@ thirtish</label>
         );
         $form = (string) $this->form->radioBox( 'user_age', $ages, '20' );
         $this->assertEquals( '<div class="formListBox"><nl>
-  <li><label><input type="radio" name="user_age" value="10" />
-teenage</label>
-</li>
-  <li><label><input type="radio" name="user_age" value="20" checked="checked" />
-twenties</label>
-</li>
-  <li><label><input type="radio" name="user_age" value="30" />
-thirtish</label>
-</li></nl>
+  <li><label>
+  <input type="radio" name="user_age[]" value="10" />
+  teenage</label>
+  </li>
+  <li><label>
+  <input type="radio" name="user_age[]" value="20" checked="checked" />
+  twenties</label>
+  </li>
+  <li><label>
+  <input type="radio" name="user_age[]" value="30" />
+  thirtish</label>
+  </li></nl>
 </div>'."\n", $form );
     }
     function test_check_in_label()
