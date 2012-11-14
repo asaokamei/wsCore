@@ -36,9 +36,6 @@ class TaskController
         $this->front = $front;
         $this->view->set( 'baseUrl', $front->request->getBaseUrl() );
         $this->view->set( 'taskUrl', $front->request->getBaseUrl() . 'myTasks/' );
-        if( $front->request->isPost() ) {
-            $front->parameter[ 'action' ] .= '_post';
-        }
     }
 
     /**
@@ -85,21 +82,10 @@ class TaskController
     public function actNew( $args )
     {
         $entity = $this->em->newEntity( 'tasks' );
-        $role   = $this->role->applyLoadable( $entity );
-        $this->view->set( 'title', 'New Task' );
-        $this->view->showForm_form( $role );
-        return $this->view;
-    }
-
-    /**
-     * @param array $args
-     * @return views\taskView
-     */
-    public function actNew_post( $args )
-    {
-        $entity = $this->em->newEntity( 'tasks' );
-        $this->contextLoadAndSave( $entity );
-        $this->view->set( 'alert-error', 'insert failed...' );
+        if( $this->front->request->isPost() ) {
+            $this->contextLoadAndSave( $entity );
+            $this->view->set( 'alert-error', 'insert failed...' );
+        }
         $role   = $this->role->applyLoadable( $entity );
         $this->view->showForm_form( $role );
         return $this->view;
@@ -116,22 +102,10 @@ class TaskController
     {
         $id = $args[ 'id' ];
         $entity = $this->em->getEntity( 'tasks', $id );
-        $entity = $this->role->applyLoadable( $entity );
-        $this->view->set( 'title', 'Details' );
-        $this->view->showForm_form( $entity );
-        return $this->view;
-    }
-
-    /**
-     * @param array $args
-     * @return views\taskView
-     */
-    public function actTask_post( $args )
-    {
-        $id = $args[ 'id' ];
-        $entity = $this->em->getEntity( 'tasks', $id );
-        $this->contextLoadAndSave( $entity );
-        $this->view->set( 'alert-error', 'update failed...' );
+        if( $this->front->request->isPost() ) {
+            $this->contextLoadAndSave( $entity );
+            $this->view->set( 'alert-error', 'update failed...' );
+        }
         $role   = $this->role->applyLoadable( $entity );
         $this->view->showForm_form( $role );
         return $this->view;
