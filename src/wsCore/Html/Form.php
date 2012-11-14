@@ -238,6 +238,7 @@ class Form extends Tags
     {
         if( !is_array( $checked ) ) $checked = array( $checked );
         $list = $this::_()->nl();
+        /** @var $div Form */
         $div = $this::_()->div( $list )->_class( 'formListBox' );
         foreach( $items as $item ) {
             $value = $item[0];
@@ -249,13 +250,7 @@ class Form extends Tags
                 $this::_()->li( $this::_()->label( $check, $label )
                 ));
         }
-        $addMultiple = function( $form ) {
-            /** @var $form Form */
-            if( $form->name ) { $form->name .= '[]'; }
-            if( isset( $form->attributes[ 'name' ] ) ) { $form->attributes[ 'name' ].= '[]'; }
-        };
-        /** @var $div Form */
-        $div->walk( $addMultiple );
+        $div->multipleName();
         return $div;
     }
 
@@ -361,6 +356,20 @@ class Form extends Tags
                 }
             }
         }
+    }
+
+    /**
+     * makes the form object to array style name (i.e. name="varName[]").
+     */
+    public function multipleName()
+    {
+        $addMultiple = function( $form ) {
+            /** @var $form Form */
+            if( $form->name ) { $form->name .= '[]'; }
+            if( isset( $form->attributes[ 'name' ] ) ) { $form->attributes[ 'name' ].= '[]'; }
+        };
+        /** @var $div Form */
+        $this->walk( $addMultiple );
     }
     // +----------------------------------------------------------------------+
 }
