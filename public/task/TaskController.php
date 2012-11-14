@@ -34,7 +34,8 @@ class TaskController
      */
     public function pre_action( $front ) {
         $this->front = $front;
-        $this->view->set( 'baseUrl', $front->request->getBaseUrl() . '' );
+        $this->view->set( 'baseUrl', $front->request->getBaseUrl() );
+        $this->view->set( 'taskUrl', $front->request->getBaseUrl() . 'myTasks/' );
         if( $front->request->isPost() ) {
             $front->parameter[ 'action' ] .= '_post';
         }
@@ -85,8 +86,8 @@ class TaskController
         $entity->loadData();
         if( $entity->validate() ) {
             $this->em->save();
-            $baseUrl = $this->view->get( 'baseUrl' );
-            header( "Location: $baseUrl/myTasks" );
+            $taskUrl = $this->view->get( 'taskUrl' );
+            header( "Location: $taskUrl" );
             exit;
         }
         $this->view->set( 'alert-error', 'insert failed...' );
@@ -123,8 +124,8 @@ class TaskController
         $entity->loadData();
         if( $entity->validate() ) {
             $this->em->save();
-            $baseUrl = $this->view->get( 'baseUrl' );
-            header( "Location: $baseUrl/myTasks" );
+            $taskUrl = $this->view->get( 'taskUrl' );
+            header( "Location: $taskUrl" );
             exit;
         }
         $this->view->set( 'alert-error', 'update failed...' );
@@ -152,8 +153,8 @@ class TaskController
             $this->em->newEntity( 'tasks', $task );
         }
         $this->em->save();
-        $baseUrl = $this->view->get( 'baseUrl' );
-        header( "Location: $baseUrl/myTasks" );
+        $taskUrl = $this->view->get( 'taskUrl' );
+        header( "Location: $taskUrl" );
         exit;
     }
 }
