@@ -184,7 +184,7 @@ class Dao
     public function getRecord( $data=array() ) 
     {
         /** @var $record \WScore\DbAccess\Entity_Interface */
-        $record = new $this->recordClassName( $this, 'new' );
+        $record = new $this->recordClassName( $this, Entity_Interface::TYPE_NEW );
         if( !empty( $data ) ) {
             foreach( $data as $key => $val ) {
                 $record->$key = $val;

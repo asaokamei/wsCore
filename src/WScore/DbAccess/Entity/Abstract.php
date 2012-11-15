@@ -30,10 +30,19 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
             $this->_identifier = $model->getId( $this );
             if( !isset( $this->_model ) ) $this->_model = $model->getModelName();
         }
-        if( $type ) $this->_type = $type;
+        $this->_type = $type;
         if( !isset( $this->_model ) ) {
             throw new \RuntimeException( 'model must be defined in Entity' );
         }
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    protected function _set_protected_vars( $name, $value ) {
+        $varName = '_' . $name;
+        $this->$varName = $value;
     }
 
     /**

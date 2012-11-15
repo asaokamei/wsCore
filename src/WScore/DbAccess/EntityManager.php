@@ -13,7 +13,7 @@ class EntityManager
     protected $reflections = array();
 
     /** @var int */
-    protected $newId = 1;
+    protected $newId = 0;
 
     /** @var \WScore\DiContainer\Dimplet */
     protected $container;
@@ -77,12 +77,8 @@ class EntityManager
             return $reflect;
         };
         if( !isset( $this->reflections[ $class ] ) ) {
-            $reflections = array(
-                'model' => $reflect( $class, '_model' ),
-                'type'  => $reflect( $class, '_type' ),
-                'id'    => $reflect( $class, '_identifier' ),
-                'del'   => $reflect( $class, '_toDelete' ),
-            );
+            $reflections = new \ReflectionMethod( $class, '_set_protected_vars' );
+            $reflections->setAccessible( true );
             $this->reflections[ $class ] = $reflections;
         }
         return $this;
@@ -95,25 +91,12 @@ class EntityManager
      * @return \WScore\DbAccess\EntityManager
      */
     public  function setEntityProperty( $entity, $prop, $value ) {
-        /** @var $ref \ReflectionProperty */
+        /** @var $ref \ReflectionMethod */
         $class = get_class( $entity );
-        $ref = $this->reflections[ $class ][ $prop ];
-        $ref->setValue( $entity, $value );
+        $ref = $this->reflections[ $class ];
+        $ref->invoke( $entity, $prop, $value );
         return $this;
     }
-
-    /**
-     * @param Entity_Interface $entity
-     * @param string $prop
-     * @return mixed
-     */
-    public function getEntityProperty( $entity, $prop ) {
-        /** @var $ref \ReflectionProperty */
-        $class = get_class( $entity );
-        $ref = $this->reflections[ $class ][ $prop ];
-        return $ref->getValue( $entity );
-    }
-
     // +----------------------------------------------------------------------+
     //  Managing Entities
     // +----------------------------------------------------------------------+
@@ -157,17 +140,17 @@ class EntityManager
         }
         $type = $entity->_get_Type();
         if( $id ) {
-            $this->setEntityProperty( $entity, 'id', $id );
+            $this->setEntityProperty( $entity, 'identifier', $id );
         }
         elseif( !$entity->_get_Id() ) {
             if( !$id && $type == Entity_Interface::TYPE_NEW ) {
-                $id = $this->newId++;
+                $id = ++$this->newId;
             }
             elseif( !$id && $type == Entity_Interface::TYPE_GET ) {
                 $model = $this->getModel( $entity->_get_Model() );
                 $id = $model->getId( $entity );
             }
-            $this->setEntityProperty( $entity, 'id', $id );
+            $this->setEntityProperty( $entity, 'identifier', $id );
         }
         return $this;
     }
