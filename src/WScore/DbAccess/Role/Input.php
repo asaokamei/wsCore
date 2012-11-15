@@ -209,8 +209,13 @@ class Role_Input implements Role_Interface
         if( $info = $this->model->getSelectInfo( $name ) ) {
             if( $info[0] == 'Selector' ) {
                 $arg2     = $this->model->arrGet( $info, 2, null );
-                $arg3     = $this->model->arrGet( $info, 3, null );
-                $selector = $this->selector->getInstance( $info[1], $name, $arg2, $arg3 );
+                $extra    = $this->model->arrGet( $info, 3, null );
+                $arg3     = $arg4 = null;
+                if( is_array( $extra ) && !empty( $extra ) ) {
+                    $arg3 = $this->model->arrGet( $extra, 'items',  array() );
+                    $arg4 = $this->model->arrGet( $extra, 'filter', null );
+                }
+                $selector = $this->selector->getInstance( $info[1], $name, $arg2, $arg3, $arg4 );
             }
             else {
                 $class = $info[0];

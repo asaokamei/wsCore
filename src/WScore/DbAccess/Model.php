@@ -63,7 +63,16 @@ class Model
     /** @var array                           protected properties            */
     protected $protected  = array();
 
-    /** @var array                           for selector construction       */
+    /**
+     * for selector construction. to use with WScore\Html\Selector,
+     * $selectors = array(
+     *  name => [ 'Selector', style, option text, [
+     *      'items' => [ [ val1, str1 ], [ val2, str2 ], ... ],
+     *      'filter' => function(){}
+     *  ] ],
+     * )
+     *
+     * @var array                                  */
     protected $selectors  = array();
 
     /** @var array                           for validation of inputs        */
