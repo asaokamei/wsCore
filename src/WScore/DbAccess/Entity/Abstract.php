@@ -134,16 +134,14 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     // +-----------------------------------------------------------+
     /**
      */
-    public function offsetExists( $offset )
-    {
+    public function offsetExists( $offset ) {
         if( substr( $offset, 0, 1 ) != '_' && isset( $this->$offset ) ) return true;
         return false;
     }
 
     /**
      */
-    public function offsetGet( $offset )
-    {
+    public function offsetGet( $offset ) {
         if( substr( $offset, 0, 1 ) != '_' && isset( $this->$offset ) ) return $this->$offset;
         return null;
     }
@@ -153,19 +151,14 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     public function offsetSet( $offset, $value )
     {
         if( is_null( $offset ) ) {
-            foreach( $value as $key => $val ) {
-                if( substr( $offset, 0, 1 ) != '_' ) $this->$offset = $value;
-            }
+            foreach( $value as $key => $val ) {    $this->offsetSet( $key, $value ); }
         }
-        else {
-            if( substr( $offset, 0, 1 ) != '_' ) $this->$offset = $value;
-        }
+        elseif( substr( $offset, 0, 1 ) != '_' ) { $this->$offset = $value; }
     }
 
     /**
      */
-    public function offsetUnset( $offset )
-    {
+    public function offsetUnset( $offset ) {
         if( substr( $offset, 0, 1 ) != '_' && isset( $this->$offset ) ) unset( $this->$offset );
     }
     // +-----------------------------------------------------------+
