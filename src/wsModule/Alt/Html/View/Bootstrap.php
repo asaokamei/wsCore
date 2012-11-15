@@ -1,7 +1,7 @@
 <?php
 namespace wsModule\Alt\Html;
 
-class View_Bootstrap extends \wsCore\Html\PageView
+class View_Bootstrap extends \WScore\Html\PageView
 {
     // boot strap thingy.
     public function bootstrapShowAlert() {

@@ -26,7 +26,7 @@ namespace action {
 
 namespace main
 {
-    require_once( '../src/wsCore/DiContainer/Dimplet.php' );
+    require_once( '../src/WScore/DiContainer/Dimplet.php' );
     $container = new \wsCore\DiContainer\Dimplet();
     $more = $container->get( '\action\Invoice' );
 

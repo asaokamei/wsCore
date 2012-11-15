@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DbAccess;
 
-class Dao_Network extends \wsCore\DbAccess\Dao
+class Dao_Network extends \WScore\DbAccess\Dao
 {
     /** @var string     name of database table     */
     protected $table = 'network';
@@ -36,9 +36,9 @@ class Dao_Network extends \wsCore\DbAccess\Dao
 
     // +----------------------------------------------------------------------+
     /**
-     * @param $em       \wsCore\DbAccess\EntityManager
-     * @param $query    \wsCore\DbAccess\Query
-     * @param $selector \wsCore\DiContainer\Dimplet
+     * @param $em       \WScore\DbAccess\EntityManager
+     * @param $query    \WScore\DbAccess\Query
+     * @param $selector \WScore\DiContainer\Dimplet
      * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query
      * @DimInjection Get Raw  Selector

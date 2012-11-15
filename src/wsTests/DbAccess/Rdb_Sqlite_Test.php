@@ -1,13 +1,13 @@
 <?php
 namespace wsTests\DbAccess;
-use \wsCore\DbAccess\Rdb as Rdb;
+use \WScore\DbAccess\Rdb as Rdb;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
 class Dba_Rdb_Sqlite_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
-    /** @var \wsCore\DbAccess\Rdb */
+    /** @var \WScore\DbAccess\Rdb */
     var $rdb;
     // +----------------------------------------------------------------------+
     public function setUp()
@@ -75,7 +75,7 @@ class Dba_Rdb_Sqlite_Test extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function test_connection_to_wsCore_db()
+    public function test_connection_to_WScore_db()
     {
         // should not throw any exceptions.
         $pdo = $this->rdb->connect( $this->config );

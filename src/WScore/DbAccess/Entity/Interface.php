@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 interface Entity_Interface
 {
@@ -31,7 +31,7 @@ interface Entity_Interface
 
     /**
      * @param $name
-     * @return \wsCore\DbAccess\Relation_Interface
+     * @return \WScore\DbAccess\Relation_Interface
      */
     public function relation( $name );
 

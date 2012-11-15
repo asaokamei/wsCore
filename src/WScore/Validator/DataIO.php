@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Validator;
+namespace WScore\Validator;
 
 /**
  * Data Input Output, i.e. DIO module!
@@ -76,7 +76,7 @@ class DataIO
     }
 
     /**
-     * @param array|\wsCore\DbAccess\Entity_Interface $data
+     * @param array|\WScore\DbAccess\Entity_Interface $data
      */
     public function source( $data=array() ) {
         $this->source = $data;
@@ -204,7 +204,7 @@ class DataIO
      * @return array|mixed
      */
     public function popError( $name=null ) {
-        if( $name ) return \wsCore\Utilities\Tools::getKey( $this->errors, $name, null );
+        if( $name ) return \WScore\Utilities\Tools::getKey( $this->errors, $name, null );
         return $this->errors;
     }
 

@@ -1,6 +1,6 @@
 <?php
 namespace wsTests\DbAccess;
-use \wsCore\Core;
+use \WScore\Core;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
@@ -8,20 +8,20 @@ class PdObject_PgSql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
     
-    /** @var \wsCore\DbAccess\PdObject */
+    /** @var \WScore\DbAccess\PdObject */
     var $pdo = NULL;
     
-    var $table = 'test_wsCore';
+    var $table = 'test_WScore';
     
     var $column_list = '';
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->config = 'dsn=pgsql:host=localhost;dbname=test_wsCore;user=pg_admin;password=admin';
+        $this->config = 'dsn=pgsql:host=localhost;dbname=test_WScore;user=pg_admin;password=admin';
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
-        $this->pdo = Core::get( '\wsCore\DbAccess\PdObject');
+        $this->pdo = Core::get( '\WScore\DbAccess\PdObject');
         $this->column_list = '
             id SERIAL,
             name VARCHAR(30),
@@ -40,7 +40,7 @@ class PdObject_PgSql_Test extends \PHPUnit_Framework_TestCase
      */
     public function setUp_TestTable_perm()
     {
-        $this->table = 'test_wsCorePerm';
+        $this->table = 'test_WScorePerm';
         $this->setUp_TestTable();
     }
 

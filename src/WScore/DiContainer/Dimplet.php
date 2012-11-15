@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DiContainer;
+namespace WScore\DiContainer;
 
 /*
  * Simple Dependency Injection Manager.

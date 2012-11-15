@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DbAccess;
 
-use \wsCore\Core;
+use \WScore\Core;
 require_once( __DIR__ . '/../../autoloader.php' );
 
 class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
@@ -9,7 +9,7 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
     /** @var mixed */
     public $config;
 
-    /** @var \wsCore\DbAccess\Query */
+    /** @var \WScore\DbAccess\Query */
     public $query;
     
     /** @var Dao_Friend */
@@ -17,7 +17,7 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     function setUp()
     {
-        $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
+        $this->config = 'db=mysql dbname=test_WScore username=admin password=admin';
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );

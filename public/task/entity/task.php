@@ -1,7 +1,7 @@
 <?php
 namespace task\entity;
 
-class task extends \wsCore\DbAccess\Entity_Abstract
+class task extends \WScore\DbAccess\Entity_Abstract
 {
     protected $_model = 'tasks';
 

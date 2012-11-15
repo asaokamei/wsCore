@@ -2,7 +2,7 @@
 namespace wsTests\DataMapper;
 
 require_once( __DIR__ . '/../../autoloader.php' );
-use \wsCore\Core;
+use \WScore\Core;
 
 class EntityManager extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     function setUp()
     {
-        $this->config = 'dsn=mysql:dbname=test_wsCore username=admin password=admin';
+        $this->config = 'dsn=mysql:dbname=test_WScore username=admin password=admin';
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );

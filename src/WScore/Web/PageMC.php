@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Web;
+namespace WScore\Web;
 
 class PageMcException extends \Exception {}
 
@@ -14,16 +14,16 @@ class PageMC
     /** @var string             default method name is act_index  */
     protected $default  = 'index';
 
-    /** @var \wsCore\Html\PageView           view object...  */
+    /** @var \WScore\Html\PageView           view object...  */
     protected $view = NULL;
 
-    /** @var \wsCore\Web\Session */
+    /** @var \WScore\Web\Session */
     public $session;
     // +-----------------------------------------------------------+
     /**
      * starts PageMC with object as Controller.
      *
-     * @param \wsCore\Web\Session $session
+     * @param \WScore\Web\Session $session
      * @DimInjection fresh Session
      */
     public function __construct( $session )
@@ -42,7 +42,7 @@ class PageMC
     // +-----------------------------------------------------------+
     /**
      * @param string $action
-     * @param \wsCore\Html\PageView|array $view
+     * @param \WScore\Html\PageView|array $view
      * @throws PageMcException
      */
     public function run( $action, $view )

@@ -1,37 +1,37 @@
 <?php
-namespace wsCore\Html;
+namespace WScore\Html;
 
 /** 
- * @method \wsCore\Html\Tags a()
- * @method \wsCore\Html\Tags href()
- * @method \wsCore\Html\Tags target()
- * @method \wsCore\Html\Tags style()
- * @method \wsCore\Html\Tags div()
- * @method \wsCore\Html\Tags input()
- * @method \wsCore\Html\Tags value()
- * @method \wsCore\Html\Tags required()
- * @method \wsCore\Html\Tags p()
- * @method \wsCore\Html\Tags bold()
- * @method \wsCore\Html\Tags i()
- * @method \wsCore\Html\Tags em()
- * @method \wsCore\Html\Tags option()
- * @method \wsCore\Html\Tags checked
- * @method \wsCore\Html\Tags optgroup
- * @method \wsCore\Html\Tags label
- * @method \wsCore\Html\Tags nl
- * @method \wsCore\Html\Tags li
- * @method \wsCore\Html\Tags table
- * @method \wsCore\Html\Tags tr
- * @method \wsCore\Html\Tags th
- * @method \wsCore\Html\Tags td
- * @method \wsCore\Html\Tags span
- * @method \wsCore\Html\Tags dl
- * @method \wsCore\Html\Tags dd
- * @method \wsCore\Html\Tags dt
- * @method \wsCore\Html\Tags h1
- * @method \wsCore\Html\Tags h2
- * @method \wsCore\Html\Tags h3
- * @method \wsCore\Html\Tags h4
+ * @method \WScore\Html\Tags a()
+ * @method \WScore\Html\Tags href()
+ * @method \WScore\Html\Tags target()
+ * @method \WScore\Html\Tags style()
+ * @method \WScore\Html\Tags div()
+ * @method \WScore\Html\Tags input()
+ * @method \WScore\Html\Tags value()
+ * @method \WScore\Html\Tags required()
+ * @method \WScore\Html\Tags p()
+ * @method \WScore\Html\Tags bold()
+ * @method \WScore\Html\Tags i()
+ * @method \WScore\Html\Tags em()
+ * @method \WScore\Html\Tags option()
+ * @method \WScore\Html\Tags checked
+ * @method \WScore\Html\Tags optgroup
+ * @method \WScore\Html\Tags label
+ * @method \WScore\Html\Tags nl
+ * @method \WScore\Html\Tags li
+ * @method \WScore\Html\Tags table
+ * @method \WScore\Html\Tags tr
+ * @method \WScore\Html\Tags th
+ * @method \WScore\Html\Tags td
+ * @method \WScore\Html\Tags span
+ * @method \WScore\Html\Tags dl
+ * @method \WScore\Html\Tags dd
+ * @method \WScore\Html\Tags dt
+ * @method \WScore\Html\Tags h1
+ * @method \WScore\Html\Tags h2
+ * @method \WScore\Html\Tags h3
+ * @method \WScore\Html\Tags h4
  */
 class Tags
 {
@@ -93,7 +93,7 @@ class Tags
      *
      * @param string|null  $tagName
      * @param null|string $contents
-     * @return \wsCore\Html\Tags
+     * @return \WScore\Html\Tags
      */
     public function __construct( $tagName=NULL, $contents=NULL ) 
     {
@@ -104,7 +104,7 @@ class Tags
     /**
      * @param string|null  $tagName
      * @param null|string $contents
-     * @return \wsCore\Html\Tags
+     * @return \WScore\Html\Tags
      */
     public function _( $tagName=NULL, $contents=NULL )
     {

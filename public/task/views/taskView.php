@@ -6,13 +6,13 @@ class taskView
     /** @var \wsModule\Alt\Html\View_Bootstrap */
     private $view;
 
-    /** @var \wsCore\Html\Tags */
+    /** @var \WScore\Html\Tags */
     private $tags;
     /**
      * @param \wsModule\Alt\Html\View_Bootstrap $view
-     * @param \wsCore\Html\Form $tags
+     * @param \WScore\Html\Form $tags
      * @DimInjection Fresh \wsModule\Alt\Html\View_Bootstrap
-     * @DimInjection Fresh \wsCore\Html\Form
+     * @DimInjection Fresh \WScore\Html\Form
      */
     public function __construct( $view, $tags ) {
         $this->view = $view;
@@ -50,7 +50,7 @@ class taskView
     }
     
     /**
-     * @param \wsCore\DbAccess\Role_Input $entity
+     * @param \WScore\DbAccess\Role_Input $entity
      * @param string $form
      * @return void
      */
@@ -64,7 +64,7 @@ class taskView
     }
 
     /**
-     * @param \wsCore\DbAccess\Role_Input[] $entity
+     * @param \WScore\DbAccess\Role_Input[] $entity
      */
     public function showForm_list( $entity )
     {
@@ -77,7 +77,7 @@ class taskView
     }
 
     /**
-     * @param \wsCore\DbAccess\Role_Input $entity
+     * @param \WScore\DbAccess\Role_Input $entity
      * @param null|string $submitTitle
      */
     public function showForm_form( $entity, $submitTitle=null )
@@ -95,7 +95,7 @@ class taskView
     }
 
     /**
-     * @param \wsCore\DbAccess\Role_Input $entity
+     * @param \WScore\DbAccess\Role_Input $entity
      */
     public function showForm_confirm( $entity )
     {
@@ -109,7 +109,7 @@ class taskView
     }
 
     /**
-     * @param \wsCore\DbAccess\Role_Input $entity
+     * @param \WScore\DbAccess\Role_Input $entity
      */
     public function showForm_done( $entity )
     {
@@ -121,13 +121,13 @@ class taskView
     }
 
     /**
-     * @param \wsCore\DbAccess\Role_Input $entity
+     * @param \WScore\DbAccess\Role_Input $entity
      * @param string $type
-     * @return \wsCore\Html\Tags
+     * @return \WScore\Html\Tags
      */
     public function tableForm( $entity, $type='html' )
     {
-        /** @var $dl \wsCore\Html\Tags */
+        /** @var $dl \WScore\Html\Tags */
         $entity->setHtmlType( $type );
         $dl = $this->tags->dl();
         $dl->contain_(
@@ -145,9 +145,9 @@ class taskView
     }
 
     /**
-     * @param \wsCore\DbAccess\Role_Input[] $entity
+     * @param \WScore\DbAccess\Role_Input[] $entity
      * @param string $type
-     * @return \wsCore\Html\Tags
+     * @return \WScore\Html\Tags
      */
     public function tableView( $entity, $type='html' )
     {
@@ -178,7 +178,7 @@ class taskView
     }
 
     public function showSetup() {
-        /** @var $form \wsCore\Html\Tags */
+        /** @var $form \WScore\Html\Tags */
         $this->set( 'title', 'Confirm Initializing Tasks' );
         $check = $this->tags->checkLabel( 'initDb', 'yes', 'check this box and click initialize button' );
         $form = $this->tags->form()->method( 'post' )->action( '' );

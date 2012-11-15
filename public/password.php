@@ -1,14 +1,14 @@
 <?php
 require_once( __DIR__ . '/../src/autoloader.php' );
 require_once( __DIR__ . '/password/config.php' );
-use wsCore\Core;
+use WScore\Core;
 
 Core::go();
-/** @var $page \wsCore\Web\PageMC */
-/** @var $view \wsCore\Html\PageView */
+/** @var $page \WScore\Web\PageMC */
+/** @var $view \WScore\Html\PageView */
 
-$page = Core::get( '\wsCore\Web\PageMC' );
-$view = Core::get( '\wsCore\Html\PageView' );
+$page = Core::get( '\WScore\Web\PageMC' );
+$view = Core::get( '\WScore\Html\PageView' );
 $page->setController( Core::get( '\password\controller' ) );
 $act  = $page->getActFromPost();
 
@@ -35,9 +35,9 @@ $page->run( $act, $view );
     <?php 
 if( $passwords = $view->get( 'passwords' ) ) 
 {
-    /** @var $tags \wsCore\Html\Tags */
-    /** @var $table \wsCore\Html\Tags */
-    $tags = Core::get( '\wsCore\Html\Tags' );
+    /** @var $tags \WScore\Html\Tags */
+    /** @var $table \WScore\Html\Tags */
+    $tags = Core::get( '\WScore\Html\Tags' );
     $table = $tags->table()->_class( 'table' )->contain_(
         $tags->tr(
             $tags->th( '#' ),

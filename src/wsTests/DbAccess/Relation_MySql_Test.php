@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DbAccess;
 
-use \wsCore\Core;
+use \WScore\Core;
 require_once( __DIR__ . '/../../autoloader.php' );
 
 class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
@@ -9,10 +9,10 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
     /** @var mixed */
     public $config;
 
-    /** @var \wsCore\DbAccess\Query */
+    /** @var \WScore\DbAccess\Query */
     public $query;
 
-    /** @var \wsCore\DbAccess\EntityManager */
+    /** @var \WScore\DbAccess\EntityManager */
     public $em;
     
     /** @var Dao_Friend */
@@ -23,7 +23,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     function setUp()
     {
-        $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
+        $this->config = 'db=mysql dbname=test_WScore username=admin password=admin';
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
@@ -35,8 +35,8 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->em      = Core::get( 'EntityManager' );
         $this->friend  = Core::get( '\wsTests\DbAccess\Dao_Friend' );
         $this->contact = Core::get( '\wsTests\DbAccess\Dao_Contact' );
-        class_exists( '\wsCore\DbAccess\Relation' );
-        class_exists( '\wsCore\DbAccess\Relation_HasRefs' );
+        class_exists( '\WScore\DbAccess\Relation' );
+        class_exists( '\WScore\DbAccess\Relation_HasRefs' );
     }
 
     /**

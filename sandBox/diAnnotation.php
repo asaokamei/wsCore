@@ -47,7 +47,7 @@ class Sample2 extends Sample implements InterfaceDInjectionSample
     }
 }
 
-require( __DIR__ . '/../src/wsCore/DiContainer/Dimplet.php' );
+require( __DIR__ . '/../src/WScore/DiContainer/Dimplet.php' );
 
 $container = new \wsCore\DiContainer\Dimplet();
 $sample = $container->get( 'Sample2' );

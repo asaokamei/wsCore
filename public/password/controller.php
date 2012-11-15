@@ -3,21 +3,21 @@ namespace password;
 
 class controller
 {
-    /** @var \wsCore\Web\PageMC */
+    /** @var \WScore\Web\PageMC */
     protected $page = null;
 
     protected $input = array();
 
-    /** @var \wsCore\Html\Form */
+    /** @var \WScore\Html\Form */
     protected $form;
 
-    /** @var $dio \wsCore\Validator\DataIO */
+    /** @var $dio \WScore\Validator\DataIO */
     protected $dio;
 
     /**
-     * @param \wsCore\Html\Form $form
-     * @param \wsCore\Validator\DataIO $dio
-     * @DimInjection fresh \wsCore\Html\Form
+     * @param \WScore\Html\Form $form
+     * @param \WScore\Validator\DataIO $dio
+     * @DimInjection fresh \WScore\Html\Form
      * @DimInjection fresh DataIO
      */
     public function __construct( $form, $dio ) {
@@ -36,7 +36,7 @@ class controller
     }
 
     /**
-     * @param \wsCore\Html\PageView $view
+     * @param \WScore\Html\PageView $view
      */
     public function makeForm( $view )
     {
@@ -62,7 +62,7 @@ class controller
     }
 
     /**
-     * @param \wsCore\Html\PageView $view
+     * @param \WScore\Html\PageView $view
      */
 
     public function act_index( $view )
@@ -71,7 +71,7 @@ class controller
         $this->makeForm( $view );
     }
     /**
-     * @param \wsCore\Html\PageView $view
+     * @param \WScore\Html\PageView $view
      */
     public function act_generate( $view )
     {
@@ -96,7 +96,7 @@ class controller
         $count = ( $input[ 'count' ] ) ?: 5;
         $passwords = array();
         for( $i = 0; $i < $count; $i ++ ) {
-            $passwords[] = \wsCore\Utilities\Tools::password( $input[ 'length' ], $input[ 'symbol' ] );
+            $passwords[] = \WScore\Utilities\Tools::password( $input[ 'length' ], $input[ 'symbol' ] );
         }
         return $passwords;
     }

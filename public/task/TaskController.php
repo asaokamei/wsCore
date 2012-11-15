@@ -3,7 +3,7 @@ namespace task;
 
 class TaskController
 {
-    /** @var \wsCore\DbAccess\EntityManager */
+    /** @var \WScore\DbAccess\EntityManager */
     protected $em;
 
     /** @var \wsModule\Alt\Web\FrontMC */
@@ -12,15 +12,15 @@ class TaskController
     /** @var \task\views\taskView */
     protected $view;
 
-    /** @var \wsCore\DbAccess\Role */
+    /** @var \WScore\DbAccess\Role */
     protected $role;
     /**
-     * @param \wsCore\DbAccess\EntityManager $em
+     * @param \WScore\DbAccess\EntityManager $em
      * @param \task\views\taskView           $view
-     * @param \wsCore\DbAccess\Role          $role
+     * @param \WScore\DbAccess\Role          $role
      * @DimInjection get EntityManager
      * @DimInjection get \task\views\taskView
-     * @DimInjection get \wsCore\DbAccess\Role
+     * @DimInjection get \WScore\DbAccess\Role
      */
     public function __construct( $em, $view, $role )
     {
@@ -44,7 +44,7 @@ class TaskController
      * and jump back to the task list if successful.
      * returns false if save fails.
      *
-     * @param \wsCore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DbAccess\Entity_Interface $entity
      * @return views\taskView
      */
     public function contextLoadAndSave( $entity )

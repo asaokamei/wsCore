@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\Html;
 require( __DIR__ . '/../../autoloader.php' );
-use \wsCore\Html\Tags as Tags;
+use \WScore\Html\Tags as Tags;
 
 class Tags_Test extends \PHPUnit_Framework_TestCase
 {

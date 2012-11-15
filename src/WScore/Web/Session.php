@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Web;
+namespace WScore\Web;
 
 /**
  * Session wrapper.

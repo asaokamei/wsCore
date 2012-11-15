@@ -1,12 +1,12 @@
 <?php
 namespace wsTests\DiContainer;
-use \wsCore\DiContainer\Dimplet as Dimplet;
+use \WScore\DiContainer\Dimplet as Dimplet;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
 class Dimple_Test extends \PHPUnit_Framework_TestCase
 {
-    /** @var \wsCore\DiContainer\Dimplet */
+    /** @var \WScore\DiContainer\Dimplet */
     var $container;
     
     public function setUp() 

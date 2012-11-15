@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 class Relation_HasOne implements Relation_Interface
 {
@@ -36,7 +36,7 @@ class Relation_HasOne implements Relation_Interface
     /**
      * @param Entity_Interface $target
      * @throws \RuntimeException
-     * @return \wsCore\DbAccess\Relation_HasOne|\wsCore\DbAccess\Relation_Interface
+     * @return \WScore\DbAccess\Relation_HasOne|\WScore\DbAccess\Relation_Interface
      */
     public function set( $target ) 
     {
@@ -105,7 +105,7 @@ class Relation_HasOne implements Relation_Interface
 
     /**
      * @param string $order
-     * @return \wsCore\DbAccess\Relation_Interface
+     * @return \WScore\DbAccess\Relation_Interface
      */
     public function setOrder( $order ) {
         return $this;
@@ -113,7 +113,7 @@ class Relation_HasOne implements Relation_Interface
 
     /**
      * @param array $values
-     * @return \wsCore\DbAccess\Relation_Interface
+     * @return \WScore\DbAccess\Relation_Interface
      */
     public function setValues( $values ) {
         return $this;

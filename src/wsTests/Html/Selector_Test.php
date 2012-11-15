@@ -1,11 +1,11 @@
 <?php
 namespace wsTests\Html;
 require( __DIR__ . '/../../autoloader.php' );
-use \wsCore\Core;
+use \WScore\Core;
 
 Core::go();
-/** @var $selector \wsCore\Html\Selector */
-$selector = Core::get( '\wsCore\Html\Selector' );
+/** @var $selector \WScore\Html\Selector */
+$selector = Core::get( '\WScore\Html\Selector' );
 
 /**
  * todo: make PHPUnit tests

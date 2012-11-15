@@ -2,14 +2,14 @@
 namespace wsTests\DataMapper;
 
 require_once( __DIR__ . '/../../autoloader.php' );
-use \wsCore\Core;
+use \WScore\Core;
 
 class EntityManagerMySql extends \PHPUnit_Framework_TestCase
 {
     /** @var string */
     public $config;
 
-    /** @var \wsCore\DbAccess\Query */
+    /** @var \WScore\DbAccess\Query */
     public $query;
 
     /** @var \wsTests\DataMapper\Mock\EntityManager */
@@ -24,7 +24,7 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     function setUp()
     {
-        $this->config = 'dsn=mysql:dbname=test_wsCore;charset=utf8 username=admin password=admin';
+        $this->config = 'dsn=mysql:dbname=test_WScore;charset=utf8 username=admin password=admin';
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
@@ -34,8 +34,8 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $this->friend = Core::get( '\wsTests\DataMapper\Model\Friend' );
         $this->contact= Core::get( '\wsTests\DataMapper\Model\Contact' );
         class_exists( '\wsTests\DataMapper\SetUp' );
-        class_exists( '\wsCore\DbAccess\Relation' );
-        class_exists( '\wsCore\DbAccess\Relation_HasOne' );
+        class_exists( '\WScore\DbAccess\Relation' );
+        class_exists( '\WScore\DbAccess\Relation_HasOne' );
         $this->setupFriend();
         $this->setupContact();
     }

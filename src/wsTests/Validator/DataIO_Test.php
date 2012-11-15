@@ -2,11 +2,11 @@
 namespace wsTests\Validator;
 require_once( __DIR__ . '/../../autoloader.php' );
 
-use \wsCore\Core;
+use \WScore\Core;
 
 class DataIO_Test extends \PHPUnit_Framework_TestCase
 {
-    /** @var \wsCore\Validator\DataIO */
+    /** @var \WScore\Validator\DataIO */
     var $dio;
     public function setUp()
     {

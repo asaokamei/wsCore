@@ -1,18 +1,18 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 class Role_Input implements Role_Interface
 {
-    /** @var \wsCore\DbAccess\EntityManager */
+    /** @var \WScore\DbAccess\EntityManager */
     private $em;
 
-    /** @var \wsCore\DbAccess\Dao */
+    /** @var \WScore\DbAccess\Dao */
     private $model;
 
-    /** @var \wsCore\DbAccess\Entity_Interface */
+    /** @var \WScore\DbAccess\Entity_Interface */
     private $entity;
 
-    /** @var \wsCore\Validator\DataIO */
+    /** @var \WScore\Validator\DataIO */
     private $dio;
     
     /** @var array */
@@ -25,16 +25,16 @@ class Role_Input implements Role_Interface
      */
     private $is_valid = true;
 
-    /** @var \wsCore\Html\Selector */
+    /** @var \WScore\Html\Selector */
     private $selector;
     
     /** @var string                html, form, or ...? */
     private $html_type = 'html';
     // +----------------------------------------------------------------------+
     /**
-     * @param \wsCore\DbAccess\EntityManager    $em
-     * @param \wsCore\Validator\DataIO          $dio
-     * @param \wsCore\Html\Selector             $selector
+     * @param \WScore\DbAccess\EntityManager    $em
+     * @param \WScore\Validator\DataIO          $dio
+     * @param \WScore\Html\Selector             $selector
      */
     public function __construct( $em, $dio, $selector )
     {
@@ -44,7 +44,7 @@ class Role_Input implements Role_Interface
     }
 
     /**
-     * @param \wsCore\DbAccess\Entity_Interface    $entity
+     * @param \WScore\DbAccess\Entity_Interface    $entity
      */
     public function register( $entity ) 
     {

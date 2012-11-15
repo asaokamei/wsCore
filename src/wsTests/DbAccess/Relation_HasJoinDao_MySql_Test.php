@@ -4,7 +4,7 @@ namespace wsTests\DbAccess;
 ini_set( 'display_errors', 1 );
 error_reporting( E_ALL );
 
-use \wsCore\Core;
+use \WScore\Core;
 require_once( __DIR__ . '/../../autoloader.php' );
 
 class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
@@ -12,7 +12,7 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
     /** @var mixed */
     public $config;
 
-    /** @var \wsCore\DbAccess\Query */
+    /** @var \WScore\DbAccess\Query */
     public $query;
 
     /** @var Dao_Friend */
@@ -23,7 +23,7 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     function setUp()
     {
-        $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
+        $this->config = 'db=mysql dbname=test_WScore username=admin password=admin';
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
@@ -36,8 +36,8 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->network = Core::get( '\wsTests\DbAccess\Dao_Network' );
 
         // load classes before test begins; easier debugging.
-        class_exists( '\wsCore\DbAccess\Relation' );
-        class_exists( '\wsCore\DbAccess\Relation_HasJoinDao' );
+        class_exists( '\WScore\DbAccess\Relation' );
+        class_exists( '\WScore\DbAccess\Relation_HasJoinDao' );
     }
 
     /**

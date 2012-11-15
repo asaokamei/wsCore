@@ -1,18 +1,18 @@
 <?php
 namespace wsTests\DbAccess;
-use \wsCore\DbAccess\Rdb as Rdb;
+use \WScore\DbAccess\Rdb as Rdb;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
 class Rdb_PgSql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
-    /** @var \wsCore\DbAccess\Rdb */
+    /** @var \WScore\DbAccess\Rdb */
     var $rdb;
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->config = 'dsn=pgsql:host=localhost;dbname=test_wsCore;user=pg_admin;password=admin';
+        $this->config = 'dsn=pgsql:host=localhost;dbname=test_WScore;user=pg_admin;password=admin';
         $this->rdb    = new Rdb();
     }
     // +----------------------------------------------------------------------+
@@ -74,7 +74,7 @@ class Rdb_PgSql_Test extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function test_connection_to_wsCore_db()
+    public function test_connection_to_WScore_db()
     {
         // should not throw any exceptions.
         $pdo = $this->rdb->connect( $this->config );

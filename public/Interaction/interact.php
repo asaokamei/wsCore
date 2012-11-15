@@ -1,14 +1,14 @@
 <?php
 namespace Interaction;
 
-class interact extends \wsCore\Web\Interaction
+class interact extends \WScore\Web\Interaction
 {
     /**
-     * @param \wsCore\Web\Session $session
-     * @param \wsCore\DbAccess\Role $role
+     * @param \WScore\Web\Session $session
+     * @param \WScore\DbAccess\Role $role
      * @param \Interaction\view1 $view
      * @DimInjection Fresh Session
-     * @DimInjection Get   \wsCore\DbAccess\Role
+     * @DimInjection Get   \WScore\DbAccess\Role
      * @DimInjection Get   interactView
      */
     public function __construct( $session, $role, $view ) {

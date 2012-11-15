@@ -1,18 +1,18 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 class Role_Active implements Role_Interface
 {
     const ACTION_NONE  = 'act-none';
     const ACTION_SAVE  = 'act-save';
 
-    /** @var \wsCore\DbAccess\EntityManager */
+    /** @var \WScore\DbAccess\EntityManager */
     private $em;
 
-    /** @var \wsCore\DbAccess\Dao */
+    /** @var \WScore\DbAccess\Dao */
     private $model;
 
-    /** @var \wsCore\DbAccess\Entity_Interface */
+    /** @var \WScore\DbAccess\Entity_Interface */
     private $entity;
 
     /** @var string */
@@ -20,7 +20,7 @@ class Role_Active implements Role_Interface
 
     // +----------------------------------------------------------------------+
     /**
-     * @param \wsCore\DbAccess\EntityManager    $em
+     * @param \WScore\DbAccess\EntityManager    $em
      */
     public function __construct( $em )
     {
@@ -28,7 +28,7 @@ class Role_Active implements Role_Interface
     }
 
     /**
-     * @param \wsCore\DbAccess\Entity_Interface    $entity
+     * @param \WScore\DbAccess\Entity_Interface    $entity
      */
     public function register( $entity )
     {

@@ -1,10 +1,10 @@
 <?php
 
-class wsCore_SuiteTests
+class WScore_SuiteTests
 {
     public static function suite()
     {
-        $suite = new \PHPUnit_Framework_TestSuite( 'all tests for wsCore\'s' );
+        $suite = new \PHPUnit_Framework_TestSuite( 'all tests for WScore\'s' );
         $folder = __DIR__ . '/';
 
         // Validator Tests

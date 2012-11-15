@@ -10,7 +10,7 @@ Dao for Table
 
 Extend dao for each table to set up information about its table. 
 
-    MyTable extends \wsCore\DbAccess\Dao
+    MyTable extends \WScore\DbAccess\Dao
     {
         public function __construct( $dao=NULL ) {
             parent::__construct( $dao );
@@ -38,7 +38,7 @@ Setting Dao
 
 set up its properties
 
-    MyTable extends \wsCore\DbAccess\Dao
+    MyTable extends \WScore\DbAccess\Dao
     {
         public function __construct() {
             parent::__construct();
@@ -61,7 +61,7 @@ set up its properties
 set up selectors for each property. 
 This will create HTML selector very easily. 
 
-    MyTable extends \wsCore\DbAccess\Dao
+    MyTable extends \WScore\DbAccess\Dao
     {
         public function __construct() {
             parent::__construct();
@@ -87,9 +87,9 @@ This will create HTML selector very easily.
 set up validation rules for each property. 
 it is also a nice idea to create a method for validation set ups. 
 
-Please refer to Validator and DataIO class in \wsCore\Validator\ folder for validation rules. 
+Please refer to Validator and DataIO class in \WScore\Validator\ folder for validation rules.
 
-    MyTable extends \wsCore\DbAccess\Dao
+    MyTable extends \WScore\DbAccess\Dao
     {
         public function __construct() {
             parent::__construct();
@@ -104,7 +104,7 @@ Please refer to Validator and DataIO class in \wsCore\Validator\ folder for vali
         }
     }
     $dao = Core::get( '\path\to\MyTable' );
-    $dio = Core::get( '\wsCore\Validator\DataIO' ); // use DataIO for validation. 
+    $dio = Core::get( '\WScore\Validator\DataIO' ); // use DataIO for validation.
     echo $dao->validate( $dio, 'name' );
     echo $dao->validate( $dio, 'age'  );
     echo $dao->validate( $dio, 'bdate' );
@@ -113,7 +113,7 @@ Please refer to Validator and DataIO class in \wsCore\Validator\ folder for vali
 
 set up restriction to specify which properties can be saved to database. 
 
-    MyTable extends \wsCore\DbAccess\Dao
+    MyTable extends \WScore\DbAccess\Dao
     {
         public function __construct() {
             parent::__construct();

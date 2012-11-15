@@ -15,7 +15,7 @@ Examples
 Accesses MySql test database using Pdo. 
 
     Core::setPdo( 'db=mysql dbname=test user=test passwd=test' );
-    $query = Core::get( '\wsCore\DbAccess\Query' );
+    $query = Core::get( '\WScore\DbAccess\Query' );
     $query->table( 'table' )->select();
 
 Issue another SQL statement. 
@@ -102,7 +102,7 @@ insert data into table and get the last ID.
 Prepared Statement
 ------------------
 
-As a default, wsCore uses prepared statement in the DbAccess library. 
+As a default, WScore uses prepared statement in the DbAccess library.
 i.e. all of the above examples uses prepared statement internally as well. 
 
 ###Run Prepared Statement
@@ -138,7 +138,7 @@ To use quoted sql instead of prepared statement,
 
 if you want to use quote for all the sql statement, 
 
-    \wsCore\DbAccess\Sql::$pqDefault = 'quote'. 
+    \WScore\DbAccess\Sql::$pqDefault = 'quote'.
 
 To undo the quote to prepared statement, use 'prepare' instead of 'quote' in the examples above. 
 

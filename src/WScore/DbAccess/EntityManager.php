@@ -1,12 +1,12 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 class EntityManager
 {
     const TYPE_GET  = 'get';   // a new record for insert.
     const TYPE_NEW  = 'new';   // record from db for update.
 
-    /** @var \wsCore\DbAccess\Dao[] */
+    /** @var \WScore\DbAccess\Dao[] */
     protected $models = array();
 
     /** @var Entity_Interface[] */
@@ -18,11 +18,11 @@ class EntityManager
     /** @var int */
     protected $newId = 1;
 
-    /** @var \wsCore\DiContainer\Dimplet */
+    /** @var \WScore\DiContainer\Dimplet */
     protected $container;
 
     /**
-     * @param \wsCore\DiContainer\Dimplet $container
+     * @param \WScore\DiContainer\Dimplet $container
      * @DimInjection Fresh Container
      */
     public function __construct( $container ) {
@@ -36,7 +36,7 @@ class EntityManager
     //  Managing Model/Dao.
     // +----------------------------------------------------------------------+
     /**
-     * @param \wsCore\DbAccess\Dao $model
+     * @param \WScore\DbAccess\Dao $model
      * @return EntityManager
      */
     public function registerModel( $model ) {
@@ -48,7 +48,7 @@ class EntityManager
 
     /**
      * @param Entity_Interface|string $entity
-     * @return \wsCore\DbAccess\Dao
+     * @return \WScore\DbAccess\Dao
      */
     public function getModel( $entity ) {
         $model = ( $entity instanceof Entity_Interface ) ? $entity->_get_Model(): $entity;
@@ -95,7 +95,7 @@ class EntityManager
      * @param Entity_Interface $entity
      * @param string $prop
      * @param string $value
-     * @return \wsCore\DbAccess\EntityManager
+     * @return \WScore\DbAccess\EntityManager
      */
     public  function setEntityProperty( $entity, $prop, $value ) {
         /** @var $ref \ReflectionProperty */
@@ -147,7 +147,7 @@ class EntityManager
      * @param Entity_Interface $entity
      * @param string $type
      * @param string $id
-     * @return \wsCore\DbAccess\EntityManager
+     * @return \WScore\DbAccess\EntityManager
      */
     public function setupEntity( $entity, $type=NULL, $id=NULL )
     {
@@ -281,7 +281,7 @@ class EntityManager
     /**
      * @param Entity_Interface $entity
      * @param string           $name
-     * @return \wsCore\DbAccess\Relation_Interface
+     * @return \WScore\DbAccess\Relation_Interface
      */
     public function relation( $entity, $name )
     {

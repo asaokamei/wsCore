@@ -7,12 +7,12 @@ require_once( __DIR__ . '/view1.php' );
 require_once( __DIR__ . '/view2.php' );
 require_once( __DIR__ . '/interact.php' );
 
-class selGender extends \wsCore\Html\Selector
+class selGender extends \WScore\Html\Selector
 {
     // +----------------------------------------------------------------------+
     /**
-     * @param \wsCore\Html\Form $form
-     * @DimInjection Fresh \wsCore\Html\Form
+     * @param \WScore\Html\Form $form
+     * @DimInjection Fresh \WScore\Html\Form
      */
     public function __construct( $form )
     {

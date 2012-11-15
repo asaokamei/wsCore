@@ -1,6 +1,6 @@
 <?php
 namespace wsTests\DbAccess;
-use \wsCore\Core;
+use \WScore\Core;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
@@ -11,7 +11,7 @@ require_once( __DIR__ . '/../../autoloader.php' );
 class Query_PgSql_Quoted_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
-    /** @var \wsCore\DbAccess\Query */
+    /** @var \WScore\DbAccess\Query */
     var $query = NULL;
     var $table = 'test_query';
     var $column_list = '';
@@ -25,12 +25,12 @@ class Query_PgSql_Quoted_Test extends \PHPUnit_Framework_TestCase
     {
         Core::clear();
         Core::go();
-        Core::setPdo( 'dsn=pgsql:host=localhost;dbname=test_wsCore;user=pg_admin;password=admin' );
+        Core::setPdo( 'dsn=pgsql:host=localhost;dbname=test_WScore;user=pg_admin;password=admin' );
     }
     public function setUp()
     {
-        /** @var \wsCore\DbAccess\Query */
-        \wsCore\DbAccess\Query::$pqDefault = 'quote';
+        /** @var \WScore\DbAccess\Query */
+        \WScore\DbAccess\Query::$pqDefault = 'quote';
         $this->query = Core::get( 'Query');
         $this->column_list = '
             id SERIAL,
@@ -49,7 +49,7 @@ class Query_PgSql_Quoted_Test extends \PHPUnit_Framework_TestCase
      */
     public function setUp_TestTable_perm()
     {
-        $this->table = 'test_wsCorePerm';
+        $this->table = 'test_WScorePerm';
         $this->setUp_TestTable();
     }
 
@@ -107,7 +107,7 @@ class Query_PgSql_Quoted_Test extends \PHPUnit_Framework_TestCase
 
         // add some data
         $return = $this->query->table( $this->table )->insert( $data );
-        $this->assertEquals( 'wsCore\DbAccess\Query', get_class( $return ) );
+        $this->assertEquals( 'WScore\DbAccess\Query', get_class( $return ) );
         // last ID should be 1, since it is the first data.
         $id = $this->query->lastId();
         $this->assertEquals( '1', $id );

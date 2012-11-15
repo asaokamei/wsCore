@@ -1,13 +1,13 @@
 <?php
 namespace wsTests\DbAccess;
-use \wsCore\DbAccess\Rdb as Rdb;
+use \WScore\DbAccess\Rdb as Rdb;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
 class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
 {
     var $mockPdo;
-    /** @var \wsCore\DbAccess\Rdb */
+    /** @var \WScore\DbAccess\Rdb */
     var $rdb;
     // +----------------------------------------------------------------------+
     public function setUp()

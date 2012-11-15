@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Html;
+namespace WScore\Html;
 
 class Selector_DateDay extends Selector
 {

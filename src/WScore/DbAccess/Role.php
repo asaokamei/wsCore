@@ -1,21 +1,21 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 class Role
 {
-    /** @var \wsCore\DbAccess\EntityManager */
+    /** @var \WScore\DbAccess\EntityManager */
     private $em;
 
-    /** @var \wsCore\Validator\DataIO */
+    /** @var \WScore\Validator\DataIO */
     private $dio;
 
-    /** @var \wsCore\Html\Selector */
+    /** @var \WScore\Html\Selector */
     private $selector;
 
     /**
-     * @param \wsCore\DbAccess\EntityManager    $em
-     * @param \wsCore\Validator\DataIO          $dio
-     * @param \wsCore\Html\Selector             $selector
+     * @param \WScore\DbAccess\EntityManager    $em
+     * @param \WScore\Validator\DataIO          $dio
+     * @param \WScore\Html\Selector             $selector
      * @DimInjection get  EntityManager
      * @DimInjection get  DataIO
      * @DimInjection get  Selector
@@ -30,7 +30,7 @@ class Role
     /**
      * @param string $modelName
      * @param string $id
-     * @return \wsCore\DbAccess\Entity_Interface
+     * @return \WScore\DbAccess\Entity_Interface
      */
     public function getEntity( $modelName, $id )
     {
@@ -42,7 +42,7 @@ class Role
      * @param string        $modelName
      * @param array|string  $data
      * @param null|string   $id
-     * @return \wsCore\DbAccess\Entity_Interface
+     * @return \WScore\DbAccess\Entity_Interface
      */
     public function newEntity( $modelName, $data=array(), $id=null )
     {
@@ -51,7 +51,7 @@ class Role
     }
 
     /**
-     * @param \wsCore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DbAccess\Entity_Interface $entity
      * @param string $role
      * @return mixed
      */
@@ -77,8 +77,8 @@ class Role
     }
 
     /**
-     * @param \wsCore\DbAccess\Entity_Interface $entity
-     * @return \wsCore\DbAccess\Role_Active
+     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @return \WScore\DbAccess\Role_Active
      */
     public function applyActive( $entity )
     {
@@ -89,8 +89,8 @@ class Role
     }
 
     /**
-     * @param \wsCore\DbAccess\Entity_Interface $entity
-     * @return \wsCore\DbAccess\Role_Input
+     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @return \WScore\DbAccess\Role_Input
      */
     public function applyLoadable( $entity )
     {

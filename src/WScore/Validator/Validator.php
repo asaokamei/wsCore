@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Validator;
+namespace WScore\Validator;
 
 /**
  * Validator class to validates a single value, or an array of string,

@@ -1,7 +1,7 @@
-wsCore Documents
+WScore Documents
 ================
 
-API and how to use wsCore framework. 
+API and how to use WScore framework.
 
 Some of them are a wish list at this point. 
 
@@ -9,7 +9,7 @@ Call it a Document Driven Development...
 
 How to Start
 ------------
-Starting wsCore Framework. 
+Starting WScore Framework.
 
     Core::go();
 

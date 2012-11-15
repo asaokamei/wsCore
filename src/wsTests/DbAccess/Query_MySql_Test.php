@@ -1,6 +1,6 @@
 <?php
 namespace wsTests\DbAccess;
-use \wsCore\Core;
+use \WScore\Core;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 
@@ -11,18 +11,18 @@ require_once( __DIR__ . '/../../autoloader.php' );
 class Query_MySql_Test extends \PHPUnit_Framework_TestCase
 {
     var $config = array();
-    /** @var \wsCore\DbAccess\Query */
+    /** @var \WScore\DbAccess\Query */
     var $query = NULL;
-    var $table = 'test_wsCore';
+    var $table = 'test_WScore';
     var $column_list = '';
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->config = 'db=mysql dbname=test_wsCore username=admin password=admin';
+        $this->config = 'db=mysql dbname=test_WScore username=admin password=admin';
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );
-        /** @var \wsCore\DbAccess\Query */
+        /** @var \WScore\DbAccess\Query */
         $this->query = Core::get( 'Query');
         $this->column_list = '
             id int NOT NULL AUTO_INCREMENT,
@@ -41,7 +41,7 @@ class Query_MySql_Test extends \PHPUnit_Framework_TestCase
      */
     public function setUp_TestTable_perm()
     {
-        $this->table = 'test_wsCorePerm';
+        $this->table = 'test_WScorePerm';
         $this->setUp_TestTable();
     }
 
@@ -99,7 +99,7 @@ class Query_MySql_Test extends \PHPUnit_Framework_TestCase
 
         // add some data
         $return = $this->query->table( $this->table )->insert( $data );
-        $this->assertEquals( 'wsCore\DbAccess\Query', get_class( $return ) );
+        $this->assertEquals( 'WScore\DbAccess\Query', get_class( $return ) );
         // last ID should be 1, since it is the first data.
         $id = $this->query->lastId();
         $this->assertEquals( '1', $id );

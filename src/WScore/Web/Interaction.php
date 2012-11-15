@@ -1,18 +1,18 @@
 <?php
-namespace wsCore\Web;
+namespace WScore\Web;
 
 class Interaction
 {
     /** @var array                          data to register as session data */
     protected $registeredData = array();
 
-    /** @var \wsCore\Web\Session             saves itself and token for CSRF */
+    /** @var \WScore\Web\Session             saves itself and token for CSRF */
     protected $session;
 
-    /** @var \wsCore\DbAccess\Role */
+    /** @var \WScore\DbAccess\Role */
     protected $role;
     
-    /** @var \wsCore\Html\PageView */
+    /** @var \WScore\Html\PageView */
     protected $view;
     
     public $showForm = 'showForm';
@@ -24,8 +24,8 @@ class Interaction
     //  object management
     // +----------------------------------------------------------------------+
     /**
-     * @param \wsCore\Web\Session $session
-     * @param \wsCore\DbAccess\Role $role
+     * @param \WScore\Web\Session $session
+     * @param \WScore\DbAccess\Role $role
      * @DimInjection Fresh Session
      * @DimInjection Get   \WScore\DbAccess\Role
      */
@@ -70,8 +70,8 @@ class Interaction
     /**
      * @param string $controller
      * @param string $action
-     * @param \wsCore\Html\PageView $view
-     * @return \wsCore\Html\PageView
+     * @param \WScore\Html\PageView $view
+     * @return \WScore\Html\PageView
      */
     public function run( $controller, $action, $view )
     {
@@ -84,7 +84,7 @@ class Interaction
     /**
      * @param string      $controller
      * @param null|string $default
-     * @return \wsCore\Html\PageView
+     * @return \WScore\Html\PageView
      */
     public function action( $controller, $default=null )
     {
@@ -131,7 +131,7 @@ class Interaction
      * @return mixed
      */
     public function restoreData( $name ) {
-        return \wsCore\Utilities\Tools::getKey( $this->registeredData, $name );
+        return \WScore\Utilities\Tools::getKey( $this->registeredData, $name );
     }
 
     /**
@@ -143,7 +143,7 @@ class Interaction
     // +----------------------------------------------------------------------+
 
     /**
-     * @param \wsCore\DbAccess\Role_Input  $role
+     * @param \WScore\DbAccess\Role_Input  $role
      * @param string $action
      * @param array $formList
      * @param string $load
@@ -212,7 +212,7 @@ class Interaction
      * returns false if no task was performed (no action for this steps), 
      * or failed to perform the task in verifyToken. 
      * 
-     * @param \wsCore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DbAccess\Entity_Interface $entity
      * @param string                            $action
      * @param array                             $steps
      * @return bool|string

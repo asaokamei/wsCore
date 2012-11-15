@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 class PdObject
 {

@@ -1,7 +1,7 @@
 <?php
 include( __DIR__ . '/autoload.php' );
 include( __DIR__ . '/../src/autoloader.php' );
-use wsCore\Core;
+use WScore\Core;
 Core::go();
 Core::setPdo( array( 'dsn' => 'sqlite:' . __DIR__ . '/task/data/tasks.sqlite' ) );
 

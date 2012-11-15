@@ -7,7 +7,7 @@ namespace wsModule\Alt\Web;
  */
 class FrontMC
 {
-    /** @var \wsCore\DiContainer\Dimplet */
+    /** @var \WScore\DiContainer\Dimplet */
     protected $container;
 
     /** @var \wsModule\Alt\Web\Request */
@@ -27,7 +27,7 @@ class FrontMC
     public $debug = false;
 
     /**
-     * @param \wsCore\DiContainer\Dimplet $container
+     * @param \WScore\DiContainer\Dimplet $container
      * @param \wsModule\Alt\Web\Request $request
      * @param \wsModule\Alt\Web\Router  $router
      * @param \wsModule\Alt\Web\Response  $response

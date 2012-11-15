@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 class SqlBuilder
 {
@@ -116,7 +116,7 @@ class SqlBuilder
     {
         if( is_array( $sql ) ) $sql = (object) $sql;
         $count = clone $sql;
-        $count->columns   = 'COUNT(*) AS wsCore__Count__';
+        $count->columns   = 'COUNT(*) AS WScore__Count__';
         $count->forUpdate = FALSE;
         $select = self::makeSelect( $count );
         return $select;

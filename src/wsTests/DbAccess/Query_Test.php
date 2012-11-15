@@ -5,16 +5,16 @@ require_once( __DIR__ . '/../../autoloader.php' );
 
 class Query_Test extends \PHPUnit_Framework_TestCase
 {
-    /** @var \wsCore\DbAccess\Query */
+    /** @var \WScore\DbAccess\Query */
     var $query;
-    /** @var Mock_QueryPdo|\wsCore\DbAccess\PdObject */
+    /** @var Mock_QueryPdo|\WScore\DbAccess\PdObject */
     var $pdo;
     function setUp()
     {
         /** @var Mock_QueryPdo */
         $this->pdo = new Mock_QueryPdo();
-        /** @var \wsCore\DbAccess\Query */
-        $this->query = new \wsCore\DbAccess\Query( $this->pdo );
+        /** @var \WScore\DbAccess\Query */
+        $this->query = new \WScore\DbAccess\Query( $this->pdo );
     }
     public function getValFromUpdate( $sql, $name ) {
         preg_match( "/{$name}=(:db_prep_[0-9]+)/", $sql, $matches );
@@ -314,11 +314,11 @@ class Query_Test extends \PHPUnit_Framework_TestCase
         $this->query->table( $table );
         $this->query->makeCount()->exec();
         $this->assertContains( $table, $this->pdo->sql );
-        $this->assertEquals( "SELECT COUNT(*) AS wsCore__Count__ FROM {$table}", $this->pdo->sql );
+        $this->assertEquals( "SELECT COUNT(*) AS WScore__Count__ FROM {$table}", $this->pdo->sql );
 
         // test setting column in select
         $this->query->column( 'colA' )->makeCount()->exec();
-        $this->assertEquals( "SELECT COUNT(*) AS wsCore__Count__ FROM {$table}", $this->pdo->sql );
+        $this->assertEquals( "SELECT COUNT(*) AS WScore__Count__ FROM {$table}", $this->pdo->sql );
     }
     public function test_make_simple_select_statement()
     {

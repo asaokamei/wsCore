@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 /**
  * base class for dao's for database tables.
@@ -72,14 +72,14 @@ class Dao
     /** @var Query                                                           */
     protected $query;
 
-    /** @var \wsCore\DbAccess\Entity_Interface    return class from Pdo            */
+    /** @var \WScore\DbAccess\Entity_Interface    return class from Pdo            */
     public $recordClassName = 'WScore\DbAccess\Entity_Generic';
     // +----------------------------------------------------------------------+
     //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+
     /**
-     * @param \wsCore\DbAccess\EntityManager $em
-     * @param \wsCore\DbAccess\Query         $query
+     * @param \WScore\DbAccess\EntityManager $em
+     * @param \WScore\DbAccess\Query         $query
      * @DimInjection   Get      EntityManager
      * @DimInjection   Fresh    Query
      */
@@ -170,7 +170,7 @@ class Dao
         return $values;
     }
     /**
-     * @return \wsCore\DbAccess\Query
+     * @return \WScore\DbAccess\Query
      */
     public function query() {
         $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this, 'get' ) );
@@ -179,11 +179,11 @@ class Dao
 
     /**
      * @param array $data
-     * @return \wsCore\DbAccess\Entity_Interface
+     * @return \WScore\DbAccess\Entity_Interface
      */
     public function getRecord( $data=array() ) 
     {
-        /** @var $record \wsCore\DbAccess\Entity_Interface */
+        /** @var $record \WScore\DbAccess\Entity_Interface */
         $record = new $this->recordClassName( $this, 'new' );
         if( !empty( $data ) ) {
             foreach( $data as $key => $val ) {
@@ -340,7 +340,7 @@ class Dao
     }
 
     /**
-     * @param \wsCore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DbAccess\Entity_Interface $entity
      * @return null|string
      */
     public function getId( $entity ) {
@@ -420,7 +420,7 @@ class Dao
     }
 
     /**
-     * @param \wsCore\DbAccess\Entity_Interface $source
+     * @param \WScore\DbAccess\Entity_Interface $source
      * @param string $name
      * @return Relation_Interface
      */

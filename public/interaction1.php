@@ -1,7 +1,7 @@
 <?php
 require_once( __DIR__ . '/../src/autoloader.php' );
 require_once( __DIR__ . '/Interaction/config.php' );
-use wsCore\Core;
+use WScore\Core;
 
 Core::go();
 Core::setPdo( 'dsn=sqlite::memory:' );
@@ -9,7 +9,7 @@ Core::setPdo( 'dsn=sqlite::memory:' );
 /** @var $model Interaction\model */
 /** @var $intAct Interaction\interact */
 /** @var $view \Interaction\view1 */
-/** @var $entity \wsCore\DbAccess\Role_Input */
+/** @var $entity \WScore\DbAccess\Role_Input */
 
 Core::set( 'interactView', '\Interaction\view1' );
 $model   = Core::get( 'Interaction\model' );
@@ -47,7 +47,7 @@ $entity = $view->get( 'entity' );
             <?php if( $err = $entity->popError( $prop ) ) echo " <span class='formError'>&lt;{$err}&gt;</span>"; ?></dd>
             <?php } ?>
         </dl>
-        <?php echo $view->getHiddenTag( \wsCore\Web\Session::TOKEN_NAME ); ?>
+        <?php echo $view->getHiddenTag( \WScore\Web\Session::TOKEN_NAME ); ?>
         <?php echo $view->bootstrapButtonPrimary( 'button-primary' ); ?>
         <?php echo $view->bootstrapButtonSub( 'button-sub' ); ?>
     </form>

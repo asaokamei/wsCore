@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
 {
@@ -15,12 +15,12 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     /** @var bool */
     protected $_toDelete = false;
 
-    /** @var \wsCore\DbAccess\Relation_Interface[] */
+    /** @var \WScore\DbAccess\Relation_Interface[] */
     protected $_relations = array();
 
     /**
      * TODO: think if this is the right place to set _type and _identifier.
-     * @param null|\wsCore\DbAccess\Dao $model
+     * @param null|\WScore\DbAccess\Dao $model
      * @param null|string               $type
      * @throws \RuntimeException
      */
@@ -73,7 +73,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
 
     /**
      * @param $name
-     * @return \wsCore\DbAccess\Relation_Interface
+     * @return \WScore\DbAccess\Relation_Interface
      */
     public function relation( $name ) {
         if( isset( $this->_relations[ $name ] ) ) return $this->_relations[ $name ];

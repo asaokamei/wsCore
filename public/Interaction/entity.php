@@ -1,7 +1,7 @@
 <?php
 namespace Interaction;
 
-class entity extends \wsCore\DbAccess\Entity_Abstract
+class entity extends \WScore\DbAccess\Entity_Abstract
 {
     protected $_model = 'model';
 

@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 class Query
 {
@@ -13,7 +13,7 @@ class Query
 
     // variables to build SQL statement.
 
-    /** @var null|\wsCore\DbAccess\SqlObject                 */
+    /** @var null|\WScore\DbAccess\SqlObject                 */
     protected $sqlObj = NULL;
 
     /** @var string   SQL Statement created by this class    */
@@ -209,7 +209,7 @@ class Query
     /**
      * @param string $table
      * @param string $id_name
-     * @return \wsCore\DbAccess\Query
+     * @return \WScore\DbAccess\Query
      */
     public function table( $table, $id_name='id' ) {
         $this->clear();

@@ -30,7 +30,7 @@ namespace business
 
 namespace main
 {
-    require_once( __DIR__ . '/../src/wsCore/DiContainer/Dimplet.php' );
+    require_once( __DIR__ . '/../src/WScore/DiContainer/Dimplet.php' );
     $container = new \wsCore\DiContainer\Dimplet();
 
     // set Pdo in the container.

@@ -1,5 +1,5 @@
 <?php
-namespace wsCore;
+namespace WScore;
 
 class Core
 {
@@ -35,7 +35,7 @@ class Core
      * @return Core
      */
     public static function go() {
-        ( static::$_container ) ?: static::$_container = new \wsCore\DiContainer\Dimplet();
+        ( static::$_container ) ?: static::$_container = new \WScore\DiContainer\Dimplet();
         self::_fill( self::$easy );
         static::$_container->set( 'Container', static::$_container );
         return static::$_container;
@@ -90,7 +90,7 @@ class Core
         if( !$class  ) $class  = '\WScore\DbAccess\Rdb';
         if( !$method ) $method = 'connect';
         Static::set( $id, function($c) use( $config, $class, $method ) {
-            /** @var $c  \wsCore\DiContainer\Dimplet */
+            /** @var $c  \WScore\DiContainer\Dimplet */
             $rdb = $c->get( $class );
             return $rdb->$method( $config );
         });

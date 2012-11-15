@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\Html;
 require( __DIR__ . '/../../autoloader.php' );
-use wsCore\Html\Form as Form;
+use WScore\Html\Form as Form;
 
 class Form_Test extends \PHPUnit_Framework_TestCase
 {

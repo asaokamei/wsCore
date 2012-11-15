@@ -1,7 +1,7 @@
 <?php
 namespace task\model;
 
-class tasks extends \wsCore\DbAccess\Dao
+class tasks extends \WScore\DbAccess\Dao
 {
     /** @var string     name of database table     */
     protected $table = 'demoTask';
@@ -38,8 +38,8 @@ class tasks extends \wsCore\DbAccess\Dao
 
     // +----------------------------------------------------------------------+
     /**
-     * @param $em       \wsCore\DbAccess\EntityManager
-     * @param $query    \wsCore\DbAccess\Query
+     * @param $em       \WScore\DbAccess\EntityManager
+     * @param $query    \WScore\DbAccess\Query
      * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query
      */

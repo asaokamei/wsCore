@@ -1,14 +1,14 @@
-wsCore
+WScore
 ======
 
 Core is a static class
-manages configurations and objects for wsCore framework. 
+manages configurations and objects for WScore framework.
 uses DiContainer underneath. 
 
 How to Start
 ------------
 
-Starting wsCore Framework. 
+Starting WScore Framework.
 
     Core::go();
 

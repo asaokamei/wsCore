@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\Utilities;
+namespace WScore\Utilities;
 
 class Tools
 {

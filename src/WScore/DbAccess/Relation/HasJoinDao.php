@@ -1,5 +1,5 @@
 <?php
-namespace wsCore\DbAccess;
+namespace WScore\DbAccess;
 
 /**
  * represents many-to-many relationship using join-table.
@@ -14,7 +14,7 @@ class Relation_HasJoinDao implements Relation_Interface
     /** @var string */
     protected $joinTable;
 
-    /** @var \wsCore\DbAccess\Dao */
+    /** @var \WScore\DbAccess\Dao */
     protected $joinModel;
     protected $joinSourceColumn;
     protected $joinTargetColumn;
@@ -26,7 +26,7 @@ class Relation_HasJoinDao implements Relation_Interface
     /** @var DataRecord */
     protected $target;
 
-    /** @var \wsCore\DbAccess\Dao */
+    /** @var \WScore\DbAccess\Dao */
     protected $targetModel;
     protected $targetModelName;
     protected $targetColumn;
@@ -40,7 +40,7 @@ class Relation_HasJoinDao implements Relation_Interface
      * @param EntityManager $em
      * @param Entity_Interface   $source
      * @param $relInfo
-     * @return \wsCore\DbAccess\Relation_HasJoinDao
+     * @return \WScore\DbAccess\Relation_HasJoinDao
      */
     public function __construct( $em, $source, $relInfo )
     {
@@ -80,7 +80,7 @@ class Relation_HasJoinDao implements Relation_Interface
 
     /**
      * @param array $values
-     * @return \wsCore\DbAccess\Relation_HasJoinDao
+     * @return \WScore\DbAccess\Relation_HasJoinDao
      */
     public function setValues( $values )
     {
@@ -177,7 +177,7 @@ class Relation_HasJoinDao implements Relation_Interface
 
     /**
      * @param string $order
-     * @return \wsCore\DbAccess\Relation_HasJoinDao
+     * @return \WScore\DbAccess\Relation_HasJoinDao
      */
     public function setOrder( $order )
     {

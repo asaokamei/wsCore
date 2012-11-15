@@ -6,7 +6,7 @@ include( __DIR__ . '/../src/autoloader.php' );
 /*
  * set up WScore.
  */
-use wsCore\Core;
+use WScore\Core;
 Core::go();
 Core::setPdo( array( 'dsn' => 'sqlite:' . __DIR__ . '/task/data/tasks.sqlite' ) );
 Core::get( '\task\model\tasks' );

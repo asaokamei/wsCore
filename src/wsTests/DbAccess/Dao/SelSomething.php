@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DbAccess;
 
-class Dao_SelSomething extends \wsCore\Html\Selector
+class Dao_SelSomething extends \WScore\Html\Selector
 {
     var $a, $b, $c, $d;
     function __construct( $a, $b, $c, $d ) {

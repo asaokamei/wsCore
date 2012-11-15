@@ -1,11 +1,11 @@
 <?php
 namespace wsTests\Validator;
-use \wsCore\Validator\Validator as Validator;
+use \WScore\Validator\Validator as Validator;
 require_once( __DIR__ . '/../../autoloader.php' );
 
 class Validator_Test extends \PHPUnit_Framework_TestCase
 {
-    /** @var \wsCore\Validator\Validator */
+    /** @var \WScore\Validator\Validator */
     var $validator;
 
     public function setUp()
