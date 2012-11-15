@@ -31,7 +31,9 @@ class tasks extends \WScore\DbAccess\Model
         'task_id'     => array( 'Selector', 'text' ),
         'task_memo'   => array( 'Selector', 'textarea', 'placeholder:your tasks here | class:span5 | rows:5' ),
         'task_date'   => array( 'Selector', 'date', ),
-        'task_status' => array( 'Selector', 'text' ),
+        'task_status' => array( 'Selector', 'radio', '', array(
+            'items' => array( array( 9, 'done' ), array( 1, 'active' ) )
+        ) ),
     );
 
     public $recordClassName = 'task\entity\task';
