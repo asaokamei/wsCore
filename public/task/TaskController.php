@@ -70,7 +70,7 @@ class TaskController
     public function actIndex()
     {
         $model = $this->em->getModel( 'tasks' );
-        $all   = $model->query()->order( 'task_status' )->select();
+        $all   = $model->query()->order( 'task_status, task_date' )->select();
         $entities = array();
         foreach( $all as $row ) {
             $entities[] = $this->role->applyLoadable( $row );
