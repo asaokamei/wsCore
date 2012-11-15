@@ -1,5 +1,5 @@
-WScore
-======
+core
+====
 
 Core is a static class
 manages configurations and objects for WScore framework.
