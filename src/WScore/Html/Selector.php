@@ -65,6 +65,7 @@ class Selector
         'radio'       => 'radio',
         'radio_hor'   => 'radio',
         'radio_ver'   => 'radio',
+        'checktoggle'    => 'checkToggle',
     );
     public static $encoding = 'UTF-8';
 
@@ -313,11 +314,13 @@ class Selector
      * @param $value
      * @return Form|Tags
      */
-    public function formCheckOne( $value ) {
-        if( $value && $value == $this->item_data[0][0] ) {
+    public function formCheckToggle( $value ) {
+        $forms = $this->form->input( 'hidden', $this->name, $this->item_data[0][0], $this->attributes );
+        if( $value && $value == $this->item_data[1][0] ) {
             $this->attributes[ 'checked' ] = true;
         }
-        return $this->form->checkLabel( $this->name, $this->item_data[0][0], $this->item_data[0][1], $this->attributes );
+        $forms .= $this->form->checkLabel( $this->name, $this->item_data[1][0], $this->item_data[1][1], $this->attributes );
+        return $forms;
     }
     // +----------------------------------------------------------------------+
     /**
