@@ -101,7 +101,7 @@ class SqlBuilder
         elseif( $col == ')' ) {
             $op = $rel = $val = '';
         }
-        elseif( "$val" == "" ) {
+        elseif( "$val" == "" && "$rel" == "" ) {
             return '';
         }
         $where .= trim( "{$op} {$col} {$rel} {$val}" ) . ' ';
