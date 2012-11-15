@@ -1,16 +1,20 @@
-Using Dao
-=========
+Using Model
+===========
 
-Dao, Database Access Object, is a famous design pattern to access database. 
-This class packs all the information necessary to access tables in a database, 
-including table name, primary key and its type, etc. 
+Model class (aka Dao, Database Access Object) packs configurations and settings
+for accessing database for a table, such as table name, primary key, etc.
 
-Dao for Table
--------------
+This class, also contains configurations for
+ - validation rules,
+ - html form selectors,
+for each properties.
+
+Model for Table
+---------------
 
 Extend dao for each table to set up information about its table. 
 
-    MyTable extends \WScore\DbAccess\Dao
+    MyTable extends \WScore\DbAccess\Model
     {
         public function __construct( $dao=NULL ) {
             parent::__construct( $dao );
@@ -22,7 +26,7 @@ Extend dao for each table to set up information about its table.
 
 Core module will automatically inject $dba object into $dao. 
 
-###Dao and DataRecords
+###Model and DataRecords
 
 the DataRecord object is used when retrieving data from dao. 
 
@@ -31,14 +35,14 @@ the DataRecord object is used when retrieving data from dao.
     $data->get( 'name' );     // will get name data
     $data[ 'name' ];          // DataRecord implements ArrayAccess
 
-Setting Dao
+Setting Model
 -----------
 
 ###Set Up Property
 
 set up its properties
 
-    MyTable extends \WScore\DbAccess\Dao
+    MyTable extends \WScore\DbAccess\Model
     {
         public function __construct() {
             parent::__construct();
@@ -61,7 +65,7 @@ set up its properties
 set up selectors for each property. 
 This will create HTML selector very easily. 
 
-    MyTable extends \WScore\DbAccess\Dao
+    MyTable extends \WScore\DbAccess\Model
     {
         public function __construct() {
             parent::__construct();
@@ -89,7 +93,7 @@ it is also a nice idea to create a method for validation set ups.
 
 Please refer to Validator and DataIO class in \WScore\Validator\ folder for validation rules.
 
-    MyTable extends \WScore\DbAccess\Dao
+    MyTable extends \WScore\DbAccess\Model
     {
         public function __construct() {
             parent::__construct();
@@ -113,7 +117,7 @@ Please refer to Validator and DataIO class in \WScore\Validator\ folder for vali
 
 set up restriction to specify which properties can be saved to database. 
 
-    MyTable extends \WScore\DbAccess\Dao
+    MyTable extends \WScore\DbAccess\Model
     {
         public function __construct() {
             parent::__construct();
