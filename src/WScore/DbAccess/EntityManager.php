@@ -244,7 +244,7 @@ class EntityManager
      */
     public function delete( $entity, $delete=true )
     {
-        $this->setEntityProperty( $entity, 'del', $delete );
+        $this->setEntityProperty( $entity, 'toDelete', $delete );
     }
 
     /**
