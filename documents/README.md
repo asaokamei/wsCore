@@ -1,11 +1,10 @@
 WScore Documents
 ================
 
-API and how to use WScore framework.
+A PHP framework for DataMapper and quick HTML form generator that is small in size and intuitive to use.
 
-Some of them are a wish list at this point. 
+DataMapper like Doctrine 2.
 
-Call it a Document Driven Development... 
 
 How to Start
 ------------
@@ -17,8 +16,12 @@ Set up Pdo for database access in easy mode.
 
     Core::goEasy();
     Core::setPdo( 'db=mysql dbname=test user=test passwd=test' );
-    $dba = Core::get( 'DbAccess' );
-    $data = $dba->table( 'myTable' )->find( 'name', 'Mike' )->first();
+    // using Query to get data from myTable table in RDB.
+    $query = Core::get( 'Query' );
+    $data  = $query->table( 'myTable' )->w( 'name' )->eq( 'Mike' )->select();
+    // using Entity Manager
+    $em     = Core::get( 'EntityManager' );
+    $entity = $em->newEntity( 'friend' );
 
 More Contents
 -------------
