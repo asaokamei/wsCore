@@ -6,7 +6,7 @@ namespace WScore\DbAccess;
  * a Table Data Gateway pattern.
  * 
  */
-class Dao
+class Model
 {
     /** @var EntityManager                   manager for model/entity        */
     protected $em;
@@ -214,7 +214,7 @@ class Dao
      *
      * @param string $id
      * @param array $values
-     * @return Dao
+     * @return Model
      */
     public function update( $id, $values )
     {
