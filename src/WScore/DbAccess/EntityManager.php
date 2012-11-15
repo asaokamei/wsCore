@@ -3,9 +3,6 @@ namespace WScore\DbAccess;
 
 class EntityManager
 {
-    const TYPE_GET  = 'get';   // a new record for insert.
-    const TYPE_NEW  = 'new';   // record from db for update.
-
     /** @var \WScore\DbAccess\Dao[] */
     protected $models = array();
 
@@ -155,7 +152,7 @@ class EntityManager
             $this->setEntityProperty( $entity, 'type', $type );
         }
         elseif( !$entity->_get_Type() ) {
-            if( !$type ) $type = self::TYPE_NEW;
+            if( !$type ) $type = Entity_Interface::TYPE_NEW;
             $this->setEntityProperty( $entity, 'type', $type );
         }
         $type = $entity->_get_Type();
@@ -163,10 +160,10 @@ class EntityManager
             $this->setEntityProperty( $entity, 'id', $id );
         }
         elseif( !$entity->_get_Id() ) {
-            if( !$id && $type == self::TYPE_NEW ) {
+            if( !$id && $type == Entity_Interface::TYPE_NEW ) {
                 $id = $this->newId++;
             }
-            elseif( !$id && $type == self::TYPE_GET ) {
+            elseif( !$id && $type == Entity_Interface::TYPE_GET ) {
                 $model = $this->getModel( $entity->_get_Model() );
                 $id = $model->getId( $entity );
             }
@@ -184,7 +181,7 @@ class EntityManager
         $model = $this->getModel( $modelName );
         /** @var $entity Entity_Interface */
         $entity = $model->find( $id );
-        $this->setupEntity( $entity, self::TYPE_GET, $id );
+        $this->setupEntity( $entity, Entity_Interface::TYPE_GET, $id );
         $entity = $this->register( $entity );
         return $entity;
     }
@@ -204,7 +201,7 @@ class EntityManager
         $model = $this->getModel( $modelName );
         /** @var $entity Entity_Interface */
         $entity = $model->getRecord( $data );
-        $this->setupEntity( $entity, self::TYPE_NEW, $id );
+        $this->setupEntity( $entity, Entity_Interface::TYPE_NEW, $id );
         $entity = $this->register( $entity );
         return $entity;
     }
@@ -253,14 +250,14 @@ class EntityManager
         $model  = $this->getModel( $entity );
         $delete = $entity->toDelete();
         if( $delete ) {
-            if( $type == self::TYPE_GET ) {
+            if( $entity->isIdPermanent() ) { // i.e. entity is from db.
                 $model->delete( $entity->_get_Id() );
             }
             // ignore if type is new; just not saving the entity.
         }
-        elseif( $type == self::TYPE_NEW ) {
+        elseif( !$entity->isIdPermanent() ) { // i.e. entity is new. insert this.
             $id = $model->insert( $entity );
-            $this->setupEntity( $entity, self::TYPE_GET , $id );
+            $this->setupEntity( $entity, Entity_Interface::TYPE_GET , $id );
         }
         else {
             $id = $entity->_get_Id();

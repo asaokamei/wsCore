@@ -69,7 +69,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
      * @return bool
      */
     public function isIdPermanent() {
-        return $this->_type == EntityManager::TYPE_GET;
+        return $this->_type == Entity_Interface::TYPE_GET;
     }
     /**
      * @return null|string
