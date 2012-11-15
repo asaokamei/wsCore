@@ -71,11 +71,14 @@ class Selector
     // +----------------------------------------------------------------------+
     /**
      * @param Form $form
+     * @param null $style
      * @DimInjection Fresh \WScore\Html\Form
      */
-    public function __construct( $form )
+    public function __construct( $form, $style=null )
     {
         $this->form = $form;
+        if( $style ) $this->style = $style;
+        // setup filter for html safe value.
         $this->htmlFilter = function( $v ) {
             return htmlentities( $v, ENT_QUOTES, 'UTF-8');
         };
@@ -86,15 +89,10 @@ class Selector
      *
      * @param string      $name
      * @param array $option
-     * @param null|\closure $htmlFilter
      */
-    public function set( $name, $option=array(), $htmlFilter=NULL )
+    public function set( $name, $option=array() )
     {
         $this->name  = $name;
-        // setup filter for html safe value.
-        if( $htmlFilter ) {
-            $this->htmlFilter = $htmlFilter;
-        }
         $this->attributes = array_merge( $this->attributes, $option );
     }
 
@@ -104,12 +102,14 @@ class Selector
      * @param string   $style
      * @param string   $name
      * @param string   $option
+     * @param array    $items
      * @param \Closure $htmlFilter
      * @return Selector
      * @throws \RuntimeException
      */
-    public function getInstance( $style, $name, $option=NULL, $htmlFilter=NULL )
+    public function getInstance( $style, $name, $option=null, $items=array(), $htmlFilter=null )
     {
+        $styleToPass = null;
         if( class_exists( $class = '\WScore\Html\Selector_' . ucwords( $style ) ) ) {
             $class = '\WScore\Html\Selector_' . ucwords( $style );
         }        
@@ -117,13 +117,32 @@ class Selector
             $class = $style;
         }
         else {
-            throw new \RuntimeException( "$style not found." );
+            $class = 'WScore\Html\Selector';
+            $styleToPass = $style;
         }
         /** @var $selector Selector */
         $option   = $this->prepareFilter( $option );
-        $selector = new $class( $this->form );
-        $selector->set( $name, $option, $htmlFilter );
+        $selector = new $class( $this->form, $styleToPass );
+        $selector->set( $name, $option );
+        $selector->setItemData( $items );
+        $selector->setHtmlFilter( $htmlFilter );
         return $selector;
+    }
+
+    /**
+     * @param array $items
+     */
+    public function setItemData( $items ) {
+        $this->item_data = $items;
+    }
+
+    /**
+     * @param \Closure $filter
+     */
+    public function setHtmlFilter( $filter ) {
+        if( $filter instanceof \Closure ) {
+            $this->htmlFilter = $filter;
+        }
     }
     // +----------------------------------------------------------------------+
     /**
@@ -229,7 +248,7 @@ class Selector
      * create HTML Form element based on style.
      *
      * @param $value
-     * @return mixed
+     * @return Form|Tags
      */
     public function makeForm( $value )
     {
@@ -250,7 +269,7 @@ class Selector
 
     /**
      * @param $value
-     * @return mixed
+     * @return Form|Tags
      */
     public function formInput( $value ) {
         return $this->form->input( $this->style, $this->name, $value, $this->attributes );
@@ -258,7 +277,7 @@ class Selector
 
     /**
      * @param $value
-     * @return mixed
+     * @return Form|Tags
      */
     public function formTextarea( $value ) {
         return $this->form->textArea( $this->name, $value, $this->attributes );
@@ -266,7 +285,7 @@ class Selector
 
     /**
      * @param $value
-     * @return mixed
+     * @return Form|Tags
      */
     public function formSelect( $value ) {
         $form = $this->form;
@@ -276,7 +295,7 @@ class Selector
 
     /**
      * @param $value
-     * @return mixed
+     * @return Form|Tags
      */
     public function formRadio( $value ) {
         return $this->form->radioBox( $this->name, $this->item_data, $value, $this->attributes );
@@ -284,10 +303,21 @@ class Selector
 
     /**
      * @param $value
-     * @return mixed
+     * @return Form|Tags
      */
     public function formCheck( $value ) {
         return $this->form->checkBox( $this->name, $this->item_data, $value, $this->attributes );
+    }
+
+    /**
+     * @param $value
+     * @return Form|Tags
+     */
+    public function formCheckOne( $value ) {
+        if( $value && $value == $this->item_data[0][0] ) {
+            $this->attributes[ 'checked' ] = true;
+        }
+        return $this->form->checkLabel( $this->name, $this->item_data[0][0], $this->item_data[0][1], $this->attributes );
     }
     // +----------------------------------------------------------------------+
     /**
