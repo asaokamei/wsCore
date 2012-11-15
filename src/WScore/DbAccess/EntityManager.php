@@ -246,7 +246,6 @@ class EntityManager
      */
     public function saveEntity( $entity )
     {
-        $type   = $entity->_get_Type();
         $model  = $this->getModel( $entity );
         $delete = $entity->toDelete();
         if( $delete ) {
