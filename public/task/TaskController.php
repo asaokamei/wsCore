@@ -70,7 +70,7 @@ class TaskController
     public function actIndex()
     {
         $model = $this->em->getModel( 'tasks' );
-        $all   = $model->query()->select();
+        $all   = $model->query()->order( 'task_status' )->select();
         $entities = array();
         foreach( $all as $row ) {
             $entities[] = $this->role->applyLoadable( $row );
@@ -118,6 +118,28 @@ class TaskController
         return $this->view;
     }
 
+    /**
+     * for toggling status between active/done.
+     *
+     * @param array $args
+     * @return views\taskView
+     */
+    public function actDone( $args )
+    {
+        $id = $args[ 'id' ];
+        /** @var $entity \task\entity\task */
+        $entity = $this->em->getEntity( 'tasks', $id );
+        if( $entity->task_status == '1' ) {
+            $entity->task_status = '9';
+        }
+        else {
+            $this->em->delete( $entity );
+        }
+        $this->em->save();
+        $taskUrl = $this->view->get( 'taskUrl' );
+        header( "Location: $taskUrl" );
+        exit;
+    }
     // +----------------------------------------------------------------------+
     //  initialize database
     // +----------------------------------------------------------------------+

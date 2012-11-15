@@ -15,6 +15,7 @@ $routes = array(
     'myTasks/printO'  => array( 'controller' => 'task', 'action' => 'PrintO', 'name' => 'em' ),
     'myTasks/setup'      => array( 'controller' => 'task', 'action' => 'setup' ),
     'myTasks/new'      => array( 'controller' => 'task', 'action' => 'new' ),
+    'myTasks/done/:id'      => array( 'controller' => 'task', 'action' => 'done' ),
     'myTasks/task/:id'      => array( 'controller' => 'task', 'action' => 'task' ),
     'myTasks/:action/:act' => array( 'controller' => 'task', 'act' => '' ),
     'myTasks/' => array( 'controller' => 'task', 'action' => 'index' ),

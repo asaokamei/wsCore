@@ -167,10 +167,12 @@ class taskView
             $table->contain_(
                 $this->tags->tr(
                     $this->tags->td( $row->popHtml( 'task_id' ) ),
-                    $this->tags->td( $row->popHtml( 'task_memo' ) ),
+                    $this->tags->td(
+                        $this->tags->a( $row->popHtml( 'task_memo' ) )->href( $taskUrl . 'task/'.$id )
+                    ),
                     $this->tags->td( $row->popHtml( 'task_date' ) ),
                     $this->tags->td( $row->popHtml( 'task_status' ) ),
-                    $this->tags->td( $this->tags->a( 'modify' )->href( $taskUrl . 'task/'.$id )->_class( 'btn' ) )
+                    $this->tags->td( $this->tags->a( 'done' )->href( $taskUrl . 'done/'.$id )->_class( 'btn' ) )
                 )
             );
         }
