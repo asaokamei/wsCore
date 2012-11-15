@@ -162,4 +162,15 @@ class TaskController
         header( "Location: $taskUrl" );
         exit;
     }
+
+    public function actPrintO( $args ) {
+        $name = $args[ 'name' ];
+        require_once( __DIR__ . '/../../vendor/print_o/src.php' );
+
+        if( strtolower( $name ) == 'model' ) {
+            print_o( $this->em->getModel( 'tasks' ) );
+        }
+        print_o( $this->$name );
+
+    }
 }

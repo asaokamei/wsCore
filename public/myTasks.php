@@ -11,6 +11,8 @@ $front = Core::get( '\wsModule\Alt\Web\FrontMC' );
 $front->debug = true;
 $front->namespace = 'task';
 $routes = array(
+    'myTasks/printO/:name'  => array( 'controller' => 'task', 'action' => 'PrintO' ),
+    'myTasks/printO'  => array( 'controller' => 'task', 'action' => 'PrintO', 'name' => 'em' ),
     'myTasks/setup'      => array( 'controller' => 'task', 'action' => 'setup' ),
     'myTasks/new'      => array( 'controller' => 'task', 'action' => 'new' ),
     'myTasks/task/:id'      => array( 'controller' => 'task', 'action' => 'task' ),
