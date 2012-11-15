@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DbAccess;
 
-class Dao_Group extends \WScore\DbAccess\Dao
+class Dao_Group extends \WScore\DbAccess\Model
 {
     /** @var string     name of database table     */
     protected $table = 'myGroup';

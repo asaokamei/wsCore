@@ -24,7 +24,7 @@ class Relation_HasJoined implements Relation_Interface
     /** @var Entity_Interface */
     protected $target;
 
-    /** @var \WScore\DbAccess\Dao */
+    /** @var \WScore\DbAccess\Model */
     protected $targetModel;
     protected $targetModelName;
     protected $targetColumn;

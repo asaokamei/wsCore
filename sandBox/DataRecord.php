@@ -33,7 +33,7 @@ class DataRecord implements \ArrayAccess
     /** @var string|null */
     protected $model      = NULL;
 
-    /** @var \wsCore\DbAccess\Dao      Data Access Object                    */
+    /** @var \wsCore\DbAccess\Model      Data Access Object                    */
     protected $dao        = NULL;
     
     /** @var string                     html type to show                    */
@@ -44,9 +44,9 @@ class DataRecord implements \ArrayAccess
 
     // +----------------------------------------------------------------------+
     /**
-     * @param \wsCore\DbAccess\Dao $dao
+     * @param \wsCore\DbAccess\Model $dao
      * @param string|null $type
-     * @DimInject  Get  Dao
+     * @DimInject  Get  Model
      */
     public function __construct( $dao=NULL, $type=null )
     {
@@ -57,7 +57,7 @@ class DataRecord implements \ArrayAccess
     }
 
     /**
-     * @param $dao  Dao
+     * @param $dao  Model
      */
     public function setDao( $dao ) {
         if( $dao ) {
@@ -68,7 +68,7 @@ class DataRecord implements \ArrayAccess
     }
 
     /**
-     * @return null|\wsCore\DbAccess\Dao
+     * @return null|\wsCore\DbAccess\Model
      */
     public function getDao() {
         return $this->dao;
@@ -298,7 +298,7 @@ class DataRecord implements \ArrayAccess
     //  saving data to db using dao.
     // +----------------------------------------------------------------------+
     /**
-     * @param Dao $dao
+     * @param Model $dao
      * @return DataRecord
      */
     public function insert( $dao=NULL ) 
@@ -312,7 +312,7 @@ class DataRecord implements \ArrayAccess
     }
 
     /**
-     * @param Dao $dao
+     * @param Model $dao
      * @return DataRecord
      */
     public function update( $dao=NULL ) 
@@ -331,7 +331,7 @@ class DataRecord implements \ArrayAccess
     }
 
     /**
-     * @param Dao $dao
+     * @param Model $dao
      * @return DataRecord
      */
     public function deleteRecord( $dao=NULL )

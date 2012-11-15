@@ -6,7 +6,7 @@ class Role_Input implements Role_Interface
     /** @var \WScore\DbAccess\EntityManager */
     private $em;
 
-    /** @var \WScore\DbAccess\Dao */
+    /** @var \WScore\DbAccess\Model */
     private $model;
 
     /** @var \WScore\DbAccess\Entity_Interface */

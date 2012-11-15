@@ -3,7 +3,7 @@ namespace WScore\DbAccess;
 
 class EntityManager
 {
-    /** @var \WScore\DbAccess\Dao[] */
+    /** @var \WScore\DbAccess\Model[] */
     protected $models = array();
 
     /** @var Entity_Interface[] */
@@ -27,10 +27,10 @@ class EntityManager
         return $this->container;
     }
     // +----------------------------------------------------------------------+
-    //  Managing Model/Dao.
+    //  Managing Model/Model.
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DbAccess\Dao $model
+     * @param \WScore\DbAccess\Model $model
      * @return EntityManager
      */
     public function registerModel( $model ) {
@@ -42,7 +42,7 @@ class EntityManager
 
     /**
      * @param Entity_Interface|string $entity
-     * @return \WScore\DbAccess\Dao
+     * @return \WScore\DbAccess\Model
      */
     public function getModel( $entity ) {
         $model = ( $entity instanceof Entity_Interface ) ? $entity->_get_Model(): $entity;

@@ -22,7 +22,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     protected static $_id_for_new = 1;
 
     /**
-     * @param null|\WScore\DbAccess\Dao $model
+     * @param null|\WScore\DbAccess\Model $model
      * @param null|string               $type
      * @throws \RuntimeException
      */

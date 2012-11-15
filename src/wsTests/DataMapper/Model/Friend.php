@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DataMapper\Model;
 
-class Friend extends \WScore\DbAccess\Dao
+class Friend extends \WScore\DbAccess\Model
 {
     /** @var string     name of database table     */
     protected $table = 'mapFriend';

@@ -1,7 +1,7 @@
 <?php
 namespace task\model;
 
-class tasks extends \WScore\DbAccess\Dao
+class tasks extends \WScore\DbAccess\Model
 {
     /** @var string     name of database table     */
     protected $table = 'demoTask';

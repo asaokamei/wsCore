@@ -14,7 +14,7 @@ class Relation_HasJoinDao implements Relation_Interface
     /** @var string */
     protected $joinTable;
 
-    /** @var \WScore\DbAccess\Dao */
+    /** @var \WScore\DbAccess\Model */
     protected $joinModel;
     protected $joinSourceColumn;
     protected $joinTargetColumn;
@@ -26,7 +26,7 @@ class Relation_HasJoinDao implements Relation_Interface
     /** @var DataRecord */
     protected $target;
 
-    /** @var \WScore\DbAccess\Dao */
+    /** @var \WScore\DbAccess\Model */
     protected $targetModel;
     protected $targetModelName;
     protected $targetColumn;

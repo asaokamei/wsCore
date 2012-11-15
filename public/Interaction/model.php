@@ -1,7 +1,7 @@
 <?php
 namespace Interaction;
 
-class model extends \WScore\DbAccess\Dao
+class model extends \WScore\DbAccess\Model
 {
     /** @var string     name of database table     */
     protected $table = 'noDbFriend';

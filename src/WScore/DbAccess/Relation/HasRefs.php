@@ -15,7 +15,7 @@ class Relation_HasRefs implements Relation_Interface
 
     /** @var Entity_Interface */
     protected $target;
-    /** @var Dao */
+    /** @var Model */
     protected $targetDao;
     protected $targetModel;
     protected $targetColumn;
