@@ -1,4 +1,4 @@
-wsCore
+WScore
 ======
 
 PHP library/framework for my work.
@@ -7,18 +7,18 @@ developed and tested on PHP >= 5.3.
 
 ###Statement
 
-wsCore is a simple, easy to use, configurable, and reliable
+WScore is a simple, easy to use, configurable, and reliable
 good PHP library for database and business logic development.
 
 All the goodies from PHP5.3, namespace, DiContainer, PDO, etc.
-are used in wsCore to keep the code clean and simple.
+are used in WScore to keep the code clean and simple.
 
 This, hopefully, eases the maintenance of the developed code
 over the years of service.
 
 ###It's Not a MVC Framework
 
-wsCore does not offer any of MVC stuff found in Web Application
+WScore does not offer any of MVC stuff found in Web Application
 Framework. This library aims to build solid business model and
 its presentation for html.
 
