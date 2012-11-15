@@ -35,13 +35,13 @@ class Query
     public static $pqDefault = 'prepare';
 
     /** @var SqlObject   SqlObject class    */
-    public $sqlObject = '\wsCore\DbAccess\SqlObject';
+    public $sqlObject = '\WScore\DbAccess\SqlObject';
     // +----------------------------------------------------------------------+
     //  Construction and Managing Dba Object.
     // +----------------------------------------------------------------------+
     /**
      * @param PdObject $pdoObj
-     * @DimInjection  Fresh   \wsCore\DbAccess\PdObject
+     * @DimInjection  Fresh   \WScore\DbAccess\PdObject
      */
     public function __construct( $pdoObj=NULL ) {
         $this->pdoObj = $pdoObj;

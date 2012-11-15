@@ -8,19 +8,19 @@ class Core
 
     /** @var array      set easy mode */
     public static $easy = array(
-        'Query'     => '\wsCore\DbAccess\Query',
-        'Validator' => '\wsCore\Validator\Validator',
-        'DataIO'    => '\wsCore\Validator\DataIO',
-        'Selector'  => '\wsCore\Html\Selector',
-        'EntityManager' => '\wsCore\DbAccess\EntityManager',
-        'Session'   => '\wsCore\Web\Session',
+        'Query'     => '\WScore\DbAccess\Query',
+        'Validator' => '\WScore\Validator\Validator',
+        'DataIO'    => '\WScore\Validator\DataIO',
+        'Selector'  => '\WScore\Html\Selector',
+        'EntityManager' => '\WScore\DbAccess\EntityManager',
+        'Session'   => '\WScore\Web\Session',
         '' => '',
     );
 
     /** @var array      set development mode */
     public static $dev = array(
-        '\wsCore\DbAccess\DbAccess'   => '\wsCore\Aspect\LogDba',
-        '\wsCore\Validator\Validator' => '\wsCore\Aspect\LogValidator',
+        '\WScore\DbAccess\DbAccess'   => '\WScore\Aspect\LogDba',
+        '\WScore\Validator\Validator' => '\WScore\Aspect\LogValidator',
     );
     // +----------------------------------------------------------------------+
     /**
@@ -30,7 +30,7 @@ class Core
     }
 
     /**
-     * starts wsCore Framework
+     * starts WScore Framework
      * @static
      * @return Core
      */
@@ -87,7 +87,7 @@ class Core
      */
     public static function setPdo( $config, $id='Pdo', $class=NULL, $method= NULL )
     {
-        if( !$class  ) $class  = '\wsCore\DbAccess\Rdb';
+        if( !$class  ) $class  = '\WScore\DbAccess\Rdb';
         if( !$method ) $method = 'connect';
         Static::set( $id, function($c) use( $config, $class, $method ) {
             /** @var $c  \wsCore\DiContainer\Dimplet */

@@ -73,7 +73,7 @@ class Dao
     protected $query;
 
     /** @var \wsCore\DbAccess\Entity_Interface    return class from Pdo            */
-    public $recordClassName = 'wsCore\DbAccess\Entity_Generic';
+    public $recordClassName = 'WScore\DbAccess\Entity_Generic';
     // +----------------------------------------------------------------------+
     //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+

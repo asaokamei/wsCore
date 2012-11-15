@@ -25,7 +25,7 @@ class Relation
             if( $relName == $name ) {
                 $relInfo[ 'relation_name' ] = $name;
                 $type = $relInfo[ 'relation_type' ];
-                $class = '\wsCore\DbAccess\Relation_' . ucwords( $type );
+                $class = '\WScore\DbAccess\Relation_' . ucwords( $type );
                 $relation = new $class( $em, $source, $relInfo );
             }
         }

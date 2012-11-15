@@ -34,7 +34,7 @@ class DataIO
     // +----------------------------------------------------------------------+
     /**
      * @param $validator
-     * @DimInjection Fresh \wsCore\Validator\Validator
+     * @DimInjection Fresh \WScore\Validator\Validator
      */
     public function __construct( $validator ) 
     {

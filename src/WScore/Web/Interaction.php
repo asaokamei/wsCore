@@ -27,7 +27,7 @@ class Interaction
      * @param \wsCore\Web\Session $session
      * @param \wsCore\DbAccess\Role $role
      * @DimInjection Fresh Session
-     * @DimInjection Get   \wsCore\DbAccess\Role
+     * @DimInjection Get   \WScore\DbAccess\Role
      */
     public function __construct( $session, $role ) {
         $this->session = ($session) ?: $_SESSION;

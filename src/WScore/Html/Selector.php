@@ -71,7 +71,7 @@ class Selector
     // +----------------------------------------------------------------------+
     /**
      * @param Form $form
-     * @DimInjection Fresh \wsCore\Html\Form
+     * @DimInjection Fresh \WScore\Html\Form
      */
     public function __construct( $form )
     {
@@ -110,8 +110,8 @@ class Selector
      */
     public function getInstance( $style, $name, $option=NULL, $htmlFilter=NULL )
     {
-        if( class_exists( $class = '\wsCore\Html\Selector_' . ucwords( $style ) ) ) {
-            $class = '\wsCore\Html\Selector_' . ucwords( $style );
+        if( class_exists( $class = '\WScore\Html\Selector_' . ucwords( $style ) ) ) {
+            $class = '\WScore\Html\Selector_' . ucwords( $style );
         }        
         elseif( class_exists( $style ) ) {
             $class = $style;
