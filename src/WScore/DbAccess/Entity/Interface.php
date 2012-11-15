@@ -12,6 +12,11 @@ interface Entity_Interface
     /**
      * @return null|string
      */
+    public function _get_ModelClass();
+
+    /**
+     * @return null|string
+     */
     public function _get_Type();
 
     /**
@@ -23,6 +28,12 @@ interface Entity_Interface
      * @return null|string
      */
     public function _get_Id();
+
+    /**
+     * @throws \RuntimeException
+     * @return string
+     */
+    public function _get_cenaId();
 
     /**
      * @return bool

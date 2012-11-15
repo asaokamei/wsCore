@@ -133,7 +133,7 @@ class EntityManager
             return $entity;
         }
         $this->setupEntity( $entity );
-        $cenaId = $this->getCenaId( $entity );
+        $cenaId = $entity->_get_cenaId();
         if( array_key_exists( $cenaId, $this->entities ) ) {
             $entity = & $this->entities[ $cenaId ];
         }

@@ -46,6 +46,13 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     /**
      * @return null|string
      */
+    public function _get_ModelClass() {
+        return substr( $this->_model, strrpos( $this->_model, '\\' ) );
+    }
+
+    /**
+     * @return null|string
+     */
     public function _get_Type() {
         $type = $this->_type;
         return $type;
@@ -69,6 +76,25 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
      */
     public function _get_Id() {
         return $this->_identifier;
+    }
+
+    /**
+     * @throws \RuntimeException
+     * @return string
+     */
+    public function _get_cenaId( )
+    {
+        $model  = $this->_get_Model();
+        $type   = $this->_get_Type();
+        $id     = $this->_get_Id();
+        if( !$id ) {
+            throw new \RuntimeException( 'entity without id' );
+        }
+        if( !$type ) {
+            throw new \RuntimeException( 'entity without type' );
+        }
+        $cenaId = "$model.$type.$id";
+        return $cenaId;
     }
 
     /**
