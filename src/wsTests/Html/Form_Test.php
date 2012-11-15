@@ -145,15 +145,15 @@ class Form_Test extends \PHPUnit_Framework_TestCase
         $form = (string) $this->form->radioBox( 'user_age', $ages, '20' );
         $this->assertEquals( '<div class="formListBox"><nl>
   <li><label>
-  <input type="radio" name="user_age[]" value="10" />
+  <input type="radio" name="user_age" value="10" />
   teenage</label>
   </li>
   <li><label>
-  <input type="radio" name="user_age[]" value="20" checked="checked" />
+  <input type="radio" name="user_age" value="20" checked="checked" />
   twenties</label>
   </li>
   <li><label>
-  <input type="radio" name="user_age[]" value="30" />
+  <input type="radio" name="user_age" value="30" />
   thirtish</label>
   </li></nl>
 </div>'."\n", $form );

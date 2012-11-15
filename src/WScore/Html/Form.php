@@ -221,7 +221,9 @@ class Form extends Tags
      * @return Form|Tags
      */
     public function checkBox( $name, $items, $checked=array(), $attributes=array() ) {
-        return $this->doBox( 'check', $name, $items, $checked, $attributes );
+        $div = $this->doBox( 'check', $name, $items, $checked, $attributes );
+        $div->multipleName();
+        return $div;
     }
 
     /**
@@ -250,7 +252,6 @@ class Form extends Tags
                 $this::_()->li( $this::_()->label( $check, $label )
                 ));
         }
-        $div->multipleName();
         return $div;
     }
 
