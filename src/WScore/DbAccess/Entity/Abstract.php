@@ -19,21 +19,18 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     protected $_relations = array();
 
     /**
-     * TODO: think if this is the right place to set _type and _identifier.
      * @param null|\WScore\DbAccess\Dao $model
      * @param null|string               $type
      * @throws \RuntimeException
      */
     public function __construct( $model=null, $type=null )
     {
-        if( $model ) {
-            $this->_identifier = $model->getId( $this );
-            if( !isset( $this->_model ) ) $this->_model = $model->getModelName();
-        }
-        $this->_type = $type;
-        if( !isset( $this->_model ) ) {
+        if( !isset( $model ) ) {
             throw new \RuntimeException( 'model must be defined in Entity' );
         }
+        $this->_identifier = $model->getId( $this );
+        $this->_model = $model->getModelName();
+        $this->_type = $type;
     }
 
     /**
@@ -81,6 +78,9 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
         return $this->_type == Entity_Interface::TYPE_GET;
     }
     /**
+     * note: id and identifier are different. this method returns identifier, which maybe set
+     * for newly created entity. to get the id in the database, use EM's getId() method.
+     *
      * @return null|string
      */
     public function _get_Id() {
@@ -94,8 +94,8 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     public function _get_cenaId( )
     {
         $model  = $this->_get_Model();
-        $type   = $this->_get_Type();
-        $id     = $this->_get_Id();
+        $type   = $this->_type;
+        $id     = $this->_identifier;
         if( !$id ) {
             throw new \RuntimeException( 'entity without id' );
         }
