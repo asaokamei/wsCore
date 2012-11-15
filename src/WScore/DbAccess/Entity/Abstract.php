@@ -18,6 +18,9 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     /** @var \WScore\DbAccess\Relation_Interface[] */
     protected $_relations = array();
 
+    /** @var int */
+    protected static $_id_for_new = 1;
+
     /**
      * @param null|\WScore\DbAccess\Dao $model
      * @param null|string               $type
@@ -29,6 +32,9 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
             throw new \RuntimeException( 'model must be defined in Entity' );
         }
         $this->_identifier = $model->getId( $this );
+        if( $type == static::TYPE_NEW && !$this->_identifier ) {
+            $this->_identifier = static::$_id_for_new++;
+        }
         $this->_model = $model->getModelName();
         $this->_type = $type;
     }

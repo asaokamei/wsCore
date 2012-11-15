@@ -35,16 +35,15 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     function test_Em_registers_new_entity()
     {
         $friend = $this->em->newEntity( 'Friend' );
-        $idEm = $this->em->returnNewId();
         $id = $friend->_get_Id();
-        $this->assertEquals( $idEm, $id );
+        $this->assertTrue( $id > 0 );
     }
     function test_new_entity_id_returns_null_if_not_registered()
     {
         $this->em->setupReflection( 'wsTests\DataMapper\Entity\Friend' );
         $friend = $this->friend->getRecord();
         $id = $friend->_get_Id();
-        $this->assertEquals( null, $id );
+        $this->assertTrue( $id > 0 );
     }
     function test_getModelName()
     {

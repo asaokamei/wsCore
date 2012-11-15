@@ -12,9 +12,6 @@ class EntityManager
     /** @var \ReflectionProperty[][] */
     protected $reflections = array();
 
-    /** @var int */
-    protected $newId = 0;
-
     /** @var \WScore\DiContainer\Dimplet */
     protected $container;
 
@@ -126,31 +123,24 @@ class EntityManager
     /**
      * @param Entity_Interface $entity
      * @param string $type
-     * @param string $id
+     * @param string $identifier
+     * @throws \RuntimeException
      * @return \WScore\DbAccess\EntityManager
      */
-    public function setupEntity( $entity, $type=NULL, $id=NULL )
+    public function setupEntity( $entity, $type=NULL, $identifier=NULL )
     {
         if( $type ) {
             $this->setEntityProperty( $entity, 'type', $type );
         }
         elseif( !$entity->_get_Type() ) {
-            if( !$type ) $type = Entity_Interface::TYPE_NEW;
+            $type = Entity_Interface::TYPE_NEW;
             $this->setEntityProperty( $entity, 'type', $type );
         }
-        $type = $entity->_get_Type();
-        if( $id ) {
-            $this->setEntityProperty( $entity, 'identifier', $id );
+        if( $identifier ) {
+            $this->setEntityProperty( $entity, 'identifier', $identifier );
         }
         elseif( !$entity->_get_Id() ) {
-            if( !$id && $type == Entity_Interface::TYPE_NEW ) {
-                $id = ++$this->newId;
-            }
-            elseif( !$id && $type == Entity_Interface::TYPE_GET ) {
-                $model = $this->getModel( $entity->_get_Model() );
-                $id = $model->getId( $entity );
-            }
-            $this->setEntityProperty( $entity, 'identifier', $id );
+            throw new \RuntimeException( 'identifier not set. ' );
         }
         return $this;
     }
