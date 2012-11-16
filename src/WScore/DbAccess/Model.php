@@ -98,8 +98,6 @@ class Model
         $this->query = $query;
         $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this, 'get' ) );
         $this->prepare();
-        // simple object pooling. 
-        $class = $this->makeModelName( get_called_class() );
         $em->registerModel( $this );
     }
 
@@ -228,10 +226,10 @@ class Model
     public function update( $id, $values )
     {
         $values = $this->restrict( $values );
-        $values = $this->unsetKey( $values, $this->id_name );
+        unset( $values[ $this->id_name ] );
         if( isset( $this->extraTypes[ 'updated_at' ] ) ) {
             foreach( $this->extraTypes[ 'updated_at' ] as $column ) {
-                $values = $this->setKey( $values, $column, date( 'Y-m-d H:i:s' ) );
+                $values[ $column ] = date( 'Y-m-d H:i:s' );
             }
         }
         $data = $this->entityToArray( $values );
@@ -250,12 +248,12 @@ class Model
         $values = $this->restrict( $values );
         if( isset( $this->extraTypes[ 'updated_at' ] ) ) {
             foreach( $this->extraTypes[ 'updated_at' ] as $column ) {
-                $this->setKey( $values, $column, date( 'Y-m-d H:i:s' ) );
+                $values[ $column ] = date( 'Y-m-d H:i:s' );
             }
         }
         if( isset( $this->extraTypes[ 'created_at' ] ) ) {
             foreach( $this->extraTypes[ 'created_at' ] as $column ) {
-                $this->setKey( $values, $column, date( 'Y-m-d H:i:s' ) );
+                $values[ $column ] = date( 'Y-m-d H:i:s' );
             }
         }
         $data = $this->entityToArray( $values );
@@ -280,10 +278,10 @@ class Model
      */
     public function insertId( $values )
     {
-        $values = $this->unsetKey( $values, $this->id_name );
+        unset( $values[ $this->id_name ] );
         $this->insertValue( $values );
         $id = $this->query->lastId();
-        $this->setKey( $values, $this->id_name, $id );
+        $values[ $this->id_name ] = $id;
         return $id;
     }
 
@@ -306,7 +304,7 @@ class Model
      * @return null|array
      */
     public function getSelectInfo( $name ) {
-        return array_key_exists( $name, $this->selectors ) ? $this->selectors[ $name ] : NULL;
+        return $this->arrGet( $this->selectors, $name );
     }
 
     /**
@@ -314,7 +312,7 @@ class Model
      * @return null|array
      */
     public function getValidateInfo( $name ) {
-        return array_key_exists( $name, $this->validators ) ? $this->validators[ $name ] : NULL;
+        return $this->arrGet( $this->validators, $name );
     }
 
     /**
@@ -397,35 +395,16 @@ class Model
         }
         return $default;
     }
-    
-    public function unsetKey( $arr, $key ) {
-        if( is_object( $arr ) ) {
-            $arr->$key = null;
-        }
-        elseif( is_array( $arr ) ) {
-            unset( $arr[ $key ] );
-        }
-        return $arr;
-    }
-    
-    public function setKey( $arr, $key, $val ) {
-        if( is_object( $arr ) ) {
-            $arr->$key = $val;
-        }
-        elseif( is_array( $arr ) ) {
-            $arr[ $key ] = $val;
-        }
-        return $arr;
-    }
 
+    /**
+     * @param array|Entity_Interface $entity
+     * @return array
+     */
     public function entityToArray( $entity ) {
-        if( !is_array( $entity ) ) {
-            $data = get_object_vars( $entity );
+        if( is_object( $entity ) ) {
+            return get_object_vars( $entity );
         }
-        else {
-            $data = $entity;
-        }
-        return $data;
+        return $entity;
     }
 
     /**
