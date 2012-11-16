@@ -16,6 +16,7 @@ class Role
      * @param \WScore\DbAccess\EntityManager    $em
      * @param \WScore\Validator\DataIO          $dio
      * @param \WScore\Html\Selector             $selector
+     *
      * @DimInjection get  EntityManager
      * @DimInjection get  DataIO
      * @DimInjection get  Selector
@@ -25,29 +26,6 @@ class Role
         $this->em = $em;
         $this->dio = $dio;
         $this->selector = $selector;
-    }
-
-    /**
-     * @param string $modelName
-     * @param string $id
-     * @return \WScore\DbAccess\Entity_Interface
-     */
-    public function getEntity( $modelName, $id )
-    {
-        $entity = $this->em->getEntity( $modelName, $id );
-        return $entity;
-    }
-
-    /**
-     * @param string        $modelName
-     * @param array|string  $data
-     * @param null|string   $id
-     * @return \WScore\DbAccess\Entity_Interface
-     */
-    public function newEntity( $modelName, $data=array(), $id=null )
-    {
-        $entity = $this->em->newEntity( $modelName, $data, $id );
-        return $entity;
     }
 
     /**
