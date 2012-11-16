@@ -49,7 +49,7 @@ class TaskController
      */
     public function contextLoadAndSave( $entity )
     {
-        $role   = $this->role->applyLoadable( $entity );
+        $role   = $this->role->applyInputAndSelectable( $entity );
         $role->loadData();
         if( $role->validate() ) {
             $this->em->save();
@@ -73,7 +73,7 @@ class TaskController
         $all   = $model->query()->order( 'task_status, task_date' )->select();
         $entities = array();
         foreach( $all as $row ) {
-            $entities[] = $this->role->applyLoadable( $row );
+            $entities[] = $this->role->applyInputAndSelectable( $row );
         }
         $this->view->showForm_list( $entities, 'list' );
         return $this->view;
@@ -93,7 +93,7 @@ class TaskController
             $this->contextLoadAndSave( $entity );
             $this->view->set( 'alert-error', 'insert failed...' );
         }
-        $role   = $this->role->applyLoadable( $entity );
+        $role   = $this->role->applyInputAndSelectable( $entity );
         $this->view->showForm_form( $role, 'insert task' );
         return $this->view;
     }
@@ -113,7 +113,7 @@ class TaskController
             $this->contextLoadAndSave( $entity );
             $this->view->set( 'alert-error', 'update failed...' );
         }
-        $role   = $this->role->applyLoadable( $entity );
+        $role   = $this->role->applyInputAndSelectable( $entity );
         $this->view->showForm_form( $role, 'update task' );
         return $this->view;
     }

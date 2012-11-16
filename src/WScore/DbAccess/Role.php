@@ -67,7 +67,7 @@ class Role
      * @param \WScore\DbAccess\Entity_Interface $entity
      * @return \WScore\DbAccess\Role_Input
      */
-    public function applyLoadable( $entity )
+    public function applyInputAndSelectable( $entity )
     {
         $role = $this->applyRole( $entity, 'input' );
         return $role;

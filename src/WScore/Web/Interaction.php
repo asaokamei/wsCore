@@ -219,7 +219,7 @@ class Interaction
      */
     public function webFormWizard( $entity, $action, $steps )
     {
-        $role = $this->role->applyLoadable( $entity );
+        $role = $this->role->applyInputAndSelectable( $entity );
         $showForm = $this->showForm;
         $prevLoadName = null;
         foreach( $steps as $step ) 
