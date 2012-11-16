@@ -68,11 +68,6 @@ class EntityManager
     public function setupReflection( $entity )
     {
         $class = is_object( $entity ) ? get_class( $entity ) : $entity;
-        $reflect = function( $class, $prop ) {
-            $reflect = new \ReflectionProperty( $class, $prop );
-            $reflect->setAccessible( TRUE );
-            return $reflect;
-        };
         if( !isset( $this->reflections[ $class ] ) ) {
             $reflections = new \ReflectionMethod( $class, '_set_protected_vars' );
             $reflections->setAccessible( true );
@@ -177,27 +172,6 @@ class EntityManager
         $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_NEW_, $id );
         $entity = $this->register( $entity );
         return $entity;
-    }
-
-    /**
-     * @param Entity_Interface $entity
-     * @throws \RuntimeException
-     * @return string
-     */
-    public function getCenaId( $entity )
-    {
-        $this->setupReflection( $entity );
-        $model  = $entity->_get_Model();
-        $type   = $entity->_get_Type();
-        $id     = $entity->_get_Id();
-        if( !$id ) {
-            throw new \RuntimeException( 'entity without id' );
-        }
-        if( !$type ) {
-            throw new \RuntimeException( 'entity without type' );
-        }
-        $cenaId = "$model.$type.$id";
-        return $cenaId;
     }
 
     /**
