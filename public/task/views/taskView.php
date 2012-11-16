@@ -50,7 +50,7 @@ class taskView
     }
     
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DbAccess\Role_Selectable $entity
      * @param string $form
      * @return void
      */
@@ -64,7 +64,7 @@ class taskView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input[] $entity
+     * @param \WScore\DbAccess\Role_Selectable[] $entity
      */
     public function showForm_list( $entity )
     {
@@ -77,7 +77,7 @@ class taskView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DbAccess\Role_Selectable $entity
      * @param null|string $submitTitle
      */
     public function showForm_form( $entity, $submitTitle=null )
@@ -95,7 +95,7 @@ class taskView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DbAccess\Role_Selectable $entity
      */
     public function showForm_confirm( $entity )
     {
@@ -109,7 +109,7 @@ class taskView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DbAccess\Role_Selectable $entity
      */
     public function showForm_done( $entity )
     {
@@ -121,7 +121,7 @@ class taskView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DbAccess\Role_Selectable $entity
      * @param string $type
      * @return \WScore\Html\Tags
      */
@@ -151,7 +151,7 @@ class taskView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input[] $entity
+     * @param \WScore\DbAccess\Role_Selectable[] $entity
      * @param string $type
      * @return \WScore\Html\Tags
      */
