@@ -173,11 +173,13 @@ class taskView
                 )
             );
 
-            if( $row->retrieve()->task_status == '1' ) {
-                $button = $this->tags->a( 'done' )->href( $taskUrl . 'done/'.$id )->_class( 'btn btn-small btn-primary' );
+            /** @var $task \task\entity\task */
+            $task = $row->retrieve();
+            if( $task->isDone() ) {
+                $button = $this->tags->a( 'delete' )->href( $taskUrl . 'done/'.$id )->_class( 'btn btn-small btn' );
             }
             else {
-                $button = $this->tags->a( 'delete' )->href( $taskUrl . 'done/'.$id )->_class( 'btn btn-small btn' );
+                $button = $this->tags->a( 'done' )->href( $taskUrl . 'done/'.$id )->_class( 'btn btn-small btn-primary' );
             }
             $tr->contain_( $this->tags->td( $button ) );
         }
