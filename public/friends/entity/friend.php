@@ -24,14 +24,14 @@ class friend extends \WScore\DbAccess\Entity_Abstract
      * @return bool
      */
     public function isDone() {
-        return $this->task_status == self::STATUS_DONE;
+        return $this->friend_status == self::STATUS_DONE;
     }
 
     /**
      *
      */
     public function setDone() {
-        $this->task_status = self::STATUS_DONE;
+        $this->friend_status = self::STATUS_DONE;
     }
 }
 
