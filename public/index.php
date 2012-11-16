@@ -48,6 +48,8 @@
             <h4>&gt; <a href="myTasks" >task/todo application</a></h4>
             <p>demo for using data mapper, model, and entity. </p>
             <p class="memo">please give <code>./task/data</code> folder writable permission for web server to store sqlite file. </p>
+            <h4>&gt; <a href="myFriends" >friends & contacts</a></h4>
+            <p>demo for using relation, such as hasOne, isRef, isJoined, and isJoinDao relation types. </p>
         </div>
         <div class="span6">
             <h3>Experimental Demo</h3>
