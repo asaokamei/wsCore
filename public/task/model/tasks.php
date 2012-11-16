@@ -78,8 +78,15 @@ class tasks extends \WScore\DbAccess\Model
         return $sql;
     }
     public function getSampleTasks( $idx=1 ) {
+        $memo = array(
+            1 => 'set done this task',
+            2 => 'add a new task',
+            3 => 'modify this task',
+            4 => 'maybe change the done date?',
+            5 => 'setup and redo this task list',
+        );
         $task = array(
-            'task_memo' => 'task #' . $idx,
+            'task_memo' => 'task #' . $idx . ' ' . $memo[ $idx ],
             'task_status' => task::STATUS_ACTIVE,
             'task_date' => sprintf( '2012-11-%02d', $idx + 1 ),
         );
