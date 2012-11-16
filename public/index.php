@@ -36,31 +36,30 @@
     <hr>
     <header class="jumbotron">
         <h1>WScore framework</h1>
-        <p class="lead">Data Mapper and DCI inspired web application framework.<br />
+        <p class="lead">Data Mapper and Cenatar technology for web applications.<br />
             Wishes wishes wishes. </p>
         <hr>
     </header>
     <div class="row-fluid marketing">
         <div class="span6">
-            <h4>building forms</h4>
-            <p>demo for building form elements and using page based controller. </p>
-            <ul>
-                <li><a href="password.php" >generate password</a></li>
-            </ul>
-            <h4>task/todo application</h4>
-            <p>simple demo application using data mapper and simple mvc. </p>
-            <ul><li><a href="myTasks" >task/todo</a></li></ul>
-            <p class="memo">make sure current <code>./task/data</code> folder is writable for web server to store sqlite file. </p>
-            <h4>interaction with forms</h4>
-            <p>data mapper demo for using models and entities, then interaction. </p>
+            <h3>Basic Features</h3>
+            <h4>&gt; <a href="password.php" >generate password</a></h4>
+            <p>demo for building form elements. </p>
+            <h4>&gt; <a href="myTasks" >task/todo application</a></h4>
+            <p>demo for using data mapper, model, and entity. </p>
+            <p class="memo">please give <code>./task/data</code> folder writable permission for web server to store sqlite file. </p>
+        </div>
+        <div class="span6">
+            <h3>Experimental Demo</h3>
+            <h4>&gt; interaction with forms</h4>
+            <p>demo for data mapper and interactions. </p>
             <ul>
                 <li><a href="interaction1.php" >demo #1: insert friend's data</a></li>
                 <li><a href="interaction2.php" >demo #2: interaction like a wizard</a></li>
             </ul>
         </div>
-        <div class="span6">
-            <h4>more demo</h4>
-            more demo should come up, maybe soon...
+        <div class="span12">
+            <p>development still undergoing. more demo should come up, hopefully sometime soon...</p>
         </div>
     </div>
     <footer class="footer">
