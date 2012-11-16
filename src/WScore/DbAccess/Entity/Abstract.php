@@ -3,11 +3,13 @@ namespace WScore\DbAccess;
 
 abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
 {
+    // ----------------------------
     // about models.
 
     /** @var null|string  */
     protected $_model = null;
 
+    // ----------------------------
     // about entity's state.
 
     /** @var null|string  */
@@ -25,6 +27,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     /** @var int */
     protected static $_id_for_new = 1;
 
+    // ----------------------------
     // about validation result
 
     /** @var bool */
@@ -33,6 +36,9 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     /** @var array */
     protected $_errors = array();
 
+    // +----------------------------------------------------------------------+
+    //  construction and modifying protected properties.
+    // +----------------------------------------------------------------------+
     /**
      * @param null|\WScore\DbAccess\Model $model
      * @param null|string               $type
@@ -59,7 +65,9 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
         $varName = '_' . $name;
         $this->$varName = $value;
     }
-
+    // +----------------------------------------------------------------------+
+    //  state of the entity.
+    // +----------------------------------------------------------------------+
     /**
      * @return null|string
      */
@@ -123,7 +131,9 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
         $cenaId = "$model.$type.$id";
         return $cenaId;
     }
-
+    // +----------------------------------------------------------------------+
+    //  for relations. they are meant to be really public.
+    // +----------------------------------------------------------------------+
     /**
      * @param $name
      * @return \WScore\DbAccess\Relation_Interface
@@ -142,7 +152,9 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
         $this->_relations[ $name ] = $relation;
         return $this;
     }
-
+    // +----------------------------------------------------------------------+
+    //  for validation result
+    // +----------------------------------------------------------------------+
     /**
      * @return bool
      */
@@ -158,8 +170,9 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
         if( !$name ) return $this->_errors;
         return array_key_exists( $name, $this->_errors ) ? $this->_errors[ $name ] : null;
     }
-
-    // +-----------------------------------------------------------+
+    // +----------------------------------------------------------------------+
+    //  for ArrayAccess
+    // +----------------------------------------------------------------------+
     /**
      */
     public function offsetExists( $offset ) {
@@ -189,5 +202,5 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     public function offsetUnset( $offset ) {
         if( substr( $offset, 0, 1 ) != '_' && isset( $this->$offset ) ) unset( $this->$offset );
     }
-    // +-----------------------------------------------------------+
+    // +----------------------------------------------------------------------+
 }
