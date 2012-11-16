@@ -85,7 +85,7 @@ class Friends extends \WScore\DbAccess\Model
         );
         $task = array(
             'friend_memo' => 'friend #' . $idx . ' ' . $memo[ $idx ],
-            'friend_status' => 9,
+            'friend_status' => 1,
             'friend_date' => sprintf( '2012-11-%02d', $idx + 1 ),
         );
         return $task;
