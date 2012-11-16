@@ -30,13 +30,17 @@ class Role
 
     /**
      * @param \WScore\DbAccess\Entity_Interface|\WScore\DbAccess\Role_Interface $entity
-     * @param string $role
-     * @return mixed
+     * @param string                                                            $role
+     * @throws \RuntimeException
+     * @return \WScore\DbAccess\Role_Interface
      */
     public function applyRole( $entity, $role )
     {
         if( $entity instanceof \WScore\DbAccess\Role_Interface ) {
             $entity = $entity->retrieve();
+        }
+        if( !$entity instanceof \WScore\DbAccess\Entity_Interface ) {
+            throw new \RuntimeException( 'Can apply role only to Entity_Interface' );
         }
         if( strpos( $role, '\\' ) !== false ) {
             $class = $role;
@@ -71,5 +75,21 @@ class Role
     {
         $role = $this->applyRole( $entity, 'input' );
         return $role;
+    }
+
+    /**
+     * @param $entity
+     * @return \WScore\DbAccess\Role_Loadable
+     */
+    public function applyLoadable( $entity ) {
+        return $this->applyRole( $entity, 'Loadable' );
+    }
+
+    /**
+     * @param $entity
+     * @return \WScore\DbAccess\Role_Selectable
+     */
+    public function applySelectable( $entity ) {
+        return $this->applyRole( $entity, 'Selectable' );
     }
 }
