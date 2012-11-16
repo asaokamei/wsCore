@@ -23,6 +23,9 @@ class EntityManager
         $this->container = $container;
     }
 
+    /**
+     * @return \WScore\DiContainer\Dimplet
+     */
     public function container() {
         return $this->container;
     }
@@ -33,7 +36,8 @@ class EntityManager
      * @param \WScore\DbAccess\Model $model
      * @return EntityManager
      */
-    public function registerModel( $model ) {
+    public function registerModel( $model )
+    {
         $modelName = $this->getModelName( $model );
         $this->models[ $modelName ] = $model;
         $this->setupReflection( $model->recordClassName );
@@ -41,10 +45,13 @@ class EntityManager
     }
 
     /**
+     * get model object from an entity object, or model name.
+     *
      * @param Entity_Interface|string $entity
      * @return \WScore\DbAccess\Model
      */
-    public function getModel( $entity ) {
+    public function getModel( $entity )
+    {
         $model = ( $entity instanceof Entity_Interface ) ? $entity->_get_Model(): $entity;
         return $this->models[ $model ];
     }
@@ -53,7 +60,8 @@ class EntityManager
      * @param Entity_Interface|string $entity
      * @return string
      */
-    public function getModelName( $entity ) {
+    public function getModelName( $entity )
+    {
         $model = ( is_object( $entity ) ) ? get_class( $entity ) : $entity;
         if( strpos( $model, '\\' ) !== FALSE ) {
             $model = substr( $model, strrpos( $model, '\\' )+1 );
@@ -82,7 +90,8 @@ class EntityManager
      * @param string $value
      * @return \WScore\DbAccess\EntityManager
      */
-    public  function setEntityProperty( $entity, $prop, $value ) {
+    public  function setEntityProperty( $entity, $prop, $value )
+    {
         /** @var $ref \ReflectionMethod */
         $class = get_class( $entity );
         $ref = $this->reflections[ $class ];
@@ -213,15 +222,19 @@ class EntityManager
     }
 
     /**
+     * deletes an entity by setting toDelete attribute of entity to true.
+     * delete is done when em's save or saveEntity method is called.
+     *
      * @param Entity_Interface $entity
      * @param bool $delete
      */
-    public function delete( $entity, $delete=true )
-    {
+    public function delete( $entity, $delete=true ) {
         $this->setEntityProperty( $entity, 'toDelete', $delete );
     }
 
     /**
+     * get relation.
+     *
      * @param Entity_Interface $entity
      * @param string           $name
      * @return \WScore\DbAccess\Relation_Interface

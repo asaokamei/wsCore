@@ -12,7 +12,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     // ----------------------------
     // about entity's state.
 
-    /** @var null|string  */
+    /** @var null|string    Entity_Interface::_ENTITY_TYPE_{NEW|GET}_ */
     protected $_type = null;
 
     /** @var null|string */
@@ -81,17 +81,25 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     //  state of the entity.
     // +----------------------------------------------------------------------+
     /**
+     * returns model name (except namespace part of the model class).
+     *
      * @return null|string
      */
     public function _get_Model() {
-        return $this->_model;
+        $model = $this->_model;
+        if( strpos( $model, '\\' ) !== FALSE ) {
+            $model = substr( $model, strrpos( $model, '\\' )+1 );
+        }
+        return $model;
     }
 
     /**
+     * returns model class name.
+     *
      * @return null|string
      */
     public function _get_ModelClass() {
-        return substr( $this->_model, strrpos( $this->_model, '\\' ) );
+        return $this->_model;
     }
 
     /**
@@ -110,12 +118,15 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     }
 
     /**
+     * returns if the id value is permanent (i.e. id from database).
+     *
      * @return bool
      */
     public function isIdPermanent() {
         return $this->_type == Entity_Interface::_ENTITY_TYPE_GET_;
     }
     /**
+     * returns identifier value.
      * note: id and identifier are different. this method returns identifier, which maybe set
      * for newly created entity. to get the id in the database, use EM's getId() method.
      *
