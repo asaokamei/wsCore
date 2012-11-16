@@ -133,7 +133,7 @@ class EntityManager
             $this->setEntityProperty( $entity, 'type', $type );
         }
         elseif( !$entity->_get_Type() ) {
-            $type = Entity_Interface::TYPE_NEW;
+            $type = Entity_Interface::_ENTITY_TYPE_NEW_;
             $this->setEntityProperty( $entity, 'type', $type );
         }
         if( $identifier ) {
@@ -154,7 +154,7 @@ class EntityManager
         $model = $this->getModel( $modelName );
         /** @var $entity Entity_Interface */
         $entity = $model->find( $id );
-        $this->setupEntity( $entity, Entity_Interface::TYPE_GET, $id );
+        $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_GET_, $id );
         $entity = $this->register( $entity );
         return $entity;
     }
@@ -174,7 +174,7 @@ class EntityManager
         $model = $this->getModel( $modelName );
         /** @var $entity Entity_Interface */
         $entity = $model->getRecord( $data );
-        $this->setupEntity( $entity, Entity_Interface::TYPE_NEW, $id );
+        $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_NEW_, $id );
         $entity = $this->register( $entity );
         return $entity;
     }
@@ -229,7 +229,7 @@ class EntityManager
         }
         elseif( !$entity->isIdPermanent() ) { // i.e. entity is new. insert this.
             $id = $model->insert( $entity );
-            $this->setupEntity( $entity, Entity_Interface::TYPE_GET , $id );
+            $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_GET_ , $id );
         }
         else {
             $id = $entity->_get_Id();

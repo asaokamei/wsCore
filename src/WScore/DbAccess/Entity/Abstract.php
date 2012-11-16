@@ -32,7 +32,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
             throw new \RuntimeException( 'model must be defined in Entity' );
         }
         $this->_identifier = $model->getId( $this );
-        if( $type == static::TYPE_NEW && !$this->_identifier ) {
+        if( $type == static::_ENTITY_TYPE_NEW_ && !$this->_identifier ) {
             $this->_identifier = static::$_id_for_new++;
         }
         $this->_model = $model->getModelName();
@@ -81,7 +81,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
      * @return bool
      */
     public function isIdPermanent() {
-        return $this->_type == Entity_Interface::TYPE_GET;
+        return $this->_type == Entity_Interface::_ENTITY_TYPE_GET_;
     }
     /**
      * note: id and identifier are different. this method returns identifier, which maybe set

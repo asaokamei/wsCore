@@ -3,8 +3,8 @@ namespace WScore\DbAccess;
 
 interface Entity_Interface
 {
-    const TYPE_GET  = 'get';   // a new record for insert.
-    const TYPE_NEW  = 'new';   // record from db for update.
+    const _ENTITY_TYPE_GET_  = 'get';   // a new record for insert.
+    const _ENTITY_TYPE_NEW_  = 'new';   // record from db for update.
 
     /**
      * @return null|string

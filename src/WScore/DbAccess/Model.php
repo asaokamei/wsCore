@@ -193,7 +193,7 @@ class Model
     public function getRecord( $data=array() ) 
     {
         /** @var $record \WScore\DbAccess\Entity_Interface */
-        $record = new $this->recordClassName( $this, Entity_Interface::TYPE_NEW );
+        $record = new $this->recordClassName( $this, Entity_Interface::_ENTITY_TYPE_NEW_ );
         if( !empty( $data ) ) {
             foreach( $data as $key => $val ) {
                 $record->$key = $val;
