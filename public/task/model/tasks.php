@@ -83,7 +83,7 @@ class tasks extends \WScore\DbAccess\Model
             2 => 'modify this task',
             3 => 'add a new task',
             4 => 'try validation? set all blank and update/insert a task. ',
-            5 => 'setup and redo this task list',
+            5 => 'delete all finished tasks and setup the task list',
         );
         $task = array(
             'task_memo' => 'task #' . $idx . ' ' . $memo[ $idx ],
