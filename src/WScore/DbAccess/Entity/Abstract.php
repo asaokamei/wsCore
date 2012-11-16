@@ -36,6 +36,8 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     /** @var array */
     protected $_errors = array();
 
+    /** @var array */
+    protected $_orig_data = array();
     // +----------------------------------------------------------------------+
     //  construction and modifying protected properties.
     // +----------------------------------------------------------------------+
@@ -49,9 +51,19 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
         if( !isset( $model ) ) {
             throw new \RuntimeException( 'model must be defined in Entity' );
         }
+        // setting up identifier.
         $this->_identifier = $model->getId( $this );
         if( $type == static::_ENTITY_TYPE_NEW_ && !$this->_identifier ) {
             $this->_identifier = static::$_id_for_new++;
+        }
+        // setting original data
+        if( $type == static::_ENTITY_TYPE_GET_ ) {
+            $data = get_object_vars( $this );
+            foreach( $data as $prop => $val ) {
+                if( substr( $prop, 0, 1 ) != '_' ) {
+                    $this->_orig_data[ $prop ] = $val;
+                }
+            }
         }
         $this->_model = $model->getModelName();
         $this->_type = $type;
