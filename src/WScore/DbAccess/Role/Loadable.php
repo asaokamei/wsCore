@@ -18,16 +18,24 @@ class Role_Loadable extends Role_Abstract
     //  get/set properties, and ArrayAccess
     // +----------------------------------------------------------------------+
     /**
+     * load id (primary key) from post/data.
+     *
      * @param array $data
      * @return Role_Loadable
      */
-    public function loadId( $data=array() ) {
+    public function loadId( $data=array() )
+    {
         if( empty( $data ) ) $data = $_POST;
         $id_name = $this->getIdName();
         $this->$id_name = isset( $data[ $id_name ] )? $data[ $id_name ] : null;
         return $this;
     }
+
     /**
+     * loads all the data/post, except for protected keys.
+     * also no key starting with '_' are considered as internal property
+     * and thus are not loaded.
+     *
      * @param null|string $name
      * @param array       $data
      * @return Role_Loadable
@@ -48,12 +56,16 @@ class Role_Loadable extends Role_Abstract
     //  Validating data.
     // +----------------------------------------------------------------------+
     /**
+     * validates the entity properties.
+     *
      * @param null|string $loadName
      * @return bool
      */
     public function validate( $loadName=null )
     {
         $this->dio->source( $this->entity );
+        // validates only for the property list defined in the model.
+        // todo: is definition should be in entity itself?
         $list = $this->model->getPropertyList( $loadName );
         foreach( $list as $propName => $name ) {
             $validateInfo = $this->model->getValidateInfo( $propName );
@@ -67,6 +79,8 @@ class Role_Loadable extends Role_Abstract
     }
 
     /**
+     * resets the validation result (isValid in entity).
+     *
      * @param bool $valid
      * @return Role_Loadable
      */
@@ -76,6 +90,8 @@ class Role_Loadable extends Role_Abstract
     }
 
     /**
+     * returns if validated is successful or not.
+     *
      * @return bool
      */
     public function isValid() {

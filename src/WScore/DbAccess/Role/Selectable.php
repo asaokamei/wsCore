@@ -13,8 +13,8 @@ class Role_Selectable extends Role_Abstract
      */
     public function __construct( $em, $dio, $selector )
     {
-        $this->em = $em;
-        $this->dio = $dio;
+        $this->em       = $em;
+        $this->dio      = $dio;
         $this->selector = $selector;
     }
     // +----------------------------------------------------------------------+
@@ -31,11 +31,16 @@ class Role_Selectable extends Role_Abstract
         return $this->html_type;
     }
     /**
+     * pops value of the $name (property name).
+     * returns html-safe value if html_type is 'html',
+     * returns html form element if html_type is 'form'.
+     *
      * @param string $name
      * @param null   $html_type
      * @return mixed
      */
-    public function popHtml( $name, $html_type=null ) {
+    public function popHtml( $name, $html_type=null )
+    {
         $html_type = ( $html_type ) ?: $this->html_type;
         $selector = $this->getSelInstance( $name );
         if( $selector ) {
@@ -48,6 +53,8 @@ class Role_Selectable extends Role_Abstract
     }
 
     /**
+     * returns error message if any.
+     *
      * @param $name
      * @return mixed
      */
@@ -56,6 +63,8 @@ class Role_Selectable extends Role_Abstract
     }
 
     /**
+     * returns name of the property (readable for human).
+     *
      * @param $name
      * @return string
      */
@@ -64,6 +73,9 @@ class Role_Selectable extends Role_Abstract
     }
 
     /**
+     * returns form element object for property name.
+     * the object is pooled and will be reused for model/propName basis.
+     *
      * @param string $name
      * @return null|object
      */
@@ -79,12 +91,7 @@ class Role_Selectable extends Role_Abstract
 
     /**
      * creates selector object based on selectors array.
-     * $selector[ var_name ] = [
-     *     className,
-     *     styleName,
-     *     [ arg2, arg3, arg4 ],
-     *     function( &$val ){ doSomething( $val ); },
-     *   ]
+     * see the structure of array in Model::$selectors section.
      *
      * TODO: simplify or move factory to Selector. 
      * 
