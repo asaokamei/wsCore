@@ -18,20 +18,6 @@ class Role_Loadable extends Role_Abstract
     //  get/set properties, and ArrayAccess
     // +----------------------------------------------------------------------+
     /**
-     * @return null|string
-     */
-    public function getId() {
-        return $this->model->getId( $this->entity );
-    }
-
-    /**
-     * @return string
-     */
-    public function getIdName() {
-        return $this->model->getIdName();
-    }
-
-    /**
      * @param array $data
      * @return Role_Loadable
      */
