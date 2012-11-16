@@ -80,9 +80,9 @@ class tasks extends \WScore\DbAccess\Model
     public function getSampleTasks( $idx=1 ) {
         $memo = array(
             1 => 'set done this task',
-            2 => 'add a new task',
-            3 => 'modify this task',
-            4 => 'maybe change the done date?',
+            2 => 'modify this task',
+            3 => 'add a new task',
+            4 => 'try validation? set all blank and update/insert a task. ',
             5 => 'setup and redo this task list',
         );
         $task = array(
