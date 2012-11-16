@@ -15,16 +15,6 @@ class Role_Input implements Role_Interface
     /** @var \WScore\Validator\DataIO */
     private $dio;
     
-    /** @var array */
-    private $errors = array();
-
-    /**
-     * result of validation; need to be true as default for multiple forms.
-     *
-     * @var bool
-     */
-    private $is_valid = true;
-
     /** @var \WScore\Html\Selector */
     private $selector;
     
@@ -119,7 +109,7 @@ class Role_Input implements Role_Interface
      * @return Role_Input
      */
     public function resetValidation( $valid=false ) {
-        $this->is_valid = $valid;
+        $this->em->setEntityProperty( $this->entity, 'isValid', $valid );
         return $this;
     }
 
@@ -127,7 +117,7 @@ class Role_Input implements Role_Interface
      * @return bool
      */
     public function isValid() {
-        return $this->is_valid;
+        return $this->entity->_is_valid();
     }
     // +----------------------------------------------------------------------+
     //  getting Html Forms.
