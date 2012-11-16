@@ -6,7 +6,6 @@ Core::go();
 Core::setPdo( array( 'dsn' => 'sqlite:' . __DIR__ . '/friends/data/friends.sqlite' ) );
 
 /** @var $front wsModule\Alt\Web\FrontMC */
-Core::get( '\friends\model\Friends' );
 $front = Core::get( '\wsModule\Alt\Web\FrontMC' );
 $front->debug = true;
 $front->namespace = 'friends';

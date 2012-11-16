@@ -36,6 +36,11 @@ class FriendController
         $this->front = $front;
         $this->view->set( 'baseUrl', $front->request->getBaseUrl() );
         $this->view->set( 'appUrl',  $front->request->getBaseUrl() . 'myFriends/' );
+        if( $front->parameter[ 'action' ] == 'setup' ) {
+        }
+        else {
+            \WScore\Core::get( '\friends\model\Friends' );
+        }
     }
 
     // +----------------------------------------------------------------------+
@@ -67,7 +72,19 @@ class FriendController
      * @return string
      */
     public function actSetup() {
+        $folder = __DIR__ . '/data/';
+        if( !file_exists( $folder ) ) {
+            if( !@mkdir( $folder, 0777 ) ) {
+                $this->view->set( 'alert-error', "
+                cannot create folder: {$folder}. <br />\n
+                please make the folder writable to the webserver.
+                " );
+            }
+            $this->view->showSetup();
+            return $this->view;
+        }
         if( $this->front->request->isPost() ) {
+            \WScore\Core::get( '\friends\model\Friends' );
             $this->initDb( $this->front->request->getPost( 'initDb' ) );
         }
         $this->view->showSetup();
