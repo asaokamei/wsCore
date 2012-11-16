@@ -1,6 +1,8 @@
 <?php
 namespace task\model;
 
+use \task\entity\task;
+
 class tasks extends \WScore\DbAccess\Model
 {
     /** @var string     name of database table     */
@@ -23,7 +25,7 @@ class tasks extends \WScore\DbAccess\Model
         'task_id'     => array( 'number' ),
         'task_memo'   => array( 'text', 'required' ),
         'task_date'   => array( 'date', '', ),
-        'task_status' => array( 'text', 'default:1' ),
+        'task_status' => array( 'text', '' ),
     );
 
     /** @var array      for selector construction      */
@@ -32,7 +34,7 @@ class tasks extends \WScore\DbAccess\Model
         'task_memo'   => array( 'Selector', 'textarea', 'placeholder:your tasks here | class:span5 | rows:5' ),
         'task_date'   => array( 'Selector', 'date', ),
         'task_status' => array( 'Selector', 'checkToggle', '', array(
-            'items' => array( array( 1, 'active' ), array( 9, 'done' ) )
+            'items' => array( array( task::STATUS_ACTIVE, 'active' ), array( task::STATUS_DONE, 'done' ) )
         ) ),
     );
 
@@ -78,7 +80,7 @@ class tasks extends \WScore\DbAccess\Model
     public function getSampleTasks( $idx=1 ) {
         $task = array(
             'task_memo' => 'task #' . $idx,
-            'task_status' => '1',
+            'task_status' => task::STATUS_ACTIVE,
             'task_date' => sprintf( '2012-11-%02d', $idx + 1 ),
         );
         return $task;

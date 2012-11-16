@@ -129,11 +129,11 @@ class TaskController
         $id = $args[ 'id' ];
         /** @var $entity \task\entity\task */
         $entity = $this->em->getEntity( 'tasks', $id );
-        if( $entity->task_status == '1' ) {
-            $entity->task_status = '9';
+        if( $entity->isDone() ) {
+            $this->em->delete( $entity );
         }
         else {
-            $this->em->delete( $entity );
+            $entity->setDone();
         }
         $this->em->save();
         $taskUrl = $this->view->get( 'taskUrl' );
