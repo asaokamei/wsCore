@@ -34,4 +34,18 @@ class Role_Abstract implements Role_Interface
     public function retrieve() {
         return $this->entity;
     }
+
+    /**
+     * @return null|string
+     */
+    public function getId() {
+        return $this->model->getId( $this->entity );
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdName() {
+        return $this->model->getIdName();
+    }
 }
