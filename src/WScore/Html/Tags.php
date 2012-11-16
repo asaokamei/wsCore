@@ -32,6 +32,10 @@ namespace WScore\Html;
  * @method \WScore\Html\Tags h2
  * @method \WScore\Html\Tags h3
  * @method \WScore\Html\Tags h4
+ * @method \WScore\Html\Tags form
+ * @method \WScore\Html\Tags action
+ * @method \WScore\Html\Tags method
+ * @method \WScore\Html\Tags strong
  */
 class Tags
 {
@@ -63,7 +67,7 @@ class Tags
     );
     /** @var array                  in-line tags   */
     public static $tag_span = array(
-        'span', 'p', 'strong', 'i', 'sub', 'li', '',
+        'span', 'p', 'strong', 'i', 'sub', 'li', 'a', 'label',
     );
     /** @var array                  how to connect attribute values */
     public static $attribute_connectors = array(
@@ -345,6 +349,7 @@ class Tags
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ">";
             $html .= "\n";
             $html .= $this->toContents_( $head . '  ' );
+            if( substr( $html, -1 ) != "\n" ) $html .= "\n";
             $html .= $head . "</{$this->tagName}>";
         }
         if( !in_array( $this->tagName, static::$tag_span ) ) {

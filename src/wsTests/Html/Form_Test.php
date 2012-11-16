@@ -68,7 +68,8 @@ class Form_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( '<div class="formListBox"><nl>
   <li>item1</li>
   <li>more</li>
-  <li>another</li></nl>
+  <li>another</li>
+</nl>
 </div>' . "\n", $form );
     }
     function test_select_with_group()
@@ -121,18 +122,13 @@ class Form_Test extends \PHPUnit_Framework_TestCase
         $form = $this->form->checkBox( 'user_age', $ages, '20' );
         $form = (string) $form;
         $this->assertEquals( '<div class="formListBox"><nl>
-  <li><label>
-  <input type="checkbox" name="user_age[]" value="10" />
-  teenage</label>
-  </li>
-  <li><label>
-  <input type="checkbox" name="user_age[]" value="20" checked="checked" />
-  twenties</label>
-  </li>
-  <li><label>
-  <input type="checkbox" name="user_age[]" value="30" />
-  thirtish</label>
-  </li></nl>
+  <li><label><input type="checkbox" name="user_age[]" value="10" />
+teenage</label></li>
+  <li><label><input type="checkbox" name="user_age[]" value="20" checked="checked" />
+twenties</label></li>
+  <li><label><input type="checkbox" name="user_age[]" value="30" />
+thirtish</label></li>
+</nl>
 </div>'."\n", $form );
     }
     function test_radio_in_box()
@@ -144,25 +140,20 @@ class Form_Test extends \PHPUnit_Framework_TestCase
         );
         $form = (string) $this->form->radioBox( 'user_age', $ages, '20' );
         $this->assertEquals( '<div class="formListBox"><nl>
-  <li><label>
-  <input type="radio" name="user_age" value="10" />
-  teenage</label>
-  </li>
-  <li><label>
-  <input type="radio" name="user_age" value="20" checked="checked" />
-  twenties</label>
-  </li>
-  <li><label>
-  <input type="radio" name="user_age" value="30" />
-  thirtish</label>
-  </li></nl>
+  <li><label><input type="radio" name="user_age" value="10" />
+teenage</label></li>
+  <li><label><input type="radio" name="user_age" value="20" checked="checked" />
+twenties</label></li>
+  <li><label><input type="radio" name="user_age" value="30" />
+thirtish</label></li>
+</nl>
 </div>'."\n", $form );
     }
     function test_check_in_label()
     {
         $form = (string) $this->form->checkLabel( 'OK', 'YES', 'really?' );
         $this->assertEquals( '<label><input type="checkbox" name="OK" value="YES" />' . "\n".
-            'really?</label>'."\n", $form );
+            'really?</label>', $form );
 
         // check if radio does NOT have [] in the name. 
         $form = (string) $this->form->radio( 'user_OK', 'YES' );
@@ -172,7 +163,7 @@ class Form_Test extends \PHPUnit_Framework_TestCase
     {
         $form = (string) $this->form->radioLabel( 'OK', 'YES', 'really?' );
         $this->assertEquals( '<label><input type="radio" name="OK" value="YES" />' . "\n".
-            'really?</label>'."\n", $form );
+            'really?</label>', $form );
     }
     function test_check()
     {
