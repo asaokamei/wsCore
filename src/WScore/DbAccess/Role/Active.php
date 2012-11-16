@@ -1,19 +1,10 @@
 <?php
 namespace WScore\DbAccess;
 
-class Role_Active implements Role_Interface
+class Role_Active extends Role_Abstract
 {
     const ACTION_NONE  = 'act-none';
     const ACTION_SAVE  = 'act-save';
-
-    /** @var \WScore\DbAccess\EntityManager */
-    private $em;
-
-    /** @var \WScore\DbAccess\Model */
-    private $model;
-
-    /** @var \WScore\DbAccess\Entity_Interface */
-    private $entity;
 
     /** @var string */
     private $action = self::ACTION_NONE;
@@ -27,23 +18,6 @@ class Role_Active implements Role_Interface
         $this->em = $em;
     }
 
-    /**
-     * @param \WScore\DbAccess\Entity_Interface    $entity
-     */
-    public function register( $entity )
-    {
-        $entity = $this->em->register( $entity );
-        $this->entity = $entity;
-        $this->model = $this->em->getModel( $entity->_get_Model() );
-    }
-
-
-    /**
-     * @return Entity_Interface
-     */
-    public function retrieve() {
-        return $this->entity;
-    }
     /**
      * @param string $actType
      * @return Role_Active

@@ -1,23 +1,8 @@
 <?php
 namespace WScore\DbAccess;
 
-class Role_Input implements Role_Interface
+class Role_Input extends Role_Abstract
 {
-    /** @var \WScore\DbAccess\EntityManager */
-    private $em;
-
-    /** @var \WScore\DbAccess\Model */
-    private $model;
-
-    /** @var \WScore\DbAccess\Entity_Interface */
-    private $entity;
-
-    /** @var \WScore\Validator\DataIO */
-    private $dio;
-    
-    /** @var \WScore\Html\Selector */
-    private $selector;
-    
     /** @var string                html, form, or ...? */
     private $html_type = 'html';
     // +----------------------------------------------------------------------+
@@ -33,22 +18,6 @@ class Role_Input implements Role_Interface
         $this->selector = $selector;
     }
 
-    /**
-     * @param \WScore\DbAccess\Entity_Interface    $entity
-     */
-    public function register( $entity ) 
-    {
-        $entity = $this->em->register( $entity );
-        $this->entity = $entity;
-        $this->model = $this->em->getModel( $entity->_get_Model() );
-    }
-
-    /**
-     * @return Entity_Interface
-     */
-    public function retrieve() {
-        return $this->entity;
-    }
     // +----------------------------------------------------------------------+
     //  get/set properties, and ArrayAccess
     // +----------------------------------------------------------------------+
