@@ -109,9 +109,9 @@ class Role_Input implements Role_Interface
             $filter = array_key_exists( 1, $validateInfo ) ? $validateInfo[1] : '' ;
             $this->dio->push( $propName, $type, $filter );
         }
-        $this->errors = $this->dio->popError();
-        $this->is_valid = $this->dio->isValid();
-        return $this->is_valid;
+        $this->em->setEntityProperty( $this->entity, 'errors',  $this->dio->popError() );
+        $this->em->setEntityProperty( $this->entity, 'isValid', $this->dio->isValid() );
+        return $this->entity->_is_valid();
     }
 
     /**
@@ -164,7 +164,7 @@ class Role_Input implements Role_Interface
      * @return mixed
      */
     public function popError( $name ) {
-        return array_key_exists( $name, $this->errors ) ? $this->errors[ $name ] : null;
+        return $this->entity->_pop_error( $name );
     }
 
     /**

@@ -3,8 +3,12 @@ namespace WScore\DbAccess;
 
 abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
 {
+    // about models.
+
     /** @var null|string  */
     protected $_model = null;
+
+    // about entity's state.
 
     /** @var null|string  */
     protected $_type = null;
@@ -20,6 +24,14 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
 
     /** @var int */
     protected static $_id_for_new = 1;
+
+    // about validation result
+
+    /** @var bool */
+    protected $_isValid = true;
+
+    /** @var array */
+    protected $_errors = array();
 
     /**
      * @param null|\WScore\DbAccess\Model $model
@@ -129,6 +141,22 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     public function setRelation( $name, $relation ) {
         $this->_relations[ $name ] = $relation;
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function _is_valid() {
+        return $this->_isValid;
+    }
+
+    /**
+     * @param null|string $name
+     * @return mixed
+     */
+    public function _pop_error( $name=null ) {
+        if( !$name ) return $this->_errors;
+        return array_key_exists( $name, $this->_errors ) ? $this->_errors[ $name ] : null;
     }
 
     // +-----------------------------------------------------------+

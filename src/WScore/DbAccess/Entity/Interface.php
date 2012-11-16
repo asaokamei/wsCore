@@ -43,6 +43,16 @@ interface Entity_Interface
     public function toDelete();
 
     /**
+     * @return bool
+     */
+    public function _is_valid();
+
+    /**
+     * @param null|string $name
+     * @return mixed
+     */
+    public function _pop_error( $name=null );
+    /**
      * @param $name
      * @return \WScore\DbAccess\Relation_Interface
      */
