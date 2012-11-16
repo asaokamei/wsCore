@@ -1,7 +1,7 @@
 <?php
 namespace WScore\DbAccess;
 
-class Role_Input extends Role_Abstract
+class Role_Selectable extends Role_Abstract
 {
     /** @var string                html, form, or ...? */
     private $html_type = 'html';
@@ -16,77 +16,6 @@ class Role_Input extends Role_Abstract
         $this->em = $em;
         $this->dio = $dio;
         $this->selector = $selector;
-    }
-
-    // +----------------------------------------------------------------------+
-    //  get/set properties, and ArrayAccess
-    // +----------------------------------------------------------------------+
-    /**
-     * @return null|string
-     */
-    public function getId() {
-        return $this->model->getId( $this->entity );
-    }
-
-    /**
-     * @return string
-     */
-    public function getIdName() {
-        return $this->model->getIdName();
-    }
-    /**
-     * @param null|string $name
-     * @param array       $data
-     * @return Role_Input
-     */
-    public function loadData( $name=null, $data=array() )
-    {
-        if( is_array(  $name ) ) $data = $name;
-        if( empty( $data ) ) $data = $_POST;
-        // populate the input data
-        $data = $this->model->protect( $data );
-        foreach( $data as $key => $value ) {
-            if( substr( $key, 0, 1 ) == '_' ) continue; // ignore protected/private
-            $this->entity->$key = $value;
-        }
-        return $this;
-    }
-    // +----------------------------------------------------------------------+
-    //  Validating data.
-    // +----------------------------------------------------------------------+
-    /**
-     * @param null|string $loadName
-     * @return bool
-     */
-    public function validate( $loadName=null )
-    {
-        $this->dio->source( $this->entity );
-        $list = $this->model->getPropertyList( $loadName );
-        foreach( $list as $propName => $name ) {
-            $validateInfo = $this->model->getValidateInfo( $propName );
-            $type   = array_key_exists( 0, $validateInfo ) ? $validateInfo[0] : null ;
-            $filter = array_key_exists( 1, $validateInfo ) ? $validateInfo[1] : '' ;
-            $this->dio->push( $propName, $type, $filter );
-        }
-        $this->em->setEntityProperty( $this->entity, 'errors',  $this->dio->popError() );
-        $this->em->setEntityProperty( $this->entity, 'isValid', $this->dio->isValid() );
-        return $this->entity->_is_valid();
-    }
-
-    /**
-     * @param bool $valid
-     * @return Role_Input
-     */
-    public function resetValidation( $valid=false ) {
-        $this->em->setEntityProperty( $this->entity, 'isValid', $valid );
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValid() {
-        return $this->entity->_is_valid();
     }
     // +----------------------------------------------------------------------+
     //  getting Html Forms.
