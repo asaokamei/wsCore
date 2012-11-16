@@ -132,14 +132,20 @@ class taskView
         $dl = $this->tags->dl();
         $dl->contain_(
             $this->tags->dt( $entity->popName( 'task_memo' ) ),
-            $this->tags->dd( $entity->popHtml( 'task_memo' ) . '<br />' 
-                . $this->tags->span( $entity->popError( 'task_memo' ) ) )->_class( 'formError' ),
+            $this->tags->dd(
+                $entity->popHtml( 'task_memo' ), '<br />',
+                $this->tags->span( $entity->popError( 'task_memo' ) )->_class( 'formError' )
+            ),
             $this->tags->dt( $entity->popName( 'task_date' ) ),
-            $this->tags->dd( $entity->popHtml( 'task_date' ) . '<br />' 
-                . $this->tags->span( $entity->popError( 'task_date' ) ) )->_class( 'formError' ),
+            $this->tags->dd(
+                $entity->popHtml( 'task_date' ), '<br />',
+                $this->tags->span( $entity->popError( 'task_date' ) )->_class( 'formError' )
+            ),
             $this->tags->dt( $entity->popName( 'task_status' ) ),
-            $this->tags->dd( $entity->popHtml( 'task_status' ) ) . '<br />'
-                . $this->tags->span( $entity->popError( 'task_status' ) )->_class( 'formError' )
+            $this->tags->dd(
+                $entity->popHtml( 'task_status' ), '<br />',
+                $this->tags->span( $entity->popError( 'task_status' ) )->_class( 'formError' )
+            )
         );
         return $dl;
     }
