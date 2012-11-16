@@ -78,6 +78,7 @@ class FriendController
                 $this->view->set( 'alert-error', "
                 cannot create folder: {$folder}. <br />\n
                 please make the folder writable to the webserver.
+                ex) mkdir -m 0777 data
                 " );
             }
             $this->view->showSetup();

@@ -50,6 +50,7 @@
             <p class="memo">please give <code>./task/data</code> folder writable permission for web server to store sqlite file. </p>
             <h4>&gt; <a href="myFriends" >friends & contacts</a></h4>
             <p>demo for using relation, such as hasOne, isRef, isJoined, and isJoinDao relation types. </p>
+            <p class="memo">click <a href="myFriends/setup">setup</a> to set up sqlite data file for this demo. </p>
         </div>
         <div class="span6">
             <h3>Experimental Demo</h3>
