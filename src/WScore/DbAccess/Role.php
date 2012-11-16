@@ -51,21 +51,20 @@ class Role
     }
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DbAccess\Entity_Interface|\WScore\DbAccess\Role_Interface $entity
      * @param string $role
      * @return mixed
      */
     public function applyRole( $entity, $role )
     {
-        if( method_exists( $this, strtolower( $role ) . 'Role' ) ) {
-            $method = strtolower( $role ) . 'Role';
-            return $this->$method( $entity );
+        if( $entity instanceof \WScore\DbAccess\Role_Interface ) {
+            $entity = $entity->retrieve();
         }
         if( strpos( $role, '\\' ) !== false ) {
             $class = $role;
         }
         else {
-            $class = 'Context_Role' . ucwords( $role );
+            $class = '\WScore\DbAccess\Role_' . ucwords( $role );
         }
         $em   = clone $this->em;
         $dio  = clone $this->dio;
@@ -82,9 +81,7 @@ class Role
      */
     public function applyActive( $entity )
     {
-        $em   = clone $this->em;
-        $role = new Role_Active( $em );
-        $role->register( $entity );
+        $role = $this->applyRole( $entity, 'active' );
         return $role;
     }
 
@@ -94,11 +91,7 @@ class Role
      */
     public function applyLoadable( $entity )
     {
-        $em   = clone $this->em;
-        $dio  = clone $this->dio;
-        $sel  = clone $this->selector;
-        $role = new Role_Input( $em, $dio, $sel );
-        $role->register( $entity );
+        $role = $this->applyRole( $entity, 'input' );
         return $role;
     }
 }
