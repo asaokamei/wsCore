@@ -153,7 +153,6 @@ class taskView
     {
         $table = $this->tags->table()->_class( 'table' )->contain_(
             $this->tags->tr(
-                $this->tags->th( '#' ),
                 $this->tags->th( 'task description' ),
                 $this->tags->th( 'date' ),
                 $this->tags->th( 'done' )
@@ -163,25 +162,24 @@ class taskView
         foreach( $entity as $row ) {
             $id = $row->getId();
             $row->setHtmlType( $type );
-            $table->contain_(
-                $tr = $this->tags->tr(
-                    $this->tags->td( $row->popHtml( 'task_id' ) ),
-                    $this->tags->td(
-                        $this->tags->a( $row->popHtml( 'task_memo' ) )->href( $taskUrl . 'task/'.$id )
-                    ),
-                    $this->tags->td( $row->popHtml( 'task_date' ) )
-                )
-            );
 
             /** @var $task \task\entity\task */
             $task = $row->retrieve();
             if( $task->isDone() ) {
+                $memo   = $this->tags->a( $row->popHtml( 'task_memo' ) )->href( $taskUrl . 'task/'.$id )->style( 'color:#669999');
                 $button = $this->tags->a( 'delete' )->href( $taskUrl . 'done/'.$id )->_class( 'btn btn-small btn' );
             }
             else {
+                $memo   = $this->tags->a( $row->popHtml( 'task_memo' ) )->href( $taskUrl . 'task/'.$id )->style( 'font-weight:bold' );
                 $button = $this->tags->a( 'done' )->href( $taskUrl . 'done/'.$id )->_class( 'btn btn-small btn-primary' );
             }
-            $tr->contain_( $this->tags->td( $button ) );
+            $table->contain_(
+                $tr = $this->tags->tr(
+                    $this->tags->td( $memo ),
+                    $this->tags->td( $row->popHtml( 'task_date' ) ),
+                    $this->tags->td( $button )
+                )
+            );
         }
         return $table;
     }
