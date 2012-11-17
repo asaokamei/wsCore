@@ -8,21 +8,30 @@ class friendsView
 
     /** @var \WScore\Html\Tags */
     private $tags;
+
+    /** @var \WScore\DbAccess\Role */
+    private $role;
+
     /**
      * @param \wsModule\Alt\Html\View_Bootstrap $view
-     * @param \WScore\Html\Form $tags
+     * @param \WScore\Html\Form                 $tags
+     * @param \WScore\DbAccess\Role             $role
      * @DimInjection Fresh \wsModule\Alt\Html\View_Bootstrap
      * @DimInjection Fresh \WScore\Html\Form
+     * @DimInjection get \WScore\DbAccess\Role
      */
-    public function __construct( $view, $tags ) {
+    public function __construct( $view, $tags, $role )
+    {
         $this->view = $view;
         $this->tags = $tags;
+        $this->role = $role;
     }
 
     /**
      * @return \wsModule\Alt\Html\View_Bootstrap
      */
-    public function getView() {
+    public function getView()
+    {
         return $this->view;
     }
 
@@ -45,45 +54,121 @@ class friendsView
      * @param $name
      * @return mixed
      */
-    public function get( $name ) {
+    public function get( $name )
+    {
         return $this->view->get( $name );
     }
 
-    /**
-     * @param \WScore\DbAccess\Role_Selectable $entity
-     * @param string $form
-     * @return void
-     */
-    public function showForm( $entity, $form )
-    {
-        $this->set( 'currAction', $form );
-        $this->set( 'entity', $entity );
-        $this->set( 'title', $form );
-        $show = 'showForm_' . $form;
-        $this->$show( $entity );
-    }
-
+    // +----------------------------------------------------------------------+
+    //  about my friends. 
+    // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DbAccess\Role_Selectable[] $entity
      */
     public function showForm_list( $entity )
     {
-        $this->set( 'action', 'load' );
         $this->set( 'title', 'My Friends' );
-        $contents = array();
-        $table = $this->tableView( $entity, 'html' );
-        $contents[] = $table;
+        $contents    = array();
+        $table       = $this->tableView( $entity, 'html' );
+        $contents[ ] = $table;
         $this->set( 'content', $contents );
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Selectable[] $entity
-     * @param string $type
+     * @param \WScore\DbAccess\Role_Selectable $entity
+     */
+    public function showForm_brief( $entity )
+    {
+        $role        = $this->role->applySelectable( $entity );
+        $this->set( 'title', $role->popHtml( 'name' ) );
+        $editUrl     = $this->get( 'appUrl' ) . 'detail/' . $role->getId();
+        $list        = array( 'gender', 'birthday', 'star' );
+        $contents    = array();
+        $contents[ ] = $this->lists( $role, $list );
+        $contents[ ] = $this->tags->a( 'edit' )->href( $editUrl )->_class( 'btn btn-primary' )->style( 'float:right' );
+        $contents[ ] = $this->tags->div()->style( 'clear:both' );
+        $this->set( 'content', $contents );
+    }
+
+    /**
+     * @param \WScore\DbAccess\Role_Selectable $entity
+     */
+    public function showForm_detail( $entity )
+    {
+        $entity = $this->role->applySelectable( $entity );
+        $entity->setHtmlType( 'form' );
+        $this->set( 'title', $entity->popHtml( 'name' ) );
+        $contents    = array();
+        $contents[ ] = $this->dl( $entity, array( 'gender', 'birthday', 'star', 'memo' ) );
+        $this->set( 'content', $contents );
+    }
+
+    // +----------------------------------------------------------------------+
+    //  view tools
+    // +----------------------------------------------------------------------+
+
+    /**
+     * @param \WScore\DbAccess\Role_Selectable $entity
+     * @param array                            $list
      * @return \WScore\Html\Tags
      */
-    public function tableView( $entity, $type='html' )
+    protected function lists( $entity, $list )
     {
-        $table = $this->tags->table()->_class( 'table' )->contain_(
+        $tags = $this->tags;
+        $div  = $tags->div();
+        foreach ( $list as $name ) {
+            $div->contain_( $tags->div( $entity->popHtml( $name ) )->style( 'float:left; margin-right: 1em;' ) );
+        }
+        return $div;
+    }
+
+    /**
+     * @param \WScore\DbAccess\Role_Selectable $entity
+     * @param array                            $list
+     * @return \WScore\Html\Tags
+     */
+    protected function dl( $entity, $list )
+    {
+        $tags = $this->tags;
+        $dl   = $tags->dl();
+        foreach ( $list as $name ) {
+            $dl->contain_( $this->dt( $entity, $name ) );
+            $dl->contain_( $this->dd( $entity, $name ) );
+        }
+        return $dl;
+    }
+
+    /**
+     * @param \WScore\DbAccess\Role_Selectable $entity
+     * @param                                  $name
+     * @return \WScore\Html\Tags
+     */
+    protected function dt( $entity, $name )
+    {
+        return $this->tags->dt( $entity->popName( $name ) );
+    }
+
+    /**
+     * @param \WScore\DbAccess\Role_Selectable $entity
+     * @param                                  $name
+     * @return \WScore\Html\Tags
+     */
+    protected function dd( $entity, $name )
+    {
+        return $this->tags->dd(
+            $entity->popHtml( $name ), '<br />',
+            $this->tags->span( $entity->popError( $name ) )->_class( 'formError' )
+        );
+    }
+
+    /**
+     * @param \WScore\DbAccess\Role_Selectable[] $entity
+     * @param string                             $type
+     * @return \WScore\Html\Tags
+     */
+    public function tableView( $entity, $type = 'html' )
+    {
+        $table  = $this->tags->table()->_class( 'table' )->contain_(
             $this->tags->tr(
                 $this->tags->th( 'name' ),
                 $this->tags->th( 'star' ),
@@ -91,13 +176,13 @@ class friendsView
             )
         );
         $appUrl = $this->view->get( 'appUrl' );
-        foreach( $entity as $row ) 
-        {
-            $id = $row->getId();
+        foreach ( $entity as $row ) {
+            $row = $this->role->applySelectable( $row );
+            $id  = $row->getId();
             $row->setHtmlType( $type );
 
             /** @var $task \task\entity\task */
-            $memo   = $this->tags->a( $row->popHtml( 'name' ) )->href( $appUrl . $id )->style( 'font-weight:bold');
+            $memo   = $this->tags->a( $row->popHtml( 'name' ) )->href( $appUrl . $id )->style( 'font-weight:bold' );
             $star   = $row->popHtml( 'star' );
             $button = $this->tags->a( '>>' )->href( $appUrl . $id )->_class( 'btn btn-small btn' );
             $table->contain_(
@@ -112,11 +197,12 @@ class friendsView
     }
 
 
-    public function showSetup() {
+    public function showSetup()
+    {
         /** @var $form \WScore\Html\Tags */
         $this->set( 'title', 'Confirm Initializing Tasks' );
         $check = $this->tags->checkLabel( 'initDb', 'yes', 'check this box and click initialize button' );
-        $form = $this->tags->form()->method( 'post' )->action( '' );
+        $form  = $this->tags->form()->method( 'post' )->action( '' );
         $form->contain_(
             $this->tags->p( 'really initialize database?' ),
             $this->tags->p( 'all the current tasks will be removed...' ),
@@ -133,4 +219,5 @@ class friendsView
         ob_start();
         include( __DIR__ . '/template.php' );
         return ob_get_clean();
-    }}
+    }
+}

@@ -10,9 +10,11 @@ $front = Core::get( '\wsModule\Alt\Web\FrontMC' );
 $front->debug = true;
 $front->namespace = 'friends';
 $routes = array(
-    'myFriends/setup'        => array( 'controller' => 'Friend', 'action' => 'setup' ),
-    'myFriends/' => array( 'controller' => 'Friend',  'action' => 'index' ),
-    'myFriends'  => array( 'controller' => 'Friend',  'action' => 'index' ),
+    'myFriends/detail/:id'   => array( 'controller' => 'Friend', 'action' => 'detail' ),
+    'myFriends/:id'   => array( 'controller' => 'Friend', 'action' => 'info' ),
+    'myFriends/setup' => array( 'controller' => 'Friend', 'action' => 'setup' ),
+    'myFriends/'      => array( 'controller' => 'Friend', 'action' => 'index' ),
+    'myFriends'       => array( 'controller' => 'Friend', 'action' => 'index' ),
 );
 $front->router->set( $routes );
 $front->run();

@@ -54,15 +54,34 @@ class FriendController
     public function actIndex()
     {
         $model = $this->em->getModel( 'Friends' );
-        $all   = $model->query()->select();
-        $entities = array();
-        foreach( $all as $row ) {
-            $entities[] = $this->role->applySelectable( $row );
-        }
+        $entities   = $model->query()->select();
         $this->view->showForm_list( $entities, 'list' );
         return $this->view;
     }
 
+    /**
+     * @param array $parameter
+     * @return views\friendsView
+     */
+    public function actInfo( $parameter )
+    {
+        $id = $parameter[ 'id' ];
+        $entity = $this->em->getEntity( 'Friends', $id );
+        $this->view->showForm_brief( $entity );
+        return $this->view;
+    }
+
+    /**
+     * @param array $parameter
+     * @return views\friendsView
+     */
+    public function actDetail( $parameter )
+    {
+        $id = $parameter[ 'id' ];
+        $entity = $this->em->getEntity( 'Friends', $id );
+        $this->view->showForm_detail( $entity );
+        return $this->view;
+    }
     // +----------------------------------------------------------------------+
     //  initialize database
     // +----------------------------------------------------------------------+

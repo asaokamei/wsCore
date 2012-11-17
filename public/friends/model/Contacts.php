@@ -3,39 +3,55 @@ namespace friends\model;
 
 class Contacts extends \WScore\DbAccess\Model
 {
-    /** @var string     name of database table     */
+    public static $types = array( 
+        array( 1, 'telephone' ), 
+        array( 2, 'e-mails', 
+            array( 3, 'social' ) ) 
+    );
+    /** @var string     name of database table */
     protected $table = 'demoContact';
 
-    /** @var string     name of primary key        */
+    /** @var string     name of primary key */
     protected $id_name = 'contact_id';
 
     protected $definition = array(
-        'contact_id'     => array( 'contact id',     'number', ),
-        'contact_memo'   => array( 'what to do?', 'string', ),
-        'contact_date'   => array( 'by when?',    'string', ),
-        'contact_status' => array( 'done?',       'string', ),
-        'created_at'  => array( 'created at',  'string', 'created_at'),
-        'updated_at'  => array( 'updated at',  'string', 'updated_at'),
+        'contact_id' => array( 'contact id', 'number', ),
+        'info'       => array( 'contact info', 'string', ),
+        'type'       => array( 'type', 'string', ),
+        'label'      => array( 'what', 'string', ),
+        'created_at' => array( 'created at', 'string', 'created_at' ),
+        'updated_at' => array( 'updated at', 'string', 'updated_at' ),
     );
 
-    /** @var array      for validation of inputs       */
+    /** @var array      for validation of inputs */
     protected $validators = array(
-        'contact_id'     => array( 'number' ),
-        'contact_memo'   => array( 'text', 'required' ),
-        'contact_date'   => array( 'date', '', ),
-        'contact_status' => array( 'text', '' ),
+        'contact_id' => array( 'number' ),
+        'info'       => array( 'text', 'required' ),
+        'type'       => array( 'text', '', ),
+        'label'      => array( 'text', '' ),
     );
 
-    /** @var array      for selector construction      */
-    protected $selectors  = array(
-        'contact_id'     => array( 'Selector', 'text' ),
-        'contact_memo'   => array( 'Selector', 'textarea', 'placeholder:your tasks here | class:span5 | rows:5' ),
-        'contact_date'   => array( 'Selector', 'date', ),
-        'contact_status' => array( 'Selector', 'checkToggle', '', array(
-            'items' => array( array( 1, 'active' ), array( 9, 'done' ) )
-        ) ),
+    /** @var array      for selector construction */
+    protected $selectors = array(
+        'contact_id' => array( 'Selector', 'text' ),
+        'info'       => array( 'Selector', 'text', 'placeholder:contact info | class:span5' ),
+        'type'       => array( 'Selector', 'radio', ),
+        'label'      => array( 'Selector', 'text', 'placeholder:type | default:home | class:span3' ),
     );
 
     public $recordClassName = 'friends\entity\contact';
+
+    // +----------------------------------------------------------------------+
+    /**
+     * @param $em       \WScore\DbAccess\EntityManager
+     * @param $query    \WScore\DbAccess\Query
+     * @DimInjection Get      EntityManager
+     * @DimInjection Fresh    Query
+     */
+    public function __construct( $em, $query )
+    {
+        parent::__construct( $em, $query );
+        $this->selectors[ 'type' ][ 'items' ] = self::$types;
+    }
 
 }

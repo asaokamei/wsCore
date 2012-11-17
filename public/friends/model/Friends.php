@@ -5,6 +5,23 @@ use \friends\entity\friend;
 
 class Friends extends \WScore\DbAccess\Model
 {
+    public static $genders = array(
+        array( friend::GENDER_NONE, 'not sure' ),
+        array( friend::GENDER_MALE, 'male' ),
+        array( friend::GENDER_FEMALE, 'female' )
+    );
+    
+    public static $stars = array( 
+        array( 'A', '**' ), 
+        array( 'B', '*' ), 
+        array( 'C', '-'), 
+    );
+    
+    public static $status = array( 
+        array( friend::STATUS_ACTIVE, 'active' ), 
+        array( friend::STATUS_DONE, 'done' ) 
+    );
+    
     /** @var string     name of database table */
     protected $table = 'demoFriend';
 
@@ -38,20 +55,11 @@ class Friends extends \WScore\DbAccess\Model
     protected $selectors = array(
         'friend_id'  => array( 'Selector', 'text', ),
         'name'       => array( 'Selector', 'text', 'placeholder:your friends name | class:span5' ),
-        'star'       => array( 'Selector', 'text', 'radio', 
-            'items' => array( array( 'A', '**' ), array( 'B', '*' ), array( 'C', '-'), )
-        ),
-        'gender'     => array( 'Selector', 'radio', 
-            'items' => array( 
-                array( friend::GENDER_NONE, 'not sure' ), 
-                array( friend::GENDER_MALE, 'male' ), 
-                array( friend::GENDER_FEMALE, 'female' ) 
-            ) ),
+        'star'       => array( 'Selector', 'radio', ),
+        'gender'     => array( 'Selector', 'radio', ),
         'memo'       => array( 'Selector', 'textarea', 'placeholder:your tasks here | class:span5 | rows:5', ),
         'birthday'   => array( 'Selector', 'date', ),
-        'status'     => array( 'Selector', 'checkToggle', '', array(
-            'items' => array( array( friend::STATUS_ACTIVE, 'active' ), array( friend::STATUS_DONE, 'done' ) )
-        ) ),
+        'status'     => array( 'Selector', 'checkToggle', ),
     );
 
     public $recordClassName = 'friends\entity\friend';
@@ -66,6 +74,9 @@ class Friends extends \WScore\DbAccess\Model
     public function __construct( $em, $query )
     {
         parent::__construct( $em, $query );
+        $this->selectors[ 'gender' ][ 'items' ] = self::$genders;
+        $this->selectors[ 'star'   ][ 'items' ] = self::$stars;
+        $this->selectors[ 'status' ][ 'items' ] = self::$status;
     }
 
     /**
