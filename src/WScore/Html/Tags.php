@@ -18,6 +18,7 @@ namespace WScore\Html;
  * @method \WScore\Html\Tags checked
  * @method \WScore\Html\Tags optgroup
  * @method \WScore\Html\Tags label
+ * @method \WScore\Html\Tags ul
  * @method \WScore\Html\Tags nl
  * @method \WScore\Html\Tags li
  * @method \WScore\Html\Tags table
