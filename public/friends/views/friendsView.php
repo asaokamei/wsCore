@@ -117,7 +117,34 @@ class friendsView
     // +----------------------------------------------------------------------+
     //  about contacts
     // +----------------------------------------------------------------------+
-    
+
+    /**
+     * @param \friends\entity\friend $friend
+     * @param \friends\entity\contact $contact
+     */
+    public function showContact_form( $friend, $contact )
+    {
+        $friend_id = $friend->friend_id;
+        $contact_type = $contact->type;
+        $friend  = $this->role->applySelectable( $friend );
+        $contact = $this->role->applySelectable( $contact );
+        $contact->setHtmlType( 'form' );
+        $this->set( 'title', $friend->popHtml( 'name' ) );
+        $contents    = array();
+        $contents[ ] = $this->lists( $friend, array( 'gender', 'birthday', 'star' ) );
+        $contents[ ] = $this->tags->div()->style( 'clear:both' );
+        $contents[ ] = $this->tags->h4( 'add contact for: ' . $contact->popHtml( 'type', 'html' ) );
+        
+        $appUrl      = $this->get( 'appUrl' );
+        $postUrl     = $appUrl . "contact/{$friend_id}/type/{$contact_type}";
+        $form = $this->tags->form()->action( $postUrl )->method( 'post' );
+        $form->contain_(
+            $this->dl( $contact, array( 'info', 'type', 'label' ) ),
+            $this->view->bootstrapButton( 'submit', 'add new contact', 'btn btn-primary' )
+        );
+        $contents[ ] = $form;
+        $this->set( 'content', $contents );
+    }
     // +----------------------------------------------------------------------+
     //  view tools
     // +----------------------------------------------------------------------+

@@ -35,7 +35,7 @@ class Contacts extends \WScore\DbAccess\Model
     protected $selectors = array(
         'contact_id' => array( 'Selector', 'text' ),
         'info'       => array( 'Selector', 'text', 'placeholder:contact info | class:span5' ),
-        'type'       => array( 'Selector', 'radio', ),
+        'type'       => array( 'Selector', 'select', ),
         'label'      => array( 'Selector', 'text', 'placeholder:type | default:home | class:span3' ),
     );
 

@@ -87,9 +87,29 @@ class FriendController
     // +----------------------------------------------------------------------+
     public function actContact( $parameter) 
     {
+        \WScore\Core::get( '\friends\model\Contacts' );
         $id   = $parameter[ 'id' ];
         $type = $parameter[ 'type' ];
-        $this->view->set( 'title', 'Add:' );
+        /** @var $friend  \friends\entity\friend */
+        /** @var $contact \friends\entity\contact */
+        $friend  = $this->em->getEntity( 'Friends', $id );
+        $contact = $this->em->newEntity( 'Contacts' );
+        $contact->type = $type;
+        /** @var $contact \friends\entity\contact */
+        if( $this->front->request->isPost() ) 
+        {
+            $loadable = $this->role->applyLoadable( $contact );
+            $loadable->loadData();
+            if( $loadable->validate() ) 
+            {
+                $active = $this->role->applyActive( $loadable );
+                $active->save();
+                $jump = $this->view->get( 'appUrl' ) . $id;
+                header( 'Location: ' . $jump );
+                exit;
+            }
+        }
+        $this->view->showContact_form( $friend, $contact );
         return $this->view;
     }
     // +----------------------------------------------------------------------+
