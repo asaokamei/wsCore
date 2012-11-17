@@ -179,7 +179,8 @@ class Selector
      */
     public function makeRaw( $value ) {
         if( is_array( $value ) ) {
-            return $this->form->listBox( $value );
+            if( count( $value ) > 1 ) return $this->form->lists( $value );
+            $value = array_pop( $value );
         }
         return $value;
     }
