@@ -237,7 +237,7 @@ class Selector
     public function findValueFromItems( &$value )
     {
         foreach( $this->item_data as $item ) {
-            if( $value == $item[0] ) {
+            if( $value == $this->arrGet( $item, 0 ) ) {
                 return $item[1];
             }
         }
