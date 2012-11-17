@@ -5,8 +5,8 @@ class Contacts extends \WScore\DbAccess\Model
 {
     public static $types = array( 
         array( 1, 'telephone' ), 
-        array( 2, 'e-mails', 
-            array( 3, 'social' ) ) 
+        array( 2, 'e-mails' ),
+        array( 3, 'social' ),
     );
     /** @var string     name of database table */
     protected $table = 'demoContact';
