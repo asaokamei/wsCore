@@ -1,3 +1,4 @@
+<div style="clear:both;"></div>
 <footer class="footer">
     <hr>
     <p>WScore Developed by WorkSpot.JP<br />
