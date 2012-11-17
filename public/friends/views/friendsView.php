@@ -1,6 +1,8 @@
 <?php
 namespace friends\views;
 
+use \friends\model\Contacts;
+
 class friendsView
 {
     /** @var \wsModule\Alt\Html\View_Bootstrap */
@@ -80,13 +82,22 @@ class friendsView
     public function showForm_brief( $entity )
     {
         $role        = $this->role->applySelectable( $entity );
+        $id          = $role->getId();
         $this->set( 'title', $role->popHtml( 'name' ) );
-        $editUrl     = $this->get( 'appUrl' ) . 'detail/' . $role->getId();
-        $list        = array( 'gender', 'birthday', 'star' );
+        $tags        = $this->tags;
+        $appUrl      = $this->get( 'appUrl' );
+        $editUrl     = $appUrl . 'detail/' . $id;
         $contents    = array();
-        $contents[ ] = $this->lists( $role, $list );
-        $contents[ ] = $this->tags->a( 'edit' )->href( $editUrl )->_class( 'btn btn-primary' )->style( 'float:right' );
-        $contents[ ] = $this->tags->div()->style( 'clear:both' );
+        $contents[ ] = $this->lists( $role, array( 'gender', 'birthday', 'star' ) );
+        $contents[ ] = $tags->a( 'edit' )->href( $editUrl )->_class( 'btn' )->style( 'float:right' );
+        $contents[ ] = $tags->div()->style( 'clear:both' );
+        foreach( Contacts::$types as $type ) {
+            $contents[ ] = $tags->h4( $type[1] );
+            $contents[ ] = $tags->a( 'add new' )
+                ->href( $appUrl.'contact/' . $id . '/type/' . $type[0] )
+                ->_class( 'btn' )->style( 'float:right' );
+            $contents[ ] = $tags->div()->style( 'clear:both' );
+        }
         $this->set( 'content', $contents );
     }
 
@@ -103,6 +114,10 @@ class friendsView
         $this->set( 'content', $contents );
     }
 
+    // +----------------------------------------------------------------------+
+    //  about contacts
+    // +----------------------------------------------------------------------+
+    
     // +----------------------------------------------------------------------+
     //  view tools
     // +----------------------------------------------------------------------+

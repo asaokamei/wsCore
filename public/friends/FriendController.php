@@ -83,6 +83,16 @@ class FriendController
         return $this->view;
     }
     // +----------------------------------------------------------------------+
+    //  about contacts
+    // +----------------------------------------------------------------------+
+    public function actContact( $parameter) 
+    {
+        $id   = $parameter[ 'id' ];
+        $type = $parameter[ 'type' ];
+        $this->view->set( 'title', 'Add:' );
+        return $this->view;
+    }
+    // +----------------------------------------------------------------------+
     //  initialize database
     // +----------------------------------------------------------------------+
     /**
