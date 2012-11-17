@@ -5,16 +5,26 @@ class friend extends \WScore\DbAccess\Entity_Abstract
 {
     const STATUS_ACTIVE = '1';
     const STATUS_DONE   = '9';
+    
+    const GENDER_MALE   = 'M';
+    const GENDER_FEMALE = 'F';
+    const GENDER_NONE   = 'N';
 
-    protected $_model = 'tasks';
+    protected $_model = 'Friends';
 
     public $friend_id = null;
+    
+    public $name = '';
+    
+    public $star = 'B';
+    
+    public $gender = self::GENDER_NONE;
 
-    public $friend_memo = '';
+    public $memo = '';
 
-    public $friend_date = '';
+    public $birthday = null;
 
-    public $friend_status = self::STATUS_ACTIVE;
+    public $status = self::STATUS_ACTIVE;
 
     public $created_at;
 
@@ -24,14 +34,14 @@ class friend extends \WScore\DbAccess\Entity_Abstract
      * @return bool
      */
     public function isDone() {
-        return $this->friend_status == self::STATUS_DONE;
+        return $this->status == self::STATUS_DONE;
     }
 
     /**
      *
      */
     public function setDone() {
-        $this->friend_status = self::STATUS_DONE;
+        $this->status = self::STATUS_DONE;
     }
 }
 

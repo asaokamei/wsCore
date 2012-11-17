@@ -71,7 +71,8 @@ class FriendController
      *
      * @return string
      */
-    public function actSetup() {
+    public function actSetup() 
+    {
         $folder = __DIR__ . '/data/';
         if( !file_exists( $folder ) ) {
             if( !@mkdir( $folder, 0777 ) ) {
@@ -111,7 +112,7 @@ class FriendController
         $sql = $model->getCreateSql();
         $model->query()->execSQL( $sql );
         // using em. this works just fine.
-        for( $i = 1; $i <= 5; $i++ ) {
+        for( $i = 1; $i <= 15; $i++ ) {
             $task = $model->getSampleTasks($i);
             $this->em->newEntity( 'Friends', $task );
         }

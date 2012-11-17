@@ -69,7 +69,7 @@ class friendsView
     public function showForm_list( $entity )
     {
         $this->set( 'action', 'load' );
-        $this->set( 'title', 'My Tasks' );
+        $this->set( 'title', 'My Friends' );
         $contents = array();
         $table = $this->tableView( $entity, 'html' );
         $contents[] = $table;
@@ -85,30 +85,25 @@ class friendsView
     {
         $table = $this->tags->table()->_class( 'table' )->contain_(
             $this->tags->tr(
-                $this->tags->th( 'task description' ),
-                $this->tags->th( 'date' ),
-                $this->tags->th( 'done' )
+                $this->tags->th( 'name' ),
+                $this->tags->th( 'star' ),
+                $this->tags->th( '' )
             )
         );
-        $taskUrl = $this->view->get( 'taskUrl' );
-        foreach( $entity as $row ) {
+        $appUrl = $this->view->get( 'appUrl' );
+        foreach( $entity as $row ) 
+        {
             $id = $row->getId();
             $row->setHtmlType( $type );
 
             /** @var $task \task\entity\task */
-            $task = $row->retrieve();
-            if( $task->isDone() ) {
-                $memo   = $this->tags->a( $row->popHtml( 'friend_memo' ) )->href( $taskUrl . 'task/'.$id )->style( 'color:#669999');
-                $button = $this->tags->a( 'delete' )->href( $taskUrl . 'done/'.$id )->_class( 'btn btn-small btn' );
-            }
-            else {
-                $memo   = $this->tags->a( $row->popHtml( 'friend_memo' ) )->href( $taskUrl . 'task/'.$id )->style( 'font-weight:bold' );
-                $button = $this->tags->a( 'done' )->href( $taskUrl . 'done/'.$id )->_class( 'btn btn-small btn-primary' );
-            }
+            $memo   = $this->tags->a( $row->popHtml( 'name' ) )->href( $appUrl . $id )->style( 'font-weight:bold');
+            $star   = $row->popHtml( 'star' );
+            $button = $this->tags->a( '>>' )->href( $appUrl . $id )->_class( 'btn btn-small btn' );
             $table->contain_(
                 $tr = $this->tags->tr(
                     $this->tags->td( $memo ),
-                    $this->tags->td( $row->popHtml( 'friend_date' ) ),
+                    $this->tags->td( $star ),
                     $this->tags->td( $button )
                 )
             );
