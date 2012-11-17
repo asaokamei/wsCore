@@ -10,18 +10,18 @@ class Friends extends \WScore\DbAccess\Model
         array( friend::GENDER_MALE, 'male' ),
         array( friend::GENDER_FEMALE, 'female' )
     );
-    
-    public static $stars = array( 
-        array( 'A', '**' ), 
-        array( 'B', '*' ), 
-        array( 'C', '-'), 
+
+    public static $stars = array(
+        array( 'A', '**' ),
+        array( 'B', '*' ),
+        array( 'C', '-' ),
     );
-    
-    public static $status = array( 
-        array( friend::STATUS_ACTIVE, 'active' ), 
-        array( friend::STATUS_DONE, 'done' ) 
+
+    public static $status = array(
+        array( friend::STATUS_ACTIVE, 'active' ),
+        array( friend::STATUS_DONE, 'done' )
     );
-    
+
     /** @var string     name of database table */
     protected $table = 'demoFriend';
 
@@ -42,24 +42,24 @@ class Friends extends \WScore\DbAccess\Model
 
     /** @var array      for validation of inputs */
     protected $validators = array(
-        'friend_id'  => array( 'number', ),
-        'name'       => array( 'text', 'required', ),
-        'star'       => array( 'text', ),
-        'gender'     => array( 'text', ),
-        'memo'       => array( 'text', ),
-        'birthday'   => array( 'date', ),
-        'status'     => array( 'text', ),
+        'friend_id' => array( 'number', ),
+        'name'      => array( 'text', 'required', ),
+        'star'      => array( 'text', ),
+        'gender'    => array( 'text', ),
+        'memo'      => array( 'text', ),
+        'birthday'  => array( 'date', ),
+        'status'    => array( 'text', ),
     );
 
     /** @var array      for selector construction */
     protected $selectors = array(
-        'friend_id'  => array( 'Selector', 'text', ),
-        'name'       => array( 'Selector', 'text', 'placeholder:your friends name | class:span5' ),
-        'star'       => array( 'Selector', 'radio', ),
-        'gender'     => array( 'Selector', 'radio', ),
-        'memo'       => array( 'Selector', 'textarea', 'placeholder:your tasks here | class:span5 | rows:5', ),
-        'birthday'   => array( 'Selector', 'date', ),
-        'status'     => array( 'Selector', 'checkToggle', ),
+        'friend_id' => array( 'Selector', 'text', ),
+        'name'      => array( 'Selector', 'text', 'placeholder:your friends name | class:span5' ),
+        'star'      => array( 'Selector', 'radio', ),
+        'gender'    => array( 'Selector', 'radio', ),
+        'memo'      => array( 'Selector', 'textarea', 'placeholder:your tasks here | class:span5 | rows:5', ),
+        'birthday'  => array( 'Selector', 'date', ),
+        'status'    => array( 'Selector', 'checkToggle', ),
     );
 
     public $recordClassName = 'friends\entity\friend';
@@ -75,7 +75,7 @@ class Friends extends \WScore\DbAccess\Model
     {
         parent::__construct( $em, $query );
         $this->selectors[ 'gender' ][ 'items' ] = self::$genders;
-        $this->selectors[ 'star'   ][ 'items' ] = self::$stars;
+        $this->selectors[ 'star'   ][ 'items' ]   = self::$stars;
         $this->selectors[ 'status' ][ 'items' ] = self::$status;
     }
 
@@ -118,19 +118,19 @@ class Friends extends \WScore\DbAccess\Model
         $syll = array( 'k', 's', 't', 'm', 'g' );
         $cccc = mt_rand( 6, 9 );
         $name = '';
-        for( $i = 0; $i < $cccc; $i++ ) {
+        for ( $i = 0; $i < $cccc; $i++ ) {
             $name .= $syll[ mt_rand( 0, 4 ) ];
             $name .= $vows[ mt_rand( 0, 3 ) ];
-            if( $i == 2 ) $name .= ' ';
+            if ( $i == 2 ) $name .= ' ';
         }
-        $name = ucwords( $name );
-        $stars = array( 'A', 'B', 'C' );
+        $name    = ucwords( $name );
+        $stars   = array( 'A', 'B', 'C' );
         $genders = array( 'N', 'M', 'F' );
-        $task = array(
-            'name'   => $name,
-            'star'   => $stars[ mt_rand( 0, 2 ) ],
-            'gender' => $genders[ mt_rand( 0, 2 ) ],
-            'memo'   => 'memo #' . $idx,
+        $task    = array(
+            'name'     => $name,
+            'star'     => $stars[ mt_rand( 0, 2 ) ],
+            'gender'   => $genders[ mt_rand( 0, 2 ) ],
+            'memo'     => 'memo #' . $idx,
             'birthday' => sprintf( '1980-11-%02d', $idx + 1 ),
             'status'   => 1,
         );
