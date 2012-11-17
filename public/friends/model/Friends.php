@@ -103,13 +103,20 @@ class Friends extends \WScore\DbAccess\Model
 
     public function getSampleTasks( $idx = 1 )
     {
-        $vows = array( 'A', 'O', 'I', 'E' );
-        $syll = array( 'K', 'S', 'T', 'M', 'G' );
-        
+        $vows = array( 'a', 'o', 'i', 'e' );
+        $syll = array( 'k', 's', 't', 'm', 'g' );
+        $cccc = mt_rand( 6, 9 );
+        $name = '';
+        for( $i = 0; $i < $cccc; $i++ ) {
+            $name .= $syll[ mt_rand( 0, 4 ) ];
+            $name .= $vows[ mt_rand( 0, 3 ) ];
+            if( $i == 2 ) $name .= ' ';
+        }
+        $name = ucwords( $name );
         $stars = array( 'A', 'B', 'C' );
         $genders = array( 'N', 'M', 'F' );
         $task = array(
-            'name'   => 'friend #' . $idx,
+            'name'   => $name,
             'star'   => $stars[ mt_rand( 0, 2 ) ],
             'gender' => $genders[ mt_rand( 0, 2 ) ],
             'memo'   => 'memo #' . $idx,
