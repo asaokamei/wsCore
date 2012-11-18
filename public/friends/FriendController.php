@@ -102,8 +102,8 @@ class FriendController
             $loadable->loadData();
             if( $loadable->validate() ) 
             {
-                $this->em->relation( $contact, 'friend' );
                 $active = $this->role->applyActive( $loadable );
+                $active->relation( 'friend' )->set( $friend );
                 $active->save();
                 $jump = $this->view->get( 'appUrl' ) . $id;
                 header( 'Location: ' . $jump );
