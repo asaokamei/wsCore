@@ -16,6 +16,7 @@ class Contacts extends \WScore\DbAccess\Model
 
     protected $definition = array(
         'contact_id' => array( 'contact id', 'number', ),
+        'friend_id'  => array( 'link to friend', 'number' ),
         'info'       => array( 'contact info', 'string', ),
         'type'       => array( 'type', 'string', ),
         'label'      => array( 'what', 'string', ),
@@ -26,6 +27,7 @@ class Contacts extends \WScore\DbAccess\Model
     /** @var array      for validation of inputs */
     protected $validators = array(
         'contact_id' => array( 'number' ),
+        'friend_id' => array( 'number' ),
         'info'       => array( 'text', 'required' ),
         'type'       => array( 'text', '', ),
         'label'      => array( 'text', '' ),
