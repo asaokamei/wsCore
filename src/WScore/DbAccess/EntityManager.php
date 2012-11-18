@@ -115,10 +115,7 @@ class EntityManager
         }
         $this->setupEntity( $entity );
         $cenaId = $entity->_get_cenaId();
-        if( array_key_exists( $cenaId, $this->entities ) ) {
-            $entity = & $this->entities[ $cenaId ];
-        }
-        else {
+        if( !array_key_exists( $cenaId, $this->entities ) ) {
             $this->entities[ $cenaId ] = $entity;
         }
         return $entity;
