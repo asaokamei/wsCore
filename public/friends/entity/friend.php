@@ -1,15 +1,10 @@
 <?php
 namespace friends\entity;
 
+use \friends\model\Friends;
+
 class friend extends \WScore\DbAccess\Entity_Abstract
 {
-    const STATUS_ACTIVE = '1';
-    const STATUS_DONE   = '9';
-    
-    const GENDER_MALE   = 'M';
-    const GENDER_FEMALE = 'F';
-    const GENDER_NONE   = 'N';
-
     protected $_model = 'Friends';
 
     public $friend_id = null;
@@ -18,13 +13,13 @@ class friend extends \WScore\DbAccess\Entity_Abstract
     
     public $star = 'B';
     
-    public $gender = self::GENDER_NONE;
+    public $gender = Friends::GENDER_NONE;
 
     public $memo = '';
 
     public $birthday = null;
 
-    public $status = self::STATUS_ACTIVE;
+    public $status = Friends::STATUS_ACTIVE;
 
     public $created_at;
 
@@ -34,14 +29,14 @@ class friend extends \WScore\DbAccess\Entity_Abstract
      * @return bool
      */
     public function isDone() {
-        return $this->status == self::STATUS_DONE;
+        return $this->status == Friends::STATUS_DONE;
     }
 
     /**
      *
      */
     public function setDone() {
-        $this->status = self::STATUS_DONE;
+        $this->status = Friends::STATUS_DONE;
     }
 }
 

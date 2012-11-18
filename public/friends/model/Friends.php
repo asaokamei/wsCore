@@ -1,14 +1,19 @@
 <?php
 namespace friends\model;
 
-use \friends\entity\friend;
-
 class Friends extends \WScore\DbAccess\Model
 {
+    const STATUS_ACTIVE = '1';
+    const STATUS_DONE   = '9';
+
+    const GENDER_MALE   = 'M';
+    const GENDER_FEMALE = 'F';
+    const GENDER_NONE   = 'N';
+
     public static $genders = array(
-        array( friend::GENDER_NONE, 'not sure' ),
-        array( friend::GENDER_MALE, 'male' ),
-        array( friend::GENDER_FEMALE, 'female' )
+        array( self::GENDER_NONE, 'not sure' ),
+        array( self::GENDER_MALE, 'male' ),
+        array( self::GENDER_FEMALE, 'female' )
     );
 
     public static $stars = array(
@@ -18,8 +23,8 @@ class Friends extends \WScore\DbAccess\Model
     );
 
     public static $status = array(
-        array( friend::STATUS_ACTIVE, 'active' ),
-        array( friend::STATUS_DONE, 'done' )
+        array( self::STATUS_ACTIVE, 'active' ),
+        array( self::STATUS_DONE, 'done' )
     );
 
     /** @var string     name of database table */
@@ -28,49 +33,6 @@ class Friends extends \WScore\DbAccess\Model
     /** @var string     name of primary key */
     protected $id_name = 'friend_id';
 
-    protected $definition = array(
-        'friend_id'  => array( 'friend id', 'number', ),
-        'name'       => array( 'friend\'s name', 'string', ),
-        'star'       => array( 'stars', 'string', ),
-        'gender'     => array( 'gender', 'string', ),
-        'memo'       => array( 'about...', 'string', ),
-        'birthday'   => array( 'birthday', 'string', ),
-        'status'     => array( 'still friend?', 'string', ),
-        'created_at' => array( 'created at', 'string', 'created_at' ),
-        'updated_at' => array( 'updated at', 'string', 'updated_at' ),
-    );
-
-    /** @var array      for validation of inputs */
-    protected $validators = array(
-        'friend_id' => array( 'number', ),
-        'name'      => array( 'text', 'required', ),
-        'star'      => array( 'text', ),
-        'gender'    => array( 'text', ),
-        'memo'      => array( 'text', ),
-        'birthday'  => array( 'date', ),
-        'status'    => array( 'text', ),
-    );
-
-    /** @var array      for selector construction */
-    protected $selectors = array(
-        'friend_id' => array( 'Selector', 'text', ),
-        'name'      => array( 'Selector', 'text', 'placeholder:your friends name | class:span5' ),
-        'star'      => array( 'Selector', 'radio', ),
-        'gender'    => array( 'Selector', 'radio', ),
-        'memo'      => array( 'Selector', 'textarea', 'placeholder:your tasks here | class:span5 | rows:5', ),
-        'birthday'  => array( 'Selector', 'date', ),
-        'status'    => array( 'Selector', 'checkToggle', ),
-    );
-
-    protected $relations = array(
-        'contacts' => array(
-            'relation_type' => 'HasRefs',
-            'source_column' => null, // use id name of source. 
-            'target_model'  => 'Contacts',
-            'target_column' => null, // use source column. 
-        ),
-    );
-    
     public $recordClassName = 'friends\entity\friend';
 
     // +----------------------------------------------------------------------+
@@ -82,10 +44,51 @@ class Friends extends \WScore\DbAccess\Model
      */
     public function __construct( $em, $query )
     {
+        $this->definition = array(
+            'friend_id'  => array( 'friend id', 'number', ),
+            'name'       => array( 'friend\'s name', 'string', ),
+            'star'       => array( 'stars', 'string', ),
+            'gender'     => array( 'gender', 'string', ),
+            'memo'       => array( 'about...', 'string', ),
+            'birthday'   => array( 'birthday', 'string', ),
+            'status'     => array( 'still friend?', 'string', ),
+            'created_at' => array( 'created at', 'string', 'created_at' ),
+            'updated_at' => array( 'updated at', 'string', 'updated_at' ),
+        );
+
+        /** @var array      for validation of inputs */
+        $this->validators = array(
+            'friend_id' => array( 'number', ),
+            'name'      => array( 'text', 'required', ),
+            'star'      => array( 'text', ),
+            'gender'    => array( 'text', ),
+            'memo'      => array( 'text', ),
+            'birthday'  => array( 'date', ),
+            'status'    => array( 'text', ),
+        );
+
+        /** @var array      for selector construction */
+        $this->selectors = array(
+            'friend_id' => array( 'Selector', 'text', ),
+            'name'      => array( 'Selector', 'text', 'placeholder:your friends name | class:span5' ),
+            'star'      => array( 'Selector', 'radio', 'items' => self::$stars ),
+            'gender'    => array( 'Selector', 'radio', 'items' => self::$genders ),
+            'memo'      => array( 'Selector', 'textarea', 'placeholder:your tasks here | class:span5 | rows:5', ),
+            'birthday'  => array( 'Selector', 'date', ),
+            'status'    => array( 'Selector', 'checkToggle', 'items' => self::$status ),
+        );
+
+        $this->relations = array(
+            'contacts' => array(
+                'relation_type' => 'HasRefs',
+                'source_column' => null, // use id name of source. 
+                'target_model'  => 'Contacts',
+                'target_column' => null, // use source column. 
+            ),
+        );
+        
         parent::__construct( $em, $query );
-        $this->selectors[ 'gender' ][ 'items' ] = self::$genders;
-        $this->selectors[ 'star'   ][ 'items' ]   = self::$stars;
-        $this->selectors[ 'status' ][ 'items' ] = self::$status;
+
     }
 
     /**
