@@ -3,7 +3,7 @@ include( __DIR__ . '/autoload.php' );
 include( __DIR__ . '/../src/autoloader.php' );
 use WScore\Core;
 Core::go();
-Core::setPdo( 'db=mysql dbname=test_friends username=admin password=admin' );
+Core::setPdo( array( 'dsn' => 'mysql:dbname=test_friends', 'username' => 'admin', 'password' => 'admin' ) );
 
 /** @var $front wsModule\Alt\Web\FrontMC */
 $front = Core::get( '\wsModule\Alt\Web\FrontMC' );
