@@ -81,7 +81,7 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     {
         $friend1 = $this->em->newEntity( 'Friend', 1 );
         $friend2 = $this->em->newEntity( 'Friend', 1 );
-        $this->assertSame( $friend1, $friend2 );
+        $this->assertNotSame( $friend1, $friend2 );
     }
     // +----------------------------------------------------------------------+
 }
