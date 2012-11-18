@@ -92,7 +92,7 @@ class Friends extends \WScore\DbAccess\Model
     {
         $sql = "
         CREATE TABLE {$this->table} (
-          friend_id   INTEGER PRIMARY KEY AUTOINCREMENT,
+          friend_id   SERIAL PRIMARY KEY,
           name text NOT NULL DEFAULT '',
           star char(1),
           gender char(1),
