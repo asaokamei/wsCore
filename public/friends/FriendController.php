@@ -65,9 +65,13 @@ class FriendController
      */
     public function actInfo( $parameter )
     {
+        \WScore\Core::get( '\friends\model\Contacts' );
+        class_exists( '\WScore\DbAccess\Relation' ); // just for debugger. 
         $id = $parameter[ 'id' ];
-        $entity = $this->em->getEntity( 'Friends', $id );
-        $this->view->showForm_brief( $entity );
+        $friend   = $this->em->getEntity( 'Friends', $id );
+        $contacts = $this->em->relation( $friend, 'contacts' )->get();
+        $this->view->showForm_info( $friend, $contacts );
+        
         return $this->view;
     }
 

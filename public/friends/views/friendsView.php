@@ -77,9 +77,10 @@ class friendsView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Selectable $entity
+     * @param \WScore\DbAccess\Entity_Interface   $entity
+     * @param \WScore\DbAccess\Entity_Interface[] $contacts
      */
-    public function showForm_brief( $entity )
+    public function showForm_info( $entity, $contacts )
     {
         $role        = $this->role->applySelectable( $entity );
         $id          = $role->getId();
@@ -88,9 +89,11 @@ class friendsView
         $appUrl      = $this->get( 'appUrl' );
         $editUrl     = $appUrl . 'detail/' . $id;
         $contents    = array();
+        // show brief info about my friend. 
         $contents[ ] = $this->lists( $role, array( 'gender', 'birthday', 'star' ) );
         $contents[ ] = $tags->a( 'edit' )->href( $editUrl )->_class( 'btn' )->style( 'float:right' );
         $contents[ ] = $tags->div()->style( 'clear:both' );
+        // show contacts
         foreach( Contacts::$types as $type ) {
             $contents[ ] = $tags->h4( $type[1] );
             $contents[ ] = $tags->a( 'add new' )
