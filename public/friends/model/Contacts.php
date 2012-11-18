@@ -39,6 +39,15 @@ class Contacts extends \WScore\DbAccess\Model
         'label'      => array( 'Selector', 'text', 'placeholder:type | default:home | class:span3' ),
     );
 
+    protected $relations = array(
+        'friend' => array(
+            'relation_type' => 'HasOne',
+            'source_column' => null, // use target_column.
+            'target_model'  => 'Friends',
+            'target_column' => null, // use target id name. 
+        ),
+    );
+
     public $recordClassName = 'friends\entity\contact';
 
     // +----------------------------------------------------------------------+
