@@ -62,6 +62,15 @@ class Friends extends \WScore\DbAccess\Model
         'status'    => array( 'Selector', 'checkToggle', ),
     );
 
+    protected $relations = array(
+        'contacts' => array(
+            'relation_type' => 'HasRefs',
+            'source_column' => null, // use id name of source. 
+            'target_model'  => 'Contacts',
+            'target_column' => null, // use source column. 
+        ),
+    );
+    
     public $recordClassName = 'friends\entity\friend';
 
     // +----------------------------------------------------------------------+
