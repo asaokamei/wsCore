@@ -4,6 +4,7 @@ namespace WScore\DbAccess;
 /**
  * todo: generate entity from entity class.
  * todo: entity maybe not registered automatically at generation. 
+ * todo: generating model before using is *pain*. 
  */
 class EntityManager
 {
