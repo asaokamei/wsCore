@@ -13,16 +13,16 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     // about entity's state.
 
     /** @var null|string    Entity_Interface::_ENTITY_TYPE_{NEW|GET}_ */
-    protected $_type = null;
+    private $_type = null;
 
     /** @var null|string */
-    protected $_identifier = null;
+    private $_identifier = null;
 
     /** @var bool */
-    protected $_toDelete = false;
+    private $_toDelete = false;
 
     /** @var \WScore\DbAccess\Relation_Interface[] */
-    protected $_relations = array();
+    private $_relations = array();
 
     /** @var int */
     protected static $_id_for_new = 1;
@@ -31,13 +31,13 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     // about validation result
 
     /** @var bool */
-    protected $_isValid = true;
+    private $_isValid = true;
 
     /** @var array */
-    protected $_errors = array();
+    private $_errors = array();
 
     /** @var array */
-    protected $_orig_data = array();
+    private $_orig_data = array();
     // +----------------------------------------------------------------------+
     //  construction and modifying protected properties.
     // +----------------------------------------------------------------------+
