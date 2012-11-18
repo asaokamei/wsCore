@@ -1,6 +1,10 @@
 <?php
 namespace WScore\DbAccess;
 
+/**
+ * todo: generate entity from entity class.
+ * todo: entity maybe not registered automatically at generation. 
+ */
 class EntityManager
 {
     /** @var \WScore\DbAccess\Model[] */
@@ -63,7 +67,7 @@ class EntityManager
     public function getModelName( $entity )
     {
         $model = ( is_object( $entity ) ) ? get_class( $entity ) : $entity;
-        if( strpos( $model, '\\' ) !== FALSE ) {
+        if( strpos( $model, '\\' ) !== false ) {
             $model = substr( $model, strrpos( $model, '\\' )+1 );
         }
         return $model;
@@ -128,7 +132,7 @@ class EntityManager
      * @throws \RuntimeException
      * @return \WScore\DbAccess\EntityManager
      */
-    public function setupEntity( $entity, $type=NULL, $identifier=NULL )
+    public function setupEntity( $entity, $type=null, $identifier=null )
     {
         if( $type ) {
             $this->setEntityProperty( $entity, 'type', $type );
@@ -166,7 +170,7 @@ class EntityManager
      * @param null|string   $id
      * @return Entity_Interface
      */
-    public function newEntity( $modelName, $data=array(), $id=NULL )
+    public function newEntity( $modelName, $data=array(), $id=null )
     {
         if( !is_array( $data ) ) {
             $id = $data;
