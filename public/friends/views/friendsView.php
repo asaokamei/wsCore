@@ -77,8 +77,8 @@ class friendsView
     }
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface   $entity
-     * @param \WScore\DbAccess\Entity_Interface[] $contacts
+     * @param \friends\entity\friend   $entity
+     * @param \friends\entity\contact[] $contacts
      */
     public function showForm_info( $entity, $contacts )
     {
@@ -94,11 +94,23 @@ class friendsView
         $contents[ ] = $tags->a( 'edit' )->href( $editUrl )->_class( 'btn' )->style( 'float:right' );
         $contents[ ] = $tags->div()->style( 'clear:both' );
         // show contacts
+        $roleContacts = array();
+        if( !empty( $contacts ) ) 
+        foreach( $contacts as $contact ) {
+            $type = $contact->type;
+            $roleContacts[ $type ][] = $this->role->applySelectable( $contact );
+        }
         foreach( Contacts::$types as $type ) {
-            $contents[ ] = $tags->h4( $type[1] );
+            $contents[ ] = '<hr>';
             $contents[ ] = $tags->a( 'add new' )
                 ->href( $appUrl.'contact/' . $id . '/type/' . $type[0] )
-                ->_class( 'btn' )->style( 'float:right' );
+                ->_class( 'btn btn-small' )->style( 'float:right' );
+            $contents[ ] = $tags->h4( $type[1] );
+            if( isset( $roleContacts[ $type[0] ] ) ) {
+                foreach( $roleContacts[ $type[0] ] as $role ) {
+                    $contents[] = $this->lists( $role, array( 'label', 'info' ) );
+                }
+            }
             $contents[ ] = $tags->div()->style( 'clear:both' );
         }
         $this->set( 'content', $contents );
@@ -162,7 +174,7 @@ class friendsView
         $tags = $this->tags;
         $div  = $tags->div();
         foreach ( $list as $name ) {
-            $div->contain_( $tags->div( $entity->popHtml( $name ) )->style( 'float:left; margin-right: 1em;' ) );
+            $div->contain_( $tags->div( $entity->popHtml( $name ) )->style( 'float:left; margin-right: 1em; min-width:3em; ' ) );
         }
         return $div;
     }
