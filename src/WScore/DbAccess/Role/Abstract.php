@@ -23,7 +23,9 @@ class Role_Abstract implements Role_Interface
      */
     public function register( $entity )
     {
-        $entity = $this->em->register( $entity );
+        // maybe NOT to register in the roles. 
+        // not sure if this is the right decision... 
+        // $entity = $this->em->register( $entity );
         $this->entity = $entity;
         $this->model = $this->em->getModel( $entity->_get_Model() );
     }
