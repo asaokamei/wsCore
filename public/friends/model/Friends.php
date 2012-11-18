@@ -99,8 +99,8 @@ class Friends extends \WScore\DbAccess\Model
           memo text,
           birthday date,
           status char(1) NOT NULL DEFAULT '1',
-          created_at text,
-          updated_at text
+          created_at datetime,
+          updated_at datetime
         );
         ";
         return $sql;

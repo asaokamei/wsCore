@@ -137,6 +137,7 @@ class FriendController
         }
         if( $this->front->request->isPost() ) {
             \WScore\Core::get( '\friends\model\Friends' );
+            \WScore\Core::get( '\friends\model\Contacts' );
             $this->initDb( $this->front->request->getPost( 'initDb' ) );
         }
         $this->view->showSetup();
@@ -161,12 +162,23 @@ class FriendController
         // create the new task table.
         $sql = $model->getCreateSql();
         $model->query()->execSQL( $sql );
+
         // using em. this works just fine.
         for( $i = 1; $i <= 15; $i++ ) {
             $task = $model->getSampleTasks($i);
             $this->em->newEntity( 'Friends', $task );
         }
         $this->em->save();
+
+        $model = $this->em->getModel( 'Contacts' );
+        // clear the current tasks (drop the table)
+        $sql = $model->getClearSql();
+        $model->query()->execSQL( $sql );
+        // create the new task table.
+        $sql = $model->getCreateSql();
+        $model->query()->execSQL( $sql );
+
+
         $taskUrl = $this->view->get( 'appUrl' );
         header( "Location: $taskUrl" );
         exit;

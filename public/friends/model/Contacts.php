@@ -63,4 +63,26 @@ class Contacts extends \WScore\DbAccess\Model
         $this->selectors[ 'type' ][ 'items' ] = self::$types;
     }
 
+    public function getCreateSql()
+    {
+        $sql = "
+        CREATE TABLE {$this->table} (
+          contact_id   SERIAL PRIMARY KEY,
+          friend_id int,
+          info text NOT NULL DEFAULT '',
+          type char(1),
+          label text,
+          created_at datetime,
+          updated_at datetime
+        );
+        ";
+        return $sql;
+    }
+
+    public function getClearSql()
+    {
+        $sql = "DROP TABLE IF EXISTS {$this->table}";
+        return $sql;
+    }
+
 }
