@@ -3,12 +3,8 @@ namespace WScore\DbAccess;
 
 class Role_Active extends Role_Abstract
 {
-    const ACTION_NONE  = 'act-none';
-    const ACTION_SAVE  = 'act-save';
-
-    /** @var string */
-    private $action = self::ACTION_NONE;
-
+    /** @var \WScore\DbAccess\EntityManager */
+    protected $em;
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DbAccess\EntityManager    $em
@@ -16,15 +12,6 @@ class Role_Active extends Role_Abstract
     public function __construct( $em )
     {
         $this->em = $em;
-    }
-
-    /**
-     * @param string $actType
-     * @return Role_Active
-     */
-    protected function setActionType( $actType ) {
-        $this->action = $actType;
-        return $this;
     }
 
     // +----------------------------------------------------------------------+
@@ -52,7 +39,6 @@ class Role_Active extends Role_Abstract
     public function delete( $delete=true )
     {
         $this->em->delete( $this->entity, !!$delete );
-        $this->setActionType( self::ACTION_SAVE );
         return $this;
     }
 
@@ -62,9 +48,7 @@ class Role_Active extends Role_Abstract
      */
     public function save( $saveRelations=false )
     {
-        if( $this->action == self::ACTION_SAVE ) {
-            $this->em->saveEntity( $this->entity );
-        }
+        $this->em->saveEntity( $this->entity );
         return $this;
     }
     // +----------------------------------------------------------------------+
