@@ -36,11 +36,6 @@ class FriendController
         $this->front = $front;
         $this->view->set( 'baseUrl', $front->request->getBaseUrl() );
         $this->view->set( 'appUrl',  $front->request->getBaseUrl() . 'myFriends/' );
-        if( $front->parameter[ 'action' ] == 'setup' ) {
-        }
-        else {
-            \WScore\Core::get( 'friends\model\Friends' );
-        }
     }
 
     // +----------------------------------------------------------------------+
@@ -65,7 +60,6 @@ class FriendController
      */
     public function actInfo( $parameter )
     {
-        \WScore\Core::get( 'friends\model\Contacts' );
         class_exists( '\WScore\DbAccess\Relation' ); // just for debugger. 
         $id = $parameter[ 'id' ];
         $friend   = $this->em->getEntityFromModel( 'friends\model\Friends', $id );
@@ -91,7 +85,6 @@ class FriendController
     // +----------------------------------------------------------------------+
     public function actContact( $parameter) 
     {
-        \WScore\Core::get( 'friends\model\Contacts' );
         $id   = $parameter[ 'id' ];
         $type = $parameter[ 'type' ];
         /** @var $friend  \friends\entity\friend */
