@@ -210,7 +210,7 @@ class Model
     public function find( $id ) {
         $record = $this->query()
             ->id( $id )->limit(1)->select();
-        $record = $record[0];
+        if( $record ) $record = $record[0];
         /** @var $record Entity_Interface */
         return $record;
     }
