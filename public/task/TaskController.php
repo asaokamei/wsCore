@@ -129,13 +129,15 @@ class TaskController
         $id = $args[ 'id' ];
         /** @var $entity \task\entity\task */
         $entity = $this->em->getEntityFromModel( 'task\model\tasks', $id );
-        if( $entity->isDone() ) {
-            $this->em->delete( $entity );
+        if( $entity ) {
+            if( $entity->isDone() ) {
+                $this->em->delete( $entity );
+            }
+            else {
+                $entity->setDone();
+            }
+            $this->em->save();
         }
-        else {
-            $entity->setDone();
-        }
-        $this->em->save();
         $taskUrl = $this->view->get( 'taskUrl' );
         header( "Location: $taskUrl" );
         exit;
