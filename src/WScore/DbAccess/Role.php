@@ -4,13 +4,13 @@ namespace WScore\DbAccess;
 class Role
 {
     /** @var \WScore\DbAccess\EntityManager */
-    private $em;
+    public $em;
 
     /** @var \WScore\Validator\DataIO */
-    private $dio;
+    public $dio;
 
     /** @var \WScore\Html\Selector */
-    private $selector;
+    public $selector;
 
     /**
      * @param \WScore\DbAccess\EntityManager    $em
