@@ -35,7 +35,7 @@ class Dao_Group extends \WScore\DbAccess\Model
             'join_source_column' => 'group_code', // same as the relation name
             'join_target_column' => 'friend_id', // same as the relation name
             'source_column' => 'group_code', // same as the relation name
-            'target_model'  => 'Dao_Friend',
+            'target_model'  => 'wsTests\DbAccess\Dao_Friend',
             'target_column' => 'friend_id', // use id.
         ),
     );

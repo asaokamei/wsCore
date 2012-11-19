@@ -86,11 +86,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
      * @return null|string
      */
     public function _get_Model() {
-        $model = $this->_model;
-        if( strpos( $model, '\\' ) !== FALSE ) {
-            $model = substr( $model, strrpos( $model, '\\' )+1 );
-        }
-        return $model;
+        return $this->_model;
     }
 
     /**
@@ -98,8 +94,12 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
      *
      * @return null|string
      */
-    public function _get_ModelClass() {
-        return $this->_model;
+    public function _get_ShortModel() {
+        $model = $this->_model;
+        if( strpos( $model, '\\' ) !== FALSE ) {
+            $model = substr( $model, strrpos( $model, '\\' )+1 );
+        }
+        return $model;
     }
 
     /**
@@ -142,7 +142,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
      */
     public function _get_cenaId( )
     {
-        $model  = $this->_get_Model();
+        $model  = $this->_get_ShortModel();
         $type   = $this->_type;
         $id     = $this->_identifier;
         if( !$id ) {

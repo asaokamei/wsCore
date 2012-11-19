@@ -14,7 +14,7 @@ interface Entity_Interface
     /**
      * @return null|string
      */
-    public function _get_ModelClass();
+    public function _get_ShortModel();
 
     /**
      * @return null|string

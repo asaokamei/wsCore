@@ -39,7 +39,7 @@ class FriendController
         if( $front->parameter[ 'action' ] == 'setup' ) {
         }
         else {
-            \WScore\Core::get( '\friends\model\Friends' );
+            \WScore\Core::get( 'friends\model\Friends' );
         }
     }
 
@@ -53,7 +53,7 @@ class FriendController
      */
     public function actIndex()
     {
-        $model = $this->em->getModel( 'Friends' );
+        $model = $this->em->getModel( 'friends\model\Friends' );
         $entities   = $model->query()->select();
         $this->view->showForm_list( $entities, 'list' );
         return $this->view;
@@ -65,10 +65,10 @@ class FriendController
      */
     public function actInfo( $parameter )
     {
-        \WScore\Core::get( '\friends\model\Contacts' );
+        \WScore\Core::get( 'friends\model\Contacts' );
         class_exists( '\WScore\DbAccess\Relation' ); // just for debugger. 
         $id = $parameter[ 'id' ];
-        $friend   = $this->em->getEntityFromModel( 'Friends', $id );
+        $friend   = $this->em->getEntityFromModel( 'friends\model\Friends', $id );
         $contacts = $this->em->relation( $friend, 'contacts' )->get();
         $this->view->showForm_info( $friend, $contacts );
         
@@ -82,7 +82,7 @@ class FriendController
     public function actDetail( $parameter )
     {
         $id = $parameter[ 'id' ];
-        $entity = $this->em->getEntityFromModel( 'Friends', $id );
+        $entity = $this->em->getEntityFromModel( 'friends\model\Friends', $id );
         $this->view->showForm_detail( $entity );
         return $this->view;
     }
@@ -91,13 +91,13 @@ class FriendController
     // +----------------------------------------------------------------------+
     public function actContact( $parameter) 
     {
-        \WScore\Core::get( '\friends\model\Contacts' );
+        \WScore\Core::get( 'friends\model\Contacts' );
         $id   = $parameter[ 'id' ];
         $type = $parameter[ 'type' ];
         /** @var $friend  \friends\entity\friend */
         /** @var $contact \friends\entity\contact */
-        $friend  = $this->em->getEntityFromModel( 'Friends', $id );
-        $contact = $this->em->newEntityFromModel( 'Contacts' );
+        $friend  = $this->em->getEntityFromModel( 'friends\model\Friends', $id );
+        $contact = $this->em->newEntityFromModel( 'friends\model\Contacts' );
         $contact->type = $type;
         /** @var $contact \friends\entity\contact */
         if( $this->front->request->isPost() ) 
@@ -140,8 +140,8 @@ class FriendController
             return $this->view;
         }
         if( $this->front->request->isPost() ) {
-            \WScore\Core::get( '\friends\model\Friends' );
-            \WScore\Core::get( '\friends\model\Contacts' );
+            \WScore\Core::get( 'friends\model\Friends' );
+            \WScore\Core::get( 'friends\model\Contacts' );
             $this->initDb( $this->front->request->getPost( 'initDb' ) );
         }
         $this->view->showSetup();
@@ -159,7 +159,7 @@ class FriendController
             exit;
         }
         /** @var $model \task\model\tasks */
-        $model = $this->em->getModel( 'Friends' );
+        $model = $this->em->getModel( 'friends\model\Friends' );
         // clear the current tasks (drop the table)
         $sql = $model->getClearSql();
         $model->query()->execSQL( $sql );
@@ -170,11 +170,11 @@ class FriendController
         // using em. this works just fine.
         for( $i = 1; $i <= 15; $i++ ) {
             $task = $model->getSampleTasks($i);
-            $this->em->newEntityFromModel( 'Friends', $task );
+            $this->em->newEntityFromModel( 'friends\model\Friends', $task );
         }
         $this->em->save();
 
-        $model = $this->em->getModel( 'Contacts' );
+        $model = $this->em->getModel( 'friends\model\Contacts' );
         // clear the current tasks (drop the table)
         $sql = $model->getClearSql();
         $model->query()->execSQL( $sql );

@@ -35,7 +35,7 @@ class Friend extends \WScore\DbAccess\Model
         'contact' => array(
             'relation_type' => 'HasRefs',
             'source_column' => NULL, // use id name of source. 
-            'target_model'  => 'Dao_Contact',
+            'target_model'  => 'wsTests\DataMapper\Model\Dao_Contact',
             'target_column' => NULL, // use source column. 
         ),
         'group' => array(
@@ -49,10 +49,10 @@ class Friend extends \WScore\DbAccess\Model
         ),
         'network' => array(
             'relation_type' => 'HasJoinDao',
-            'join_model'    => 'Dao_Network',
+            'join_model'    => 'wsTests\DataMapper\Model\Dao_Network',
             'join_source_column' => 'friend_id_from',
             'join_target_column' => 'friend_id_to',
-            'target_model'  => 'Dao_Friend',
+            'target_model'  => 'wsTests\DataMapper\Model\Dao_Friend',
         ),
     );
 

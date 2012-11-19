@@ -58,7 +58,7 @@ class Dao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( 'friend_id', $id_name );
 
         $model_name = $this->friend->getModelName();
-        $this->assertEquals( 'Dao_Friend', $model_name );
+        $this->assertEquals( 'wsTests\DbAccess\Dao_Friend', $model_name );
 
         $prop_name = $this->friend->propertyName( 'friend_name');
         $this->assertEquals( 'name', $prop_name );

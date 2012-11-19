@@ -34,7 +34,7 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     }
     function test_Em_registers_new_entity()
     {
-        $friend = $this->em->newEntityFromModel( 'Friend' );
+        $friend = $this->em->newEntityFromModel( 'wsTests\DataMapper\Model\Friend' );
         $id = $friend->_get_Id();
         $this->assertTrue( $id > 0 );
     }
@@ -45,33 +45,22 @@ class EntityManager extends \PHPUnit_Framework_TestCase
         $id = $friend->_get_Id();
         $this->assertTrue( $id > 0 );
     }
-    function test_getModelName()
-    {
-        $model = $this->em->getModelName( $this->friend );
-        $this->assertEquals( 'Friend', $model );
-
-        $model = $this->em->getModelName( 'some\namespace\Friend' );
-        $this->assertEquals( 'Friend', $model );
-
-        $model = $this->em->getModelName( 'Friend' );
-        $this->assertEquals( 'Friend', $model );
-    }
     function test_getModel_from_string()
     {
-        $model = $this->em->getModel( 'Friend' );
+        $model = $this->em->getModel( 'wsTests\DataMapper\Model\Friend' );
         $this->assertSame( $this->friend, $model );
     }
     function test_register_model_in_entity_manager()
     {
         $models = $this->em->returnModels();
-        $this->assertArrayHasKey( 'Friend', $models );
+        $this->assertArrayHasKey( 'wsTests\DataMapper\Model\Friend', $models );
     }
     function test_em_newEntity_returns_entity()
     {
-        $friend = $this->em->newEntityFromModel( 'Friend' );
+        $friend = $this->em->newEntityFromModel( 'wsTests\DataMapper\Model\Friend' );
         $this->assertEquals( 'wsTests\DataMapper\Entity\Friend', get_class( $friend ) );
 
-        $friend2 = $this->em->newEntityFromModel( 'Friend' );
+        $friend2 = $this->em->newEntityFromModel( 'wsTests\DataMapper\Model\Friend' );
         $id1 = $friend->_get_Id();
         $id2 = $friend2->_get_Id();
         $this->assertNotEquals( $id1, $id2 );
@@ -79,8 +68,8 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     }
     function test_em_register_same_entity_returns_one_entity()
     {
-        $friend1 = $this->em->newEntityFromModel( 'Friend', 1 );
-        $friend2 = $this->em->newEntityFromModel( 'Friend', 1 );
+        $friend1 = $this->em->newEntityFromModel( 'wsTests\DataMapper\Model\Friend', 1 );
+        $friend2 = $this->em->newEntityFromModel( 'wsTests\DataMapper\Model\Friend', 1 );
         $this->assertNotSame( $friend1, $friend2 );
     }
     // +----------------------------------------------------------------------+

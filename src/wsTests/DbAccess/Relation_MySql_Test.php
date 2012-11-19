@@ -113,13 +113,13 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
     {
         // make friend and contact
         $idFriend  = $this->friend->insert( Dao_SetUp::makeFriend() );
-        $friend    = $this->em->getEntityFromModel( 'Dao_Friend', $idFriend );
-        $contact   = $this->em->newEntityFromModel( 'Dao_Contact', Dao_SetUp::makeContact() );
+        $friend    = $this->em->getEntityFromModel( 'wsTests\DbAccess\Dao_Friend', $idFriend );
+        $contact   = $this->em->newEntityFromModel( 'wsTests\DbAccess\Dao_Contact', Dao_SetUp::makeContact() );
         $this->contact->relation( $contact, 'friend' )->set( $friend );
         $this->em->save();
 
         // delete relation. 
-        $newContact = $this->em->getEntityFromModel( 'Dao_Contact', $contact->contact_id );
+        $newContact = $this->em->getEntityFromModel( 'wsTests\DbAccess\Dao_Contact', $contact->contact_id );
         $this->contact->relation( $newContact, 'friend' )->del();
         $this->em->save();
 
@@ -131,13 +131,13 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
     {
         // make friend and contact
         $idFriend  = $this->friend->insert( Dao_SetUp::makeFriend() );
-        $friend    = $this->em->getEntityFromModel( 'Dao_Friend', $idFriend );
-        $contact   = $this->em->newEntityFromModel( 'Dao_Contact', Dao_SetUp::makeContact() );
+        $friend    = $this->em->getEntityFromModel( 'wsTests\DbAccess\Dao_Friend', $idFriend );
+        $contact   = $this->em->newEntityFromModel( 'wsTests\DbAccess\Dao_Contact', Dao_SetUp::makeContact() );
         $this->em->relation( $contact, 'friend' )->set( $friend );
         $this->em->save();
         
         // delete relation. 
-        $newFriend = $this->em->getEntityFromModel( 'Dao_Friend', $idFriend );
+        $newFriend = $this->em->getEntityFromModel( 'wsTests\DbAccess\Dao_Friend', $idFriend );
         $this->em->relation( $newFriend, 'contact' )->del( $contact );
         $this->em->save();
 

@@ -35,7 +35,7 @@ class Dao_Contact extends \WScore\DbAccess\Model
         'friend' => array(
             'relation_type' => 'HasOne',
             'source_column' => null, // use target_column.
-            'target_model'  => 'Dao_Friend',
+            'target_model'  => 'wsTests\DbAccess\Dao_Friend',
             'target_column' => null, // use target id name. 
         ),
     );

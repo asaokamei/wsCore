@@ -72,27 +72,27 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
     function test_em_getEntity_gets_an_entity()
     {
         $idx    = 1;
-        $friend = $this->em->getEntityFromModel( 'Friend', $idx );
+        $friend = $this->em->getEntityFromModel( 'wsTests\DataMapper\Model\Friend', $idx );
         $this->assertEquals( 'wsTests\DataMapper\Entity\Friend', get_class( $friend ) );
         $this->assertEquals( $idx, $friend->_get_Id() );
-        $this->assertEquals( 'Friend', $friend->_get_Model() );
+        $this->assertEquals( 'wsTests\DataMapper\Model\Friend', $friend->_get_Model() );
     }
     function test_em_saves_existing_entity_to_db()
     {
         $idx    = 2;
         /** @var $friend Entity\Friend */
-        $friend = $this->em->getEntityFromModel( 'Friend', $idx );
+        $friend = $this->em->getEntityFromModel( 'wsTests\DataMapper\Model\Friend', $idx );
         $friend->friend_name = 'my good friend';
         $this->em->save();
 
         /** @var $friend2 Entity\Friend */
-        $friend2 = $this->em->getEntityFromModel( 'Friend', $idx );
+        $friend2 = $this->em->getEntityFromModel( 'wsTests\DataMapper\Model\Friend', $idx );
         $this->assertEquals( $friend->friend_name, $friend2->friend_name );
     }
     function test_em_newEntity_saves_to_db()
     {
         /** @var $friend Entity\Friend */
-        $friend = $this->em->newEntityFromModel( 'Friend' );
+        $friend = $this->em->newEntityFromModel( 'wsTests\DataMapper\Model\Friend' );
         $friend->friend_name = 'my real friend';
         $friend->friend_bday = '1989-01-31';
         $this->em->save();
@@ -134,7 +134,7 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $this->assertEquals( 1, $contact2->contact_id );
         $this->assertEquals( 10, $contact2->friend_id );
 
-        $contact3 = $this->em->newEntityFromModel( 'Contact' );
+        $contact3 = $this->em->newEntityFromModel( 'wsTests\DataMapper\Model\Contact' );
         $contact3->contact_info = 'this is new contact';
         $contact3->friend_id    = 15;
         $this->em->save();

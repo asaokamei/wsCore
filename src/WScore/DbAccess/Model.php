@@ -355,22 +355,13 @@ class Model
         $id = ( isset( $entity->$idName ) ) ? $entity->$idName: NULL;
         return $id;
     }
-    /**
-     * @param string $class
-     * @return string
-     */
-    public function makeModelName( $class ) {
-        if( strpos( $class, '\\' ) !== FALSE ) {
-            $class = substr( $class, strrpos( $class, '\\' ) + 1 );
-        }
-        return $class;
-    }
+
     /**
      * name of the model: i.e. class name. 
      * @return string
      */
     public function getModelName() {
-        return $this->makeModelName( get_called_class() );
+        return get_called_class();
     }
 
     /**

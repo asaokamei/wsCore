@@ -43,7 +43,8 @@ class EntityManager
      */
     public function registerModel( $model )
     {
-        $modelName = $this->getModelName( $model );
+        $modelName = get_class( $model );
+        if( substr( $modelName, 0, 1 ) == '\\' ) $modelName = substr( $modelName, 1 );
         $this->models[ $modelName ] = $model;
         $this->setupReflection( $model->recordClassName );
         return $this;
@@ -58,20 +59,8 @@ class EntityManager
     public function getModel( $entity )
     {
         $model = ( $entity instanceof Entity_Interface ) ? $entity->_get_Model(): $entity;
+        if( substr( $model, 0, 1 ) == '\\' ) $model = substr( $model, 1 );
         return $this->models[ $model ];
-    }
-
-    /**
-     * @param Entity_Interface|string $entity
-     * @return string
-     */
-    public function getModelName( $entity )
-    {
-        $model = ( is_object( $entity ) ) ? get_class( $entity ) : $entity;
-        if( strpos( $model, '\\' ) !== false ) {
-            $model = substr( $model, strrpos( $model, '\\' )+1 );
-        }
-        return $model;
     }
 
     /**

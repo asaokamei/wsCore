@@ -69,7 +69,7 @@ class TaskController
      */
     public function actIndex()
     {
-        $model = $this->em->getModel( 'tasks' );
+        $model = $this->em->getModel( 'task\model\tasks' );
         $all   = $model->query()->order( 'task_status, task_date' )->select();
         $entities = array();
         foreach( $all as $row ) {
@@ -88,7 +88,7 @@ class TaskController
      */
     public function actNew( $args )
     {
-        $entity = $this->em->newEntityFromModel( 'tasks' );
+        $entity = $this->em->newEntityFromModel( 'task\model\tasks' );
         if( $this->front->request->isPost() ) {
             $this->contextLoadAndSave( $entity );
             $this->view->set( 'alert-error', 'insert failed...' );
@@ -108,7 +108,7 @@ class TaskController
     public function actTask( $args )
     {
         $id = $args[ 'id' ];
-        $entity = $this->em->getEntityFromModel( 'tasks', $id );
+        $entity = $this->em->getEntityFromModel( 'task\model\tasks', $id );
         if( $this->front->request->isPost() ) {
             $this->contextLoadAndSave( $entity );
             $this->view->set( 'alert-error', 'update failed...' );
@@ -128,7 +128,7 @@ class TaskController
     {
         $id = $args[ 'id' ];
         /** @var $entity \task\entity\task */
-        $entity = $this->em->getEntityFromModel( 'tasks', $id );
+        $entity = $this->em->getEntityFromModel( 'task\model\tasks', $id );
         if( $entity->isDone() ) {
             $this->em->delete( $entity );
         }
@@ -167,7 +167,7 @@ class TaskController
             exit;
         }
         /** @var $model \task\model\tasks */
-        $model = $this->em->getModel( 'tasks' );
+        $model = $this->em->getModel( 'task\model\tasks' );
         // clear the current tasks (drop the table)
         $sql = $model->getClearSql();
         $model->query()->execSQL( $sql );
@@ -177,7 +177,7 @@ class TaskController
         // using em. this works just fine.
         for( $i = 1; $i <= 5; $i++ ) {
             $task = $model->getSampleTasks($i);
-            $this->em->newEntityFromModel( 'tasks', $task );
+            $this->em->newEntityFromModel( 'task\model\tasks', $task );
         }
         $this->em->save();
         $taskUrl = $this->view->get( 'taskUrl' );

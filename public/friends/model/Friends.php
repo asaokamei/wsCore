@@ -82,7 +82,7 @@ class Friends extends \WScore\DbAccess\Model
             'contacts' => array(
                 'relation_type' => 'HasRefs',
                 'source_column' => null, // use id name of source. 
-                'target_model'  => 'Contacts',
+                'target_model'  => 'friends\model\Contacts',
                 'target_column' => null, // use source column. 
             ),
         );

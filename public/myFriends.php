@@ -6,7 +6,7 @@ Core::go();
 Core::setPdo( array( 'dsn' => 'mysql:dbname=test_friends', 'username' => 'admin', 'password' => 'admin' ) );
 
 /** @var $front wsModule\Alt\Web\FrontMC */
-$front = Core::get( '\wsModule\Alt\Web\FrontMC' );
+$front = Core::get( 'wsModule\Alt\Web\FrontMC' );
 $front->debug = true;
 $front->namespace = 'friends';
 $routes = array(

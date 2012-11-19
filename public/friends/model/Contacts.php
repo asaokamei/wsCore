@@ -61,7 +61,7 @@ class Contacts extends \WScore\DbAccess\Model
             'friend' => array(
                 'relation_type' => 'HasOne',
                 'source_column' => null, // use target_column.
-                'target_model'  => 'Friends',
+                'target_model'  => 'friends\model\Friends',
                 'target_column' => null, // use target id name. 
             ),
         );

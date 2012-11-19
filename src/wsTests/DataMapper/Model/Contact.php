@@ -35,7 +35,7 @@ class Contact extends \WScore\DbAccess\Model
         'friend' => array(
             'relation_type' => 'HasOne',
             'source_column' => NULL, // use target_column.
-            'target_model'  => 'Friend',
+            'target_model'  => 'wsTests\DataMapper\Model\Friend',
             'target_column' => NULL, // use target id name. 
         ),
     );
