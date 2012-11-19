@@ -32,7 +32,7 @@ class model extends \WScore\DbAccess\Model
     protected $selectors  = array(
         'friend_id'   => array( 'Selector', 'text' ),
         'friend_name' => array( 'Selector', 'text', 'placeholder:your friends name | class:span5' ),
-        'friend_gender' => array( 'Selector', '\Interaction\selGender', ),
+        'friend_gender' => array( 'Selector', 'radio', 'items' => array( array( 'M', 'Male' ), array( 'F', 'Female' ) ) ),
         'friend_bday' => array( 'Selector', 'date' ),
         'friend_memo' => array( 'Selector', 'textarea', 'rows:4 | class:span5 | placeholder:about your friend...' ),
     );

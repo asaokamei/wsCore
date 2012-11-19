@@ -156,7 +156,8 @@ class Role_Input extends Role_Abstract
             if( $info[0] == 'Selector' ) {
                 $arg2     = $this->model->arrGet( $info, 2, null );
                 $extra    = $this->model->arrGet( $info, 3, null );
-                $arg3     = $arg4 = null;
+                $arg3 = $this->model->arrGet( $info, 'items',  array() );
+                $arg4 = $this->model->arrGet( $info, 'filter', null );
                 if( is_array( $extra ) && !empty( $extra ) ) {
                     $arg3 = $this->model->arrGet( $extra, 'items',  array() );
                     $arg4 = $this->model->arrGet( $extra, 'filter', null );
