@@ -155,7 +155,7 @@ class EntityManager
      * @param string $id
      * @return Entity_Interface
      */
-    public function getEntity( $modelName, $id )
+    public function getEntityFromModel( $modelName, $id )
     {
         $model = $this->getModel( $modelName );
         /** @var $entity Entity_Interface */
@@ -171,7 +171,7 @@ class EntityManager
      * @param null|string   $id
      * @return Entity_Interface
      */
-    public function newEntity( $modelName, $data=array(), $id=null )
+    public function newEntityFromModel( $modelName, $data=array(), $id=null )
     {
         if( !is_array( $data ) ) {
             $id = $data;

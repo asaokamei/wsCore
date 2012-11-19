@@ -68,7 +68,7 @@ class FriendController
         \WScore\Core::get( '\friends\model\Contacts' );
         class_exists( '\WScore\DbAccess\Relation' ); // just for debugger. 
         $id = $parameter[ 'id' ];
-        $friend   = $this->em->getEntity( 'Friends', $id );
+        $friend   = $this->em->getEntityFromModel( 'Friends', $id );
         $contacts = $this->em->relation( $friend, 'contacts' )->get();
         $this->view->showForm_info( $friend, $contacts );
         
@@ -82,7 +82,7 @@ class FriendController
     public function actDetail( $parameter )
     {
         $id = $parameter[ 'id' ];
-        $entity = $this->em->getEntity( 'Friends', $id );
+        $entity = $this->em->getEntityFromModel( 'Friends', $id );
         $this->view->showForm_detail( $entity );
         return $this->view;
     }
@@ -96,8 +96,8 @@ class FriendController
         $type = $parameter[ 'type' ];
         /** @var $friend  \friends\entity\friend */
         /** @var $contact \friends\entity\contact */
-        $friend  = $this->em->getEntity( 'Friends', $id );
-        $contact = $this->em->newEntity( 'Contacts' );
+        $friend  = $this->em->getEntityFromModel( 'Friends', $id );
+        $contact = $this->em->newEntityFromModel( 'Contacts' );
         $contact->type = $type;
         /** @var $contact \friends\entity\contact */
         if( $this->front->request->isPost() ) 
@@ -170,7 +170,7 @@ class FriendController
         // using em. this works just fine.
         for( $i = 1; $i <= 15; $i++ ) {
             $task = $model->getSampleTasks($i);
-            $this->em->newEntity( 'Friends', $task );
+            $this->em->newEntityFromModel( 'Friends', $task );
         }
         $this->em->save();
 

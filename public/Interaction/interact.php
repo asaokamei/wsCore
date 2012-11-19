@@ -82,7 +82,7 @@ class interact extends \WScore\Web\Interaction
     {
         $entity = $this->restoreData( 'entity' );
         if( !$entity ) {
-            $entity = $this->role->em->newEntity( 'model' );
+            $entity = $this->role->em->newEntityFromModel( 'model' );
             $this->clearData();
             $this->registerData( 'entity', $entity );
         }

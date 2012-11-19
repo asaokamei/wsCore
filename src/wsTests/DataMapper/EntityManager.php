@@ -34,7 +34,7 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     }
     function test_Em_registers_new_entity()
     {
-        $friend = $this->em->newEntity( 'Friend' );
+        $friend = $this->em->newEntityFromModel( 'Friend' );
         $id = $friend->_get_Id();
         $this->assertTrue( $id > 0 );
     }
@@ -68,10 +68,10 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     }
     function test_em_newEntity_returns_entity()
     {
-        $friend = $this->em->newEntity( 'Friend' );
+        $friend = $this->em->newEntityFromModel( 'Friend' );
         $this->assertEquals( 'wsTests\DataMapper\Entity\Friend', get_class( $friend ) );
 
-        $friend2 = $this->em->newEntity( 'Friend' );
+        $friend2 = $this->em->newEntityFromModel( 'Friend' );
         $id1 = $friend->_get_Id();
         $id2 = $friend2->_get_Id();
         $this->assertNotEquals( $id1, $id2 );
@@ -79,8 +79,8 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     }
     function test_em_register_same_entity_returns_one_entity()
     {
-        $friend1 = $this->em->newEntity( 'Friend', 1 );
-        $friend2 = $this->em->newEntity( 'Friend', 1 );
+        $friend1 = $this->em->newEntityFromModel( 'Friend', 1 );
+        $friend2 = $this->em->newEntityFromModel( 'Friend', 1 );
         $this->assertNotSame( $friend1, $friend2 );
     }
     // +----------------------------------------------------------------------+
