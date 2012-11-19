@@ -60,6 +60,9 @@ class EntityManager
     {
         $model = ( $entity instanceof Entity_Interface ) ? $entity->_get_Model(): $entity;
         if( substr( $model, 0, 1 ) == '\\' ) $model = substr( $model, 1 );
+        if( !isset( $this->models[ $model ] ) ) {
+            $this->models[ $model ] = $this->container->get( $model );
+        }
         return $this->models[ $model ];
     }
 
@@ -124,6 +127,7 @@ class EntityManager
      */
     public function setupEntity( $entity, $type=null, $identifier=null )
     {
+        if( !$entity ) return $this;
         if( $type ) {
             $this->setEntityProperty( $entity, 'type', $type );
         }
