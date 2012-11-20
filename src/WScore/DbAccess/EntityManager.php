@@ -17,6 +17,9 @@ class EntityManager
     /** @var \ReflectionMethod[] */
     protected $reflections = array();
 
+    /** @var array    array( entityClass => modelClass ) */
+    protected $entityToModel = array();
+    
     /** @var \WScore\DiContainer\Dimplet */
     protected $container;
 
@@ -51,14 +54,23 @@ class EntityManager
     }
 
     /**
-     * get model object from an entity object, or model name.
+     * get model object from an entity object, entity class name, or model name.
      *
      * @param Entity_Interface|string $entity
      * @return \WScore\DbAccess\Model
      */
     public function getModel( $entity )
     {
-        $model = ( $entity instanceof Entity_Interface ) ? $entity->_get_Model(): $entity;
+        // get model class name. 
+        if( is_object( $entity ) && $entity instanceof Entity_Interface ) {
+            $model = $entity->_get_Model();
+        }
+        elseif( $entity instanceof Entity_Interface ) {
+            $model = $this->getModelNameFromEntity( $entity );
+        }
+        else {
+            $model = $entity;
+        }
         if( substr( $model, 0, 1 ) == '\\' ) $model = substr( $model, 1 );
         if( !isset( $this->models[ $model ] ) ) {
             $this->models[ $model ] = $this->container->get( $model );
@@ -67,18 +79,33 @@ class EntityManager
     }
 
     /**
+     * @param string $entity
+     * @return string
+     */
+    public function getModelNameFromEntity( $entity )
+    {
+        // set the entity to model class name conversion table. 
+        if( !isset( $this->entityToModel[ $entity ] ) ) {
+            $refClass = new \ReflectionClass( $entity );
+            $propList = $refClass->getDefaultProperties();
+            $this->entityToModel[ $entity ] = $propList[ '_model' ];
+        }
+        return $this->entityToModel[ $entity ];
+    }
+
+    /**
      * @param Entity_Interface|string $entity
-     * @return EntityManager
      */
     public function setupReflection( $entity )
     {
+        // get class name of entity if it is an object.
         $class = is_object( $entity ) ? get_class( $entity ) : $entity;
+        // get that magic method to setup private properties.   
         if( !isset( $this->reflections[ $class ] ) ) {
             $reflections = new \ReflectionMethod( $class, '_set_protected_vars' );
             $reflections->setAccessible( true );
             $this->reflections[ $class ] = $reflections;
         }
-        return $this;
     }
 
     /**
@@ -90,6 +117,9 @@ class EntityManager
     public  function setEntityProperty( $entity, $prop, $value )
     {
         $class = get_class( $entity );
+        if( !isset( $this->reflections[ $class ] ) ) {
+            $this->setupReflection( $entity );
+        }
         $ref = $this->reflections[ $class ];
         $ref->invoke( $entity, $prop, $value );
         return $this;
@@ -150,7 +180,6 @@ class EntityManager
     public function getEntityFromModel( $modelName, $id )
     {
         $model = $this->getModel( $modelName );
-        /** @var $entity Entity_Interface */
         $entity = $model->find( $id );
         $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_GET_, $id );
         $entity = $this->register( $entity );
