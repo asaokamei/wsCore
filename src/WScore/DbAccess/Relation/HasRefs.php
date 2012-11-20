@@ -13,10 +13,8 @@ class Relation_HasRefs implements Relation_Interface
     protected $source;
     protected $sourceColumn;
 
-    /** @var Entity_Interface */
-    protected $target;
-    /** @var Model */
-    protected $targetDao;
+    /** @var Entity_Interface[] */
+    protected $targets = array();
     protected $targetModel;
     protected $targetColumn;
 
@@ -35,7 +33,6 @@ class Relation_HasRefs implements Relation_Interface
         $this->targetModel  = $relInfo[ 'target_model' ];
         $this->targetColumn = ( isset( $relInfo[ 'target_column' ] ) ) ?
             $relInfo[ 'target_column' ] : $this->sourceColumn ;
-        $this->targetDao   = $this->em->getModel( $this->targetModel );
     }
 
     /**
@@ -48,7 +45,7 @@ class Relation_HasRefs implements Relation_Interface
         if( $target->_get_Model() != $this->targetModel ) {
             throw new \RuntimeException( "target model not match!" );
         }
-        $this->target = $target;
+        $this->targets[] = $target;
         $this->linked = false;
         $this->link();
         return $this;
@@ -62,7 +59,7 @@ class Relation_HasRefs implements Relation_Interface
     {
         if( $this->linked )  return $this;
         if( !$this->source ) return $this;
-        if( !$this->target ) return $this;
+        if( empty( $this->targets ) ) return $this;
         if( $this->sourceColumn == $this->em->getModel( $this->source->_get_Model() )->getIdName() &&
             !$this->source->isIdPermanent() ) {
             return $this;
@@ -70,7 +67,9 @@ class Relation_HasRefs implements Relation_Interface
         $column = $this->sourceColumn;
         $value = $this->source->$column;
         $column = $this->targetColumn;
-        $this->target->$column = $value;
+        foreach( $this->targets as &$entity ) {
+            $entity->$column = $value;
+        }
         $this->linked = true;
         if( $save ) {
             $this->em->save();
@@ -82,10 +81,10 @@ class Relation_HasRefs implements Relation_Interface
      * @param Entity_Interface $target
      * @return Relation_HasOne
      */
-    public function del( $target=NULL ) {
+    public function del( $target=null ) {
         if( !is_null( $target ) ) {
             $column = $this->targetColumn;
-            $target->$column = NULL;
+            $target->$column = null;
         }
         return $this;
     }
@@ -97,7 +96,8 @@ class Relation_HasRefs implements Relation_Interface
     {
         $column = $this->sourceColumn;
         $value = $this->source->$column;
-        return $this->targetDao->query()->w( $this->targetColumn )->eq( $value )->select();
+        $this->targets = $this->em->fetchByModel( $this->targetModel, $value, $this->targetColumn );
+        return $this->targets;
     }
 
     /**

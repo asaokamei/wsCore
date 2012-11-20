@@ -236,4 +236,21 @@ class EntityManager
         $relation = $model->relation( $entity, $name );
         return $relation;
     }
+
+    /**
+     * fetch entities for a modelClass name;
+     *
+     * @param string       $modelName
+     * @param string|array $value      pass array to fetch multiple entities.
+     * @param null|string  $column     set to null to fetch by id.
+     * @param bool         $select     to get only the column value.
+     * @return \WScore\DbAccess\Entity_Interface|\WScore\DbAccess\Entity_Interface[]
+     */
+    public function fetchByModel( $modelName, $value, $column=null, $select=false )
+    {
+        $model = $this->getModel( $modelName );
+        $entities = $model->fetch( $value, $column, $select );
+        $entities = $this->register( $entities );
+        return $entities;
+    }
 }
