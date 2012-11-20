@@ -6,7 +6,7 @@ class task extends \WScore\DbAccess\Entity_Abstract
     const STATUS_ACTIVE = '1';
     const STATUS_DONE   = '9';
 
-    protected $_model = 'tasks';
+    protected $_model = 'task\model\tasks';
 
     public $task_id = null;
 
