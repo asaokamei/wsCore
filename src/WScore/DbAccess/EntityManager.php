@@ -65,11 +65,13 @@ class EntityManager
         if( is_object( $entity ) && $entity instanceof Entity_Interface ) {
             $model = $entity->_get_Model();
         }
-        elseif( $entity instanceof Entity_Interface ) {
-            $model = $this->getModelNameFromEntity( $entity );
-        }
         else {
-            $model = $entity;
+            $list = class_implements( $entity );
+            if( isset( $list[ 'WScore\DbAccess\Entity_Interface' ] ) ) {
+                $model = $this->getModelNameFromEntity( $entity );
+            } else {
+                $model = $entity;
+            }
         }
         if( substr( $model, 0, 1 ) == '\\' ) $model = substr( $model, 1 );
         if( !isset( $this->models[ $model ] ) ) {
