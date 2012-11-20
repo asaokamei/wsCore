@@ -14,7 +14,7 @@ class EntityManager
     /** @var Entity_Interface[] */
     protected $entities = array();
 
-    /** @var \ReflectionProperty[][] */
+    /** @var \ReflectionMethod[] */
     protected $reflections = array();
 
     /** @var \WScore\DiContainer\Dimplet */
@@ -89,7 +89,6 @@ class EntityManager
      */
     public  function setEntityProperty( $entity, $prop, $value )
     {
-        /** @var $ref \ReflectionMethod */
         $class = get_class( $entity );
         $ref = $this->reflections[ $class ];
         $ref->invoke( $entity, $prop, $value );
