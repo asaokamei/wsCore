@@ -219,7 +219,7 @@ class Model
      * @param string|array $value
      * @param null         $column
      * @param bool         $select
-     * @return \WScore\DbAccess\DataRecord[]
+     * @return \WScore\DbAccess\Entity_Interface[]
      */
     public function fetch( $value, $column=null, $select=false )
     {
@@ -235,6 +235,7 @@ class Model
             $query->eq( $value );
         }
         if( $select ) {
+            if( !$column ) $column = $this->getIdName();
             $query->column( $column );
         }
         $record = $query->select();
