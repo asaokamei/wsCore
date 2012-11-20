@@ -66,8 +66,7 @@ class EntityManager
             $model = $entity->_get_Model();
         }
         else {
-            $list = class_implements( $entity );
-            if( isset( $list[ 'WScore\DbAccess\Entity_Interface' ] ) ) {
+            if( in_array( 'WScore\DbAccess\Entity_Interface', class_implements( $entity ) ) ) {
                 $model = $this->getModelNameFromEntity( $entity );
             } else {
                 $model = $entity;
