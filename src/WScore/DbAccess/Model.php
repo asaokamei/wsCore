@@ -216,6 +216,32 @@ class Model
     }
 
     /**
+     * @param string|array $value
+     * @param null         $column
+     * @param bool         $select
+     * @return \WScore\DbAccess\Entity_Interface[]
+     */
+    public function fetch( $value, $column=null, $select=false )
+    {
+        $query = $this->query();
+        if( $column ) {
+            $query->w( $column );
+        } else {
+            $query->w( $this->getIdName() );
+        }
+        if( is_array( $value ) ) {
+            $query->in( $value );
+        } else {
+            $query->eq( $value );
+        }
+        if( $select ) {
+            if( !$column ) $column = $this->getIdName();
+            $query->column( $column );
+        }
+        $record = $query->select();
+        return $record;
+    }
+    /**
      * update data of primary key of $id.
      * TODO: another method to update entity without $id argument?
      *
@@ -258,7 +284,7 @@ class Model
         }
         $data = $this->entityToArray( $values );
         $this->query()->insert( $data );
-        $id = $this->arrGet( $values, $this->id_name, TRUE );
+        $id = $this->arrGet( $values, $this->id_name, true );
         return $id;
     }
 
@@ -334,7 +360,7 @@ class Model
      */
     public function propertyName( $var_name )
     {
-        return $this->arrGet( $this->properties, $var_name , NULL );
+        return $this->arrGet( $this->properties, $var_name , null );
     }
 
     /**
@@ -352,7 +378,7 @@ class Model
      */
     public function getId( $entity ) {
         $idName = $this->id_name;
-        $id = ( isset( $entity->$idName ) ) ? $entity->$idName: NULL;
+        $id = ( isset( $entity->$idName ) ) ? $entity->$idName: null;
         return $id;
     }
 
@@ -377,7 +403,7 @@ class Model
      * @param mixed $default
      * @return mixed
      */
-    public function arrGet( $arr, $key, $default=NULL ) {
+    public function arrGet( $arr, $key, $default=null ) {
         if( is_array( $arr ) && array_key_exists( $key, $arr ) ) {
             return $arr[ $key ];
         }
