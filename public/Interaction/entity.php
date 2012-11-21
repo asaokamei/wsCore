@@ -3,7 +3,7 @@ namespace Interaction;
 
 class entity extends \WScore\DbAccess\Entity_Abstract
 {
-    protected $_model = 'model';
+    protected $_model = 'Interaction\model';
 
     public $friend_id = null;
 

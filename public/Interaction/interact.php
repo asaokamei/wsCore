@@ -1,7 +1,7 @@
 <?php
 namespace Interaction;
 
-class interact extends \WScore\Web\Interaction
+class interact extends \wsModule\Alt\Web\Interaction
 {
     /**
      * @param \WScore\Web\Session $session
@@ -80,9 +80,9 @@ class interact extends \WScore\Web\Interaction
      */
     function genericInsert( $action, $context )
     {
-        $entity = $this->restoreData( 'entity' );
+        $entity = $this->restoreData( 'Interaction\entity' );
         if( !$entity ) {
-            $entity = $this->role->em->newEntity( 'model' );
+            $entity = $this->role->em->newEntity( 'Interaction\model' );
             $this->clearData();
             $this->registerData( 'entity', $entity );
         }
