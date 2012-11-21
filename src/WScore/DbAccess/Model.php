@@ -109,37 +109,11 @@ class Model
      */
     public function prepare()
     {
-        // create properties and dataTypes from definition.
-        if( !empty( $this->definition ) ) {
-            foreach( $this->definition as $key => $info ) {
-                $this->properties[ $key ] = $info[0];
-                $this->dataTypes[  $key ] = $info[1];
-                if( isset( $info[2] ) ) {
-                    $this->extraTypes[ $info[2] ][] = $key;
-                }
-            }
-        }
-        // set up primaryKey if id_name is set.
-        if( isset( $this->id_name ) ) {
-            $this->extraTypes[ 'primaryKey' ][] = $this->id_name;
-        }
-        // protect some properties in extraTypes.
-        foreach( $this->extraTypes as $type => $list ) {
-            if( in_array( $type, array( 'primaryKey', 'created_at', 'updated_at' ) ) ) {
-                foreach( $list as $key ) {
-                    array_push( $this->protected, $key );
-                }
-            }
-        }
-        // protect properties used for relation.
-        if( !empty( $this->relations ) ) {
-            foreach( $this->relations as $relInfo ) {
-                if( $relInfo[ 'relation_type' ] == 'HasOne' ) {
-                    $column = ( $relInfo[ 'source_column' ] ) ?: $this->id_name;
-                    array_push( $this->protected, $column );
-                }
-            }
-        }
+        $return = HelperModel::prepare( $this->definition, $this->relations, $this->id_name );
+        $this->properties = $return[ 'properties' ];
+        $this->dataTypes  = $return[ 'dataTypes' ];
+        $this->extraTypes = $return[ 'extraTypes' ];
+        $this->protected  = $return[ 'protected' ];
     }
 
     /**
@@ -192,7 +166,7 @@ class Model
 
     /**
      * set entity class for quick methods (find/fetch).
-     * 
+     *
      * @param $class
      */
     public function setEntityClass( $class ) {
@@ -264,12 +238,7 @@ class Model
         }
         $record = $query->select();
         if( $select ) {
-            $result = array();
-            if( !empty( $record ) )
-                foreach( $record as $rec ) {
-                    $result[] = $rec[ $select ];
-                }
-            return $result;
+            return HelperModel::packToArray( $record, $select );
         }
         return $record;
     }
@@ -285,11 +254,7 @@ class Model
     {
         $values = $this->restrict( $values );
         unset( $values[ $this->id_name ] );
-        if( isset( $this->extraTypes[ 'updated_at' ] ) ) {
-            foreach( $this->extraTypes[ 'updated_at' ] as $column ) {
-                $values[ $column ] = date( 'Y-m-d H:i:s' );
-            }
-        }
+        HelperModel::updatedAt( $values, $this->extraTypes );
         $data = $this->entityToArray( $values );
         $this->query()->id( $id )->update( $data );
         return $this;
@@ -304,23 +269,18 @@ class Model
     public function insertValue( $values )
     {
         $values = $this->restrict( $values );
-        if( isset( $this->extraTypes[ 'updated_at' ] ) ) {
-            foreach( $this->extraTypes[ 'updated_at' ] as $column ) {
-                $values[ $column ] = date( 'Y-m-d H:i:s' );
-            }
-        }
-        if( isset( $this->extraTypes[ 'created_at' ] ) ) {
-            foreach( $this->extraTypes[ 'created_at' ] as $column ) {
-                $values[ $column ] = date( 'Y-m-d H:i:s' );
-            }
-        }
+        HelperModel::updatedAt( $values, $this->extraTypes );
+        HelperModel::createdAt( $values, $this->extraTypes );
         $data = $this->entityToArray( $values );
         $this->query()->insert( $data );
-        $id = $this->arrGet( $values, $this->id_name, true );
+        $id = HelperModel::arrGet( $values, $this->id_name, true );
         return $id;
     }
 
     /**
+     * deletes an id.
+     * override this method (i.e. just tag some flag, etc.).
+     *
      * @param string $id
      * @return \PdoStatement
      */
@@ -345,7 +305,7 @@ class Model
 
     /**
      * inserts a data. select insertId or insertValue to use.
-     * default is to insertId.
+     * default is to insertId. override this method if necessary.
      *
      * @param Entity_Interface|array  $values
      * @return string                 id of the inserted data
@@ -362,7 +322,7 @@ class Model
      * @return null|array
      */
     public function getSelectInfo( $name ) {
-        return $this->arrGet( $this->selectors, $name );
+        return HelperModel::arrGet( $this->selectors, $name );
     }
 
     /**
@@ -370,7 +330,7 @@ class Model
      * @return null|array
      */
     public function getValidateInfo( $name ) {
-        return $this->arrGet( $this->validators, $name );
+        return HelperModel::arrGet( $this->validators, $name );
     }
 
     /**
@@ -390,9 +350,8 @@ class Model
      * @param $var_name
      * @return null
      */
-    public function propertyName( $var_name )
-    {
-        return $this->arrGet( $this->properties, $var_name , null );
+    public function propertyName( $var_name ) {
+        return HelperModel::arrGet( $this->properties, $var_name , null );
     }
 
     /**
@@ -436,13 +395,7 @@ class Model
      * @return mixed
      */
     public function arrGet( $arr, $key, $default=null ) {
-        if( is_array( $arr ) && array_key_exists( $key, $arr ) ) {
-            return $arr[ $key ];
-        }
-        elseif( is_object( $arr ) && isset( $arr->$key ) ) {
-            return $arr->$key;
-        }
-        return $default;
+        return HelperModel::arrGet( $arr, $key, $default );
     }
 
     /**
@@ -470,4 +423,112 @@ class Model
         return $relation;
     }
     // +----------------------------------------------------------------------+
+}
+
+/**
+ * helper class for model class.
+ */
+class HelperModel
+{
+    /**
+     * @param array|object $values
+     * @param array        $extra
+     */
+    public static function updatedAt( & $values, $extra )
+    {
+        if( !isset( $extra[ 'updated_at' ] ) ) return;
+        foreach( $extra[ 'updated_at' ] as $column ) {
+            $values[ $column ] = date( 'Y-m-d H:i:s' );
+        }
+    }
+
+    /**
+     * @param array|object $values
+     * @param array        $extra
+     */
+    public static function createdAt( & $values, $extra )
+    {
+        if( !isset( $extra[ 'created_at' ] ) ) return;
+        foreach( $extra[ 'created_at' ] as $column ) {
+            $values[ $column ] = date( 'Y-m-d H:i:s' );
+        }
+    }
+
+    /**
+     * @param $define
+     * @param $relations
+     * @param $id_name
+     * @return array
+     */
+    public static function prepare( $define, $relations, $id_name )
+    {
+        // create properties and dataTypes from definition.
+        $properties = array();
+        $dataTypes  = array();
+        $extraTypes = array();
+        $protected  = array();
+        if( !empty( $define ) ) {
+            foreach( $define as $key => $info ) {
+                $properties[ $key ] = $info[0];
+                $dataTypes[  $key ] = $info[1];
+                if( isset( $info[2] ) ) {
+                    $extraTypes[ $info[2] ][] = $key;
+                }
+            }
+        }
+        // set up primaryKey if id_name is set.
+        if( isset( $id_name ) ) {
+            $extraTypes[ 'primaryKey' ][] = $id_name;
+        }
+        // protect some properties in extraTypes.
+        foreach( $extraTypes as $type => $list ) {
+            if( in_array( $type, array( 'primaryKey', 'created_at', 'updated_at' ) ) ) {
+                foreach( $list as $key ) {
+                    array_push( $protected, $key );
+                }
+            }
+        }
+        // protect properties used for relation.
+        if( !empty( $relations ) ) {
+            foreach( $relations as $relInfo ) {
+                if( $relInfo[ 'relation_type' ] == 'HasOne' ) {
+                    $column = ( $relInfo[ 'source_column' ] ) ?: $id_name;
+                    array_push( $protected, $column );
+                }
+            }
+        }
+        return compact( 'properties', 'dataTypes', 'extraTypes', 'protected' );
+    }
+
+    /**
+     * @param array $arr
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public static function arrGet( $arr, $key, $default=null ) {
+        if( is_array( $arr ) && array_key_exists( $key, $arr ) ) {
+            return $arr[ $key ];
+        }
+        elseif( is_object( $arr ) && isset( $arr->$key ) ) {
+            return $arr->$key;
+        }
+        return $default;
+    }
+
+    /**
+     * @param array|object $record
+     * @param string       $select
+     * @return array
+     */
+    public static function packToArray( $record, $select )
+    {
+        $result = array();
+        if( empty( $record ) ) return $result;
+        foreach( $record as $rec ) {
+            $result[] = self::arrGet( $rec, $select );
+        }
+        $result = array_values( $result );
+        return $result;
+    }
 }
