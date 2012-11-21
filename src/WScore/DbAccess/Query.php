@@ -213,7 +213,7 @@ class Query
      */
     public function table( $table, $id_name='id' ) {
         $this->clear();
-        $this->table = $this->sqlObj->table = $table;
+        $this->table   = $this->sqlObj->table = $table;
         $this->id_name = $this->sqlObj->id_name = $id_name;
         return $this;
     }

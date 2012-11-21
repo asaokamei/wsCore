@@ -180,7 +180,7 @@ class Model
     public function getRecord( $data=array() ) 
     {
         /** @var $record \WScore\DbAccess\Entity_Interface */
-        $class = ( $this->entityClass ) ?: $this->recordClassName;
+        $class  = ( $this->entityClass ) ?: $this->recordClassName;
         $record = new $class( $this, Entity_Interface::_ENTITY_TYPE_NEW_ );
         $this->entityClass = null;
         if( !empty( $data ) ) {
@@ -199,8 +199,7 @@ class Model
      * @return Entity_Interface
      */
     public function find( $id ) {
-        $record = $this->query( $this->entityClass )
-            ->id( $id )->limit(1)->select();
+        $record = $this->query( $this->entityClass )->id( $id )->limit(1)->select();
         $this->entityClass = null;
         if( $record ) $record = $record[0];
         /** @var $record Entity_Interface */
@@ -221,7 +220,7 @@ class Model
         $query = $this->query( $this->entityClass );
         $this->entityClass = null;
         if( !$column         ) $column = $this->getIdName();
-        if( $packed === true )  $packed = $column;
+        if( $packed === true ) $packed = $column;
         $query->w( $column )->eq( $value )->column( $packed );
         $record = $query->select();
         if( $packed ) {
