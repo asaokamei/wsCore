@@ -371,6 +371,7 @@ class Query
         return $this->w( $this->id_name )->mod( $val, '=', $type );
     }
     public function eq( $val, $type=NULL ) {
+        if( is_array( $val ) ) return $this->in( $val, $type );
         return $this->mod( $val, '=', $type );
     }
     public function ne( $val, $type=NULL ) {
