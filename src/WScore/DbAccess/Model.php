@@ -399,6 +399,8 @@ class Model
     }
 
     /**
+     * TODO: restrict to property here. also extract only the updated value.
+     *
      * @param array|Entity_Interface $entity
      * @return array
      */
