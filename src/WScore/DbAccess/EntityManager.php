@@ -249,7 +249,7 @@ class EntityManager
         }
         else {
             $id = $entity->_get_Id();
-            $model->update( $id, (array) $entity );
+            $model->update( $id, $entity );
         }
     }
 

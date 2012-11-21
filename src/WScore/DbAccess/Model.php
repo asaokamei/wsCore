@@ -246,7 +246,7 @@ class Model
      * TODO: another method to update entity without $id argument?
      *
      * @param string $id
-     * @param array $values
+     * @param Entity_Interface|array   $values
      * @return Model
      */
     public function update( $id, $values )
@@ -266,7 +266,7 @@ class Model
     /**
      * insert data into database. 
      *
-     * @param array $values
+     * @param Entity_Interface|array   $values
      * @return string|bool             id of the inserted data or true if id not exist.
      */
     public function insertValue( $values )
@@ -299,7 +299,7 @@ class Model
     }
 
     /**
-     * @param array $values
+     * @param Entity_Interface|array   $values
      * @return string                 id of the inserted data
      */
     public function insertId( $values )
@@ -315,7 +315,7 @@ class Model
      * inserts a data. select insertId or insertValue to use.
      * default is to insertId.
      *
-     * @param $values
+     * @param Entity_Interface|array  $values
      * @return string                 id of the inserted data
      */
     public function insert( $values )
