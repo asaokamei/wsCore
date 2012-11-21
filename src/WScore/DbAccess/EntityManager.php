@@ -2,9 +2,7 @@
 namespace WScore\DbAccess;
 
 /**
- * todo: generate entity from entity class.
- * todo: entity maybe not registered automatically at generation. 
- * todo: generating model before using is *pain*. 
+ * todo: entity maybe not registered automatically at generation.
  */
 class EntityManager
 {
@@ -38,11 +36,10 @@ class EntityManager
         return $this->container;
     }
     // +----------------------------------------------------------------------+
-    //  Managing Model/Model.
+    //  Managing Model.
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DbAccess\Model $model
-     * @return EntityManager
      */
     public function registerModel( $model )
     {
@@ -50,7 +47,6 @@ class EntityManager
         if( substr( $modelName, 0, 1 ) == '\\' ) $modelName = substr( $modelName, 1 );
         $this->models[ $modelName ] = $model;
         $this->setupReflection( $model->recordClassName );
-        return $this;
     }
 
     /**
@@ -79,8 +75,13 @@ class EntityManager
         return $this->models[ $model ];
     }
 
+    // +----------------------------------------------------------------------+
+    //  Managing entities
+    // +----------------------------------------------------------------------+
     /**
-     * @param string $entity
+     * gets model class name from entity class name.
+     *
+     * @param string $entity    entity class name.
      * @return string
      */
     public function getModelNameFromEntity( $entity )
@@ -111,9 +112,8 @@ class EntityManager
 
     /**
      * @param Entity_Interface $entity
-     * @param string $prop
-     * @param string $value
-     * @return \WScore\DbAccess\EntityManager
+     * @param string           $prop
+     * @param string           $value
      */
     public  function setEntityProperty( $entity, $prop, $value )
     {
@@ -123,11 +123,7 @@ class EntityManager
         }
         $ref = $this->reflections[ $class ];
         $ref->invoke( $entity, $prop, $value );
-        return $this;
     }
-    // +----------------------------------------------------------------------+
-    //  Managing Entities
-    // +----------------------------------------------------------------------+
     /**
      * @param Entity_Interface|Entity_Interface[] $entity
      * @return Entity_Interface|Entity_Interface[]
@@ -150,14 +146,13 @@ class EntityManager
 
     /**
      * @param Entity_Interface $entity
-     * @param string $type
-     * @param string $identifier
+     * @param string           $type
+     * @param null|string           $identifier
      * @throws \RuntimeException
-     * @return \WScore\DbAccess\EntityManager
      */
     public function setupEntity( $entity, $type=null, $identifier=null )
     {
-        if( !$entity ) return $this;
+        if( !$entity ) return;
         if( $type ) {
             $this->setEntityProperty( $entity, 'type', $type );
         }
@@ -171,9 +166,13 @@ class EntityManager
         elseif( !$entity->_get_Id() ) {
             throw new \RuntimeException( 'identifier not set. ' );
         }
-        return $this;
     }
+    // +----------------------------------------------------------------------+
+    //  Generating and saving Entities to database
+    // +----------------------------------------------------------------------+
     /**
+     * returns an entity object for a given id value.
+     *
      * @param string $modelName   entity or model class name, or entity object.
      * @param string $id
      * @return Entity_Interface
@@ -188,6 +187,8 @@ class EntityManager
     }
 
     /**
+     * returns a *new* entity object.
+     *
      * @param string        $modelName   entity or model class name, or entity object.
      * @param array|string  $data
      * @param null|string   $id
@@ -208,21 +209,20 @@ class EntityManager
     }
 
     /**
-     * @return EntityManager
-     * @throws \RuntimeException
+     * saves or delete registered entities to/from database.
      */
     public function save()
     {
-        if( empty( $this->entities ) ) return $this;
+        if( empty( $this->entities ) ) return;
         foreach( $this->entities as $entity ) {
             $this->saveEntity( $entity );
         }
-        return $this;
     }
 
     /**
+     * saves or delete an entity to/from database.
+     *
      * @param Entity_Interface $entity
-     * @return EntityManager
      */
     public function saveEntity( $entity )
     {
@@ -242,7 +242,6 @@ class EntityManager
             $id = $entity->_get_Id();
             $model->update( $id, (array) $entity );
         }
-        return $this;
     }
 
     /**
@@ -286,4 +285,5 @@ class EntityManager
         $entities = $this->register( $entities );
         return $entities;
     }
+    // +----------------------------------------------------------------------+
 }
