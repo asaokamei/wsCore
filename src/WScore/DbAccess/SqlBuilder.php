@@ -177,7 +177,7 @@ class SqlBuilder
      */
     public static function makeColumn( $columns ) 
     {
-        if( empty( $columns ) ) {
+        if( !$columns || empty( $columns ) ) {
             $column = '*';
         }
         elseif( is_array( $columns ) ) {
