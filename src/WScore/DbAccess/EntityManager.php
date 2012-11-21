@@ -295,14 +295,14 @@ class EntityManager
      * @param Entity_Interface|string  $name       entity or model class name, or entity object.
      * @param string|array             $value      pass array to fetch multiple entities.
      * @param null|string              $column     set to null to fetch by id.
-     * @param bool                     $select     to get only the column value.
+     * @param bool                     $packed     to get only the column value.
      * @return array|\WScore\DbAccess\Entity_Interface[]
      */
-    public function fetch( $name, $value, $column=null, $select=false )
+    public function fetch( $name, $value, $column=null, $packed=false )
     {
         $model = $this->getModel( $name );
         if( $this->isEntity( $name ) ) $model->setEntityClass( $name );
-        $entities = $model->fetch( $value, $column, $select );
+        $entities = $model->fetch( $value, $column, $packed );
         $entities = $this->register( $entities );
         return $entities;
     }

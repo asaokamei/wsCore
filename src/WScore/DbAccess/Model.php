@@ -213,33 +213,19 @@ class Model
      *
      * @param string|array $value
      * @param null         $column
-     * @param bool         $select
+     * @param bool         $packed
      * @return array|\WScore\DbAccess\Entity_Interface[]
      */
-    public function fetch( $value, $column=null, $select=false )
+    public function fetch( $value, $column=null, $packed=false )
     {
         $query = $this->query( $this->entityClass );
         $this->entityClass = null;
-        if( !$column ) $column = $this->getIdName();
-        $query->w( $column );
-
-        if( is_array( $value ) ) {
-            $query->in( $value );
-        } else {
-            $query->eq( $value );
-        }
-        if( $select ) {
-            if( $select === true ) {
-                $query->column( $column );
-                $select = $column;
-            }
-            else {
-                $query->column( $select );
-            }
-        }
+        if( !$column         ) $column = $this->getIdName();
+        if( $packed === true )  $packed = $column;
+        $query->w( $column )->eq( $value )->column( $packed );
         $record = $query->select();
-        if( $select ) {
-            return HelperModel::packToArray( $record, $select );
+        if( $packed ) {
+            return HelperModel::packToArray( $record, $packed );
         }
         return $record;
     }
