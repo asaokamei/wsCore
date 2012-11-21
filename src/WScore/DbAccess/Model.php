@@ -99,7 +99,6 @@ class Model
     {
         $this->em    = $em;
         $this->query = $query;
-        $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this, 'get' ) );
         $this->prepare();
         $em->registerModel( $this );
     }
@@ -160,7 +159,7 @@ class Model
      */
     public function query( $class=null ) {
         if( !$class ) $class = $this->recordClassName;
-        // set fetch mode after query is cloned in table() method. 
+        // set fetch mode after query is cloned in table() method.
         return $this->query
             ->table( $this->table, $this->id_name )
             ->setFetchMode( \PDO::FETCH_CLASS, $class, array( $this, 'get' ) );
