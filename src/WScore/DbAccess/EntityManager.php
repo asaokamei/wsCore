@@ -67,6 +67,20 @@ class EntityManager
     }
 
     /**
+     * @param string|object $entity
+     * @return bool
+     */
+    public function isEntity( $entity )
+    {
+        if( is_object( $entity ) && $entity instanceof Entity_Interface ) {
+            return true;
+        }
+        if( is_string( $entity ) && in_array( 'WScore\DbAccess\Entity_Interface', class_implements( $entity ) ) ) {
+            return true;
+        }
+        return false;
+    }
+    /**
      * gets model class name from entity class name or entity object.
      *
      * @param string $entity    entity class name.
@@ -75,19 +89,12 @@ class EntityManager
      */
     public function getModelNameFromEntity( $entity )
     {
-        // $entity is an object.
-        if( is_object( $entity ) ) {
-            if( $entity instanceof Entity_Interface ) { // $entity is an *entity* object.
-                return $entity->_get_Model();
-            }
-            throw new \RuntimeException( "cannot get model name from unknown object." );
+        if( !$this->isEntity( $entity ) ) return $entity;
+        if( is_object( $entity ) ) { // $entity is an *entity* object.
+            return $entity->_get_Model();
         }
-        // a string. must be a class name.
         if( isset( $this->entityToModel[ $entity ] ) ) { // found it in the table.
             return $this->entityToModel[ $entity ];
-        }
-        if( !in_array( 'WScore\DbAccess\Entity_Interface', class_implements( $entity ) ) ) {
-            return $entity; // not an entity class.
         }
         // get model name from entity class by getting $_model default value using reflection.
         $refClass = new \ReflectionClass( $entity );
