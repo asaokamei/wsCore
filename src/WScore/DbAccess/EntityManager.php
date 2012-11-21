@@ -75,7 +75,8 @@ class EntityManager
         if( is_object( $entity ) && $entity instanceof Entity_Interface ) {
             return true;
         }
-        if( is_string( $entity ) && in_array( 'WScore\DbAccess\Entity_Interface', class_implements( $entity ) ) ) {
+        $interfaces = class_implements( $entity );
+        if( is_string( $entity ) && is_array( $interfaces ) && in_array( 'WScore\DbAccess\Entity_Interface', $interfaces ) ) {
             return true;
         }
         return false;
