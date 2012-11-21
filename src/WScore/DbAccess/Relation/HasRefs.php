@@ -58,22 +58,21 @@ class Relation_HasRefs implements Relation_Interface
     public function link( $save=false )
     {
         if( $this->linked )  return $this;
-        if( !$this->source ) return $this;
         if( empty( $this->targets ) ) return $this;
         if( $this->sourceColumn == $this->em->getModel( $this->source->_get_Model() )->getIdName() &&
             !$this->source->isIdPermanent() ) {
             return $this;
         }
         $column = $this->sourceColumn;
-        $value = $this->source->$column;
+        $value  = $this->source->$column;
         $column = $this->targetColumn;
         foreach( $this->targets as &$entity ) {
             $entity->$column = $value;
+            if( $save ) { // TODO: check if this works or not.
+                $this->em->saveEntity( $entity );
+            }
         }
         $this->linked = true;
-        if( $save ) {
-            $this->em->save();
-        }
         return $this;
     }
 
@@ -95,7 +94,7 @@ class Relation_HasRefs implements Relation_Interface
     public function get()
     {
         $column = $this->sourceColumn;
-        $value = $this->source->$column;
+        $value  = $this->source->$column;
         $this->targets = $this->em->fetch( $this->targetModel, $value, $this->targetColumn );
         return $this->targets;
     }

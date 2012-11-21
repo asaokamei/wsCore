@@ -56,17 +56,15 @@ class Relation_HasOne implements Relation_Interface
     public function link( $save=FALSE )
     {
         if( $this->linked )  return $this;
-        if( !$this->source ) return $this;
         if( !$this->target ) return $this;
         // TODO: check if id is permanent or tentative.
         $column = $this->targetColumn;
-        $value = $this->target->$column;
+        $value  = $this->target->$column;
         $column = $this->sourceColumn;
         $this->source->$column = $value;
         $this->linked = TRUE;
-        if( $save ) {
-            die( "save in link not supported yet." );
-            //$this->source->save();
+        if( $save ) { // TODO: check if this works or not.
+            $this->em->saveEntity( $this->source );
         }
         return $this;
     }
@@ -86,8 +84,8 @@ class Relation_HasOne implements Relation_Interface
      */
     public function get()
     {
-        $column = $this->sourceColumn;
-        $value = $this->source->$column;
+        $column  = $this->sourceColumn;
+        $value   = $this->source->$column;
         $records = $this->em->fetch( $this->targetModel, $value, $this->targetColumn );
         $this->target = $records[0]; // HasOne has only one record, as name indicates.
         return $records;
