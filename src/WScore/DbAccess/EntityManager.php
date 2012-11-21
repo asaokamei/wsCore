@@ -57,17 +57,8 @@ class EntityManager
      */
     public function getModel( $entity )
     {
-        // get model class name. 
-        if( is_object( $entity ) && $entity instanceof Entity_Interface ) {
-            $model = $entity->_get_Model();
-        }
-        else {
-            if( in_array( 'WScore\DbAccess\Entity_Interface', class_implements( $entity ) ) ) {
-                $model = $this->getModelNameFromEntity( $entity );
-            } else {
-                $model = $entity;
-            }
-        }
+        // get model class name.
+        $model = $this->getModelNameFromEntity( $entity );
         if( substr( $model, 0, 1 ) == '\\' ) $model = substr( $model, 1 );
         if( !isset( $this->models[ $model ] ) ) {
             $this->models[ $model ] = $this->container->get( $model );
@@ -75,26 +66,39 @@ class EntityManager
         return $this->models[ $model ];
     }
 
-    // +----------------------------------------------------------------------+
-    //  Managing entities
-    // +----------------------------------------------------------------------+
     /**
-     * gets model class name from entity class name.
+     * gets model class name from entity class name or entity object.
      *
      * @param string $entity    entity class name.
+     * @throws \RuntimeException
      * @return string
      */
     public function getModelNameFromEntity( $entity )
     {
-        // set the entity to model class name conversion table. 
-        if( !isset( $this->entityToModel[ $entity ] ) ) {
-            $refClass = new \ReflectionClass( $entity );
-            $propList = $refClass->getDefaultProperties();
-            $this->entityToModel[ $entity ] = $propList[ '_model' ];
+        // $entity is an object.
+        if( is_object( $entity ) ) {
+            if( $entity instanceof Entity_Interface ) { // $entity is an *entity* object.
+                return $entity->_get_Model();
+            }
+            throw new \RuntimeException( "cannot get model name from unknown object." );
         }
+        // a string. must be a class name.
+        if( isset( $this->entityToModel[ $entity ] ) ) { // found it in the table.
+            return $this->entityToModel[ $entity ];
+        }
+        if( !in_array( 'WScore\DbAccess\Entity_Interface', class_implements( $entity ) ) ) {
+            return $entity; // not an entity class.
+        }
+        // get model name from entity class by getting $_model default value using reflection.
+        $refClass = new \ReflectionClass( $entity );
+        $propList = $refClass->getDefaultProperties();
+        $this->entityToModel[ $entity ] = $propList[ '_model' ];
         return $this->entityToModel[ $entity ];
     }
 
+    // +----------------------------------------------------------------------+
+    //  Managing entities
+    // +----------------------------------------------------------------------+
     /**
      * @param Entity_Interface|string $entity
      */
@@ -264,7 +268,7 @@ class EntityManager
      */
     public function relation( $entity, $name )
     {
-        $model = $this->getModel( $entity->_get_Model() );
+        $model = $this->getModel( $entity );
         $relation = $model->relation( $entity, $name );
         return $relation;
     }
