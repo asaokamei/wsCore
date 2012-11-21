@@ -174,11 +174,11 @@ class EntityManager
         return $this;
     }
     /**
-     * @param string $modelName
+     * @param string $modelName   entity or model class name, or entity object.
      * @param string $id
      * @return Entity_Interface
      */
-    public function getEntityFromModel( $modelName, $id )
+    public function getEntity( $modelName, $id )
     {
         $model = $this->getModel( $modelName );
         $entity = $model->find( $id );
@@ -188,12 +188,12 @@ class EntityManager
     }
 
     /**
-     * @param string        $modelName
+     * @param string        $modelName   entity or model class name, or entity object.
      * @param array|string  $data
      * @param null|string   $id
      * @return Entity_Interface
      */
-    public function newEntityFromModel( $modelName, $data=array(), $id=null )
+    public function newEntity( $modelName, $data=array(), $id=null )
     {
         if( !is_array( $data ) ) {
             $id = $data;
@@ -271,17 +271,17 @@ class EntityManager
     }
 
     /**
-     * fetch entities for a modelClass name;
+     * fetch entities for a simple condition;
      *
-     * @param string       $modelName
-     * @param string|array $value      pass array to fetch multiple entities.
-     * @param null|string  $column     set to null to fetch by id.
-     * @param bool         $select     to get only the column value.
+     * @param Entity_Interface|string  $name       entity or model class name, or entity object.
+     * @param string|array             $value      pass array to fetch multiple entities.
+     * @param null|string              $column     set to null to fetch by id.
+     * @param bool                     $select     to get only the column value.
      * @return \WScore\DbAccess\Entity_Interface|\WScore\DbAccess\Entity_Interface[]
      */
-    public function fetchByModel( $modelName, $value, $column=null, $select=false )
+    public function fetch( $name, $value, $column=null, $select=false )
     {
-        $model = $this->getModel( $modelName );
+        $model = $this->getModel( $name );
         $entities = $model->fetch( $value, $column, $select );
         $entities = $this->register( $entities );
         return $entities;

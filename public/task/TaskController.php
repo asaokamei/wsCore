@@ -88,7 +88,7 @@ class TaskController
      */
     public function actNew( $args )
     {
-        $entity = $this->em->newEntityFromModel( 'task\entity\task' );
+        $entity = $this->em->newEntity( 'task\entity\task' );
         if( $this->front->request->isPost() ) {
             $this->contextLoadAndSave( $entity );
             $this->view->set( 'alert-error', 'insert failed...' );
@@ -108,7 +108,7 @@ class TaskController
     public function actTask( $args )
     {
         $id = $args[ 'id' ];
-        $entity = $this->em->getEntityFromModel( 'task\entity\task', $id );
+        $entity = $this->em->getEntity( 'task\entity\task', $id );
         if( $this->front->request->isPost() ) {
             $this->contextLoadAndSave( $entity );
             $this->view->set( 'alert-error', 'update failed...' );
@@ -128,7 +128,7 @@ class TaskController
     {
         $id = $args[ 'id' ];
         /** @var $entity \task\entity\task */
-        $entity = $this->em->getEntityFromModel( 'task\entity\task', $id );
+        $entity = $this->em->getEntity( 'task\entity\task', $id );
         if( $entity ) {
             if( $entity->isDone() ) {
                 $this->em->delete( $entity );
@@ -179,7 +179,7 @@ class TaskController
         // using em. this works just fine.
         for( $i = 1; $i <= 5; $i++ ) {
             $task = $model->getSampleTasks($i);
-            $this->em->newEntityFromModel( 'task\entity\task', $task );
+            $this->em->newEntity( 'task\entity\task', $task );
         }
         $this->em->save();
         $taskUrl = $this->view->get( 'taskUrl' );

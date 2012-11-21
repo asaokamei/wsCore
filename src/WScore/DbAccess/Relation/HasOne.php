@@ -88,7 +88,7 @@ class Relation_HasOne implements Relation_Interface
     {
         $column = $this->sourceColumn;
         $value = $this->source->$column;
-        $records = $this->em->fetchByModel( $this->targetModel, $value, $this->targetColumn );
+        $records = $this->em->fetch( $this->targetModel, $value, $this->targetColumn );
         $this->target = $records[0]; // HasOne has only one record, as name indicates.
         return $records;
     }
