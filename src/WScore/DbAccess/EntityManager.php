@@ -196,6 +196,7 @@ class EntityManager
     public function getEntity( $modelName, $id )
     {
         $model = $this->getModel( $modelName );
+        if( $this->isEntity( $modelName ) ) $model->setEntityClass( $modelName );
         $entity = $model->find( $id );
         $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_GET_, $id );
         $entity = $this->register( $entity );
@@ -217,7 +218,7 @@ class EntityManager
             $data = array();
         }
         $model = $this->getModel( $modelName );
-        /** @var $entity Entity_Interface */
+        if( $this->isEntity( $modelName ) ) $model->setEntityClass( $modelName );
         $entity = $model->getRecord( $data );
         $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_NEW_, $id );
         $entity = $this->register( $entity );
@@ -297,6 +298,7 @@ class EntityManager
     public function fetch( $name, $value, $column=null, $select=false )
     {
         $model = $this->getModel( $name );
+        if( $this->isEntity( $name ) ) $model->setEntityClass( $name );
         $entities = $model->fetch( $value, $column, $select );
         $entities = $this->register( $entities );
         return $entities;

@@ -83,6 +83,9 @@ class Model
 
     /** @var \WScore\DbAccess\Entity_Interface    return class from Pdo            */
     public $recordClassName = 'WScore\DbAccess\Entity_Generic';
+
+    /** @var null|string    entity class name for quick methods (find/fetch). */
+    protected $entityClass = null;
     // +----------------------------------------------------------------------+
     //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+
@@ -176,14 +179,25 @@ class Model
         }
         return $values;
     }
+
     /**
+     * @param null|string $class   entity class name.
      * @return \WScore\DbAccess\Query
      */
-    public function query() {
-        $this->query->setFetchMode( \PDO::FETCH_CLASS, $this->recordClassName, array( $this, 'get' ) );
+    public function query( $class=null ) {
+        if( !$class ) $class = $this->recordClassName;
+        $this->query->setFetchMode( \PDO::FETCH_CLASS, $class, array( $this, 'get' ) );
         return $this->query->table( $this->table, $this->id_name );
     }
 
+    /**
+     * set entity class for quick methods (find/fetch).
+     * 
+     * @param $class
+     */
+    public function setEntityClass( $class ) {
+        $this->entityClass = $class;
+    }
     /**
      * @param array $data
      * @return \WScore\DbAccess\Entity_Interface
@@ -191,7 +205,9 @@ class Model
     public function getRecord( $data=array() ) 
     {
         /** @var $record \WScore\DbAccess\Entity_Interface */
-        $record = new $this->recordClassName( $this, Entity_Interface::_ENTITY_TYPE_NEW_ );
+        $class = ( $this->entityClass ) ?: $this->recordClassName;
+        $record = new $class( $this, Entity_Interface::_ENTITY_TYPE_NEW_ );
+        $this->entityClass = null;
         if( !empty( $data ) ) {
             foreach( $data as $key => $val ) {
                 $record->$key = $val;
@@ -208,8 +224,9 @@ class Model
      * @return Entity_Interface
      */
     public function find( $id ) {
-        $record = $this->query()
+        $record = $this->query( $this->entityClass )
             ->id( $id )->limit(1)->select();
+        $this->entityClass = null;
         if( $record ) $record = $record[0];
         /** @var $record Entity_Interface */
         return $record;
@@ -226,7 +243,8 @@ class Model
      */
     public function fetch( $value, $column=null, $select=false )
     {
-        $query = $this->query();
+        $query = $this->query( $this->entityClass );
+        $this->entityClass = null;
         if( !$column ) $column = $this->getIdName();
         $query->w( $column );
 
