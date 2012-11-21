@@ -149,6 +149,8 @@ class EntityManager
     }
 
     /**
+     * setup entities hidden state properties: _type and _identifier.
+     *
      * @param Entity_Interface $entity
      * @param string           $type
      * @param null|string           $identifier
@@ -157,13 +159,16 @@ class EntityManager
     public function setupEntity( $entity, $type=null, $identifier=null )
     {
         if( !$entity ) return;
+        // force to set type.
         if( $type ) {
             $this->setEntityProperty( $entity, 'type', $type );
         }
+        // type is not set.
         elseif( !$entity->_get_Type() ) {
-            $type = Entity_Interface::_ENTITY_TYPE_NEW_;
-            $this->setEntityProperty( $entity, 'type', $type );
+            // assume it is a new entity.
+            $this->setEntityProperty( $entity, 'type', Entity_Interface::_ENTITY_TYPE_NEW_ );
         }
+        // force to set identifier.
         if( $identifier ) {
             $this->setEntityProperty( $entity, 'identifier', $identifier );
         }
