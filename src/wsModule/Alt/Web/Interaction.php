@@ -1,5 +1,5 @@
 <?php
-namespace WScore\Web;
+namespace wsModule\Alt\Web;
 
 class Interaction
 {
