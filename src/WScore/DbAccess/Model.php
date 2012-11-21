@@ -334,6 +334,10 @@ class Model
         return HelperModel::arrGet( $this->validators, $name );
     }
 
+    public function getRelationInfo( $name=null ) {
+        if( $name ) return HelperModel::arrGet( $this->relations, $name );
+        return $this->relations;
+    }
     /**
      * @param null|string $name
      * @return array
@@ -413,17 +417,14 @@ class Model
     }
 
     /**
+     * note: relation method body is moved to EntityManager.
+     *
      * @param \WScore\DbAccess\Entity_Interface $source
      * @param string $name
      * @return Relation_Interface
      */
-    public function relation( $source, $name )
-    {
-        if( !$relation = $source->relation( $name ) ) {
-            $relation = Relation::getRelation( $this->em, $source, $this->relations, $name );
-            $source->setRelation( $name, $relation );
-        }
-        return $relation;
+    public function relation( $source, $name ) {
+        return $this->em->relation( $source, $name );
     }
     // +----------------------------------------------------------------------+
 }

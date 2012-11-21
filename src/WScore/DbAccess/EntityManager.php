@@ -282,7 +282,10 @@ class EntityManager
     public function relation( $entity, $name )
     {
         $model = $this->getModel( $entity );
-        $relation = $model->relation( $entity, $name );
+        if( !$relation = $entity->relation( $name ) ) {
+            $relation = Relation::getRelation( $this, $entity, $model->getRelationInfo(), $name );
+            $entity->setRelation( $name, $relation );
+        }
         return $relation;
     }
 

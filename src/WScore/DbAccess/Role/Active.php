@@ -24,7 +24,7 @@ class Role_Active extends Role_Abstract
     public function relation( $name )
     {
         if( !$relation = $this->entity->relation( $name ) ) {
-            $relation = $this->model->relation( $this->entity, $name );
+            $relation = $this->em->relation( $this->entity, $name );
             $this->entity->setRelation( $name, $relation );
         }
         return $relation;
