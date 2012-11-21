@@ -216,29 +216,43 @@ class Model
     }
 
     /**
+     * fetches entities from simple condition.
+     * use $select to specify column name to get only the column you want.
+     *
      * @param string|array $value
      * @param null         $column
      * @param bool         $select
-     * @return \WScore\DbAccess\Entity_Interface[]
+     * @return array|\WScore\DbAccess\Entity_Interface[]
      */
     public function fetch( $value, $column=null, $select=false )
     {
         $query = $this->query();
-        if( $column ) {
-            $query->w( $column );
-        } else {
-            $query->w( $this->getIdName() );
-        }
+        if( !$column ) $column = $this->getIdName();
+        $query->w( $column );
+
         if( is_array( $value ) ) {
             $query->in( $value );
         } else {
             $query->eq( $value );
         }
         if( $select ) {
-            if( !$column ) $column = $this->getIdName();
-            $query->column( $column );
+            if( $select === true ) {
+                $query->column( $column );
+                $select = $column;
+            }
+            else {
+                $query->column( $select );
+            }
         }
         $record = $query->select();
+        if( $select ) {
+            $result = array();
+            if( !empty( $record ) )
+                foreach( $record as $rec ) {
+                    $result[] = $rec[ $select ];
+                }
+            return $result;
+        }
         return $record;
     }
     /**
