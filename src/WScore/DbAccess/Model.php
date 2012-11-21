@@ -160,8 +160,10 @@ class Model
      */
     public function query( $class=null ) {
         if( !$class ) $class = $this->recordClassName;
-        $this->query->setFetchMode( \PDO::FETCH_CLASS, $class, array( $this, 'get' ) );
-        return $this->query->table( $this->table, $this->id_name );
+        // set fetch mode after query is cloned in table() method. 
+        return $this->query
+            ->table( $this->table, $this->id_name )
+            ->setFetchMode( \PDO::FETCH_CLASS, $class, array( $this, 'get' ) );
     }
 
     /**
