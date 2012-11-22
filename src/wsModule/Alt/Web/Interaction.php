@@ -259,5 +259,29 @@ class Interaction
         }
         return false;
     }
+
+    // +----------------------------------------------------------------------+
+    //  wizards and helpers for using context.
+    // +----------------------------------------------------------------------+
+    /**
+     * shows form, load and validates input data.
+     * returns the form name if action is in this context, and false if not.
+     *
+     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param string $action
+     * @param array  $forms
+     * @return bool|string
+     */
+    public function formWizards( $entity, $action, $forms )
+    {
+        $prevForm = null;
+        foreach( $forms as $form ) {
+            if( $this->contextFormAndLoad( $entity, $action, $form, $prevForm ) ) {
+                return $form;
+            }
+            $prevForm = $form;
+        }
+        return false;
+    }
     // +----------------------------------------------------------------------+
 }
