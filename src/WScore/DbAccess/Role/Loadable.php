@@ -88,14 +88,5 @@ class Role_Loadable extends Role_Abstract
         $this->em->setEntityProperty( $this->entity, 'isValid', $valid );
         return $this;
     }
-
-    /**
-     * returns if validated is successful or not.
-     *
-     * @return bool
-     */
-    public function isValid() {
-        return $this->entity->_is_valid();
-    }
     // +----------------------------------------------------------------------+
 }

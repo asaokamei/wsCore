@@ -8,4 +8,7 @@ interface Role_Interface
      */
     public function register( $entity );
     public function retrieve();
+    public function getId();
+    public function getIdName();
+    public function isValid();
 }

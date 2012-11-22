@@ -50,4 +50,13 @@ class Role_Abstract implements Role_Interface
     public function getIdName() {
         return $this->model->getIdName();
     }
+
+    /**
+     * returns if validated is successful or not.
+     *
+     * @return bool
+     */
+    public function isValid() {
+        return $this->entity->_is_valid();
+    }
 }

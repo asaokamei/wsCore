@@ -68,13 +68,6 @@ class Role_Input extends Role_Abstract
         $this->em->setEntityProperty( $this->entity, 'isValid', $valid );
         return $this;
     }
-
-    /**
-     * @return bool
-     */
-    public function isValid() {
-        return $this->entity->_is_valid();
-    }
     // +----------------------------------------------------------------------+
     //  getting Html Forms.
     // +----------------------------------------------------------------------+
