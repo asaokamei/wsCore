@@ -36,7 +36,8 @@ class Interaction
      * @DimInjection Fresh Session
      * @DimInjection Get   \WScore\DbAccess\Role
      */
-    public function __construct( $request, $session, $role ) {
+    public function __construct( $request, $session, $role )
+    {
         $this->request = $request;
         $this->session = ($session) ?: $_SESSION;
         $this->role = $role;
@@ -48,7 +49,8 @@ class Interaction
      * @throws \RuntimeException
      * @return mixed
      */
-    public function loadRegistered() {
+    public function loadRegistered()
+    {
         $class = self::getInstanceName( get_called_class() );
         if( $src = $this->session->get( $class ) ) {
             $object = unserialize( $src );
@@ -154,7 +156,8 @@ class Interaction
         $this->registerData( $pinPoint, true );
     }
 
-    public function checkPin( $name ) {
+    public function checkPin( $name )
+    {
         $pinPoint = '_pin_' . $name;
         $pinned   = false;
         if( $this->restoreData( $pinPoint ) ) {
@@ -249,119 +252,6 @@ class Interaction
             $role->save();
             $this->pinPoint( $form );
             return true;
-        }
-        return false;
-    }
-    // +----------------------------------------------------------------------+
-    //  methods that are too complicated, and not maintained.     
-    // +----------------------------------------------------------------------+
-    /**
-     * @param \WScore\DbAccess\Role_Input  $role
-     * @param string $action
-     * @param array $formList
-     * @param string $load
-     * @return bool
-     */
-    function actionFormAndLoad( $role, $action, $formList, $load )
-    {
-        $form = $formList[0];
-        $pinpoint = '_pin_' . $form;
-        // show formName at least once. 
-        if( !$this->restoreData( $pinpoint ) )  // formName not pin-pointed. show the form.
-        {
-            $this->registerData( $pinpoint, true ); // pin point. 
-            $role->resetValidation( true );
-            $showForm = $this->showForm;
-            $this->view->$showForm( $role, $form );
-            return true;
-        }
-        // action to show the form. either the formName, or previous loadName. 
-        if( in_array( $action, $formList ) ) {
-            $showForm = $this->showForm;
-            $this->view->$showForm( $role, $form );
-            return true;
-        }
-        // load posted values from form.
-        if( $load && $action == $load ) {
-            $loadData = $this->loadData;
-            $role->$loadData( $load );
-        }
-        // always verify the input.
-        if( !$role->validate( $form ) ) {
-            $showForm = $this->showForm;
-            $this->view->$showForm( $role, $form ); // validation failed.
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * @param array $step
-     * @return array
-     */
-    private function getStepInfo( $step ) {
-        $task     = $step[0];
-        $formName = $step[1];
-        $loadName = array_key_exists( 2, $step ) ? $step[2] : null;
-        return array( $task, $formName, $loadName );
-    }
-
-    /**
-     * generic web-interaction based on steps.
-     *
-     * $steps = array(
-     *    [  taskType,      formName,      loadName ], 
-     *    [ 'formLoad',    'formName',    'loadName'    ],
-     *    [ 'formLoad',    'formName2',   'loadName2'   ],
-     *    ...
-     *    [ 'pushToken',   'confirmName' ],
-     *    [ 'verifyToken', 'finalAction', 'doneName'    ],
-     * );
-     * 
-     * available taskTypes are: formLoad, pushToken, and verifyToken.
-     * 
-     * about return value: formName or false.
-     * returns formName if task was successfully performed. 
-     * returns false if no task was performed (no action for this steps), 
-     * or failed to perform the task in verifyToken. 
-     * 
-     * @param \WScore\DbAccess\Entity_Interface $entity
-     * @param string                            $action
-     * @param array                             $steps
-     * @return bool|string
-     */
-    public function webFormWizard( $entity, $action, $steps )
-    {
-        $role = $this->role->applyInputAndSelectable( $entity );
-        $showForm = $this->showForm;
-        $prevLoadName = null;
-        foreach( $steps as $step ) 
-        {
-            list( $task, $formName, $loadName ) = $this->getStepInfo( $step );
-            $this->view->set( $this->actionName, $loadName );
-            if( $task == 'showData' && $action == $formName ) {
-                $this->view->$showForm( $role, $formName );
-                return $formName;
-            }
-            if( $task == 'pushToken' && in_array( $action, array( $formName, $prevLoadName ) ) ) {
-                $this->pushToken();
-                $this->view->$showForm( $role, $formName );
-                return $formName;
-            }
-            if( $task == 'verifyToken' && $action == $formName ) {
-                $doneName = $loadName ?: $formName;
-                $this->registerData( $doneName, true );
-                $this->view->$showForm( $role, $doneName );
-                if( $this->verifyToken() ) {
-                    return $formName;
-                }
-                return false;
-            }
-            if( $task == 'formLoad' ) {
-                $formList = array( $formName, $prevLoadName );
-                if( $this->actionFormAndLoad( $role, $action, $formList, $loadName ) ) return $formName;
-            }
-            $prevLoadName = $loadName;
         }
         return false;
     }
