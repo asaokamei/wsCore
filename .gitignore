@@ -17,3 +17,6 @@ vendor/*
 
 #sqlite data file
 *.sqlite
+
+#PHPDocumentator generated files.
+public/docs/*
