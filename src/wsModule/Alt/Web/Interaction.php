@@ -171,27 +171,31 @@ class Interaction
     // +----------------------------------------------------------------------+
     /**
      * a context to show form and load post data from the form.
-     * returns true if $action is in this context, otherwise 
-     * returns false. 
-     * 
+     * returns true if $action is in this context, otherwise
+     * returns false.
+     *
      * todo: cannot catch validation failure. is it OK?
      *
      * @param \WScore\DbAccess\Entity_Interface $entity
      * @param string                            $action
      * @param string                            $form
+     * @param string|null                       $prevForm
      * @return bool
      */
-    public function contextFormAndLoad( $entity, $action, $form )
+    public function contextFormAndLoad( $entity, $action, $form, $prevForm=null )
     {
         $role     = $this->role->applyLoadable( $entity );
         $isPost   = $this->request->isPost();
         // show form at least once. check for pin-point. 
         if ( !$this->checkPin( $form ) ) {
+            // no validation result is necessary when showing the form.
             $role->resetValidation( true );
             return true;
         }
         // requesting for a form. 
-        if ( $action == $form && !$isPost ) {
+        if ( $action == $prevForm || ( $action == $form && !$isPost ) ) {
+            // no validation result is necessary when showing the form.
+            $role->resetValidation( true );
             return true;
         }
         // load data if it is a post for a form. 

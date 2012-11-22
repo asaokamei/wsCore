@@ -80,7 +80,7 @@ class interact extends \wsModule\Alt\Web\Interaction
         $forms = array( 'wizard1', 'wizard2', 'wizard3', );
         $prevForm = null;
         foreach( $forms as $form ) {
-            if( $action == $prevForm || $this->contextFormAndLoad( $entity, $action, $form ) ) {
+            if( $this->contextFormAndLoad( $entity, $action, $form, $prevForm ) ) {
                 $this->view->set( 'action', $form );
                 $this->view->showForm( $entity, $form );
                 return;
