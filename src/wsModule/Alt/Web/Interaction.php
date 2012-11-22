@@ -149,6 +149,20 @@ class Interaction
         $this->registeredData = array();
     }
 
+    public function pinPoint( $name ) {
+        $pinPoint = '_pin_' . $name;
+        $this->registerData( $pinPoint, true );
+    }
+
+    public function checkPin( $name ) {
+        $pinPoint = '_pin_' . $name;
+        $pinned   = false;
+        if( $this->restoreData( $pinPoint ) ) {
+            $pinned = true;
+        }
+        $this->pinPoint( $name );
+        return $pinned;
+    }
     // +----------------------------------------------------------------------+
     //  contexts... a generic method for common use cases. 
     // +----------------------------------------------------------------------+
@@ -166,13 +180,10 @@ class Interaction
      */
     public function contextFormAndLoad( $entity, $action, $form )
     {
-        $pinpoint = '_pin_' . $form;
         $role     = $this->role->applyLoadable( $entity );
         $isPost   = $this->request->isPost();
         // show form at least once. check for pin-point. 
-        if ( !$this->restoreData( $pinpoint ) ) 
-        {
-            $this->registerData( $pinpoint, true ); // pin point. 
+        if ( !$this->checkPin( $form ) ) {
             $role->resetValidation( true );
             return true;
         }
