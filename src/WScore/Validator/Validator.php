@@ -13,16 +13,18 @@ namespace WScore\Validator;
 
 class Validator
 {
-    /** @var array        definition of filterOptions         */
-    public $filterOptions = array();
-
     /** @var array        order of filterOptions to apply     */
     public $filterOrder = array();
 
     /** @var array        predefined filter filter set        */
     public $filterTypes = array();
 
+    /** @var array        error message for each filter       */
+    public $filterErrMsg = array();
+
+    /** @var null|\WScore\Validator\Filter                    */
     protected $filter = null;
+
     // +----------------------------------------------------------------------+
     /**
      * @param Filter $filter
@@ -58,11 +60,9 @@ class Validator
             'mbCheckKana' => false,
             'sameAs'      => false,
         );
-        $this->filterOptions = array(
-        );
         // setup error messages for each filter.
-        $this->filterOptions[ 'encoding' ][ 'err_msg' ] = 'invalid encoding';
-        $this->filterOptions[ 'required' ][ 'err_msg' ] = 'required field';
+        $this->filterErrMsg[ 'encoding' ] = 'invalid encoding';
+        $this->filterErrMsg[ 'required' ] = 'required field';
 
         // filters for various types of input.
         $this->filterTypes = array(
@@ -174,14 +174,14 @@ class Validator
             //echo "Rule: {$rule} ok={$success} loop=" . $loop . " \n";
             if( !$success ) {
                 // invalidated value! find an error message.
-                if( isset( $this->filterOptions[ $rule ]['err_msg'] ) ) {
-                    $err_msg = $this->filterOptions[ $rule ]['err_msg'];
+                if( isset( $this->filterErrMsg[ $rule ] ) ) {
+                    $err_msg = $this->filterErrMsg[ $rule ];
                 }
                 elseif( isset( $filter['err_msg'] ) ) {
                     $err_msg = $filter['err_msg'];
                 }
                 else {
-                    $err_msg = "invalidated with rule={$rule}";
+                    $err_msg = "invalid {$rule}";
                 }
                 break;
             }
@@ -202,21 +202,7 @@ class Validator
      */
     public function _applyRule( &$value, $rule, $parameter, &$loop )
     {
-        // initial value.
-        $method = $rule;
-        // get options for this filter if exists.
-        if( isset( $this->filterOptions[ $rule ] ) )
-        {
-            // overwrite method; how to run the rule.
-            if( isset( $this->filterOptions[ $rule ][0] ) ) {
-                $method  = $this->filterOptions[ $rule ][0];
-            }
-            // overwrite parameter.
-            if( isset( $this->filterOptions[ $rule ][$parameter] ) ) {
-                $parameter = $this->filterOptions[ $rule ][$parameter];
-            }
-        }
-        $method = 'filter_' . $method;
+        $method = 'filter_' . $rule;
         if( method_exists( $this->filter, $method ) ) {
             return $this->filter->$method( $value, $parameter, $loop );
         }
