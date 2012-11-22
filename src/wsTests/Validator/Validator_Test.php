@@ -1,7 +1,8 @@
 <?php
 namespace wsTests\Validator;
-use \WScore\Validator\Validator as Validator;
+
 require_once( __DIR__ . '/../../autoloader.php' );
+use \WScore\Core;
 
 class Validator_Test extends \PHPUnit_Framework_TestCase
 {
@@ -10,7 +11,8 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->validator = new Validator();
+        Core::go();
+        $this->validator = Core::get( 'Validator' );
     }
     // +----------------------------------------------------------------------+
     public function test_false_on_noNull()
