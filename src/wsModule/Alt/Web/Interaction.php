@@ -83,21 +83,16 @@ class Interaction
     /**
      * @param string $controller
      * @param string $action
-     * @param \WScore\Html\PageView $view
-     * @return \WScore\Html\PageView
      */
-    public function run( $controller, $action, $view )
+    public function run( $controller, $action )
     {
-        $this->view = $view;
         $this->$controller( $action );
         $this->saveRegistered();
-        return $view;
     }
 
     /**
      * @param string      $controller
      * @param null|string $default
-     * @return \WScore\Html\PageView
      */
     public function action( $controller, $default=null )
     {
@@ -108,25 +103,6 @@ class Interaction
         }
         $this->$controller( $action );
         $this->saveRegistered();
-        return $this->view;
-    }
-    // +----------------------------------------------------------------------+
-    //  manage token for CSRF.
-    // +----------------------------------------------------------------------+
-    /**
-     * @return string
-     */
-    public function pushToken() {
-        $token = $this->session->pushToken();
-        $this->view->set( $this->session->popTokenTagName(), $token );
-        return $token;
-    }
-
-    /**
-     * @return bool
-     */
-    public function verifyToken() {
-        return $this->session->verifyToken();
     }
     // +----------------------------------------------------------------------+
     //  manage variables
