@@ -6,6 +6,9 @@ class Interaction
     /** @var array                          data to register as session data */
     protected $registeredData = array();
 
+    /** @var \wsModule\Alt\Web\Request */
+    protected $request;
+    
     /** @var \WScore\Web\Session             saves itself and token for CSRF */
     protected $session;
 
@@ -20,16 +23,21 @@ class Interaction
     public $loadData = 'loadData';
     
     public $actionName = 'action';
+    
+    public $action = null;
     // +----------------------------------------------------------------------+
     //  object management
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\Web\Session $session
+     * @param \wsModule\Alt\Web\Request   $request
+     * @param \WScore\Web\Session   $session
      * @param \WScore\DbAccess\Role $role
+     * @DimInjection Get   \wsModule\Alt\Web\Request
      * @DimInjection Fresh Session
      * @DimInjection Get   \WScore\DbAccess\Role
      */
-    public function __construct( $session, $role ) {
+    public function __construct( $request, $session, $role ) {
+        $this->request = $request;
         $this->session = ($session) ?: $_SESSION;
         $this->role = $role;
     }
@@ -140,8 +148,99 @@ class Interaction
     public function clearData() {
         $this->registeredData = array();
     }
-    // +----------------------------------------------------------------------+
 
+    // +----------------------------------------------------------------------+
+    //  contexts... a generic method for common use cases. 
+    // +----------------------------------------------------------------------+
+    /**
+     * a context to show form and load post data from the form.
+     * returns true if $action is in this context, otherwise 
+     * returns false. 
+     * 
+     * todo: cannot catch validation failure. is it OK?
+     *
+     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param string                            $action
+     * @param string                            $form
+     * @return bool
+     */
+    public function contextFormAndLoad( $entity, $action, $form )
+    {
+        $pinpoint = '_pin_' . $form;
+        $role     = $this->role->applyLoadable( $entity );
+        // show form at least once. check for pin-point. 
+        if ( !$this->restoreData( $pinpoint ) ) 
+        {
+            $this->registerData( $pinpoint, true ); // pin point. 
+            $role->resetValidation( true );
+            return true;
+        }
+        // requesting for a form. 
+        if ( $action == $form && !$this->request->isPost() ) {
+            return true;
+        }
+        // load data if it is a post for a form. 
+        if ( $action == $form && $this->request->isPost() ) {
+            $loadData = $this->loadData;
+            $role->$loadData( $form );
+        }
+        // validate data *always*. 
+        if ( !$role->validate( $form ) ) {
+            return true;
+        }
+        // all pass. not in this context. 
+        return false;
+    }
+
+    /**
+     * for mostly showing confirm view. validates, again, and pushes token.
+     * returns true if $action is in this context, otherwise
+     * returns false.
+     * 
+     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param string                            $action
+     * @param string                            $form
+     * @return bool
+     */
+    public function contextValidateAndPushToken( $entity, $action, $form )
+    {
+        $role = $this->role->applyLoadable( $entity );
+        // validate data *always*. 
+        if ( !$role->validate() ) {
+            return true;
+        }
+        if( $action != $form ) {
+            $this->pushToken();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * saves the entity if $action is $form and token is verified. pin points the $form.
+     * returns true if $action is in this context (i.e. entity is saved), otherwise
+     * returns false.
+     * 
+     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param string                            $action
+     * @param string                            $form
+     * @return bool
+     */
+    public function contextVerifyTokenAndSave( $entity, $action, $form )
+    {
+        $pinpoint = '_pin_' . $form;
+        if( $action == $form && $this->verifyToken() ) 
+        {
+            $role = $this->role->applyActive( $entity );
+            $role->save();
+            $this->registerData( $pinpoint, true ); // pin point. 
+            return true;
+        }
+        return false;
+    }
+    // +----------------------------------------------------------------------+
+    //  methods that are too complicated, and not maintained.     
+    // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DbAccess\Role_Input  $role
      * @param string $action
