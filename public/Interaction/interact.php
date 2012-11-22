@@ -57,6 +57,12 @@ class interact extends \wsModule\Alt\Web\Interaction
         return;
     }
 
+    /**
+     * wizard-like interactions for inserting an entity. steps are:
+     * wizard1 -> wizard2 -> wizard3 -> confirm -> save/done.
+     *
+     * @param string $action
+     */
     public function saveWizards( $action )
     {
         $entity = $this->restoreData( 'entity' );
