@@ -13,7 +13,8 @@ Core::setPdo( 'dsn=sqlite::memory:' );
 Core::set( 'interactView', '\Interaction\view2' );
 $model  = Core::get( 'Interaction\model' );
 $intAct = Core::get( 'Interaction\interact' );
-$view = $intAct->action( 'saveWizards', 'wizard1' );
+$intAct->action( 'saveWizards', 'wizard1' );
+$view = $intAct->getView();
 $entity = $view->get( 'entity' );
 
 ?>

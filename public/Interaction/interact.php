@@ -23,6 +23,13 @@ class interact extends \wsModule\Alt\Web\Interaction
     }
 
     /**
+     * @return view1|view2|\WScore\Html\PageView
+     */
+    public function getView() {
+        return $this->view;
+    }
+
+    /**
      * inserts entity in 3 steps: form -> confirm -> save/done.
      *
      * @param string $action
