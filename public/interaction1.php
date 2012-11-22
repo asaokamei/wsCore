@@ -15,7 +15,7 @@ Core::setPdo( 'dsn=sqlite::memory:' );
 Core::set( 'interactView', '\Interaction\view1' );
 $model   = Core::get( 'Interaction\model' );
 $intAct  = Core::get( 'Interaction\interact' );
-$view = $intAct->action( 'insert', 'form' );
+$view = $intAct->action( 'saveEntity3Steps', 'form' );
 $view = $view->getView();
 $entity = $view->get( 'entity' );
 

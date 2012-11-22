@@ -168,6 +168,7 @@ class Interaction
     {
         $pinpoint = '_pin_' . $form;
         $role     = $this->role->applyLoadable( $entity );
+        $isPost   = $this->request->isPost();
         // show form at least once. check for pin-point. 
         if ( !$this->restoreData( $pinpoint ) ) 
         {
@@ -176,11 +177,11 @@ class Interaction
             return true;
         }
         // requesting for a form. 
-        if ( $action == $form && !$this->request->isPost() ) {
+        if ( $action == $form && !$isPost ) {
             return true;
         }
         // load data if it is a post for a form. 
-        if ( $action == $form && $this->request->isPost() ) {
+        if ( $action == $form && $isPost ) {
             $loadData = $this->loadData;
             $role->$loadData( $form );
         }
@@ -211,9 +212,9 @@ class Interaction
         }
         if( $action != $form ) {
             $this->pushToken();
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
