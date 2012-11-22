@@ -240,12 +240,11 @@ class Interaction
      */
     public function contextVerifyTokenAndSave( $entity, $action, $form )
     {
-        $pinpoint = '_pin_' . $form;
-        if( $action == $form && $this->verifyToken() ) 
+        if( $action == $form && $this->verifyToken() )
         {
             $role = $this->role->applyActive( $entity );
             $role->save();
-            $this->registerData( $pinpoint, true ); // pin point. 
+            $this->pinPoint( $form );
             return true;
         }
         return false;
