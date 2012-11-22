@@ -16,10 +16,15 @@ class interact extends \wsModule\Alt\Web\Interaction
     public function __construct( $request, $session, $role, $view ) {
         $this->request = $request;
         $this->session = ($session) ?: $_SESSION;
-        $this->role = $role;
+        $this->role    = $role;
         $this->view    = $view;
     }
 
+    /**
+     * inserts entity in 3 steps: form -> confirm -> save/done.
+     *
+     * @param string $action
+     */
     public function saveEntity3Steps( $action )
     {
         $entity = $this->restoreData( 'entity' );
@@ -52,6 +57,44 @@ class interact extends \wsModule\Alt\Web\Interaction
         return;
     }
 
+    public function saveWizards( $action )
+    {
+        $entity = $this->restoreData( 'entity' );
+        if( !$entity ) {
+            $entity = $this->role->em->newEntity( 'Interaction\model' );
+            $this->clearData();
+            $this->registerData( 'entity', $entity );
+        }
+        $forms = array( 'wizard1', 'wizard2', 'wizard3', );
+        foreach( $forms as $form ) {
+            if( $this->contextFormAndLoad( $entity, $action, $form ) ) {
+                $role = $this->role->applyInputAndSelectable( $entity );
+                $this->view->set( 'action', $form );
+                $this->view->showForm( $role, $form );
+                return;
+            }
+        }
+        if( $this->contextValidateAndPushToken( $entity, $action, 'save' ) ) {
+            $role = $this->role->applyInputAndSelectable( $entity );
+            $this->view->set( 'action', 'save' );
+            $this->view->showForm( $role, 'confirm' );
+            return;
+        }
+        if( $this->contextVerifyTokenAndSave( $entity, $action, 'save' ) ) {
+            $this->view->set( 'alert-success', 'your friendship has been saved. ' );
+        }
+        else {
+            $this->view->set( 'alert-info', 'your friendship has already been saved. ' );
+        }
+        $role = $this->role->applyInputAndSelectable( $entity );
+        $this->view->showForm( $role, 'done' );
+
+        return;
+    }
+
+    // +----------------------------------------------------------------------+
+    //  methods that are too complicated, and not maintained.
+    // +----------------------------------------------------------------------+
     /**
      * @param \Interaction\entity $entity
      * @param string $action
