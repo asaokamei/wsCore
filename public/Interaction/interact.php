@@ -26,28 +26,36 @@ class interact extends \wsModule\Alt\Web\Interaction
      */
     public function saveEntity3Steps( $action )
     {
+        // get entity from saved in the session.
         $entity = $this->restoreData( 'entity' );
         if( !$entity ) {
-            $entity = $this->role->em->newEntity( 'Interaction\model' );
+            // create new entity.
             $this->clearData();
+            $entity = $this->role->em->newEntity( 'Interaction\model' );
             $this->registerData( 'entity', $entity );
         }
+        // show the input form. also load and validates the input.
         if( $this->contextFormAndLoad( $entity, $action, 'form' ) ) {
             $this->view->set( 'action', 'form' );
             $this->view->showForm_form( $entity, 'form' );
             return;
         }
+        // show the confirm view. save token as well.
         if( $this->contextValidateAndPushToken( $entity, $action, 'save' ) ) {
             $this->view->set( 'action', 'save' );
             $this->view->showForm_confirm( $entity );
             return;
         }
+        // save the entity.
         if( $this->contextVerifyTokenAndSave( $entity, $action, 'save' ) ) {
+            // saved just now.
             $this->view->set( 'alert-success', 'your friendship has been saved. ' );
         }
         else {
+            // already saved.
             $this->view->set( 'alert-info', 'your friendship has already been saved. ' );
         }
+        // show done view.
         $this->view->showForm_done( $entity );
 
         return;
@@ -61,12 +69,14 @@ class interact extends \wsModule\Alt\Web\Interaction
      */
     public function saveWizards( $action )
     {
+        // get entity from saved in the session.
         $entity = $this->restoreData( 'entity' );
         if( !$entity ) {
-            $entity = $this->role->em->newEntity( 'Interaction\model' );
             $this->clearData();
+            $entity = $this->role->em->newEntity( 'Interaction\model' );
             $this->registerData( 'entity', $entity );
         }
+        // show the wizard form. load and validates the input for each form.
         $forms = array( 'wizard1', 'wizard2', 'wizard3', );
         foreach( $forms as $form ) {
             if( $this->contextFormAndLoad( $entity, $action, $form ) ) {
@@ -75,17 +85,20 @@ class interact extends \wsModule\Alt\Web\Interaction
                 return;
             }
         }
+        // show the confirm view. save token as well.
         if( $this->contextValidateAndPushToken( $entity, $action, 'save' ) ) {
             $this->view->set( 'action', 'save' );
             $this->view->showForm( $entity, 'confirm' );
             return;
         }
+        // save the entity.
         if( $this->contextVerifyTokenAndSave( $entity, $action, 'save' ) ) {
             $this->view->set( 'alert-success', 'your friendship has been saved. ' );
         }
         else {
             $this->view->set( 'alert-info', 'your friendship has already been saved. ' );
         }
+        // show done view.
         $this->view->showForm( $entity, 'done' );
 
         return;
