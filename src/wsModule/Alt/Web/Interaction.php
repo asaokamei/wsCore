@@ -240,6 +240,9 @@ class Interaction
      */
     public function contextVerifyTokenAndSave( $entity, $action, $form )
     {
+        // check if already saved.
+        if( $this->checkPin( $form ) ) return false;
+        // it's new. and further check the token.
         if( $action == $form && $this->verifyToken() )
         {
             $role = $this->role->applyActive( $entity );
