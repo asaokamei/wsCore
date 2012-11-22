@@ -1,6 +1,12 @@
 <?php
 namespace wsModule\Alt\Web;
 
+/**
+ * Interaction for web input and output, such as forms.
+ * This is a DCI inspired module. things works as coded but still quite experimental.
+ *
+ * TODO: remove $this->view property. Interaction should not know about view...
+ */
 class Interaction
 {
     /** @var array                          data to register as session data */
@@ -173,8 +179,6 @@ class Interaction
      * a context to show form and load post data from the form.
      * returns true if $action is in this context, otherwise
      * returns false.
-     *
-     * todo: cannot catch validation failure. is it OK?
      *
      * @param \WScore\DbAccess\Entity_Interface $entity
      * @param string                            $action
