@@ -20,10 +20,7 @@ class Interaction
 
     /** @var \WScore\DbAccess\Role */
     protected $role;
-    
-    /** @var \WScore\Html\PageView */
-    protected $view;
-    
+
     public $showForm = 'showForm';
 
     public $loadData = 'loadData';
@@ -233,7 +230,6 @@ class Interaction
             return true;
         }
         if( $action != $form ) {
-            $this->pushToken();
             return true;
         }
         return false;
@@ -254,7 +250,7 @@ class Interaction
         // check if already saved.
         if( $this->checkPin( $form ) ) return false;
         // it's new. and further check the token.
-        if( $action == $form && $this->verifyToken() )
+        if( $action == $form )
         {
             $role = $this->role->applyActive( $entity );
             $role->save();
