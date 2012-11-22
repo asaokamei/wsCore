@@ -7,16 +7,14 @@ class interact extends \wsModule\Alt\Web\Interaction
      * @param \wsModule\Alt\Web\Request   $request
      * @param \WScore\Web\Session $session
      * @param \WScore\DbAccess\Role $role
-     * @param \Interaction\view1 $view
+     * @param \Interaction\view1|\Interaction\view2 $view
      * @DimInjection Get   \wsModule\Alt\Web\Request
      * @DimInjection Fresh Session
      * @DimInjection Get   \WScore\DbAccess\Role
      * @DimInjection Get   interactView
      */
     public function __construct( $request, $session, $role, $view ) {
-        $this->request = $request;
-        $this->session = ($session) ?: $_SESSION;
-        $this->role    = $role;
+        parent::__construct( $request, $session, $role );
         $this->view    = $view;
     }
 
@@ -71,16 +69,14 @@ class interact extends \wsModule\Alt\Web\Interaction
         $forms = array( 'wizard1', 'wizard2', 'wizard3', );
         foreach( $forms as $form ) {
             if( $this->contextFormAndLoad( $entity, $action, $form ) ) {
-                $role = $this->role->applyInputAndSelectable( $entity );
                 $this->view->set( 'action', $form );
-                $this->view->showForm( $role, $form );
+                $this->view->showForm( $entity, $form );
                 return;
             }
         }
         if( $this->contextValidateAndPushToken( $entity, $action, 'save' ) ) {
-            $role = $this->role->applyInputAndSelectable( $entity );
             $this->view->set( 'action', 'save' );
-            $this->view->showForm( $role, 'confirm' );
+            $this->view->showForm( $entity, 'confirm' );
             return;
         }
         if( $this->contextVerifyTokenAndSave( $entity, $action, 'save' ) ) {
@@ -89,8 +85,7 @@ class interact extends \wsModule\Alt\Web\Interaction
         else {
             $this->view->set( 'alert-info', 'your friendship has already been saved. ' );
         }
-        $role = $this->role->applyInputAndSelectable( $entity );
-        $this->view->showForm( $role, 'done' );
+        $this->view->showForm( $entity, 'done' );
 
         return;
     }
