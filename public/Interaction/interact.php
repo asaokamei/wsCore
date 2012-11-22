@@ -34,15 +34,13 @@ class interact extends \wsModule\Alt\Web\Interaction
             $this->registerData( 'entity', $entity );
         }
         if( $this->contextFormAndLoad( $entity, $action, 'form' ) ) {
-            $role = $this->role->applyInputAndSelectable( $entity );
             $this->view->set( 'action', 'form' );
-            $this->view->showForm( $role, 'form' );
+            $this->view->showForm_form( $entity, 'form' );
             return;
         }
         if( $this->contextValidateAndPushToken( $entity, $action, 'save' ) ) {
-            $role = $this->role->applyInputAndSelectable( $entity );
             $this->view->set( 'action', 'save' );
-            $this->view->showForm( $role, 'confirm' );
+            $this->view->showForm_confirm( $entity );
             return;
         }
         if( $this->contextVerifyTokenAndSave( $entity, $action, 'save' ) ) {
@@ -51,8 +49,7 @@ class interact extends \wsModule\Alt\Web\Interaction
         else {
             $this->view->set( 'alert-info', 'your friendship has already been saved. ' );
         }
-        $role = $this->role->applyInputAndSelectable( $entity );
-        $this->view->showForm( $role, 'done' );
+        $this->view->showForm_done( $entity );
 
         return;
     }

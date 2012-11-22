@@ -50,7 +50,7 @@ $entity = $view->get( 'entity' );
         </dl>
         <?php echo $view->getHiddenTag( \WScore\Web\Session::TOKEN_NAME ); ?>
         <?php echo $view->bootstrapButtonPrimary( 'button-primary' ); ?>
-        <?php echo $view->bootstrapButtonSub( 'button-sub' ); ?>
+        <?php echo $view->bootstrapButtonJump( 'button-sub', 'back' ); ?>
     </form>
     <?php if( $view->get( 'currAction' ) == 'done' ) { ?>
     <div style="text-align: center;">
