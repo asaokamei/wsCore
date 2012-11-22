@@ -40,7 +40,7 @@ class Role
             $entity = $entity->retrieve();
         }
         if( !$entity instanceof \WScore\DbAccess\Entity_Interface ) {
-            throw new \RuntimeException( 'Can apply role only to Entity_Interface' );
+            throw new \RuntimeException( 'Can apply role to: ' . get_class( $entity ) );
         }
         if( strpos( $role, '\\' ) !== false ) {
             $class = $role;
