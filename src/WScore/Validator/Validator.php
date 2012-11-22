@@ -22,54 +22,43 @@ class Validator
     /** @var array        predefined filter filter set        */
     public $filterTypes = array();
 
-    public static $charCode = 'UTF-8';
+    protected $filter = null;
     // +----------------------------------------------------------------------+
-    public function __construct()
+    /**
+     * @param Filter $filter
+     * @DimInjection Get \WScore\Validator\Filter
+     */
+    public function __construct( $filter )
     {
+        $this->filter = $filter;
         // define order of filterOptions when applying. order can be critical when
         // modifying the string (such as capitalize before checking patterns).
         //   rule => option
         // if option is FALSE, the rule is skipped.
         $this->filterOrder = array(
             // filterOptions (modifies the value)
-            'noNull'      => TRUE,       // filters out NULL (\0) char from the value.
+            'noNull'      => true,       // filters out NULL (\0) char from the value.
             'encoding'    => 'UTF-8',    // checks the encoding of value.
             'mbConvert'   => 'standard', // converts Kana set (Japanese)
-            'trim'        => TRUE,       // trims value.
-            'sanitize'    => FALSE,      // done, kind of
-            'string'      => FALSE,      // converts value to upper/lower/etc.
+            'trim'        => true,       // trims value.
+            'sanitize'    => false,      // done, kind of
+            'string'      => false,      // converts value to upper/lower/etc.
             'default'     => '',         // sets default if value is empty.
             // validators (only checks the value).
-            'required'    => FALSE,      // fails if value is empty.
-            'loopBreak'   => TRUE,       // done, skip validations if value is empty.
-            'code'        => FALSE,
-            'maxlength'   => FALSE,
-            'pattern'     => FALSE,      // checks pattern with preg_match.
-            'number'      => FALSE,
-            'min'         => FALSE,
-            'max'         => FALSE,
-            'range'       => FALSE,
-            'checkdate'   => FALSE,
-            'mbCheckKana' => FALSE,
-            'sameAs'      => FALSE,
+            'required'    => false,      // fails if value is empty.
+            'loopBreak'   => true,       // done, skip validations if value is empty.
+            'code'        => false,
+            'maxlength'   => false,
+            'pattern'     => false,      // checks pattern with preg_match.
+            'number'      => false,
+            'min'         => false,
+            'max'         => false,
+            'range'       => false,
+            'checkdate'   => false,
+            'mbCheckKana' => false,
+            'sameAs'      => false,
         );
         $this->filterOptions = array(
-            'trim' => array( 'myTrim' ),
-            'sanitize' => array(
-                'mail'   => FILTER_SANITIZE_EMAIL,
-                'float'  => FILTER_SANITIZE_NUMBER_FLOAT,
-                'int'    => FILTER_SANITIZE_NUMBER_INT,
-                'url'    => FILTER_SANITIZE_URL,
-                'string' => FILTER_SANITIZE_STRING,
-            ),
-            'pattern' => array( 'pattern',
-                'number' => '[0-9]+',
-                'int'    => '[-0-9]+',
-                'float'  => '[-.0-9]+',
-                'code'   => '[-_0-9a-zA-Z]+',
-                'mail'   => '[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z]+',
-            ),
-            'sameAs' => array( function( $v, $p ) { return $v===$p; } ),
         );
         // setup error messages for each filter.
         $this->filterOptions[ 'encoding' ][ 'err_msg' ] = 'invalid encoding';
@@ -106,7 +95,7 @@ class Validator
      * @param null|string $err_msg
      * @return bool
      */
-    public function isValid( &$value, $filters='', &$err_msg=NULL )
+    public function isValid( &$value, $filters='', &$err_msg=null )
     {
         // set up filterOptions with default filter.
         $filters = $this->prepareFilter( $filters );
@@ -125,7 +114,7 @@ class Validator
      * @param null|string $err_msg
      * @return bool
      */
-    public function isValidType( $type, &$value, $filters='', &$err_msg=NULL )
+    public function isValidType( $type, &$value, $filters='', &$err_msg=null )
     {
         // set up filterOptions with default filter.
         $filterType = $this->getFilterType( $type );
@@ -144,13 +133,13 @@ class Validator
      * @param null|string $err_msg
      * @return bool
      */
-    public function validate( &$value, $filter=array(), &$err_msg=NULL )
+    public function validate( &$value, $filter=array(), &$err_msg=null )
     {
-        $success = TRUE;
+        $success = true;
         if( is_array( $value ) ) 
         {
             foreach( $value as $key => &$val ) {
-                $e_msg = FALSE;
+                $e_msg = false;
                 $success &= $ok = $this->validate( $val, $filter, $e_msg );
                 if( !$ok ) {
                     if( !is_array( $err_msg ) ) $err_msg = array();
@@ -170,16 +159,16 @@ class Validator
      * @param null|string $err_msg
      * @return bool
      */
-    public function _validate( &$value, $filter=array(), &$err_msg=NULL )
+    public function _validate( &$value, $filter=array(), &$err_msg=null )
     {
-        $err_msg = NULL;
+        $err_msg = null;
         // loop through all the rules to validate $value.
         $loop   = 'continue';
-        $success = TRUE;
+        $success = true;
         foreach( $filter as $rule => $parameter )
         {
             // prepare to apply filter.
-            if( $parameter === FALSE ) continue; // skip rules with option as FALSE.
+            if( $parameter === false ) continue; // skip rules with option as FALSE.
             if( $rule == 'err_msg' ) continue;   // ignore error message.
             $success = $this->_applyRule( $value, $rule, $parameter, $loop );
             //echo "Rule: {$rule} ok={$success} loop=" . $loop . " \n";
@@ -227,12 +216,12 @@ class Validator
                 $parameter = $this->filterOptions[ $rule ][$parameter];
             }
         }
+        $method = 'filter_' . $method;
+        if( method_exists( $this->filter, $method ) ) {
+            return $this->filter->$method( $value, $parameter, $loop );
+        }
         if( is_callable( $method ) ) {
             return $method( $value, $parameter, $loop );
-        }
-        $method = 'filter_' . $method;
-        if( method_exists( $this, $method ) ) {
-            return $this->$method( $value, $parameter, $loop );
         }
         throw new \RuntimeException( "non-exist rule: {$rule}" );
     }
@@ -265,113 +254,13 @@ class Validator
             $filter = explode( ':', $rule, 2 );
             array_walk( $filter, function( &$v ) { $v = trim( $v ); } );
             if( isset( $filter[1] ) ) {
-                $filter_array[ $filter[0] ] = ( $filter[1]=='FALSE' )? FALSE: $filter[1];
+                $filter_array[ $filter[0] ] = ( $filter[1]=='FALSE' )? false: $filter[1];
             }
             else {
-                $filter_array[ $filter[0] ] = TRUE;
+                $filter_array[ $filter[0] ] = true;
             }
         }
         return $filter_array;
-    }
-    // +----------------------------------------------------------------------+
-    //  filter definitions (filters that alters the value).
-    // +----------------------------------------------------------------------+
-
-    public function filter_noNull( &$v ) { 
-        $v = str_replace( "\0", '', $v ); 
-        return TRUE; 
-    }
-    
-    public function filter_myTrim( &$v ) { 
-        $v = trim( $v );
-        return TRUE;
-    }
-    
-    public function sanitize( &$v, $p ) { 
-        $v = filter_var( $v, $p ); 
-        return !!$v; 
-    }
-    
-    public function filter_encoding( &$v, $p ) {
-        $code = ( empty( $p ) ) ? static::$charCode: $p;
-        if( mb_check_encoding( $v, $code ) ) {
-            return TRUE;
-        }
-        $v = ''; // overwrite invalid encode string.
-        return FALSE;
-    }
-
-    public function filter_mbConvert( &$v, $p ) {
-        static $option = NULL;
-        if( !isset( $option ) ) $option = array(
-            'hankaku' => 'aks',
-            'han_kana' => 'kh',
-            'zen_hira' => 'HVc',
-            'zen_kana' => 'KVC',
-        );
-        $convert = isset( $option[$p] ) ? $option[$p] : 'KV';
-        $v = mb_convert_kana( $v, $convert, static::$charCode );
-        return TRUE;
-    }
-
-    public function filter_sanitize( &$v, $p ) {
-        static $option = NULL;
-        if( !isset( $option ) ) $option = array(
-            'mail' => FILTER_SANITIZE_EMAIL,
-        );
-        return TRUE;
-    }
-    
-    public function filter_string( &$v, $p ) {
-        if( $p == 'lower' ) {
-            $v = strtolower( $v );
-        }
-        elseif( $p == 'upper' ) {
-            $v = strtoupper( $v );
-        }
-        elseif( $p == 'capital' ) {
-            $v = ucwords( $v );
-        }
-        return TRUE;
-    }
-    
-    public function filter_default( &$v, $p, &$loop=NULL ) {
-        if( !$v && "" == "$v" ) { // no value. set default...
-            $v = $p;
-        }
-        return TRUE; // but it is not an error. 
-    }
-    // +----------------------------------------------------------------------+
-    //  filter definitions (filters for validation).
-    // +----------------------------------------------------------------------+
-
-    public function filter_required( $v, $p, &$loop=NULL ) {
-        if( "$v" != '' ) { // it has some value in it. OK.
-            return TRUE;
-        }
-        // now, the value is empty. check if it is "required".
-        return FALSE;
-    }
-
-    /**
-     * breaks loop if value is empty by returning $loop='break'.
-     * validation is not necessary for empty value.
-     *
-     * @param $v
-     * @param $p
-     * @param $loop
-     * @return bool
-     */
-    public function filter_loopBreak( $v, $p, &$loop ) {
-        if( "$v" == '' ) { // value is really empty. break the loop.
-            $loop = 'break'; // skip subsequent validations for empty values.
-        }
-        return TRUE;
-    }
-
-    public function filter_pattern( $v, $p ) {
-        $ok = preg_match( "/^{$p}\$/", $v );
-        return !!$ok;
     }
     // +----------------------------------------------------------------------+
 }
