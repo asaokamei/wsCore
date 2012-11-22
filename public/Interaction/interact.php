@@ -78,12 +78,14 @@ class interact extends \wsModule\Alt\Web\Interaction
         }
         // show the wizard form. load and validates the input for each form.
         $forms = array( 'wizard1', 'wizard2', 'wizard3', );
+        $prevForm = null;
         foreach( $forms as $form ) {
-            if( $this->contextFormAndLoad( $entity, $action, $form ) ) {
+            if( $action == $prevForm || $this->contextFormAndLoad( $entity, $action, $form ) ) {
                 $this->view->set( 'action', $form );
                 $this->view->showForm( $entity, $form );
                 return;
             }
+            $prevForm = $form;
         }
         // show the confirm view. save token as well.
         if( $this->contextValidateAndPushToken( $entity, $action, 'save' ) ) {
