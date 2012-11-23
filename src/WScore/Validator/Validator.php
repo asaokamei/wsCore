@@ -215,7 +215,8 @@ class Validator
         if( is_callable( $method ) ) {
             return $method( $value, $parameter, $loop );
         }
-        throw new \RuntimeException( "non-exist rule: {$rule}" );
+        return true;
+        // throw new \RuntimeException( "non-exist rule: {$rule}" );
     }
 
     /**
