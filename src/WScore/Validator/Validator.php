@@ -4,7 +4,13 @@ namespace WScore\Validator;
 /**
  * Validator class to validates a single value, or an array of string,
  * against same set of filters.
+ * 
  * TODO: separate code for Japanese character to another module?
+ * 
+ * maybe split Validator class into:
+ *   - Validate class, 
+ *   - Message class (i18n), and 
+ *   - Rules class. 
  *
  * TODO: implement more filters: code, maxlength, number, min, max, range, checkdate, mbCheckKana, sameAs, sameEmtpy
  *
