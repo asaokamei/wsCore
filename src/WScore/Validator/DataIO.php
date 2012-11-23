@@ -266,43 +266,8 @@ class DataIO
     }
 
     /**
-     * original implementation of _multiple filter.
-     * should rewrite this.
-     *
-     * @param string $name
-     * @param array $option
-     * @return bool|mixed|string
+     * @var array   options for multiple preparation. 
      */
-    function _multiple( $name, $option )
-    {
-        $sep  = '_';
-        $con  = '-';
-        if( isset( $option['separator'] ) ) {
-            $sep = $option['separator'];
-        }
-        if( isset( $option['connector'] ) ) {
-            $con = $option['connector'];
-        }
-        $lists = array();
-        foreach( $option[ 'suffix' ] as $sfx ) {
-            $name_sfx = $name . $sep . $sfx;
-            if( array_key_exists( $name_sfx, $this->source ) ) {
-                $lists[] = $this->source[ $name_sfx ];
-            }
-        }
-        $found = null;
-        if( !empty( $lists ) ) {
-            // found something...
-            if( isset( $option[ 'format' ] ) ) {
-                $param = array_merge( array( $option[ 'format' ] ), $lists );
-                $found = call_user_func_array( 'sprintf', $param );
-            }
-            else {
-                $found = implode( $con, $lists );
-            }
-        }
-        return $found;
-    }
     public $multiples = array(
         'date'     => array( 'suffix' => 'y,m,d', 'connector' => '-', ),
         'YMD'      => array( 'suffix' => 'y,m,d', 'connector' => '-', ),
