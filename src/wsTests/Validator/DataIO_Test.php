@@ -52,5 +52,15 @@ class DataIO_Test extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals( $data[ 'number' ], $value );
     }
+    public function test_multiple()
+    {
+        $input = array( 'date_y' => '1981', 'date_m' => '08', 'date_d' => '18' );
+        $this->dio->source( $input );
+        $this->dio->push( 'date', 'date' );
+        
+        $date = $this->dio->pop( 'date' );
+        $this->assertEquals( '1981-08-18', $date );
+        // check errors
+    }
     // +----------------------------------------------------------------------+
 }
