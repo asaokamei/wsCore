@@ -30,7 +30,7 @@ class DataIO
     private $filterTypes = array();
     
     /** @var Validator */
-    private $validator = NULL;
+    private $validator = null;
     // +----------------------------------------------------------------------+
     /**
      * @param $validator
@@ -40,9 +40,9 @@ class DataIO
     {
         $this->validator = $validator;
         $this->filterOrder = array(
-            'multiple'    => FALSE, // combine multiple values into one.
-            'sameWith'    => FALSE, // compare with another value.
-            'sameEmpty'   => FALSE, // checks if another value is empty.
+            'multiple'    => false, // combine multiple values into one.
+            'sameWith'    => false, // compare with another value.
+            'sameEmpty'   => false, // checks if another value is empty.
         );
         $this->filterOptions = array(
             'sameEmpty' => array( 'err_msg' => 'missing value to compare' ),
@@ -61,16 +61,16 @@ class DataIO
         );
         $this->filterTypes = array(
             'date' => array(
-                'multiple' => 'date',
+                'multiple:date',
             ),
             'time' => array(
-                'multiple' => 'time',
+                'multiple:time',
             ),
             'datetime' => array(
-                'multiple' => 'datetime',
+                'multiple:datetime',
             ),
             'tel' => array(
-                'multiple' => 'tel',
+                'multiple:tel',
             ),
         );
     }
@@ -88,13 +88,13 @@ class DataIO
      * @param mixed $value
      * @return DataIO
      */
-    public function pushValue( $name, $filters='', &$value=NULL )
+    public function pushValue( $name, $filters='', &$value=null )
     {
         $filters = $this->validator->prepareFilter( $filters );
         $filters = array_merge( $this->filterOrder, $filters );
-        $value = NULL;
-        $ok = $this->validate( $name, $value, NULL, $filters );
-        if( !$ok ) $value = FALSE;
+        $value = null;
+        $ok = $this->validate( $name, $value, null, $filters );
+        if( !$ok ) $value = false;
         return $this;
     }
 
@@ -105,14 +105,14 @@ class DataIO
      * @param mixed $value
      * @return DataIO
      */
-    public function push( $name, $type, $filters='', &$value=NULL )
+    public function push( $name, $type, $filters='', &$value=null )
     {
         $filterType = $this->getFilterType( $type );
         $filters = $this->validator->prepareFilter( $filters );
         $filters = array_merge( $this->filterOrder, $filterType, $filters );
-        $value = NULL;
+        $value = null;
         $ok = $this->validate( $name, $value, $type, $filters );
-        if( !$ok ) $value = FALSE;
+        if( !$ok ) $value = false;
         return $this;
     }
 
@@ -124,7 +124,7 @@ class DataIO
      * @param mixed $err_msg
      * @return bool
      */
-    public function validate( $name, &$value, $type=NULL, &$filters=array(), &$err_msg=NULL )
+    public function validate( $name, &$value, $type=null, &$filters=array(), &$err_msg=null )
     {
         $ok = $this->_find( $name, $value, $type, $filters, $err_msg );
         $this->data[ $name ] = $value;
@@ -149,14 +149,14 @@ class DataIO
      * @param null|string $key
      * @return array
      */
-    public function pop( $key=NULL ) {
+    public function pop( $key=null ) {
         if( is_null( $key ) ) {
             return $this->data;
         } 
         elseif( array_key_exists( $key, $this->data ) ) {
             return $this->data[ $key ];
         }
-        return NULL;
+        return null;
     }
 
     /**
@@ -173,7 +173,7 @@ class DataIO
      * @param array|null $error
      * @param bool $key
      */
-    public function _findClean( &$data, $error, $key=FALSE ) {
+    public function _findClean( &$data, $error, $key=false ) {
         if( empty( $error ) ) return; // no error at all.
         if( is_array( $data ) ) {
             foreach( $data as $key => $val ) {
@@ -229,35 +229,35 @@ class DataIO
      * @param              $err_msg
      * @return bool
      */
-    function _find( $name, &$value, $type=NULL, &$filters=array(), &$err_msg=NULL ) 
+    function _find( $name, &$value, $type=null, &$filters=array(), &$err_msg=null ) 
     {
         // find a value from $data. 
-        $value = NULL;
+        $value = null;
         if( array_key_exists( $name, $this->source ) ) {
             // simplest case.
             $value = $this->source[ $name ];
         }
-        elseif( isset( $filters[ 'multiple' ] ) && $filters[ 'multiple' ] !== FALSE ) {
+        elseif( isset( $filters[ 'multiple' ] ) && $filters[ 'multiple' ] !== false ) {
             // check for multiple case i.e. Y-m-d.
-            $value = self::_multiple( $name, $filters[ 'multiple' ] );
+            $value = self::prepare_multiple( $this->source, $name, $filters[ 'multiple' ] );
         }
         // check for sameWith filter. 
-        if( $value !== NULL &&
-            isset( $filters[ 'sameWith' ] ) && $filters[ 'sameWith' ] !== FALSE ) 
+        if( $value !== null &&
+            isset( $filters[ 'sameWith' ] ) && $filters[ 'sameWith' ] !== false ) 
         {
             // compare with other inputs as specified by sameWith.
-            $sub_value   = NULL;
+            $sub_value   = null;
             $sub_name    = $filters[ 'sameWith' ];
             /** @var $sub_filters array */
             $sub_filters = $filters; // use same filter as original. 
-            $sub_filters[ 'sameWith' ] = FALSE; // but no sameWith. 
-            $sub_filters[ 'required' ] = FALSE; // and not required. 
+            $sub_filters[ 'sameWith' ] = false; // but no sameWith. 
+            $sub_filters[ 'required' ] = false; // and not required. 
             self::_find( $sub_name, $sub_value, $type, $sub_filters );
             if( $sub_value ) {
                 $filters[ 'sameAs' ] = $sub_value;
             }
             else {
-                $filters[ 'sameEmpty' ] = TRUE;
+                $filters[ 'sameEmpty' ] = true;
             }
         }
         // now, validate this value.
@@ -290,9 +290,62 @@ class DataIO
                 $lists[] = $this->source[ $name_sfx ];
             }
         }
-        $found = NULL;
+        $found = null;
         if( !empty( $lists ) ) {
             // found something...
+            if( isset( $option[ 'format' ] ) ) {
+                $param = array_merge( array( $option[ 'format' ] ), $lists );
+                $found = call_user_func_array( 'sprintf', $param );
+            }
+            else {
+                $found = implode( $con, $lists );
+            }
+        }
+        return $found;
+    }
+    public $multiples = array(
+        'date'     => array( 'suffix' => 'y,m,d', 'connector' => '-', ),
+        'YMD'      => array( 'suffix' => 'y,m,d', 'connector' => '-', ),
+        'YM'       => array( 'suffix' => 'y,m',   'connector' => '-', ),
+        'time'     => array( 'suffix' => 'h,i,s', 'connector' => ':', ),
+        'His'      => array( 'suffix' => 'h,i,s', 'connector' => ':', ),
+        'hi'       => array( 'suffix' => 'h,i',   'connector' => ':', ),
+        'datetime' => array( 'suffix' => 'y,m,d,h,i,s', 'format' => '%04d-%02d-%02d %02d:%02d:%02d', ),
+        'tel'      => array( 'suffix' => '1,2,3',   'connector' => '-', ),
+        'credit'   => array( 'suffix' => '1,2,3,4', 'connector' => '', ),
+        'amex'     => array( 'suffix' => '1,2,3',   'connector' => '', ),
+    );
+
+    /**
+     * prepares for validation by creating a value from multiple value. 
+     * 
+     * @param array $data
+     * @param string $name
+     * @param string|array $option
+     * @return mixed|null|string
+     */
+    public function prepare_multiple( $data, $name, $option )
+    {
+        // get options. 
+        if( is_string( $option ) ) {
+            $option = $this->multiples[ $option ];
+        }
+        $sep = array_key_exists( 'separator', $option ) ? $option[ 'separator' ]: '_';
+        $con = array_key_exists( 'connector', $option ) ? $option[ 'connector' ]: '-';
+        // find multiples values from suffix list. 
+        $lists = array();
+        $suffix = explode( ',', $option[ 'suffix' ] );
+        foreach( $suffix as $sfx ) {
+            $name_sfx = $name . $sep . $sfx;
+            if( array_key_exists( $name_sfx, $data ) ) {
+                $lists[] = $data[ $name_sfx ];
+            }
+        }
+        // merge the found list into one value. 
+        $found = null; // default is null if list was not found. 
+        if( !empty( $lists ) ) 
+        {
+            // found format using sprintf. 
             if( isset( $option[ 'format' ] ) ) {
                 $param = array_merge( array( $option[ 'format' ] ), $lists );
                 $found = call_user_func_array( 'sprintf', $param );
