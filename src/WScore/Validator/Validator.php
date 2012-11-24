@@ -65,10 +65,13 @@ class Validator
             'checkdate'   => false,
             'mbCheckKana' => false,
             'sameAs'      => false,
+            'sameEmpty'   => false,
         );
         // setup error messages for each filter.
-        $this->filterErrMsg[ 'encoding' ] = 'invalid encoding';
-        $this->filterErrMsg[ 'required' ] = 'required field';
+        $this->filterErrMsg[ 'encoding'  ] = 'invalid encoding';
+        $this->filterErrMsg[ 'required'  ] = 'required field';
+        $this->filterErrMsg[ 'sameAs'    ] = 'value not the same';
+        $this->filterErrMsg[ 'sameEmpty' ] = 'missing value to compare';
 
         // filters for various types of input.
         $this->filterTypes = array(
