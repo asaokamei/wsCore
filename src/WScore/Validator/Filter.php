@@ -43,6 +43,10 @@ class Filter
         $return = $closure( $this->value, $p );
         if( !$return ) $this->error = true;
     }
+    
+    public function error( $method, $p=null ) {
+        $this->error = "{$method}:{$p}";
+    }
     // +----------------------------------------------------------------------+
     //  filter definitions (filters that alters the value).
     // +----------------------------------------------------------------------+
@@ -80,8 +84,7 @@ class Filter
         $code = ( empty( $p ) || $p === true ) ? static::$charCode: $p;
         if( !mb_check_encoding( $this->value, $code ) ) {
             $this->value = ''; // overwrite invalid encode string.
-            $this->error = __METHOD__;
-            $this->break = true;
+            $this->error( __METHOD__, $p );
         }
     }
 
@@ -129,7 +132,7 @@ class Filter
     public function filter_required() {
         if( "{$this->value}" === '' ) { 
             // the value is empty. check if it is "required".
-            $this->error = __METHOD__;
+            $this->error( __METHOD__ );
         }
     }
 
@@ -161,7 +164,7 @@ class Filter
     public function filter_pattern( $p ) {
         $p  = $this->arrGet( $this->patterns, $p, $p );
         if( !preg_match( "/^{$p}\$/", $this->value ) ) {
-            $this->error = __METHOD__;
+            $this->error( __METHOD__, $p );
         }
     }
 
