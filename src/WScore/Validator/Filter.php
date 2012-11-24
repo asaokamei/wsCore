@@ -45,7 +45,7 @@ class Filter
     }
     
     public function error( $method, $p=null ) {
-        $this->error = "{$method}:{$p}";
+        $this->error = array( $method => $p );
     }
     // +----------------------------------------------------------------------+
     //  filter definitions (filters that alters the value).
