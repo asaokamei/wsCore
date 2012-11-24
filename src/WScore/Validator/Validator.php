@@ -170,18 +170,19 @@ class Validator
      */
     public function _validate( &$value, $filter=array(), &$err_msg=null )
     {
+        $this->filter->setup( $value );
         $err_msg = null;
-        // loop through all the rules to validate $value.
-        $loop   = 'continue';
         $success = true;
+        // loop through all the rules to validate $value.
         foreach( $filter as $rule => $parameter )
         {
             // prepare to apply filter.
             if( $parameter === false ) continue; // skip rules with option as FALSE.
             if( $rule == 'err_msg' ) continue;   // ignore error message.
-            $success = $this->_applyRule( $value, $rule, $parameter, $loop );
+            $this->_applyRule( $rule, $parameter );
             //echo "Rule: {$rule} ok={$success} loop=" . $loop . " \n";
-            if( !$success ) {
+            if( $this->filter->error ) {
+                $success = false;
                 // invalidated value! find an error message.
                 if( isset( $this->filterErrMsg[ $rule ] ) ) {
                     $err_msg = $this->filterErrMsg[ $rule ];
@@ -194,32 +195,29 @@ class Validator
                 }
                 break;
             }
-            if( $loop == 'break' ) break;
+            if( $this->filter->break ) break;
         }
+        $value = $this->filter->value;
         return $success;
     }
 
     /**
      * apply the filter ($rule is filter name).
      *
-     * @param $value
      * @param $rule
      * @param $parameter
-     * @param $loop
      * @return bool
      * @throws \RuntimeException
      */
-    public function _applyRule( &$value, $rule, $parameter, &$loop )
+    public function _applyRule( $rule, $parameter )
     {
         $method = 'filter_' . $rule;
         if( method_exists( $this->filter, $method ) ) {
-            return $this->filter->$method( $value, $parameter, $loop );
+            $this->filter->$method( $parameter );
         }
         if( is_callable( $method ) ) {
-            return $method( $value, $parameter, $loop );
+            $this->filter->applyClosure( $method, $parameter );
         }
-        return true;
-        // throw new \RuntimeException( "non-exist rule: {$rule}" );
     }
 
     /**
