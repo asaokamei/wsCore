@@ -46,18 +46,6 @@ class DataIO
         );
         $this->filterOptions = array(
             'sameEmpty' => array( 'err_msg' => 'missing value to compare' ),
-            'multiple'  => array(
-                'date' => array( 'suffix' => 'y,m,d',  'connector' => '-', ),
-                'YMD'  => array( 'suffix' => 'y,m,d',  'connector' => '-', ),
-                'YM'   => array( 'suffix' => 'y,m',    'connector' => '-', ),
-                'time' => array( 'suffix' => 'h,i,s',  'connector' => ':', ),
-                'His'  => array( 'suffix' => 'h,i,s',  'connector' => ':', ),
-                'hi'   => array( 'suffix' => 'h,i',    'connector' => ':', ),
-                'datetime' => array( 'suffix' => 'y,m,d,h,i,s', 'format' => '%04d-%02d-%02d %02d:%02d:%02d', ),
-                'tel'    => array( 'suffix' => '1,2,3', 'connector' => '-', ),
-                'credit' => array( 'suffix' => '1,2,3,4', 'connector' => '', ),
-                'amex'   => array( 'suffix' => '1,2,3', 'connector' => '', ),
-            ),
         );
         $this->filterTypes = array(
             'date' => array(
@@ -229,9 +217,9 @@ class DataIO
      * @param              $err_msg
      * @return bool
      */
-    function _find( $name, &$value, $type=null, &$filters=array(), &$err_msg=null ) 
+    public function _find( $name, &$value, $type=null, $filters=array(), &$err_msg=null )
     {
-        // find a value from $data. 
+        // find a value from data source. 
         $value = null;
         if( array_key_exists( $name, $this->source ) ) {
             // simplest case.
@@ -239,32 +227,48 @@ class DataIO
         }
         elseif( isset( $filters[ 'multiple' ] ) && $filters[ 'multiple' ] !== false ) {
             // check for multiple case i.e. Y-m-d.
-            $value = self::prepare_multiple( $this->source, $name, $filters[ 'multiple' ] );
+            $value = $this->prepare_multiple( $name, $filters[ 'multiple' ] );
         }
-        // check for sameWith filter. 
-        if( $value !== null &&
-            isset( $filters[ 'sameWith' ] ) && $filters[ 'sameWith' ] !== false ) 
-        {
-            // compare with other inputs as specified by sameWith.
-            $sub_value   = null;
-            $sub_name    = $filters[ 'sameWith' ];
-            /** @var $sub_filters array */
-            $sub_filters = $filters; // use same filter as original. 
-            $sub_filters[ 'sameWith' ] = false; // but no sameWith. 
-            $sub_filters[ 'required' ] = false; // and not required. 
-            self::_find( $sub_name, $sub_value, $type, $sub_filters );
-            if( $sub_value ) {
-                $filters[ 'sameAs' ] = $sub_value;
-            }
-            else {
-                $filters[ 'sameEmpty' ] = true;
-            }
-        }
+        // prepares filter for sameWith. 
+        $filters = $this->prepare_sameWith( $type, $filters );
         // now, validate this value.
+        $err_msg = null;
         $ok = $this->validator->isValidType( $type, $value, $filters, $err_msg );
         return $ok;
     }
-
+    /**
+     * prepares filter for sameWith rule.
+     * get another value to compare in sameWith, and compare it with the value using sameAs rule.
+     *
+     * @param string $type
+     * @param array $filters
+     * @return array
+     */
+    public function prepare_sameWith( $type, $filters )
+    {
+        if( !isset( $filters[ 'sameWith' ] ) || $filters[ 'sameWith' ] == false ) return $filters;
+        // find the same with value. 
+        $sub_name = $filters[ 'sameWith' ];
+        $sub_filter = $filters;
+        $sub_filter[ 'sameWith' ] = false;
+        $sub_filter[ 'required' ] = false;
+        $value = null;
+        $this->_find( $sub_name, $value, $type, $sub_filter );
+        
+        // reset sameWith filter, and set same{As|Empty} filter. 
+        $filters[ 'sameWith' ] = false;
+        if( $value ) {
+            $filters[ 'sameAs' ] = $value;
+        }
+        else {
+            $filters[ 'sameEmpty' ] = true;
+        }
+        $filters[ 'sameWith' ] = false;
+        return $filters;
+    }
+    // +----------------------------------------------------------------------+
+    //  multiple inputs.
+    // +----------------------------------------------------------------------+
     /**
      * @var array   options for multiple preparation. 
      */
@@ -284,12 +288,11 @@ class DataIO
     /**
      * prepares for validation by creating a value from multiple value. 
      * 
-     * @param array $data
      * @param string $name
      * @param string|array $option
      * @return mixed|null|string
      */
-    public function prepare_multiple( $data, $name, $option )
+    public function prepare_multiple( $name, $option )
     {
         // get options. 
         if( is_string( $option ) ) {
@@ -302,8 +305,8 @@ class DataIO
         $suffix = explode( ',', $option[ 'suffix' ] );
         foreach( $suffix as $sfx ) {
             $name_sfx = $name . $sep . $sfx;
-            if( array_key_exists( $name_sfx, $data ) ) {
-                $lists[] = $data[ $name_sfx ];
+            if( array_key_exists( $name_sfx, $this->source ) ) {
+                $lists[] = $this->source[ $name_sfx ];
             }
         }
         // merge the found list into one value. 
