@@ -1,6 +1,7 @@
 <?php
 namespace WScore\Validator;
 
+/** @method date() */
 class Rules
 {
     /** @var array        order of filterOptions to apply     */
@@ -151,4 +152,5 @@ class Rules
         }
         return $filter_array;
     }
+
 }
