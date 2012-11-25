@@ -80,7 +80,7 @@ class Rules
      */
     public function ruleForType( $type, $filters )
     {
-        $rule = new self();
+        $rule = new static();
         $rule->type = $type;
         $typeFilter = $this->filterTypes[ $type ];
         $rule->mergeFilter( $typeFilter );
