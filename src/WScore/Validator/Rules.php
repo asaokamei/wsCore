@@ -12,6 +12,7 @@ class Rules
     public $type = null;
     
     public $filter = array();
+    
     // +----------------------------------------------------------------------+
     /**
      */
@@ -54,7 +55,6 @@ class Rules
             'text' => array(),
             'email' => array(
                 'mbConvert:hankaku|sanitize:email|pattern:mail',
-                'err_msg' => 'invalid email format'
             ),
             'date' => array(
                 // TODO: think of better regular date filter rules. 
@@ -66,42 +66,59 @@ class Rules
             'tel' => array(),
             'fax' => array(),
         );
+        
+        // default filter is filterOrder. 
+        $this->filter = $this->filterOrder;
     }
 
-    /**
-     * @param $method
-     * @param $filters
-     * @return Rules
-     */
-    public function __call( $method, $filters ) 
-    {
-        $rule = new self();
-        $rule->type = $method;
-        $typeFilter = $this->filterTypes[ $method ];
-        $rule->filter = $this->mergeFilter( $typeFilter, $filters );
-        return $rule;
-    }
-    
     public function getType() {
         return $this->type;
     }
 
-    public function mergeFilter()
+    // +----------------------------------------------------------------------+
+    /**
+     * @param $type
+     * @param $filters
+     * @return Rules
+     */
+    public function ruleForType( $type, $filters )
     {
-        $args = func_get_args();
-        $prepFilter = $this->filterOrder;
-        foreach( $args as $filter ) 
-        {
-            if( is_string( $filter ) ) {
-                $filter = $this->convertFilter( $filter );
-            }
-            if( empty( $filter ) ) continue;
-            foreach( $filter as $key => $val ) {
-                $prepFilter[ $key ] = $val;
-            }
-        }
-        return $prepFilter;
+        $rule = new self();
+        $rule->type = $type;
+        $typeFilter = $this->filterTypes[ $type ];
+        $rule->mergeFilter( $typeFilter );
+        $rule->mergeFilter( $filters );
+        return $rule;
     }
+
+    /**
+     * @param null|string|array $filters
+     * @return Rules
+     */
+    public function mail( $filters=null ) {
+        return $this->ruleForType( 'mail', $filters );
+    }
+    // +----------------------------------------------------------------------+
+    //  tools for filters. 
+    // +----------------------------------------------------------------------+
+    /**
+     * merges text/array filters into Rule object's filter. 
+     * 
+     * @param array $filter ,
+     * @return array
+     */
+    public function mergeFilter( $filter )
+    {
+        if( is_string( $filter ) ) {
+            $filter = $this->convertFilter( $filter );
+        }
+        if( empty( $filter ) ) return;
+        foreach( $filter as $key => $val ) {
+            $this->filter[ $key ] = $val;
+        }
+        return;
+    }
+    
     /**
      * converts string filter to array. string in: 'rule1:parameter1|rule2:parameter2'
      *
