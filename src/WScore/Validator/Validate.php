@@ -51,10 +51,6 @@ class Validate
      * @param null|\Closure   $message
      * @return bool
      */
-    public function __invoke( $value, $filter=array(), $message=null ) {
-        return $this->validate( $value, $filter, $message );
-    }
-    
     public function is( $value, $filter=array(), $message=null ) {
         return $this->validate( $value, $filter, $message );
     }

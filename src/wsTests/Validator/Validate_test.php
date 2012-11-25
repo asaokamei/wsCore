@@ -39,14 +39,14 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
         $text = $text_number;
         $filters = array( 'pattern' => 'number' );
 
-        $ok = $validate( $text, $filters );
+        $ok = $this->validate->is( $text, $filters );
         $this->assertTrue( $ok );
         $this->assertEquals( $text_number, $text );
 
         $text_alpha = 'text';
         $text = $text_alpha;
 
-        $ok = $validate( $text, $filters );
+        $ok = $this->validate->is( $text, $filters );
         $this->assertFalse( $ok );
         $this->assertEquals( $text_alpha, $text );
     }
