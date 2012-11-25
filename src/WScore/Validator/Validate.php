@@ -6,6 +6,9 @@ class Validate
     /** @var \WScore\Validator\Filter */
     protected $filter;
     
+    /** @var array|Rules */
+    protected $rules;
+    
     /** @var string|object */
     protected $message;
     
@@ -41,7 +44,11 @@ class Validate
             return $this->message;
         }
         if( is_object( $this->message ) && method_exists( $this->message, 'getMessage' ) ) {
-            return $this->message->getMessage( $this->err_msg );
+            $type = null;
+            if( is_object( $this->rules ) && $this->rules instanceof Rules ) {
+                $type = $this->rules->getType();
+            }
+            return $this->message->getMessage( $this->err_msg, $type );
         }
         return $error;
     }
@@ -59,13 +66,14 @@ class Validate
      * filter must be an array.
      *
      * @param string|array $value
-     * @param array        $rules
+     * @param array|Rules  $rules
      * @param null|\Closure   $message
      * @return bool
      */
     public function validate( $value, $rules=array(), $message=null )
     {
         $this->init( $message );
+        $this->rules = $rules;
         if( is_object( $rules ) && $rules instanceof Rules ) $rules = $rules->filter;
         if( is_array( $value ) )
         {
