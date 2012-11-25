@@ -27,17 +27,12 @@ class Validate
     /**
      * initializes internal values. 
      */
-    protected function init( $filter=null, $message=null ) 
+    protected function init( $message=null ) 
     {
         $this->value   = null;
         $this->isValid = true;
         $this->err_msg = null;
         $this->message = $message;
-        if( $message && $filter && 
-            is_object( $message ) && method_exists( $message, 'setType' ) &&
-            is_object( $filter  ) && method_exists( $filter,  'getType' ) ) {
-            $message->setType( $filter->getType() );
-        }
     }
 
     public function message( $error )
@@ -60,17 +55,9 @@ class Validate
         return $this->validate( $value, $filter, $message );
     }
     
-    public function __call( $method, $args )
-    {
-        $type = $method;
-        $value = $args[0];
-        $filter = $args[1];
-        $message = $args[2];
-        $this->rules->setType( $type );
-        $message->setType( $type );
+    public function is( $value, $filter=array(), $message=null ) {
         return $this->validate( $value, $filter, $message );
     }
-
     /**
      * validates a value or an array of values for a given filters.
      * filter must be an array.
@@ -82,7 +69,7 @@ class Validate
      */
     public function validate( $value, $filter=array(), $message=null )
     {
-        $this->init( $filter, $message );
+        $this->init( $message );
         if( is_array( $value ) )
         {
             $this->value   = array();
