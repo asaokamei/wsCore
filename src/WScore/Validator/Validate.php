@@ -66,6 +66,7 @@ class Validate
     public function validate( $value, $rules=array(), $message=null )
     {
         $this->init( $message );
+        if( is_object( $rules ) && $rules instanceof Rules ) $rules = $rules->filter;
         if( is_array( $value ) )
         {
             $this->value   = array();
