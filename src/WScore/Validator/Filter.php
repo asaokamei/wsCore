@@ -45,6 +45,7 @@ class Filter
     }
     
     public function error( $method, $p=null ) {
+        $method = substr( $method, strrpos( $method, '::filter_' )+9 );
         $this->error = array( $method => $p );
     }
     // +----------------------------------------------------------------------+
@@ -76,8 +77,8 @@ class Filter
      * @param $p
      */
     public function filter_sanitize( $p ) {
-        $p = $this->arrGet( $this->patterns, $p, $p );
-        $this->value = filter_var( $this->value, $p );
+        $option = $this->arrGet( $this->patterns, $p, $p );
+        $this->value = filter_var( $this->value, $option );
     }
 
     public function filter_encoding( $p=null ) {
@@ -162,8 +163,8 @@ class Filter
      * @param $p
      */
     public function filter_pattern( $p ) {
-        $p  = $this->arrGet( $this->patterns, $p, $p );
-        if( !preg_match( "/^{$p}\$/", $this->value ) ) {
+        $option  = $this->arrGet( $this->patterns, $p, $p );
+        if( !preg_match( "/^{$option}\$/", $this->value ) ) {
             $this->error( __METHOD__, $p );
         }
     }
