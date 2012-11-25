@@ -55,8 +55,8 @@ class Rules
             'text'     => '',
             'email'    => 'mbConvert:hankaku|sanitize:email|pattern:mail',
             // TODO: think of better regular date filter rules. 
-            'date'     => 'mbConvert:hankaku|pattern:[0-9]{4}-[0-9]{2}-[0-9]{2}',
-            'dateYM'   => '',
+            'date'     => 'multiple:date | mbConvert:hankaku | pattern:[0-9]{4}-[0-9]{2}-[0-9]{2}',
+            'dateYM'   => 'multiple:YM | mbConvert:hankaku | pattern:[0-9]{4}-[0-9]{2}',
             'time'     => '',
             'datetime' => '',
             'tel'      => '',
@@ -91,8 +91,8 @@ class Rules
      * @param null|string|array $filters
      * @return Rules
      */
-    public function mail( $filters=null ) {
-        return $this->ruleForType( 'mail', $filters );
+    public function email( $filters=null ) {
+        return $this->ruleForType( 'email', $filters );
     }
 
     /**
