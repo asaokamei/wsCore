@@ -4,7 +4,7 @@ namespace WScore\Validator;
 class Rules
 {
     /** @var array        order of filterOptions to apply     */
-    public $filterOrder = array();
+    protected $filterOrder = array();
 
     /** @var array        predefined filter filter set        */
     public $filterTypes = array();
@@ -51,22 +51,16 @@ class Rules
 
         // filters for various types of input.
         $this->filterTypes = array(
-            'binary' => array(
-                'noNull:FALSE | encoding:FALSE | mbConvert:FALSE | trim:FALSE '
-            ),
-            'text' => array(),
-            'email' => array(
-                'mbConvert:hankaku|sanitize:email|pattern:mail',
-            ),
-            'date' => array(
-                // TODO: think of better regular date filter rules. 
-                'mbConvert:hankaku|pattern:[0-9]{4}-[0-9]{2}-[0-9]{2}',
-            ),
-            'dateYM' => array(),
-            'time' => array(),
-            'datetime' => array(),
-            'tel' => array(),
-            'fax' => array(),
+            'binary'   => 'noNull:FALSE | encoding:FALSE | mbConvert:FALSE | trim:FALSE ',
+            'text'     => '',
+            'email'    => 'mbConvert:hankaku|sanitize:email|pattern:mail',
+            // TODO: think of better regular date filter rules. 
+            'date'     => 'mbConvert:hankaku|pattern:[0-9]{4}-[0-9]{2}-[0-9]{2}',
+            'dateYM'   => '',
+            'time'     => '',
+            'datetime' => '',
+            'tel'      => '',
+            'fax'      => '',
         );
         
         // default filter is filterOrder. 
@@ -99,6 +93,16 @@ class Rules
      */
     public function mail( $filters=null ) {
         return $this->ruleForType( 'mail', $filters );
+    }
+
+    /**
+     * @param string $method
+     * @param mixed $args
+     * @return Rules
+     */
+    public function __call( $method, $args ) {
+        $filter = array_key_exists( 0, $args ) ? $args[0]: null;
+        return $this->ruleForType( $method, $filter );
     }
     // +----------------------------------------------------------------------+
     //  tools for filters. 
