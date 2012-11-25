@@ -114,9 +114,7 @@ class Validate
             }
             // got some error. 
             if( $this->filter->error ) {
-                if( $message ) {
-                    $this->filter->error = $this->message( $this->filter->error );
-                }
+                $this->filter->error = $this->message( $this->filter->error );
                 $success = false;
                 break;
             }
