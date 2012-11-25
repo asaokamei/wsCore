@@ -29,7 +29,6 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
     public function test_is_style()
     {
         // text with upper/lower cases. 
-        $validate = $this->validate;
         $text_alpha = 'abcABC';
         $text = $text_alpha;
 
