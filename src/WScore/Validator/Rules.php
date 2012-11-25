@@ -24,6 +24,7 @@ class Rules
         // if option is FALSE, the rule is skipped.
         $this->filterOrder = array(
             // filterOptions (modifies the value)
+            'multiple'    => false,      // multiple value for DataIO.
             'noNull'      => true,       // filters out NULL (\0) char from the value.
             'encoding'    => 'UTF-8',    // checks the encoding of value.
             'mbConvert'   => 'standard', // converts Kana set (Japanese)
@@ -43,6 +44,7 @@ class Rules
             'range'       => false,
             'checkdate'   => false,
             'mbCheckKana' => false,
+            'sameWith'    => false,      // comparing with other field for DataIO. 
             'sameAs'      => false,
             'sameEmpty'   => false,
         );
