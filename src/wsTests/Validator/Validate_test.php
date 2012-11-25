@@ -15,7 +15,7 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
         $this->validate = Core::get( '\WScore\Validator\Validate' );
     }
     // +----------------------------------------------------------------------+
-    public function test_invoke_style()
+    public function test_is_style()
     {
         // text with upper/lower cases. 
         $validate = $this->validate;
