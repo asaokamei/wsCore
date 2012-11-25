@@ -47,23 +47,23 @@ class Validate
     }
     /**
      * @param string|array $value
-     * @param array $filter
+     * @param array $rules
      * @param null|\Closure   $message
      * @return bool
      */
-    public function is( $value, $filter=array(), $message=null ) {
-        return $this->validate( $value, $filter, $message );
+    public function is( $value, $rules=array(), $message=null ) {
+        return $this->validate( $value, $rules, $message );
     }
     /**
      * validates a value or an array of values for a given filters.
      * filter must be an array.
      *
      * @param string|array $value
-     * @param array        $filter
+     * @param array        $rules
      * @param null|\Closure   $message
      * @return bool
      */
-    public function validate( $value, $filter=array(), $message=null )
+    public function validate( $value, $rules=array(), $message=null )
     {
         $this->init( $message );
         if( is_array( $value ) )
@@ -72,7 +72,7 @@ class Validate
             $this->err_msg = array();
             foreach( $value as $key => $val ) 
             {
-                $success = $this->applyFilters( $val, $filter );
+                $success = $this->applyFilters( $val, $rules );
                 $this->value[ $key ] = $this->filter->value;
                 if( !$success ) {
                     $this->err_msg[ $key ] = $this->filter->error;
@@ -82,7 +82,7 @@ class Validate
             $this->isValid = (bool) $this->isValid;
             return $this->isValid;
         }
-        $this->isValid = $this->applyFilters( $value, $filter );
+        $this->isValid = $this->applyFilters( $value, $rules );
         $this->err_msg = $this->filter->error;
         $this->value   = $this->filter->value;
         return $this->isValid;
@@ -92,16 +92,16 @@ class Validate
      * do the validation for a single value.
      *
      * @param string $value
-     * @param array  $filter
+     * @param array  $rules
      * @param null|\Closure   $message
      * @return bool
      */
-    public function applyFilters( $value, $filter, $message=null )
+    public function applyFilters( $value, $rules, $message=null )
     {
         $this->filter->setup( $value );
         $success = true;
         // loop through all the rules to validate $value.
-        foreach( $filter as $rule => $parameter )
+        foreach( $rules as $rule => $parameter )
         {
             // some filters are not to be applied...
             if( $parameter === false ) continue; // skip rules with option as FALSE.
