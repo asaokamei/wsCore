@@ -114,9 +114,6 @@ class Validate
             if( method_exists( $this->filter, $method ) ) {
                 $this->filter->$method( $parameter );
             }
-            elseif( is_callable( $method ) ) {
-                $this->filter->applyClosure( $method, $parameter );
-            }
             // got some error. 
             if( $this->filter->error ) {
                 if( $message ) {
