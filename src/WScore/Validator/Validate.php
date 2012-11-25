@@ -72,14 +72,15 @@ class Validate
             $this->err_msg = array();
             foreach( $value as $key => $val ) 
             {
-                $success = $this->validate( $val, $filter );
+                $success = $this->applyFilters( $val, $filter );
                 $this->value[ $key ] = $this->filter->value;
                 if( !$success ) {
                     $this->err_msg[ $key ] = $this->filter->error;
                 }
                 $this->isValid &= ( $success === true );
             }
-            return (bool) $this->isValid;
+            $this->isValid = (bool) $this->isValid;
+            return $this->isValid;
         }
         $this->isValid = $this->applyFilters( $value, $filter );
         $this->err_msg = $this->filter->error;
