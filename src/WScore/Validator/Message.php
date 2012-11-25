@@ -9,9 +9,6 @@ class Message
     /** @var string                 error message for the value.     */
     public $message = '';
     
-    /** @var null                   type of value, if set.  */
-    public $type = null;
-    
     /** @var array                  error message for each types.    */
     public $typeErrMsg = array();
     
@@ -19,9 +16,9 @@ class Message
     {
         // error messages for each filter.
         $this->filterErrMsg = array(
-            'encoding' => 'invalid encoding',
-            'required' => 'required field',
-            'sameAs'   => 'value not the same',
+            'encoding'  => 'invalid encoding',
+            'required'  => 'required field',
+            'sameAs'    => 'value not the same',
             'sameEmpty' => 'missing value to compare',
         );
         // error messages for each type. 
@@ -30,11 +27,20 @@ class Message
             'date'  => 'invalid date',
         );
     }
-    
-    public function __invoke( $message ) {
+
+    /**
+     * @param null|string $message
+     * @return Message
+     */
+    public function __invoke( $message=null ) {
         $this->setMessage( $message );
         return $this;
     }
+
+    /**
+     * @param string $message
+     * @return Message
+     */
     public function setMessage( $message ) {
         $this->message = $message;
         return $this;
@@ -42,9 +48,10 @@ class Message
 
     /**
      * @param array $error
+     * @param null  $type
      * @return string
      */
-    public function message( $error )
+    public function message( $error, $type=null )
     {
         $message = '';
         $rule    = null;
@@ -61,8 +68,8 @@ class Message
             return $this->message;
         }
         // message for this type, if type is set. 
-        if( isset( $this->type ) && isset( $this->typeErrMsg[ $this->type ] ) ) {
-            return $this->typeErrMsg[ $this->type ];
+        if( isset( $type ) && isset( $this->typeErrMsg[ $type ] ) ) {
+            return $this->typeErrMsg[ $type ];
         }
         return "invalid input";
     }
