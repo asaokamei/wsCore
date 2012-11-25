@@ -15,6 +15,17 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
         $this->validate = Core::get( '\WScore\Validator\Validate' );
     }
     // +----------------------------------------------------------------------+
+    function test_error_pattern_array()
+    {
+        $text = array( '1234', 'text', '5678' );
+        $filters    = array( 'pattern' => 'number' );
+        $ok = $this->validate->validate( $text, $filters );
+        $this->assertFalse( $ok );
+        $this->assertFalse( $this->validate->isValid );
+        $error = $this->validate->err_msg;
+        $this->assertArrayHasKey( 'pattern', $error[1] );
+        $this->assertEquals( 'number', $error[1][ 'pattern' ] );
+    }
     function test_error_pattern_reports_option()
     {
         $text = 'text';
