@@ -6,26 +6,13 @@ class Role
     /** @var \WScore\DbAccess\EntityManager */
     public $em;
 
-    /** @var \WScore\Validator\DataIO */
-    public $dio;
-
-    /** @var \WScore\Html\Selector */
-    public $selector;
-
     /**
      * @param \WScore\DbAccess\EntityManager    $em
-     * @param \WScore\Validator\DataIO          $dio
-     * @param \WScore\Html\Selector             $selector
-     *
      * @DimInjection get  EntityManager
-     * @DimInjection get  DataIO
-     * @DimInjection get  Selector
      */
-    public function __construct( $em, $dio, $selector )
+    public function __construct( $em )
     {
         $this->em = $em;
-        $this->dio = $dio;
-        $this->selector = $selector;
     }
 
     /**
