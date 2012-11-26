@@ -10,6 +10,8 @@ class Role_Input extends Role_Abstract
      * @param \WScore\DbAccess\EntityManager    $em
      * @param \WScore\Validator\DataIO          $dio
      * @param \WScore\Html\Selector             $selector
+     * @DimInjection Get \WScore\DbAccess\EntityManager
+     * @DimInjection Get \WScore\Validator\DataIO
      */
     public function __construct( $em, $dio, $selector )
     {

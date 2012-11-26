@@ -48,11 +48,8 @@ class Role
         else {
             $class = '\WScore\DbAccess\Role_' . ucwords( $role );
         }
-        $em   = clone $this->em;
-        $dio  = clone $this->dio;
-        $sel  = clone $this->selector;
+        $role = $this->em->container()->fresh( $class );
         /** @var $role Role_Interface */
-        $role = new $class( $em, $dio, $sel );
         $role->register( $entity );
         return $role;
     }

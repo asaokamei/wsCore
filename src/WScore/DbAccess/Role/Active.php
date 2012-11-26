@@ -8,6 +8,7 @@ class Role_Active extends Role_Abstract
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DbAccess\EntityManager    $em
+     * @DimInjection Get \WScore\DbAccess\EntityManager
      */
     public function __construct( $em )
     {

@@ -8,13 +8,13 @@ class Role_Selectable extends Role_Abstract
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DbAccess\EntityManager    $em
-     * @param \WScore\Validator\DataIO          $dio
      * @param \WScore\Html\Selector             $selector
+     * @DimInjection Get \WScore\DbAccess\EntityManager
+     * @DimInjection Get \WScore\Html\Selector
      */
-    public function __construct( $em, $dio, $selector )
+    public function __construct( $em, $selector )
     {
         $this->em       = $em;
-        $this->dio      = $dio;
         $this->selector = $selector;
     }
     // +----------------------------------------------------------------------+
