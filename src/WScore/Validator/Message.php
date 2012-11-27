@@ -12,7 +12,7 @@ class Message
     /** @var array                  error message for each types.    */
     public $typeErrMsg = array();
     
-    public function __construct( $filter )
+    public function __construct()
     {
         // error messages for each filter.
         $this->filterErrMsg = array(
