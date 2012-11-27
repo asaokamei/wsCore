@@ -118,8 +118,7 @@ class Validate
         {
             // some filters are not to be applied...
             if( $parameter === false ) continue; // skip rules with option as FALSE.
-            if( $rule == 'err_msg'   ) continue; // ignore error message.
-            // apply filter. 
+            // apply filter.
             $method = 'filter_' . $rule;
             if( method_exists( $this->filter, $method ) ) {
                 $this->filter->$method( $parameter );
