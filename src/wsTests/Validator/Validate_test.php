@@ -15,6 +15,29 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
         $this->validate = Core::get( '\WScore\Validator\Validate' );
     }
     // +----------------------------------------------------------------------+
+    function test_missing_required_data()
+    {
+        $missing = '';
+        $filters = array( 'required' => true );
+        $ok = $this->validate->validate( $missing, $filters );
+        $this->assertFalse( $ok );
+        $this->assertFalse( $this->validate->isValid );
+        $error = $this->validate->err_msg;
+        $this->assertEquals( 'required field', $error );
+    }
+    function test_missing_required_array_data()
+    {
+        $missing = array( '1', '', '2' );
+        $filters = array( 'required' => true );
+        $ok = $this->validate->validate( $missing, $filters );
+        $this->assertFalse( $ok );
+        $this->assertFalse( $this->validate->isValid );
+        $error = $this->validate->err_msg;
+        $this->assertFalse( array_key_exists( 0, $error ) );
+        $this->assertTrue(  array_key_exists( 1, $error ) );
+        $this->assertFalse( array_key_exists( 2, $error ) );
+        $this->assertEquals( 'required field', $error[1] );
+    }
     function test_error_pattern_array()
     {
         $text = array( '1234', 'text', '5678' );
