@@ -198,5 +198,11 @@ class Filter
     public function filter_sameAs( $p ) {
         return $this->value===$p;
     }
+
+    public function filter_sameEmpty() {
+        if( "{$this->value}" !== "" ) {
+            $this->error( __METHOD__ );
+        }
+    }
     // +----------------------------------------------------------------------+
 }
