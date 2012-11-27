@@ -2,7 +2,7 @@
 namespace WScore\Validator;
 
 /** @method date() */
-class Rules
+class Rules implements \ArrayAccess
 {
     /** @var array        order of filterOptions to apply     */
     protected $filterOrder = array();
@@ -25,6 +25,7 @@ class Rules
         // if option is FALSE, the rule is skipped.
         $this->filterOrder = array(
             // filterOptions (modifies the value)
+            'err_msg'     => false,
             'multiple'    => false,      // multiple value for DataIO.
             'noNull'      => true,       // filters out NULL (\0) char from the value.
             'encoding'    => 'UTF-8',    // checks the encoding of value.
@@ -45,7 +46,7 @@ class Rules
             'range'       => false,
             'checkdate'   => false,
             'mbCheckKana' => false,
-            'sameWith'    => false,      // comparing with other field for DataIO. 
+            'sameWith'    => false,      // comparing with other field for DataIO.
             'sameAs'      => false,
             'sameEmpty'   => false,
         );
@@ -153,4 +154,45 @@ class Rules
         return $filter_array;
     }
 
+    /**
+     * Whether a offset exists
+     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     * @param mixed $offset   An offset to check for.
+     * @return boolean true on success or false on failure.
+     * The return value will be casted to boolean if non-boolean was returned.
+     */
+    public function offsetExists( $offset ) {
+        return array_key_exists( $offset, $this->filter );
+    }
+
+    /**
+     * Offset to retrieve
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     * @param mixed $offset   The offset to retrieve.
+     * @return mixed Can return all value types.
+     */
+    public function offsetGet( $offset ) {
+        return array_key_exists( $offset, $this->filter )? $this->filter[ $offset ] : null;
+    }
+
+    /**
+     * Offset to set
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     * @param mixed $offset   The offset to assign the value to.
+     * @param mixed $value    The value to set.
+     * @return void
+     */
+    public function offsetSet( $offset, $value ) {
+        $this->filter[ $offset ] = $value;
+    }
+
+    /**
+     * Offset to unset
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     * @param mixed $offset   The offset to unset.
+     * @return void
+     */
+    public function offsetUnset( $offset ) {
+        if( array_key_exists( $offset, $this->filter ) ) unset( $this->filter[ $offset ] );
+    }
 }

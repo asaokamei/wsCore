@@ -74,7 +74,6 @@ class Validate
     {
         $this->init( $message );
         $this->rules = $rules;
-        if( is_object( $rules ) && $rules instanceof Rules ) $rules = $rules->filter;
         if( is_array( $value ) )
         {
             $this->value   = array();
