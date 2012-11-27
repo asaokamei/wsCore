@@ -23,8 +23,7 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
         $this->assertFalse( $ok );
         $this->assertFalse( $this->validate->isValid );
         $error = $this->validate->err_msg;
-        $this->assertArrayHasKey( 'pattern', $error[1] );
-        $this->assertEquals( 'number', $error[1][ 'pattern' ] );
+        $this->assertEquals( 'invalid pattern with number', $error[1] );
     }
     function test_error_pattern_reports_option()
     {
@@ -34,8 +33,7 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
         $this->assertFalse( $ok );
         $this->assertFalse( $this->validate->isValid );
         $error = $this->validate->err_msg;
-        $this->assertArrayHasKey( 'pattern', $error );
-        $this->assertEquals( 'number', $error[ 'pattern' ] );
+        $this->assertEquals( 'invalid pattern with number', $error );
     }
     public function test_is_style()
     {

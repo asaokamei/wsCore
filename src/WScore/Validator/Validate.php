@@ -9,9 +9,9 @@ class Validate
     /** @var array|Rules */
     protected $rules;
     
-    /** @var string|object */
+    /** @var Message */
     protected $message;
-    
+
     public $isValid;
 
     public $value;
@@ -19,43 +19,41 @@ class Validate
     public $err_msg;
 
     /**
-     * @param Filter $filter
+     * @param \WScore\Validator\Filter  $filter
+     * @param \WScore\Validator\Message $message
      * @DimInjection Get \WScore\Validator\Filter
+     * @DimInjection Get \WScore\Validator\Message
      */
-    public function __construct( $filter )
+    public function __construct( $filter, $message )
     {
-        $this->filter = $filter;
+        $this->filter  = $filter;
+        $this->message = $message;
     }
 
     /**
      * initializes internal values. 
      */
-    protected function init( $message=null ) 
+    protected function init( $message=null )
     {
         $this->value   = null;
         $this->isValid = true;
         $this->err_msg = null;
-        $this->message = $message;
+        $this->message->setMessage( $message );
     }
 
-    public function message( $error )
+    /**
+     * @param array $error
+     * @return string
+     */
+    public function getMessage( $error )
     {
-        if( is_string( $this->message ) ) {
-            return $this->message;
-        }
-        if( is_object( $this->message ) && method_exists( $this->message, 'getMessage' ) ) {
-            $type = null;
-            if( is_object( $this->rules ) && $this->rules instanceof Rules ) {
-                $type = $this->rules->getType();
-            }
-            return $this->message->getMessage( $this->err_msg, $type );
-        }
-        return $error;
+        $type = ( is_object( $this->rules ) && $this->rules instanceof \WScore\Validator\Rules )? $this->rules->type : null;
+        return $this->message->message( $error, $this->filter->err_msg, $type );
     }
     /**
      * @param string|array $value
      * @param array $rules
-     * @param null|\Closure   $message
+     * @param null|string   $message
      * @return bool
      */
     public function is( $value, $rules=array(), $message=null ) {
@@ -67,7 +65,7 @@ class Validate
      *
      * @param string|array $value
      * @param array|Rules  $rules
-     * @param null|\Closure   $message
+     * @param null|string   $message
      * @return bool
      */
     public function validate( $value, $rules=array(), $message=null )
@@ -101,10 +99,9 @@ class Validate
      *
      * @param string $value
      * @param array  $rules
-     * @param null|\Closure   $message
      * @return bool
      */
-    public function applyFilters( $value, $rules, $message=null )
+    public function applyFilters( $value, $rules )
     {
         $this->filter->setup( $value );
         $success = true;
@@ -121,7 +118,7 @@ class Validate
             }
             // got some error. 
             if( $this->filter->error ) {
-                $this->filter->error = $this->message( $this->filter->error );
+                $this->filter->error = $this->getMessage( $this->filter->error );
                 $success = false;
                 break;
             }

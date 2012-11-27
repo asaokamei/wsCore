@@ -14,14 +14,29 @@ class Filter
     /** @var bool            breaks the loop */
     public $break = false;
 
+    /** @var string          error messages */
+    public $err_msg = '';
+
+    /** @var null|\WScore\Validator\Message  */
+    public $message = null;
     // +----------------------------------------------------------------------+
     /**
-     * @param string $value
+     * @param \WScore\Validator\Message $message
+     * @DimInjection Get \WScore\Validator\Message
      */
-    public function setup( $value ) {
+    public function __construct( $message )
+    {
+        $this->message = $message;
+    }
+    /**
+     * @param string        $value
+     */
+    public function setup( $value )
+    {
         $this->value = $value;
         $this->error = null;
         $this->break = false;
+        $this->err_msg = '';
     }
 
     /**
@@ -43,14 +58,30 @@ class Filter
         $return = $closure( $this->value, $p );
         if( !$return ) $this->error = true;
     }
-    
+
+    /**
+     * sets internal error information: $this->error = [ rule => option ]
+     *
+     * @param string      $method
+     * @param null|string $p
+     */
     public function error( $method, $p=null ) {
         $method = substr( $method, strrpos( $method, '::filter_' )+9 );
-        $this->error = array( $method => $p );
+        $error = array( $method => $p );
+        $this->error = $error;
     }
     // +----------------------------------------------------------------------+
     //  filter definitions (filters that alters the value).
     // +----------------------------------------------------------------------+
+
+    /**
+     * sets error message for this filter.
+     *
+     * @param $p
+     */
+    public function filter_err_msg( $p ) {
+        $this->err_msg = $p;
+    }
 
     public function filter_noNull() {
         $this->value = str_replace( "\0", '', $this->value );
