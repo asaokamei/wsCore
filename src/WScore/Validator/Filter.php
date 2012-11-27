@@ -17,16 +17,11 @@ class Filter
     /** @var string          error messages */
     public $err_msg = '';
 
-    /** @var null|\WScore\Validator\Message  */
-    public $message = null;
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\Validator\Message $message
-     * @DimInjection Get \WScore\Validator\Message
      */
-    public function __construct( $message )
+    public function __construct()
     {
-        $this->message = $message;
     }
     /**
      * @param string        $value

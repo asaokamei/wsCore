@@ -6,12 +6,13 @@ class Message
     /** @var array                  error message for some filters.  */
     public $filterErrMsg = array();
     
-    /** @var string                 error message for the value.     */
-    public $message = '';
-    
     /** @var array                  error message for each types.    */
     public $typeErrMsg = array();
-    
+
+    /** @var string                 error message for the value.     */
+    public $message = '';
+
+    // +----------------------------------------------------------------------+
     public function __construct()
     {
         // error messages for each filter.
@@ -78,5 +79,5 @@ class Message
         if( $option ) $err_msg .= " with {$option}";
         return $err_msg;
     }
-    
+    // +----------------------------------------------------------------------+
 }

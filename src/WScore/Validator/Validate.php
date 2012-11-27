@@ -5,12 +5,12 @@ class Validate
 {
     /** @var \WScore\Validator\Filter */
     protected $filter;
-    
-    /** @var array|Rules */
-    protected $rules;
-    
+
     /** @var Message */
     protected $message;
+
+    /** @var array|Rules */
+    protected $rules;
 
     public $isValid;
 
@@ -18,6 +18,7 @@ class Validate
     
     public $err_msg;
 
+    // +----------------------------------------------------------------------+
     /**
      * @param \WScore\Validator\Filter  $filter
      * @param \WScore\Validator\Message $message
@@ -31,7 +32,9 @@ class Validate
     }
 
     /**
-     * initializes internal values. 
+     * initializes internal values.
+     *
+     * @param null|string $message
      */
     protected function init( $message=null )
     {
@@ -42,14 +45,19 @@ class Validate
     }
 
     /**
+     * generates error message from filter's error information.
+     *
      * @param array $error
      * @return string
      */
     public function getMessage( $error )
     {
+        if( !$this->message ) return $error;
         $type = ( is_object( $this->rules ) && $this->rules instanceof \WScore\Validator\Rules )? $this->rules->type : null;
         return $this->message->message( $error, $this->filter->err_msg, $type );
     }
+
+    // +----------------------------------------------------------------------+
     /**
      * @param string|array $value
      * @param array $rules
@@ -127,5 +135,5 @@ class Validate
         }
         return $success;
     }
-
+    // +----------------------------------------------------------------------+
 }
