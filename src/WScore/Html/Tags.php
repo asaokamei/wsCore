@@ -281,6 +281,24 @@ class Tags
         }
         return $this;
     }
+
+    /**
+     * @param \Closure $func
+     * @param string $attribute
+     */
+    public function walk( $func, $attribute=null )
+    {
+        if( !$attribute || $this->$attribute || isset( $this->attributes[ $attribute ] ) ) {
+            $func( $this );
+        }
+        if( !empty( $this->contents ) ) {
+            foreach( $this->contents as $content ) {
+                if( $content instanceof self ) {
+                    $content->walk( $func, $attribute );
+                }
+            }
+        }
+    }
     // +----------------------------------------------------------------------+
     //  convert Tags to a string.
     // +----------------------------------------------------------------------+
@@ -318,7 +336,7 @@ class Tags
                 else {
                     $value = static::safe_( $value ); // make it very safe.
                 }
-                // add [] for names for form elements such as checkbox. 
+                // add [] for names for form elements such as checkbox.
                 if( $name == 'name' && $this->multiple ) {
                     $value .= '[]';
                 }

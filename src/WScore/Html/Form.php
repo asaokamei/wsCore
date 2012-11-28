@@ -349,24 +349,6 @@ class Form extends Tags
     }
 
     /**
-     * @param \Closure $func
-     * @param string $attribute
-     */
-    public function walk( $func, $attribute=null )
-    {
-        if( !$attribute || $this->$attribute || isset( $this->attributes[ $attribute ] ) ) {
-            $func( $this );
-        }
-        if( !empty( $this->contents ) ) {
-            foreach( $this->contents as $content ) {
-                if( $content instanceof self ) {
-                    $content->walk( $func, $attribute );
-                }
-            }
-        }
-    }
-
-    /**
      * makes the form object to array style name (i.e. name="varName[]").
      */
     public function multipleName()
