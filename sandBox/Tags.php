@@ -86,8 +86,29 @@ echo $input;
 $input->walk( function( $tags ) {
     if( isset( $tags->attributes['name'] ) ) $tags->attributes['name'].='[]';
 } );
-echo $input;
+echo $input . "\n";
 /*
 <input type="check" name="radioMe" value="Yeap" />
 <input type="check" name="radioMe[]" value="Yeap" />
+ */
+
+// +--------------------------------------------+
+//  live and dead tag.
+echo $tags->span( 'this is ', $tags->strong( 'strong' ), ' word. ' ) . "\n";
+echo $tags->span( 'this is '. $tags->strong( 'strong' ). ' word. ' ) . "\n";
+// <span>this is <strong>strong</strong> word. </span>
+// <span>this is <strong>strong</strong> word. </span>
+
+// +--------------------------------------------+
+//  not so clean output.
+
+echo $tags->div(
+    $tags->ul(
+        $tags->li( 'list' )
+    )
+);
+
+/*
+<div><ul><li>list</li></ul>
+</div>
  */

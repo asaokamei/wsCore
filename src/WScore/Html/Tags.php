@@ -317,7 +317,7 @@ class Tags
         $html = '';
         if( empty( $this->contents ) ) return $html;
         foreach( $this->contents as $content ) {
-            if( $html && substr( $html, -1 ) != "\n" ) {
+            if( !$this->isNoBodyTag() && !$this->isSpanTag() && $html && substr( $html, -1 ) != "\n" ) {
                 $html .= "\n";
             }
             if( is_object( $content ) && method_exists( $content, 'toString_' ) ) {
@@ -363,7 +363,6 @@ class Tags
             // short tag such as <tag>only one content</tag>
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ">";
             $html .= $this->toContents_();
-            if( substr( $html, -1 ) == "\n" ) $html .= $head;
             $html .= "</{$this->tagName}>";
         }
         else { // create tag with contents inside.
