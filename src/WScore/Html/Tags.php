@@ -41,7 +41,7 @@ namespace WScore\Html;
 class Tags
 {
     /** @var null                  name of tag, such as span */
-    protected  $tagName    = NULL;
+    protected  $tagName    = null;
     
     /** @var array                 array of contents         */
     protected $contents   = array();
@@ -50,7 +50,7 @@ class Tags
     public $attributes = array();
     
     /** @var bool                  for form element's name   */
-    protected $multiple = FALSE;
+    protected $multiple = false;
 
     /** @var array                 normalize tag name  */
     public static $normalize_tag = array(
@@ -82,12 +82,12 @@ class Tags
     // +----------------------------------------------------------------------+
     /**
      * Start Tag object, with or without tag name.
-     * 
+     *
      * @param null $tagName
      * @param null $contents
      * @return Tags
      */
-    public function __invoke( $tagName=NULL, $contents=NULL ) 
+    public function __invoke( $tagName=NULL, $contents=NULL )
     {
         $class = get_called_class();
         return new $class( $tagName, $contents );
@@ -100,7 +100,7 @@ class Tags
      * @param null|string $contents
      * @return \WScore\Html\Tags
      */
-    public function __construct( $tagName=NULL, $contents=NULL ) 
+    public function __construct( $tagName=null, $contents=null )
     {
         $this->setTagName_( $tagName );
         $this->setContents_( $contents );
@@ -120,7 +120,7 @@ class Tags
     /**
      * make string VERY safe for html.
      *
-     * @param $value
+     * @param string $value
      * @return string
      */
     public static function safe_( $value ) {
@@ -131,7 +131,7 @@ class Tags
     /**
      * wrap value with closure. use this to avoid encoding attribute values.
      *
-     * @param $value
+     * @param string $value
      * @return callable
      */
     public static function wrap_( $value ) {
@@ -182,7 +182,7 @@ class Tags
      * @param bool|string  $connector
      * @return Tags
      */
-    public function setAttribute_( $name, $value, $connector=NULL )
+    public function setAttribute_( $name, $value, $connector=null )
     {
         if( is_array( $value ) && !empty( $value ) ) {
             foreach( $value as $val ) {
@@ -197,15 +197,15 @@ class Tags
         $name = $this->normalize_( $name );
         if( $value === true  ) $value = $name;   // same as name (checked="checked")
         // set connector if it is not set.
-        if( $connector === NULL ) {
-            $connector = FALSE;                  // default is to replace value.
+        if( $connector === null ) {
+            $connector = false;                  // default is to replace value.
             if( array_key_exists( $name, static::$attribute_connectors ) ) {
                 $connector = static::$attribute_connectors[ $name ];
             }
         }
         // set attribute.
         if( !isset( $this->attributes[ $name ] ) // new attribute.
-            || $connector === FALSE ) {          // replace with new value.
+            || $connector === false ) {          // replace with new value.
             $this->attributes[ $name ] = $value;
         }
         else {                                   // attribute is appended.
@@ -217,7 +217,7 @@ class Tags
     /**
      * normalize tag and attribute name: lower case, and remove first _ if exists. 
      * 
-     * @param $name
+     * @param string $name
      * @return string
      */
     public function normalize_( $name ) {
@@ -244,7 +244,7 @@ class Tags
     /**
      * set class name. adds to the existing class.
      *
-     * @param $class
+     * @param string $class
      * @param string $connector    set FALSE to reset class.
      * @return Tags
      */
@@ -255,7 +255,7 @@ class Tags
     /**
      * set style. adds to the existing style.
      *
-     * @param $style
+     * @param string $style
      * @param string $connector    set FALSE to reset style.
      * @return Tags
      */
