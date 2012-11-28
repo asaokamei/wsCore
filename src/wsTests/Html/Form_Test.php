@@ -84,7 +84,7 @@ class Form_Test extends \PHPUnit_Framework_TestCase
             array( 'kor', 'korean', 'asia' ),
         );
         $form = (string) $this->form->select( 'lang', $lang, array( 'ger', 'zhi' ), array( 'multiple' => true ) );
-        $this->assertEquals( '<select name="lang[]" multiple="_multiple">
+        $this->assertEquals( '<select name="lang[]" multiple="multiple">
   <option value="eng">english</option>
   <optgroup label="europe">
     <option value="ger" selected="selected">german</option>
