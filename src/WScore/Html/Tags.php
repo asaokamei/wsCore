@@ -116,6 +116,25 @@ class Tags
     }
 
     /**
+     * set attribute, or tagName if tagName is not set.
+     *
+     * @param string $name
+     * @param array  $args
+     * @return Tags
+     */
+    public function __call( $name, $args )
+    {
+        // attribute or tag if not set.
+        if( is_null( $this->tagName ) ) { // set it as a tag name
+            return $this->_( $name, $args );
+        }
+        else {
+            $this->setAttribute_( $name, $args );
+        }
+        return $this;
+    }
+
+    /**
      * make string VERY safe for html.
      *
      * @param string $value
@@ -268,25 +287,6 @@ class Tags
      */
     public function _style( $style, $connector='; ' ) {
         return $this->setAttribute_( 'style', $style, $connector );
-    }
-
-    /**
-     * set attribute, or tagName if tagName is not set.
-     * 
-     * @param string $name
-     * @param array  $args
-     * @return Tags
-     */
-    public function __call( $name, $args ) 
-    {
-        // attribute or tag if not set.
-        if( is_null( $this->tagName ) ) { // set it as a tag name
-            return $this->_( $name, $args );
-        }
-        else {
-            $this->setAttribute_( $name, $args );
-        }
-        return $this;
     }
 
     /**
