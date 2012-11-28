@@ -336,10 +336,6 @@ class Tags
                 else {
                     $value = static::safe_( $value ); // make it very safe.
                 }
-                // add [] for names for form elements such as checkbox.
-                if( $name == 'name' && $this->multiple ) {
-                    $value .= '[]';
-                }
                 $attr .= " {$name}=\"{$value}\"";
             }
         return $attr;

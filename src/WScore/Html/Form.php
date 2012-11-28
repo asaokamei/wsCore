@@ -94,13 +94,13 @@ class Form extends Tags
     public function select( $name, $items, $checked=NULL, $attributes=array() ) 
     {
         $form = clone $this;
-        if( array_key_exists( 'multiple', $attributes ) ) $form->multiple = TRUE;
         $form->style = 'select';
         $form->setTagName_( 'select' );
         $form->setName( $name );
         $form->items = $items;
         $form->applyAttributes( $attributes );
         $form->makeOptions( $form, $items, $checked );
+        if( array_key_exists( 'multiple', $attributes ) ) $form->multipleName();
         return $form;
     }
 
