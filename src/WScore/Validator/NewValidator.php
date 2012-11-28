@@ -7,23 +7,23 @@ namespace WScore\Validator;
 class NewValidator
 {
     /** @var array                 source of data to read from     */
-    private $source = array();
+    protected $source = array();
 
     /** @var array                 validated and invalidated data  */
-    private $data = array();
+    protected $data = array();
 
     /** @var array                 invalidated error messages      */
-    private $errors = array();
+    protected $errors = array();
 
     /** @var int                   number of errors (invalids)     */
-    private $err_num = 0;
+    protected $err_num = 0;
 
     /** @var Validate */
-    private $validate = null;
+    protected $validate = null;
 
     // +----------------------------------------------------------------------+
     /**
-     * @param $validate
+     * @param Validate $validate
      * @DimInjection Fresh \WScore\Validator\Validate
      */
     public function __construct( $validate ) {
@@ -100,7 +100,7 @@ class NewValidator
 
     /**
      * @param string $name
-     * @param array $filters
+     * @param array|Rules $filters
      * @param null  $message
      * @return mixed
      */
@@ -118,7 +118,7 @@ class NewValidator
 
     /**
      * @param string $name
-     * @param array $filters
+     * @param array|Rules $filters
      * @param null  $message
      * @return mixed
      */
@@ -206,7 +206,7 @@ class NewValidator
      * prepares filter for sameWith rule.
      * get another value to compare in sameWith, and compare it with the value using sameAs rule.
      *
-     * @param array $filters
+     * @param array|Rules $filters
      * @return array
      */
     public function prepare_sameWith( $filters )
