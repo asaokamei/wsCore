@@ -152,32 +152,32 @@ thirtish</label></li>
     function test_check_in_label()
     {
         $form = (string) $this->form->checkLabel( 'OK', 'YES', 'really?' );
-        $this->assertEquals( '<label><input type="checkbox" name="OK" value="YES" />' . "\n".
+        $this->assertEquals( '<label><input type="checkbox" name="OK" value="YES" />' .
             'really?</label>', $form );
 
         // check if radio does NOT have [] in the name. 
         $form = (string) $this->form->radio( 'user_OK', 'YES' );
-        $this->assertEquals( '<input type="radio" name="user_OK" value="YES" />'."\n", $form );
+        $this->assertEquals( '<input type="radio" name="user_OK" value="YES" />', $form );
     }
     function test_radio_in_label()
     {
         $form = (string) $this->form->radioLabel( 'OK', 'YES', 'really?' );
-        $this->assertEquals( '<label><input type="radio" name="OK" value="YES" />' . "\n".
+        $this->assertEquals( '<label><input type="radio" name="OK" value="YES" />' .
             'really?</label>', $form );
     }
     function test_check()
     {
         $form = (string) $this->form->check( 'user_OK', 'YES' );
-        $this->assertEquals( '<input type="checkbox" name="user_OK" value="YES" />'."\n", $form );
+        $this->assertEquals( '<input type="checkbox" name="user_OK" value="YES" />', $form );
 
         // check if radio does NOT have [] in the name. 
         $form = (string) $this->form->radio( 'user_OK', 'YES' );
-        $this->assertEquals( '<input type="radio" name="user_OK" value="YES" />'."\n", $form );
+        $this->assertEquals( '<input type="radio" name="user_OK" value="YES" />', $form );
     }
     function test_radio()
     {
         $form = (string) $this->form->radio( 'user_OK', 'YES' );
-        $this->assertEquals( '<input type="radio" name="user_OK" value="YES" />'."\n", $form );
+        $this->assertEquals( '<input type="radio" name="user_OK" value="YES" />', $form );
     }
     function test_textarea()
     {
@@ -194,19 +194,19 @@ thirtish</label></li>
     {
         $form = (string) $this->form->input( 'text', 'user_name', 'taro-san', array( 'class' => 'myClass', 'ime' => 'ON' ) );
         $this->assertContains( '<input type="text" name="user_name" value="taro-san"', $form );
-        $this->assertContains( 'value="taro-san" class="myClass" style="ime-mode:active" />'."\n", $form );
+        $this->assertContains( 'value="taro-san" class="myClass" style="ime-mode:active" />', $form );
 
         // no class is set. 
         $form = (string) $this->form->input( 'date', 'user_bdate', '1989-01-01' )->_ime( 'OFF' );
-        $this->assertEquals( '<input type="date" name="user_bdate" value="1989-01-01" style="ime-mode:inactive" />'."\n", $form );
+        $this->assertEquals( '<input type="date" name="user_bdate" value="1989-01-01" style="ime-mode:inactive" />', $form );
     }
     function test_input_form()
     {
         $form = (string) $this->form->input( 'text', 'user_name', 'taro-san' );
-        $this->assertEquals( '<input type="text" name="user_name" value="taro-san" />'."\n", $form );
+        $this->assertEquals( '<input type="text" name="user_name" value="taro-san" />', $form );
         
         $form = (string) $this->form->input( 'text', 'user_name', 'taro-san', array( 'class' => 'myClass', 'ime' => 'ON' ) );
         $this->assertContains( '<input type="text" name="user_name" value="taro-san"', $form );
-        $this->assertContains( 'value="taro-san" class="myClass" style="ime-mode:active" />'."\n", $form );
+        $this->assertContains( 'value="taro-san" class="myClass" style="ime-mode:active" />', $form );
     }
 }

@@ -367,7 +367,7 @@ class Tags
             if( substr( $html, -1 ) != "\n" ) $html .= "\n";
             $html .= $head . "</{$this->tagName}>";
         }
-        if( !in_array( $this->tagName, static::$tag_span ) ) {
+        if( !in_array( $this->tagName, static::$tag_span ) && !in_array( $this->tagName, static::$tag_no_body ) ) {
             // add new-line, except for in-line tags.
             $html .= "\n";
         }
