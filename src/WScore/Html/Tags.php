@@ -281,7 +281,7 @@ class Tags
     {
         // attribute or tag if not set.
         if( is_null( $this->tagName ) ) { // set it as a tag name
-            return new static( $name, $args );
+            return $this->_( $name, $args );
         }
         else {
             $this->setAttribute_( $name, $args );
