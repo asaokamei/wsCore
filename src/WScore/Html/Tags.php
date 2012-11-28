@@ -171,7 +171,7 @@ class Tags
      * @param string $tagName
      * @return Tags
      */
-    public function setTagName_( $tagName )
+    protected function setTagName_( $tagName )
     {
         if( empty( $tagName ) ) return $this;
         $tagName = $this->normalize_( $tagName );
@@ -188,7 +188,7 @@ class Tags
      * @param string|array|Tags $contents
      * @return Tags
      */
-    public function setContents_( $contents ) {
+    protected function setContents_( $contents ) {
         if( empty( $contents ) ) return $this;
         if( is_array( $contents ) ) {
             $this->contents = array_merge( $this->contents, $contents );
@@ -207,7 +207,7 @@ class Tags
      * @param bool|string  $connector
      * @return Tags
      */
-    public function setAttribute_( $name, $value, $connector=null )
+    protected function setAttribute_( $name, $value, $connector=null )
     {
         if( is_array( $value ) && !empty( $value ) ) {
             foreach( $value as $val ) {
@@ -245,7 +245,7 @@ class Tags
      * @param string $name
      * @return string
      */
-    public function normalize_( $name ) {
+    protected function normalize_( $name ) {
         $name = strtolower( $name );
         if( $name[0]=='_') $name = substr( $name, 1 );
         $name = str_replace( '_', '-', $name );
@@ -313,7 +313,7 @@ class Tags
      * @param string $head
      * @return string
      */
-    public function toContents_( $head="" ) {
+    protected function toContents_( $head="" ) {
         $html = '';
         if( empty( $this->contents ) ) return $html;
         foreach( $this->contents as $content ) {
@@ -333,7 +333,7 @@ class Tags
     /**
      * @return string
      */
-    public function toAttribute_() {
+    protected function toAttribute_() {
         $attr = '';
         if( !empty( $this->attributes ) )
             foreach( $this->attributes as $name => $value ) {
@@ -352,7 +352,7 @@ class Tags
      * @param string $head
      * @return string
      */
-    public function toString_( $head='' )
+    protected function toString_( $head='' )
     {
         $html = $head;
         if( static::isNoBodyTag() ) {
