@@ -52,9 +52,11 @@ class interact extends \wsModule\Alt\Web\Interaction
         }
         // show the confirm view. save token as well.
         if( $this->contextValidateAndPushToken( $entity, $action, 'save' ) ) {
-            $token = $this->session->pushToken();
-            $this->view->set( $this->session->popTokenTagName(), $token );
-            $this->view->set( 'action', 'save' );
+            if( $entity->_is_valid() ) {
+                $token = $this->session->pushToken();
+                $this->view->set( $this->session->popTokenTagName(), $token );
+                $this->view->set( 'action', 'save' );
+            }
             $this->view->showForm_confirm( $entity );
             return;
         }
