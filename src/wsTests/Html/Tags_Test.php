@@ -12,6 +12,11 @@ class Tags_Test extends \PHPUnit_Framework_TestCase
         $this->tags = new Tags();
     }
     // +----------------------------------------------------------------------+
+    public function test_underscore_to_hyphen()
+    {
+        $span = (string) $this->tags->span( 'text span' )->data_type( 'dataType' );
+        $this->assertContains( 'data-type="dataType"', $span );
+    }
     public function test_quote_safe()
     {
         $unsafe = 'unsafe" string';
