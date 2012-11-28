@@ -11,8 +11,8 @@ $tags = new Tags();
 // +--------------------------------------------+
 //  simple case for anchor link.
 
-echo $tags->a( 'a link' )->href( 'tags.php' );
-// <a href="tags.php">a link</a>
+echo $tags->a( 'link' )->href( 'tags.php' );
+// <a href="tags.php">link</a>
 
 // +--------------------------------------------+
 //  structured ul > li.
