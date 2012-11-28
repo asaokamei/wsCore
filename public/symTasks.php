@@ -27,9 +27,10 @@ use Symfony\Component\HttpKernel\HttpKernel;
 
 $routes = new RouteCollection();
 $routes->add( 'hello', new Route( '/list', array( '_controller' =>
-    function(  Request $request ) {
+    function() {
         $controller = Core::get( 'task\TaskController' );
-        return array( $controller, 'actIndex' );
+        $content = $controller->actIndex();
+        return Response::create( (string) $content );
     }
 ) ) );
 
