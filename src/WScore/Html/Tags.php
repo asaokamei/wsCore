@@ -138,12 +138,12 @@ class Tags
         return function() use( $value ) { return $value; };
     }
 
-    public static function isSpanTag( $tagName ) {
-        return in_array( $tagName, static::$tag_span );
+    public function isSpanTag() {
+        return in_array( $this->tagName, static::$tag_span );
     }
 
-    public static function isNoBodyTag( $tagName ) {
-        return in_array( $tagName, static::$tag_no_body );
+    public function isNoBodyTag() {
+        return in_array( $this->tagName, static::$tag_no_body );
     }
     // +----------------------------------------------------------------------+
     //  mostly internal functions
@@ -357,11 +357,11 @@ class Tags
     public function toString_( $head='' )
     {
         $html = $head;
-        if( static::isNoBodyTag( $this->tagName ) ) {
+        if( static::isNoBodyTag() ) {
             // create tag without content, such as <tag attributes... />
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ' />';
         }
-        elseif( static::isSpanTag( $this->tagName ) || count( $this->contents ) == 1 ) {
+        elseif( static::isSpanTag() || count( $this->contents ) == 1 ) {
             // short tag such as <tag>only one content</tag>
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ">";
             $html .= $this->toContents_();
@@ -375,7 +375,7 @@ class Tags
             if( substr( $html, -1 ) != "\n" ) $html .= "\n";
             $html .= $head . "</{$this->tagName}>";
         }
-        if( !static::isSpanTag( $this->tagName ) && !static::isNoBodyTag( $this->tagName ) ) {
+        if( !static::isSpanTag() && !static::isNoBodyTag() ) {
             // add new-line, except for in-line tags.
             $html .= "\n";
         }
