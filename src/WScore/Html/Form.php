@@ -18,8 +18,6 @@ class Form extends Tags
 
     public $type = NULL;
 
-    public $name = NULL;
-
     public $value = NULL;
 
     public $items = array();
@@ -343,7 +341,6 @@ class Form extends Tags
      * @return Form|Tags
      */
     public function setName( $name ) {
-        $this->name = $name;
         $this->setAttribute_( 'name', $name );
         return $this;
     }
@@ -355,7 +352,6 @@ class Form extends Tags
     {
         $addMultiple = function( $form ) {
             /** @var $form Form */
-            if( $form->name ) { $form->name .= '[]'; }
             if( isset( $form->attributes[ 'name' ] ) ) { $form->attributes[ 'name' ].= '[]'; }
         };
         /** @var $div Form */
