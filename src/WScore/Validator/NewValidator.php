@@ -111,6 +111,7 @@ class NewValidator
         if( !$this->validate->isValid ) {
             $this->errors[ $name ] = $this->validate->err_msg;
             $this->err_num ++;
+            return false;
         }
         return $this->data[ $name ];
     }
