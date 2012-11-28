@@ -193,12 +193,12 @@ class Tags
         elseif( is_array( $value ) ) {
             $value = '';
         }
-        if( $value === false ) return $this; // ignore the property.
-        if( $value === true  ) $value = $name; // copy the attribute name (checked="checked")
+        if( $value === false ) return $this;     // ignore the property.
         $name = $this->normalize_( $name );
+        if( $value === true  ) $value = $name;   // same as name (checked="checked")
         // set connector if it is not set.
         if( $connector === NULL ) {
-            $connector = FALSE; // default is to replace value.
+            $connector = FALSE;                  // default is to replace value.
             if( array_key_exists( $name, static::$attribute_connectors ) ) {
                 $connector = static::$attribute_connectors[ $name ];
             }
@@ -208,8 +208,7 @@ class Tags
             || $connector === FALSE ) {          // replace with new value.
             $this->attributes[ $name ] = $value;
         }
-        else {
-            // attribute is appended. 
+        else {                                   // attribute is appended.
             $this->attributes[ $name ] .= $connector . $value;
         }
         return $this;
