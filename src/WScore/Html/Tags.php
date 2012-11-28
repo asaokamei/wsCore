@@ -87,10 +87,8 @@ class Tags
      * @param null $contents
      * @return Tags
      */
-    public function __invoke( $tagName=NULL, $contents=NULL )
-    {
-        $class = get_called_class();
-        return new $class( $tagName, $contents );
+    public function __invoke( $tagName=NULL, $contents=NULL ) {
+        return $this->_( $tagName, $contents );
     }
 
     /**
