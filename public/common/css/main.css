@@ -64,3 +64,13 @@ dl.dl-horizontal dd { margin-top: 10px; }
     background-image: url( "../img/glyphicons_003_user.png" );
     background-repeat: no-repeat;
 }
+
+div.formListBox li {
+    float: left;
+    width: 10em;
+    list-style: none;
+}
+
+div.formListBox input {
+    margin-right: 5px;
+}
