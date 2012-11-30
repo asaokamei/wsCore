@@ -17,9 +17,9 @@ class Friends extends \WScore\DbAccess\Model
     );
 
     public static $stars = array(
-        array( 'A', '**' ),
-        array( 'B', '*' ),
-        array( 'C', '-' ),
+        array( 'A', '<i class="img-heart"></i> ' ),
+        array( 'B', '<i class="img-star"></i> ' ),
+        array( 'C', '<i class="img-user"></i> ' ),
     );
 
     public static $status = array(

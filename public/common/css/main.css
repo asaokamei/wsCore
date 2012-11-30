@@ -37,3 +37,30 @@ dl.dl-horizontal dd { margin-top: 10px; }
     color: red;
     font-size: 90%;
 }
+
+.img-heart {
+    display: inline-block;
+    line-height: 24px;
+    width: 24px;
+    height: 24px;
+    background-image: url( "../img/glyphicons_012_heart.png" );
+    background-repeat: no-repeat;
+}
+
+.img-star {
+    display: inline-block;
+    line-height: 24px;
+    width: 24px;
+    height: 24px;
+    background-image: url( "../img/glyphicons_049_star.png" );
+    background-repeat: no-repeat;
+}
+
+.img-user {
+    display: inline-block;
+    line-height: 24px;
+    width: 24px;
+    height: 24px;
+    background-image: url( "../img/glyphicons_003_user.png" );
+    background-repeat: no-repeat;
+}
