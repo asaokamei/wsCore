@@ -11,7 +11,7 @@ class Group extends \WScore\DbAccess\Model
 
     protected $definition = array(
         'group_code'   => array( 'group code',   'string', ),
-        'group_name'   => array( 'name',         'string', ),
+        'name'         => array( 'name',         'string', ),
         'created_at'   => array( 'created at',   'string', 'created_at'),
         'updated_at'   => array( 'updated at',   'string', 'updated_at'),
     );
@@ -19,13 +19,13 @@ class Group extends \WScore\DbAccess\Model
     /** @var array      for validation of inputs       */
     protected $validators = array(
         'group_code' => array( 'number', 'required | pattern:code | maxlength:60' ),
-        'group_name' => array( 'text',   'required' ),
+        'name'       => array( 'text',   'required' ),
     );
 
     /** @var array      for selector construction      */
     protected $selectors  = array(
         'group_code'   => array( 'Selector', 'text', 'width:span3' ),
-        'group_name'   => array( 'Selector', 'text', 'width:span6' ),
+        'name'         => array( 'Selector', 'text', 'width:span6' ),
     );
     
     protected $relations = array(
@@ -39,6 +39,18 @@ class Group extends \WScore\DbAccess\Model
             'target_column'      => 'friend_id', // use id.
         ),
     );
+    /**
+     * @param \WScore\DbAccess\EntityManager $em
+     * @param \WScore\DbAccess\Query         $query
+     * @DimInjection   Get      EntityManager
+     * @DimInjection   Fresh    Query
+     */
+    public function __construct( $em, $query )
+    {
+        parent::__construct( $em, $query );
+        $idKey = \array_search( $this->id_name, $this->protected );
+        unset( $this->protected[ $idKey ] );
+    }
     public function insert( $data ) {
         return parent::insertValue( $data );
     }
