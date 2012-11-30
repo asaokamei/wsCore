@@ -18,8 +18,13 @@ $appUrl  = $view->get( 'appUrl' );
 </ul>
 <h4>friend & contact demo</h4>
 <p>contact book application for using relation. </p>
-<div style="clear:both">
-</div>
+<style type="text/css">
+div.formListBox li {
+    float: left;
+    width: 10em;
+    list-style: none;
+}
+</style>
 <h1><?= $view->get( 'title' ); ?></h1>
 <?php
 

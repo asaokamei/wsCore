@@ -126,7 +126,7 @@ class friendsView
     {
         $entity = $this->role->applySelectable( $entity );
         $entity->setHtmlType( 'form' );
-        $this->set( 'title', $entity->popHtml( 'name' ) );
+        $this->set( 'title', $entity->popHtml( 'name', 'html' ) );
         $contents    = array();
         $contents[ ] = $this->dl( $entity, array( 'gender', 'birthday', 'star', 'memo' ) );
         $this->set( 'content', $contents );
@@ -217,7 +217,8 @@ class friendsView
     {
         return $this->tags->dd(
             $entity->popHtml( $name ), '<br />',
-            $this->tags->span( $entity->popError( $name ) )->_class( 'formError' )
+            $this->tags->span( $entity->popError( $name ) )->_class( 'formError' ),
+            $this->tags->div()->style( 'clear:both' )
         );
     }
 
