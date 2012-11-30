@@ -89,29 +89,39 @@ class friendsView
         $appUrl      = $this->get( 'appUrl' );
         $editUrl     = $appUrl . 'detail/' . $id;
         $contents    = array();
-        // show brief info about my friend. 
+        // -----------------------------
+        // show brief info about my friend.
         $contents[ ] = $this->lists( $role, array( 'gender', 'birthday', 'star' ) );
         $contents[ ] = $tags->a( 'edit' )->href( $editUrl )->_class( 'btn' )->style( 'float:right' );
         $contents[ ] = $tags->div()->style( 'clear:both' );
-        // show contacts
+        // -----------------------------
+        // organize contacts based on types
         $roleContacts = array();
         if( !empty( $contacts ) ) 
         foreach( $contacts as $contact ) {
             $type = $contact->type;
             $roleContacts[ $type ][] = $this->role->applySelectable( $contact );
         }
-        foreach( Contacts::$types as $type ) {
+        // -----------------------------
+        // show contact for each type
+        foreach( Contacts::$types as $type )
+        {
             $contents[ ] = '<hr>';
             $contents[ ] = $tags->a( 'add new' )
                 ->href( $appUrl.'contact/' . $id . '/type/' . $type[0] )
                 ->_class( 'btn btn-small' )->style( 'float:right' );
             $contents[ ] = $tags->h4( $type[1] );
-            if( isset( $roleContacts[ $type[0] ] ) ) {
+            if( isset( $roleContacts[ $type[0] ] ) )
+            {
                 $contents[] = $dl = $tags->dl()->_class( 'dl-horizontal' );
                 /** @var $role \WScore\DbAccess\Role_Selectable */
-                foreach( $roleContacts[ $type[0] ] as $role ) {
-                    $dl->contain_( $this->tags->dt( $role->popHtml( 'label' ) ) );
-                    $dl->contain_( $this->tags->dd( $role->popHtml( 'info'  ) ) );
+                foreach( $roleContacts[ $type[0] ] as $role )
+                {
+                    $link = $appUrl . 'contact/' . $id . '/' . $role->getId();
+                    $dl->contain_(
+                        $this->tags->dt( $role->popHtml( 'label' ) ),
+                        $this->tags->dd( $this->tags->a( $role->popHtml( 'info' ) )->href( $link ) )
+                    );
                 }
             }
             $contents[ ] = $tags->div()->style( 'clear:both' );
