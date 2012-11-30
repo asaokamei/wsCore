@@ -215,6 +215,14 @@ class FriendController
         $sql = $model->getCreateSql();
         $model->query()->execSQL( $sql );
 
+        $model = $this->em->getModel( 'friends\model\Group' );
+        // clear the current tasks (drop the table)
+        $sql = $model->getClearSql();
+        $model->query()->execSQL( $sql );
+        // create the new task table.
+        $sql = $model->getCreateSql();
+        $model->query()->execSQL( $sql );
+
 
         $taskUrl = $this->view->get( 'appUrl' );
         header( "Location: $taskUrl" );
