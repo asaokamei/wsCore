@@ -96,7 +96,34 @@ class FriendController
     // +----------------------------------------------------------------------+
     //  about contacts
     // +----------------------------------------------------------------------+
-    public function actContact( $parameter) 
+    public function actContactMod( $parameter )
+    {
+        $id   = $parameter[ 'id' ];
+        $cid  = $parameter[ 'cid' ];
+        $friend  = $this->em->getEntity( 'friends\model\Friends', $id );
+        $contact = $this->em->getEntity( 'friends\model\Contacts', $cid );
+        if( $this->front->request->isPost() )
+        {
+            $loadable = $this->role->applyLoadable( $contact );
+            $loadable->loadData();
+            if( $loadable->validate() )
+            {
+                $active = $this->role->applyActive( $contact );
+                $active->relation( 'friend' )->set( $friend );
+                $active->save();
+                $jump = $this->view->get( 'appUrl' ) . $id;
+                header( 'Location: ' . $jump );
+                exit;
+            }
+        }
+        $this->view->showContact_form( $friend, $contact );
+        return $this->view;
+    }
+    /**
+     * @param $parameter
+     * @return views\friendsView
+     */
+    public function actContactNew( $parameter )
     {
         $id   = $parameter[ 'id' ];
         $type = $parameter[ 'type' ];
