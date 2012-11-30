@@ -76,21 +76,21 @@ class FriendController
     public function actDetail( $parameter )
     {
         $id = $parameter[ 'id' ];
-        $entity = $this->em->getEntity( 'friends\model\Friends', $id );
+        $friend = $this->em->getEntity( 'friends\model\Friends', $id );
         if( $this->front->request->isPost() )
         {
-            $loadable = $this->role->applyLoadable( $entity );
+            $loadable = $this->role->applyLoadable( $friend );
             $loadable->loadData();
             if( $loadable->validate() )
             {
-                $active = $this->role->applyActive( $entity );
+                $active = $this->role->applyActive( $friend );
                 $active->save();
                 $jump = $this->view->get( 'appUrl' ) . $id;
                 header( 'Location: ' . $jump );
                 exit;
             }
         }
-        $this->view->showForm_detail( $entity );
+        $this->view->showForm_detail( $friend );
         return $this->view;
     }
     // +----------------------------------------------------------------------+
