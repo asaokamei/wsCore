@@ -233,9 +233,9 @@ class friendsView
     protected function dd( $entity, $name )
     {
         return $this->tags->dd(
-            $entity->popHtml( $name ), '<br />',
-            $this->tags->span( $entity->popError( $name ) )->_class( 'formError' ),
-            $this->tags->div()->style( 'clear:both' )
+            $entity->popHtml( $name ),
+            $this->tags->div()->style( 'clear:both' ),
+            $this->tags->span( $entity->popError( $name ) )->_class( 'formError' )
         );
     }
 
