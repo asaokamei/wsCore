@@ -92,7 +92,7 @@ class friendsView
         // -----------------------------
         // show brief info about my friend.
         $contents[ ] = $this->lists( $role, array( 'gender', 'birthday', 'star' ) );
-        $contents[ ] = $tags->a( 'edit' )->href( $editUrl )->_class( 'btn' )->style( 'float:right' );
+        $contents[ ] = $tags->a( 'edit info' )->href( $editUrl )->_class( 'btn btn-primary' )->style( 'float:right' );
         $contents[ ] = $tags->div()->style( 'clear:both' );
         // -----------------------------
         // organize contacts based on types
@@ -109,7 +109,7 @@ class friendsView
             $contents[ ] = '<hr>';
             $contents[ ] = $tags->a( 'add new' )
                 ->href( $appUrl.'contact/' . $id . '/type/' . $type[0] )
-                ->_class( 'btn btn-small' )->style( 'float:right' );
+                ->_class( 'btn btn-mini btn-info' )->style( 'float:right' );
             $contents[ ] = $tags->h4( $type[1] );
             if( isset( $roleContacts[ $type[0] ] ) )
             {
@@ -169,11 +169,11 @@ class friendsView
         $contents    = array();
         $contents[ ] = $this->lists( $friend, array( 'gender', 'birthday', 'star' ) );
         $contents[ ] = $this->tags->div()->style( 'clear:both' );
-        $contents[ ] = $this->tags->h4( 'contact: ', $contact->popHtml( 'type', 'html' ) );
+        $contents[ ] = $this->tags->h4( 'contact info for: ', $contact->popHtml( 'type', 'html' ) );
         
         $form = $this->tags->form()->action('')->method( 'post' );
         $form->contain_(
-            $this->dl( $contact, array( 'info', 'type', 'label' ) ),
+            $this->dl( $contact, array( 'type', 'label', 'info', ) ),
             $this->view->bootstrapButton( 'submit', 'save contact', 'btn btn-primary' ),
             $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' )
         );
