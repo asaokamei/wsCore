@@ -211,6 +211,22 @@ class friendsView
         $contents    = array( $dl,'<hr><h4>add new group</h4>', $form );
         $this->set( 'content', $contents );
     }
+    public function showForm_groupView( $group )
+    {
+        $sel = $this->role->applySelectable( $group );
+        $sel->setHtmlType( 'form' );
+        $this->set( 'title', 'My Groups' );
+        $dl = $this->tags->dl();
+        $dl->contain_( $this->dt( $sel, 'group_code' ) );
+        $dl->contain_( $this->dd( $sel, 'group_code' ) );
+        $dl->contain_( $this->dt( $sel, 'name' ) );
+        $dl->contain_( $this->dd( $sel, 'name' ) );
+        $form = $this->tags->form()->method( 'post' );
+        $form->contain_( $dl );
+        $form->contain_( $this->view->bootstrapButton( 'submit', 'save group', 'primary' ) );
+        $contents = array( $form );
+        $this->set( 'content', $contents );
+    }
     // +----------------------------------------------------------------------+
     //  view tools
     // +----------------------------------------------------------------------+

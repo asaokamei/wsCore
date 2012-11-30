@@ -175,6 +175,25 @@ class FriendController
         $this->view->showForm_group( $entities, 'list' );
         return $this->view;
     }
+    public function actGroupMod( $parameter )
+    {
+        $group = $this->em->getEntity( 'friends\model\Group', $parameter[ 'gCode' ] );
+        if( $this->front->request->isPost() )
+        {
+            $loadable = $this->role->applyLoadable( $group );
+            $loadable->loadData();
+            if( $loadable->validate() )
+            {
+                $active = $this->role->applyActive( $group );
+                $active->save();
+                $jump = $this->view->get( 'appUrl' ) . 'group';
+                header( 'Location: ' . $jump );
+                exit;
+            }
+        }
+        $this->view->showForm_groupView( $group, 'list' );
+        return $this->view;
+    }
     // +----------------------------------------------------------------------+
     //  initialize database
     // +----------------------------------------------------------------------+
