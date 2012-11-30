@@ -12,7 +12,9 @@ class Contacts extends \WScore\DbAccess\Model
         array( self::TYPE_EMAIL,     'e-mails' ),
         array( self::TYPE_SOCIAL,    'social' ),
     );
-    
+
+    public static $labels = array( 'home', 'office' );
+
     /** @var string     name of database table */
     protected $table = 'demoContact';
 
@@ -54,7 +56,7 @@ class Contacts extends \WScore\DbAccess\Model
             'contact_id' => array( 'Selector', 'text' ),
             'info'       => array( 'Selector', 'text', 'placeholder:contact info | class:span5' ),
             'type'       => array( 'Selector', 'select', 'items' => self::$types ),
-            'label'      => array( 'Selector', 'text', 'placeholder:type | default:home | class:span3' ),
+            'label'      => array( 'Selector', 'text', 'placeholder:type | default:home | class:span3', 'items' => self::$labels ),
         );
 
         $this->relations = array(
