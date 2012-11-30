@@ -108,9 +108,10 @@ class friendsView
             $contents[ ] = $tags->h4( $type[1] );
             if( isset( $roleContacts[ $type[0] ] ) ) {
                 $contents[] = $dl = $tags->dl()->_class( 'dl-horizontal' );
+                /** @var $role \WScore\DbAccess\Role_Selectable */
                 foreach( $roleContacts[ $type[0] ] as $role ) {
                     $dl->contain_( $this->tags->dt( $role->popHtml( 'label' ) ) );
-                    $dl->contain_( $this->dd( $role, 'info' ) );
+                    $dl->contain_( $this->tags->dd( $role->popHtml( 'info'  ) ) );
                 }
             }
             $contents[ ] = $tags->div()->style( 'clear:both' );
