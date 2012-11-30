@@ -185,7 +185,7 @@ class Form extends Tags
      * @return Form|Tags
      */
     public function radioLabel( $name, $value, $label, $attributes=array() ) {
-        return $this::_()->label( $this->radio( $name, $value, $attributes ) . $label );
+        return $this::_()->label( $this->radio( $name, $value, $attributes ), $label );
     }
 
     /**
@@ -197,7 +197,7 @@ class Form extends Tags
      * @return Form|Tags
      */
     public function checkLabel( $name, $value, $label, $attributes=array() ) {
-        return $this::_()->label( $this->check( $name, $value, $attributes ) . $label );
+        return $this::_()->label( $this->check( $name, $value, $attributes ), $label );
     }
 
     /**
