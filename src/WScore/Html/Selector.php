@@ -193,7 +193,7 @@ class Selector
      */
     public function makeHtml( $value )
     {
-        if( !empty( $this->item_data ) ) {
+        if( in_array( $this->style, array( 'radio', 'check' ) ) ) {
             // match with items. assumed values are safe.
             $value = $this->makeHtmlItems( $value );
         }
