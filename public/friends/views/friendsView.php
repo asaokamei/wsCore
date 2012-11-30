@@ -218,12 +218,13 @@ class friendsView
         $this->set( 'title', 'My Groups' );
         $dl = $this->tags->dl();
         $dl->contain_( $this->dt( $sel, 'group_code' ) );
-        $dl->contain_( $this->dd( $sel, 'group_code' ) );
+        $dl->contain_( $this->tags->dd( $sel->popHtml( 'group_code', 'html' ) ) );
         $dl->contain_( $this->dt( $sel, 'name' ) );
         $dl->contain_( $this->dd( $sel, 'name' ) );
         $form = $this->tags->form()->method( 'post' );
         $form->contain_( $dl );
         $form->contain_( $this->view->bootstrapButton( 'submit', 'save group', 'primary' ) );
+        $form->contain_( $this->tags->a( 'back' )->href( $this->get( 'appUrl' ) . 'group' )->_class( 'btn btn-small') );
         $contents = array( $form );
         $this->set( 'content', $contents );
     }
