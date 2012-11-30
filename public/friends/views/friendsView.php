@@ -129,7 +129,7 @@ class friendsView
         $this->set( 'title', $entity->popHtml( 'name', 'html' ) );
         $form = $this->tags->form()->method( 'post' )->action( '' );
         $form->contain_(
-            $this->dl( $entity, array( 'gender', 'birthday', 'star', 'memo' ) ),
+            $this->dl( $entity, array( 'name', 'gender', 'birthday', 'star', 'memo' ) ),
             $this->view->bootstrapButton( 'submit', 'update info', 'btn btn-primary' )
         );
         $contents    = array();
