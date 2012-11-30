@@ -107,8 +107,10 @@ class friendsView
                 ->_class( 'btn btn-small' )->style( 'float:right' );
             $contents[ ] = $tags->h4( $type[1] );
             if( isset( $roleContacts[ $type[0] ] ) ) {
+                $contents[] = $dl = $tags->dl()->_class( 'dl-horizontal' );
                 foreach( $roleContacts[ $type[0] ] as $role ) {
-                    $contents[] = $this->lists( $role, array( 'label', 'info' ) );
+                    $dl->contain_( $this->tags->dt( $role->popHtml( 'label' ) ) );
+                    $dl->contain_( $this->dd( $role, 'info' ) );
                 }
             }
             $contents[ ] = $tags->div()->style( 'clear:both' );
