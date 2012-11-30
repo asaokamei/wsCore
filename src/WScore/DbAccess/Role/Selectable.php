@@ -49,6 +49,7 @@ class Role_Selectable extends Role_Abstract
         else {
             $html = $this->selector->popHtml( 'html', $this->entity->$name );
         }
+        if( $html instanceof \WScore\Html\Form ) $html->walkSetId();
         return $html;
     }
 

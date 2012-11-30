@@ -325,12 +325,21 @@ class Form extends Tags
         return $this;
     }
     /**
-     * set id attribute; id is generated from name.
+     * set id attribute; id is generated from name if not set.
      *
      * @param string|null $id
      * @return Form|Tags
      */
     public function setId( $id=NULL ) {
+        if( !$id ) {
+            $id = array_key_exists( 'name', $this->attributes ) ? $this->attributes[ 'name' ] : false;
+            if( $id === false ) return $this; // do not set id for tags without name attribute.
+            $id = str_replace( array( '[', ']' ), '_', $id );
+            if( in_array( $this->type, array( 'checkbox', 'radio' ) ) && isset( $this->value )) {
+                $id .= '_' . $this->value;
+            }
+        }
+        $this->setAttribute_( 'id', $id );
         return $this;
     }
 
@@ -356,6 +365,14 @@ class Form extends Tags
         };
         /** @var $div Form */
         $this->walk( $addMultiple );
+    }
+    public function walkSetId()
+    {
+        $addId = function( $form ) {
+            /** @var $form Form */
+            $form->setId();
+        };
+        $this->walk( $addId );
     }
     // +----------------------------------------------------------------------+
 }
