@@ -280,7 +280,7 @@ class Selector
         $id = $this->name . '_list';
         $input->list( $id );
         /** @var $lists Form */
-        $lists = $this->form->datalist();
+        $lists = $this->form->datalist()->id( $id );
         foreach( $this->item_data as $item ) {
             $option = $this->form->option()->value( $item );
             $option->noBodyTag = true;
