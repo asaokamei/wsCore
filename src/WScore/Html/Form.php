@@ -9,6 +9,10 @@ $element->form(
 )->action( 'do.php' );
 
  */
+/**
+ * @method \WScore\Html\Form list()
+ * @method \WScore\Html\Form datalist()
+ */
 class Form extends Tags
 {
     /** @var null|string        overwrites name ex: name[1] */
