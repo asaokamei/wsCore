@@ -151,6 +151,31 @@ class FriendController
         return $this->view;
     }
     // +----------------------------------------------------------------------+
+    //  about Groups
+    // +----------------------------------------------------------------------+
+    public function actGroup( $parameter )
+    {
+        if( $this->front->request->isPost() )
+        {
+            $group = $this->em->newEntity( 'friends\model\Group' );
+            $loadable = $this->role->applyLoadable( $group );
+            $loadable->loadData();
+            if( $loadable->validate() )
+            {
+                $active = $this->role->applyActive( $group );
+                $active->save();
+                $jump = $this->view->get( 'appUrl' ) . 'group';
+                header( 'Location: ' . $jump );
+                exit;
+            }
+        }
+        // show list of groups.
+        $model = $this->em->getModel( 'friends\model\Group' );
+        $entities   = $model->query()->select();
+        $this->view->showForm_group( $entities, 'list' );
+        return $this->view;
+    }
+    // +----------------------------------------------------------------------+
     //  initialize database
     // +----------------------------------------------------------------------+
     /**
@@ -191,7 +216,7 @@ class FriendController
             header( "Location: $taskUrl" );
             exit;
         }
-        /** @var $model \task\model\tasks */
+        /** @var $model \friends\model\Friends */
         $model = $this->em->getModel( 'friends\model\Friends' );
         // clear the current tasks (drop the table)
         $sql = $model->getClearSql();
@@ -207,6 +232,7 @@ class FriendController
         }
         $this->em->save();
 
+        /** @var $model \friends\model\Contacts */
         $model = $this->em->getModel( 'friends\model\Contacts' );
         // clear the current tasks (drop the table)
         $sql = $model->getClearSql();
@@ -215,7 +241,17 @@ class FriendController
         $sql = $model->getCreateSql();
         $model->query()->execSQL( $sql );
 
+        /** @var $model \friends\model\Group */
         $model = $this->em->getModel( 'friends\model\Group' );
+        // clear the current tasks (drop the table)
+        $sql = $model->getClearSql();
+        $model->query()->execSQL( $sql );
+        // create the new task table.
+        $sql = $model->getCreateSql();
+        $model->query()->execSQL( $sql );
+
+        /** @var $model \friends\model\Fr2gr */
+        $model = $this->em->getModel( 'friends\model\Fr2gr' );
         // clear the current tasks (drop the table)
         $sql = $model->getClearSql();
         $model->query()->execSQL( $sql );

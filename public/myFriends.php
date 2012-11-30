@@ -10,6 +10,7 @@ $front = Core::get( 'wsModule\Alt\Web\FrontMC' );
 $front->debug = true;
 $front->namespace = 'friends';
 $routes = array(
+    'myFriends/group'   => array( 'controller' => 'Friend', 'action' => 'group' ),
     'myFriends/contact/:id/type/:type'   => array( 'controller' => 'Friend', 'action' => 'contactNew' ),
     'myFriends/contact/:id/:cid'   => array( 'controller' => 'Friend', 'action' => 'contactMod' ),
     'myFriends/detail/:id'   => array( 'controller' => 'Friend', 'action' => 'detail' ),

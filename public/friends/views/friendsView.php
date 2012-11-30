@@ -181,6 +181,37 @@ class friendsView
         $this->set( 'content', $contents );
     }
     // +----------------------------------------------------------------------+
+    //  about Groups
+    // +----------------------------------------------------------------------+
+    /**
+     * @param \WScore\DbAccess\Entity_Interface $groups
+     * @param $action
+     */
+    public function showForm_group( $groups, $action )
+    {
+        $this->set( 'title', 'My Groups' );
+        $dl = $this->tags->dl()->_class( 'dl-horizontal');
+        $dl->contain_( $this->tags->dt( 'group code:' ) );
+        $dl->contain_( $this->tags->dd( 'group\'s name/description' ) );
+        foreach( $groups as $group )
+        {
+            $sel = $this->role->applySelectable( $group );
+            $link = $this->get( 'appUrl' ) . 'group/' . $sel->popHtml( 'group_code' );
+            $link = $this->tags->a( $this->tags->dd( $sel->popHtml( 'name' ) ) )->href( $link );
+            $dl->contain_( $this->tags->dt( $sel->popHtml( 'group_code' ) ) );
+            $dl->contain_( $link );
+        }
+        $form = $this->tags->form()->method('post');
+        $form->contain_(
+            $this->tags->input( 'text', 'group_code' )->_class( 'span2' )->placeholder( 'group code' ),
+            $this->tags->input( 'text', 'name' )->_class( 'span5' )->placeholder( 'group\'s name... ' ),
+            '<br>',
+            $this->tags->input( 'submit', 'submit', 'new group', array( 'class' => 'btn btn-primary btn-small' ) )
+        );
+        $contents    = array( $dl,'<hr><h4>add new group</h4>', $form );
+        $this->set( 'content', $contents );
+    }
+    // +----------------------------------------------------------------------+
     //  view tools
     // +----------------------------------------------------------------------+
 

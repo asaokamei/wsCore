@@ -13,6 +13,7 @@ $appUrl  = $view->get( 'appUrl' );
 </style>
 <ul class="nav nav-pills subMenu">
     <li><a href="<?php echo $appUrl; ?>" >Friends</a></li>
+    <li><a href="<?php echo $appUrl; ?>group" >Groups</a></li>
     <li><a href="<?php echo $appUrl; ?>new" >New Friend</a></li>
     <li><a href="<?php echo $appUrl; ?>setup" >setup</a></li>
 </ul>
