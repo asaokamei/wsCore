@@ -273,8 +273,21 @@ class Selector
      * @param $value
      * @return Form|Tags
      */
-    public function formInput( $value ) {
-        return $this->form->input( $this->style, $this->name, $value, $this->attributes );
+    public function formInput( $value )
+    {
+        $input = $this->form->input( $this->style, $this->name, $value, $this->attributes );
+        if( empty( $this->item_data ) ) { return $input; }
+        $id = $this->name . '_list';
+        $input->list( $id );
+        /** @var $lists Form */
+        $lists = $this->form->datalist();
+        foreach( $this->item_data as $item ) {
+            $option = $this->form->option()->value( $item );
+            $option->noBodyTag = true;
+            $lists->contain_( $option );
+        }
+        $div = $this->form->div( $input, $lists );
+        return $div;
     }
 
     /**
