@@ -31,7 +31,7 @@ class Group extends \WScore\DbAccess\Model
     protected $relations = array(
         'friends' => array(
             'relation_type'      => 'HasJoinDao',
-            'join_model'         => 'friends\model\fr2gr', // same as the relation name
+            'join_model'         => 'friends\model\Fr2gr', // same as the relation name
             'join_source_column' => 'group_code', // same as the relation name
             'join_target_column' => 'friend_id', // same as the relation name
             'source_column'      => 'group_code', // same as the relation name

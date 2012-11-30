@@ -1,56 +1,50 @@
 <?php
-namespace wsTests\DbAccess;
+namespace friends\model;
 
-class Dao_Network extends \WScore\DbAccess\Model
+class Fr2gr extends \WScore\DbAccess\Model
 {
-    /** @var string     name of database table     */
-    protected $table = 'network';
+    /** @var string     name of database table */
+    protected $table = 'fr2gr';
 
-    /** @var string     name of primary key        */
-    protected $id_name = 'network_id';
+    /** @var string     name of primary key */
+    protected $id_name = 'fr2gr_id';
 
     protected $definition = array(
-        'network_id'     => array( 'network code', 'number', ),
-        'friend_id_from' => array( 'my friend',    'number', ),
-        'friend_id_to'   => array( 'friend to',    'number', ),
-        'comment'        => array( 'comment',      'string', ),
-        'status'         => array( 'friendship',   'number', ),
-        'created_at'     => array( 'created at',   'string', 'created_at'),
-        'updated_at'     => array( 'updated at',   'string', 'updated_at'),
+        'fr2gr_id'   => array( 'network code', 'number', ),
+        'friend_id'  => array( 'my friend', 'number', ),
+        'group_code' => array( 'friend to', 'number', ),
+        'created_at' => array( 'created at', 'string', 'created_at' ),
+        'updated_at' => array( 'updated at', 'string', 'updated_at' ),
     );
 
-    /** @var array      for validation of inputs       */
+    /** @var array      for validation of inputs */
     protected $validators = array(
-        'network_id'     => array( 'int',  'required' ),
-        'friend_id_from' => array( 'int',  'required' ),
-        'friend_id_to'   => array( 'int',  'required' ),
-        'comment'        => array( 'text', 'default:""',  ),
-        'status'         => array( 'int',  'required', ),
+        'fr2gr_id'   => array( 'int', 'required' ),
+        'friend_id'  => array( 'int', 'required' ),
+        'group_code' => array( 'int', 'required' ),
     );
 
-    /** @var array      for selector construction      */
-    protected $selectors  = array(
-        'comment'        => array( 'Selector', 'textarea', 'ime:on' ),
-        'status'         => array( 'Selector', 'text',     'ime:off'),
-    );
+    /** @var array      for selector construction */
+    protected $selectors = array();
 
     // +----------------------------------------------------------------------+
-    /**
-     * @param $em       \WScore\DbAccess\EntityManager
-     * @param $query    \WScore\DbAccess\Query
-     * @param $selector \WScore\DiContainer\Dimplet
-     * @DimInjection Get      EntityManager
-     * @DimInjection Fresh    Query
-     * @DimInjection Get Raw  Selector
-     */
-    public function __construct( $em, $query, $selector )
+    public function getCreateSql()
     {
-        parent::__construct( $em, $query, $selector );
+        $sql = "
+        CREATE TABLE {$this->table} (
+          fr2gr_id   SERIAL PRIMARY KEY,
+          friend_id bigint NOT NULL,
+          group_code char(64) NOT NULL,
+          created_at datetime,
+          updated_at datetime
+        );
+        ";
+        return $sql;
     }
-    public function recordClassName() {
-        return $this->recordClassName;
-    }
-    public function setSelector( $name, $info ) {
-        $this->selectors[ $name ] = $info;
+
+    public function getClearSql()
+    {
+        $sql = "DROP TABLE IF EXISTS {$this->table}";
+        return $sql;
     }
 }

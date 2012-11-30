@@ -85,6 +85,15 @@ class Friends extends \WScore\DbAccess\Model
                 'target_model'  => 'friends\model\Contacts',
                 'target_column' => null, // use source column. 
             ),
+            'groups' => array(
+                'relation_type'      => 'HasJoinDao',
+                'join_model'         => 'friends\model\Fr2gr', // same as the relation name
+                'join_source_column' => 'friend_id', // same as the relation name
+                'join_target_column' => 'group_code', // same as the relation name
+                'source_column'      => 'friend_id', // same as the relation name
+                'target_model'       => 'friends\model\Group',
+                'target_column'      => 'group_code', // use id.
+            ),
         );
         
         parent::__construct( $em, $query );
