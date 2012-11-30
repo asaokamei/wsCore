@@ -169,7 +169,7 @@ class friendsView
         $contents    = array();
         $contents[ ] = $this->lists( $friend, array( 'gender', 'birthday', 'star' ) );
         $contents[ ] = $this->tags->div()->style( 'clear:both' );
-        $contents[ ] = $this->tags->h4( 'contact: ' . $contact->popHtml( 'type', 'html' ) );
+        $contents[ ] = $this->tags->h4( 'contact: ', $contact->popHtml( 'type', 'html' ) );
         
         $form = $this->tags->form()->action('')->method( 'post' );
         $form->contain_(
