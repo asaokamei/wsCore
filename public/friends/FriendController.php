@@ -36,6 +36,7 @@ class FriendController
         $this->front = $front;
         $this->view->set( 'baseUrl', $front->request->getBaseUrl() );
         $this->view->set( 'appUrl',  $front->request->getBaseUrl() . 'myFriends/' );
+        class_exists( '\WScore\DbAccess\Relation' ); // just for debugger.
     }
 
     // +----------------------------------------------------------------------+
@@ -60,7 +61,6 @@ class FriendController
      */
     public function actInfo( $parameter )
     {
-        class_exists( '\WScore\DbAccess\Relation' ); // just for debugger. 
         $id = $parameter[ 'id' ];
         $friend   = $this->em->getEntity( 'friends\model\Friends', $id );
         $contacts = $this->em->relation( $friend, 'contacts' )->get();
@@ -77,6 +77,19 @@ class FriendController
     {
         $id = $parameter[ 'id' ];
         $entity = $this->em->getEntity( 'friends\model\Friends', $id );
+        if( $this->front->request->isPost() )
+        {
+            $loadable = $this->role->applyLoadable( $entity );
+            $loadable->loadData();
+            if( $loadable->validate() )
+            {
+                $active = $this->role->applyActive( $entity );
+                $active->save();
+                $jump = $this->view->get( 'appUrl' ) . $id;
+                header( 'Location: ' . $jump );
+                exit;
+            }
+        }
         $this->view->showForm_detail( $entity );
         return $this->view;
     }

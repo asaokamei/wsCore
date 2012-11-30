@@ -127,8 +127,13 @@ class friendsView
         $entity = $this->role->applySelectable( $entity );
         $entity->setHtmlType( 'form' );
         $this->set( 'title', $entity->popHtml( 'name', 'html' ) );
+        $form = $this->tags->form()->method( 'post' )->action( '' );
+        $form->contain_(
+            $this->dl( $entity, array( 'gender', 'birthday', 'star', 'memo' ) ),
+            $this->view->bootstrapButton( 'submit', 'update info', 'btn btn-primary' )
+        );
         $contents    = array();
-        $contents[ ] = $this->dl( $entity, array( 'gender', 'birthday', 'star', 'memo' ) );
+        $contents[ ] = $form;
         $this->set( 'content', $contents );
     }
 
