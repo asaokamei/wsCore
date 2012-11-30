@@ -77,6 +77,9 @@ class Tags
     );
     /** @var string                 encoding */
     public static $encoding = 'UTF-8';
+
+    /** @var bool                   true for tags such as <img /> */
+    public $noBodyTag = false;
     // +----------------------------------------------------------------------+
     //  constructions and static methods
     // +----------------------------------------------------------------------+
@@ -160,7 +163,7 @@ class Tags
     }
 
     public function isNoBodyTag() {
-        return in_array( $this->tagName, static::$tag_no_body );
+        return $this->noBodyTag;
     }
     // +----------------------------------------------------------------------+
     //  mostly internal functions
@@ -179,6 +182,9 @@ class Tags
             $tagName = static::$normalize_tag[ $tagName ];
         }
         $this->tagName = $tagName;
+        if( in_array( $this->tagName, static::$tag_no_body ) ) {
+            $this->noBodyTag = true;
+        }
         return $this;
     }
     
@@ -355,11 +361,11 @@ class Tags
     protected function toString_( $head='' )
     {
         $html = $head;
-        if( static::isNoBodyTag() ) {
+        if( $this->isNoBodyTag() ) {
             // create tag without content, such as <tag attributes... />
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ' />';
         }
-        elseif( static::isSpanTag() || count( $this->contents ) == 1 ) {
+        elseif( $this->isSpanTag() || count( $this->contents ) == 1 ) {
             // short tag such as <tag>only one content</tag>
             $html .= "<{$this->tagName}" . $this->toAttribute_() . ">";
             $html .= $this->toContents_();
@@ -372,7 +378,7 @@ class Tags
             if( substr( $html, -1 ) != "\n" ) $html .= "\n";
             $html .= $head . "</{$this->tagName}>";
         }
-        if( !static::isSpanTag() && !static::isNoBodyTag() ) {
+        if( !$this->isSpanTag() && !$this->isNoBodyTag() ) {
             // add new-line, except for in-line tags.
             $html .= "\n";
         }
