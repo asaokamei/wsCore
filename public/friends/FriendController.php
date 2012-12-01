@@ -64,6 +64,7 @@ class FriendController
         $id = $parameter[ 'id' ];
         $friend   = $this->em->getEntity( 'friends\model\Friends', $id );
         $contacts = $this->em->relation( $friend, 'contacts' )->get();
+        $groups   = $this->em->relation( $friend, 'groups' )->get();
         $this->view->showForm_info( $friend, $contacts );
         
         return $this->view;
