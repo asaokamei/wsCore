@@ -154,7 +154,7 @@ class NewValidator
         'YM'       => array( 'suffix' => 'y,m',   'connector' => '-', ),
         'time'     => array( 'suffix' => 'h,i,s', 'connector' => ':', ),
         'His'      => array( 'suffix' => 'h,i,s', 'connector' => ':', ),
-        'hi'       => array( 'suffix' => 'h,i',   'connector' => ':', ),
+        'Hi'       => array( 'suffix' => 'h,i',   'connector' => ':', ),
         'datetime' => array( 'suffix' => 'y,m,d,h,i,s', 'format' => '%04d-%02d-%02d %02d:%02d:%02d', ),
         'tel'      => array( 'suffix' => '1,2,3',   'connector' => '-', ),
         'credit'   => array( 'suffix' => '1,2,3,4', 'connector' => '', ),
