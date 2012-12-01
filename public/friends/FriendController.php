@@ -283,6 +283,17 @@ class FriendController
         $sql = $model->getCreateSql();
         $model->query()->execSQL( $sql );
 
+        $friend_id = 1;
+        while( !empty( $groups ) ) {
+            foreach( $groups as $group ) {
+                $data = array('friend_id' => $friend_id, 'group_code' => $group[ 'group_code' ] );
+                $this->em->newEntity( 'friends\model\Fr2gr', $data );
+            }
+            array_shift( $groups );
+            $friend_id ++;
+        }
+        $this->em->save();
+        
         $taskUrl = $this->view->get( 'appUrl' );
         header( "Location: $taskUrl" );
         exit;
