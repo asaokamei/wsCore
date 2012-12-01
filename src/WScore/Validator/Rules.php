@@ -55,12 +55,14 @@ class Rules implements \ArrayAccess
         $this->filterTypes = array(
             'binary'   => 'noNull:FALSE | encoding:FALSE | mbConvert:FALSE | trim:FALSE ',
             'text'     => '',
-            'email'    => 'mbConvert:hankaku|sanitize:email|pattern:mail',
-            // TODO: think of better regular date filter rules. 
-            'date'     => 'multiple:date | mbConvert:hankaku | pattern:[0-9]{4}-[0-9]{2}-[0-9]{2}',
-            'dateYM'   => 'multiple:YM | mbConvert:hankaku | pattern:[0-9]{4}-[0-9]{2}',
-            'time'     => '',
-            'datetime' => '',
+            'mail'     => 'mbConvert:hankaku | sanitize:email | pattern:mail',
+            'number'   => 'mbConvert:hankaku | pattern:number',
+            'integer'  => 'mbConvert:hankaku | pattern:int',
+            'float'    => 'mbConvert:hankaku | pattern:float',
+            'date'     => 'multiple:YMD | mbConvert:hankaku | pattern:[0-9]{4}-[0-9]{2}-[0-9]{2}',
+            'dateYM'   => 'multiple:YM  | mbConvert:hankaku | pattern:[0-9]{4}-[0-9]{2}',
+            'time'     => 'multiple:His | mbConvert:hankaku | pattern:[0-9]{2}:[0-9]{2}:[0-9]{2}',
+            'timeHi'   => 'multiple:Hi  | mbConvert:hankaku | pattern:[0-9]{2}:[0-9]{2}',
             'tel'      => '',
             'fax'      => '',
         );
