@@ -74,4 +74,13 @@ class Group extends \WScore\DbAccess\Model
         $sql = "DROP TABLE IF EXISTS {$this->table}";
         return $sql;
     }
+    
+    public function getGroups() {
+        $groups = array(
+            array( 'group_code' => 'demo', 'name' => 'for demonstration'),
+            array( 'group_code' => 'test', 'name' => 'for testing '),
+            array( 'group_code' => 'more', 'name' => 'more more more'),
+        );
+        return $groups;
+    }
 }

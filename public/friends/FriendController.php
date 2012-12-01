@@ -268,6 +268,11 @@ class FriendController
         // create the new task table.
         $sql = $model->getCreateSql();
         $model->query()->execSQL( $sql );
+        $groups = $model->getGroups();
+        foreach( $groups as $data ) {
+            $this->em->newEntity( 'friends\model\Group', $data );
+        }
+        $this->em->save();
 
         /** @var $model \friends\model\Fr2gr */
         $model = $this->em->getModel( 'friends\model\Fr2gr' );
@@ -277,7 +282,6 @@ class FriendController
         // create the new task table.
         $sql = $model->getCreateSql();
         $model->query()->execSQL( $sql );
-
 
         $taskUrl = $this->view->get( 'appUrl' );
         header( "Location: $taskUrl" );
