@@ -51,7 +51,7 @@ class interact extends \wsModule\Alt\Web\Interaction
             return;
         }
         // show the confirm view. save token as well.
-        if( $this->contextValidateAndPushToken( $entity, $action, 'save' ) ) {
+        if( $this->contextValidateUnless( $entity, $action, 'save' ) ) {
             if( $entity->_is_valid() ) {
                 $token = $this->session->pushToken();
                 $this->view->set( $this->session->popTokenTagName(), $token );
@@ -61,7 +61,7 @@ class interact extends \wsModule\Alt\Web\Interaction
             return;
         }
         // save the entity.
-        if( $this->session->verifyToken() && $this->contextVerifyTokenAndSave( $entity, $action, 'save' ) ) {
+        if( $this->session->verifyToken() && $this->contextSaveOnlyOnce( $entity, $action, 'save' ) ) {
             // saved just now.
             $this->view->set( 'alert-success', 'your friendship has been saved. ' );
         }
@@ -98,7 +98,7 @@ class interact extends \wsModule\Alt\Web\Interaction
             return;
         }
         // show the confirm view. save token as well.
-        if( $this->contextValidateAndPushToken( $entity, $action, 'save' ) ) {
+        if( $this->contextValidateUnless( $entity, $action, 'save' ) ) {
             $token = $this->session->pushToken();
             $this->view->set( $this->session->popTokenTagName(), $token );
             $this->view->set( 'action', 'save' );
@@ -106,7 +106,7 @@ class interact extends \wsModule\Alt\Web\Interaction
             return;
         }
         // save the entity.
-        if( $this->session->verifyToken() && $this->contextVerifyTokenAndSave( $entity, $action, 'save' ) ) {
+        if( $this->session->verifyToken() && $this->contextSaveOnlyOnce( $entity, $action, 'save' ) ) {
             $this->view->set( 'alert-success', 'your friendship has been saved. ' );
         }
         else {

@@ -198,7 +198,7 @@ class Interaction
      * @param string                            $form
      * @return bool
      */
-    public function contextValidateAndPushToken( $entity, $action, $form )
+    public function contextValidateUnless( $entity, $action, $form )
     {
         $role = $this->role->applyLoadable( $entity );
         // validate data *always*. 
@@ -221,7 +221,7 @@ class Interaction
      * @param string                            $form
      * @return bool
      */
-    public function contextVerifyTokenAndSave( $entity, $action, $form )
+    public function contextSaveOnlyOnce( $entity, $action, $form )
     {
         // check if already saved.
         if( $this->checkPin( $form ) ) return false;
