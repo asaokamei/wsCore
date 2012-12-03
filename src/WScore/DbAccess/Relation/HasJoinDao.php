@@ -9,11 +9,6 @@ class Relation_HasJoinDao implements Relation_Interface
     /** @var EntityManager */
     protected $em;
 
-    /** @var string */
-    protected $joinModelName;
-    /** @var string */
-    protected $joinTable;
-
     /** @var \WScore\DbAccess\Model */
     protected $joinModel;
     
@@ -31,7 +26,6 @@ class Relation_HasJoinDao implements Relation_Interface
 
     /** @var \WScore\DbAccess\Model */
     protected $targetModel;
-    protected $targetModelName;
     protected $targetColumn;
 
     protected $order  = null;    // select order for get
@@ -48,24 +42,24 @@ class Relation_HasJoinDao implements Relation_Interface
     public function __construct( $em, $source, $relInfo )
     {
         $this->em     = $em;
-        // set up join table information.
-        $this->source           = $source;
-        $this->joinModelName    = $relInfo[ 'join_model' ];
-        $this->joinModel        = $this->em->getModel( $this->joinModelName );
-        $this->joinTable        = $this->joinModel->getTable();
+        $default      = array(
+            'sourceColumn'       => null,
+            'target_column'      => null,
+            'join_source_column' => null,
+            'join_target_column' => null,
+        );
+        $relInfo = array_merge( $default, $relInfo );
         // set up about source data.
-        $sourceModel = $em->getModel( $source->_get_Model() );
-        $this->joinSourceColumn = isset( $relInfo[ 'join_source_column' ] ) ?
-            $relInfo[ 'join_source_column' ] : $sourceModel->getIdName();
-        $this->sourceColumn = isset( $relInfo[ 'sourceColumn' ] ) ?
-            $relInfo[ 'sourceColumn' ] : $sourceModel->getIdName();
+        $sourceModel            = $em->getModel( $source->_get_Model() );
+        $this->source           = $source;
+        $this->sourceColumn     = $relInfo[ 'sourceColumn' ] ?: $sourceModel->getIdName();
         // set up about target data.
-        $this->targetModelName      = $relInfo[ 'target_model' ];
-        $this->targetModel = $em->getModel( $this->targetModelName );
-        $this->joinTargetColumn = isset( $relInfo[ 'join_target_column' ] ) ?
-            $relInfo[ 'join_target_column' ] : $this->targetModel->getIdName();
-        $this->targetColumn     = isset( $relInfo[ 'target_column' ] ) ?
-            $relInfo[ 'target_column' ] : $this->targetModel->getIdName();
+        $this->targetModel      = $em->getModel( $relInfo[ 'target_model' ] );
+        $this->targetColumn     = $relInfo[ 'target_column' ] ?: $this->targetModel->getIdName();
+        // set up join table information.
+        $this->joinModel        = $this->em->getModel( $relInfo[ 'join_model' ] );
+        $this->joinSourceColumn = $relInfo[ 'join_source_column' ] ?: $sourceModel->getIdName();
+        $this->joinTargetColumn = $relInfo[ 'join_target_column' ] ?: $this->targetModel->getIdName();
         // always load relations. 
         $this->load();
     }
@@ -113,7 +107,7 @@ class Relation_HasJoinDao implements Relation_Interface
 
     /**
      * @param \WScore\DbAccess\Entity_Interface $target
-     * @return Relation_Interface|Relation_HasJoinDao
+     * @return \WScore\DbAccess\Entity_Interface
      */
     public function set( $target )
     {
@@ -121,7 +115,7 @@ class Relation_HasJoinDao implements Relation_Interface
         $this->target[ $target->_get_cenaId() ] = $target;
         $this->linked = false;
         $this->link();
-        return $this;
+        return $this->getJoinRecord( $target );
     }
 
     /**
@@ -143,24 +137,33 @@ class Relation_HasJoinDao implements Relation_Interface
         if( !$this->source ) return $this;
         if( !$this->target ) return $this;
         // check if relation already exists.
-        foreach( $this->target as $target )
-        {
-            $targetValue = $target[ $this->targetColumn ];
-            if( !isset( $this->joints[ $targetValue ] ) ) {
-                $values = array(
-                    $this->joinSourceColumn => $this->source[ $this->sourceColumn ],
-                    $this->joinTargetColumn => $target[ $this->targetColumn ],
-                );
-                if( is_array( $this->values ) && !empty( $this->values ) ) {
-                    $values = array_merge( $this->values, $values );
-                }
-                $joint = $this->joinModel->getRecord( $values );
-                $joint = $this->em->register( $joint );
-                $this->joints[ $targetValue ] = $joint;
-            }
+        foreach( $this->target as $target ) {
+            $this->linkTarget( $target );
         }
         $this->linked = true;
         return $this;
+    }
+
+    /**
+     * @param \WScore\DbAccess\Entity_Interface $target
+     * @return \WScore\DbAccess\Entity_Interface
+     */
+    public function linkTarget( $target )
+    {
+        $targetValue = $target[ $this->targetColumn ];
+        if( !isset( $this->joints[ $targetValue ] ) ) {
+            $values = array(
+                $this->joinSourceColumn => $this->source[ $this->sourceColumn ],
+                $this->joinTargetColumn => $target[ $this->targetColumn ],
+            );
+            if( is_array( $this->values ) && !empty( $this->values ) ) {
+                $values = array_merge( $this->values, $values );
+            }
+            $joint = $this->joinModel->getRecord( $values );
+            $joint = $this->em->register( $joint );
+            $this->joints[ $targetValue ] = $joint;
+        }
+        return $this->joints[ $targetValue ];
     }
 
     /**

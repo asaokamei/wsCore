@@ -70,7 +70,7 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         $friend2 = $this->friend->find( $id2 );
 
         // first network from friend1 -> friend2.
-        $join1  = $this->friend->relation( $friend1, 'network' )->set( $friend2 )->getJoinRecord( $friend2 );
+        $join1  = $this->friend->relation( $friend1, 'network' )->set( $friend2 );
         // and set some properties in the joint. 
         $join1->comment = 'first comment';
         $join1->status  = 1;
