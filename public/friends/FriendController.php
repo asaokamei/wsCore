@@ -51,6 +51,9 @@ class FriendController
     {
         $model = $this->em->getModel( 'friends\model\Friends' );
         $entities   = $model->query()->select();
+        foreach( $entities as $friend ) {
+            $this->role->applyActive( $friend )->relation( 'groups' )->load();
+        }
         $this->view->showForm_list( $entities, 'list' );
         return $this->view;
     }
@@ -64,7 +67,7 @@ class FriendController
         $id = $parameter[ 'id' ];
         $friend   = $this->em->getEntity( 'friends\model\Friends', $id );
         $contacts = $this->em->relation( $friend, 'contacts' )->get();
-        $groups   = $this->em->relation( $friend, 'groups' )->get();
+        $groups   = $this->em->relation( $friend, 'groups' )->load();
         $this->view->showForm_info( $friend, $contacts );
         
         return $this->view;
@@ -80,6 +83,11 @@ class FriendController
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
         if( $this->front->request->isPost() )
         {
+            // update groups
+            $groups = $this->em->getEntity( 'friends\model\Group', $_POST[ 'groups' ] );
+            $this->em->relation( $friend, 'groups' )->load();
+
+            // update friends info
             $loadable = $this->role->applyLoadable( $friend );
             $loadable->loadData();
             if( $loadable->validate() )
@@ -91,7 +99,10 @@ class FriendController
                 exit;
             }
         }
-        $this->view->showForm_detail( $friend );
+        $groups = $this->em->getModel( 'friends\model\Group' )->query()->select();
+        $groups = $this->em->packToArray( $groups, array( 'group_code', 'name' ) );
+        $this->em->relation( $friend, 'groups' )->load();
+        $this->view->showForm_detail( $friend, $groups );
         return $this->view;
     }
     // +----------------------------------------------------------------------+

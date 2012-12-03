@@ -88,12 +88,30 @@ class friendsView
         $tags        = $this->tags;
         $appUrl      = $this->get( 'appUrl' );
         $editUrl     = $appUrl . 'detail/' . $id;
-        $contents    = array();
+        // about groups
+        $groups = $entity->relation( 'groups' )->get();
+        $groupInfo = array();
+        if( empty( $groups ) ) {
+            $groupInfo[] = '-no group-';
+        }
+        else {
+            foreach( $groups as $group ) {
+                $groupInfo[] = $group->group_code;
+            }
+        }
+        $groupInfo = implode( ', ', $groupInfo );
         // -----------------------------
         // show brief info about my friend.
-        $contents[ ] = $this->lists( $role, array( 'gender', 'birthday', 'star' ) );
+        $contents    = array();
         $contents[ ] = $tags->a( 'edit info' )->href( $editUrl )->_class( 'btn btn-primary' )->style( 'float:right' );
-        $contents[ ] = $tags->div()->style( 'clear:both' );
+        $dl = $this->tags->dl()->_class( 'dl-horizontal' );
+        $dl->contain_( $this->tags->dt( 'basic info' ) );
+        $dl->contain_( $this->tags->dd( $this->lists( $role, array( 'gender', 'birthday', 'star' ) ) ) );
+        $dl->contain_( $this->tags->div()->style( 'clear:both') );
+        $dl->contain_( $this->tags->dt( 'groups' ) );
+        $dl->contain_( $this->tags->dd( $groupInfo ) );
+        $dl->contain_( $this->tags->div()->style( 'clear:both' ) );
+        $contents[] = $dl;
         // -----------------------------
         // organize contacts based on types
         $roleContacts = array();
@@ -130,16 +148,30 @@ class friendsView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Selectable $entity
+     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param string[] $groups
      */
-    public function showForm_detail( $entity )
+    public function showForm_detail( $entity, $groups )
     {
+        // get groups
+        $myGroup = $entity->relation( 'groups' )->get();
+        $selectedGroup = array();
+        foreach( $myGroup as $grp ) {
+            $selectedGroup[] = $grp->group_code;
+        }
+        $select = $this->tags->select( 'groups', $groups, $selectedGroup, array( 'multiple'=>true ) );
+        $selGroup = $this->tags->dl(
+            $this->tags->dt( 'group list' ),
+            $this->tags->dd( $select )
+        );
+        // form basic info
         $entity = $this->role->applySelectable( $entity );
         $entity->setHtmlType( 'form' );
         $this->set( 'title', $entity->popHtml( 'name', 'html' ) );
         $back = $this->view->get( 'appUrl' ) . $entity->getId();
         $form = $this->tags->form()->method( 'post' )->action( '' );
         $form->contain_(
+            $selGroup,
             $this->dl( $entity, array( 'name', 'gender', 'birthday', 'star', 'memo' ) ),
             $this->view->bootstrapButton( 'submit', 'update info', 'btn btn-primary' ),
             $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' )
@@ -288,7 +320,7 @@ class friendsView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Selectable[] $entity
+     * @param \WScore\DbAccess\Entity_Interface[] $entity
      * @param string                             $type
      * @return \WScore\Html\Tags
      */
@@ -296,13 +328,16 @@ class friendsView
     {
         $table  = $this->tags->table()->_class( 'table' )->contain_(
             $this->tags->tr(
+                $this->tags->th( ' ' ),
                 $this->tags->th( 'name' ),
-                $this->tags->th( 'star' ),
+                $this->tags->th( 'group' ),
                 $this->tags->th( '' )
             )
         );
         $appUrl = $this->view->get( 'appUrl' );
-        foreach ( $entity as $row ) {
+        foreach ( $entity as $row )
+        {
+            $groups = $row->relation( 'groups' )->get();
             $row = $this->role->applySelectable( $row );
             $id  = $row->getId();
             $row->setHtmlType( $type );
@@ -310,11 +345,22 @@ class friendsView
             /** @var $task \task\entity\task */
             $memo   = $this->tags->a( $row->popHtml( 'name' ) )->href( $appUrl . $id )->style( 'font-weight:bold' );
             $star   = $row->popHtml( 'star' );
+            $groupInfo = array();
+            if( empty( $groups ) ) {
+                $groupInfo[] = '--';
+            }
+            else {
+                foreach( $groups as $group ) {
+                    $groupInfo[] = $group->group_code;
+                }
+            }
+            $groupInfo = implode( ', ', $groupInfo );
             $button = $this->tags->a( '>>' )->href( $appUrl . $id )->_class( 'btn btn-small btn' );
             $table->contain_(
                 $tr = $this->tags->tr(
-                    $this->tags->td( $memo ),
                     $this->tags->td( $star ),
+                    $this->tags->td( $memo ),
+                    $this->tags->td( $groupInfo ),
                     $this->tags->td( $button )
                 )
             );
