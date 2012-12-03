@@ -69,6 +69,31 @@ class Relation_HasJoinDao implements Relation_Interface
     }
 
     /**
+     * load relations information. use it prior to get/del/add/etc.
+     *
+     * @return Relation_HasJoinDao
+     */
+    public function load()
+    {
+        // get joints (join records).
+        $value  = $this->source[ $this->joinSourceColumn ];
+        $joints = $this->joinModel->fetch( $value, $this->joinSourceColumn );
+        if( empty( $joints ) ) return $this;
+        // set joints based on joinTargetColumn value.
+        $column = $this->joinTargetColumn;
+        foreach( $joints as $j ) {
+            $this->joints[ $j->$column ] = $j;
+        }
+        // get target entities. save it as: $this->targets[ cena_id ] = $entity.
+        $lists   = $this->em->packToArray( $joints, $this->joinTargetColumn );
+        $targets = $this->targetModel->fetch( $lists, $this->targetColumn );
+        foreach( $targets as $t ) {
+            $this->target[ $t->_get_cenaId() ] = $t;
+        }
+        return $this;
+    }
+
+    /**
      * @param DataRecord $target
      * @return Relation_Interface|Relation_HasJoinDao
      */
@@ -123,7 +148,7 @@ class Relation_HasJoinDao implements Relation_Interface
      * @param null|DataRecord $target
      * @return Relation_HasOne
      */
-    public function del( $target=null ) 
+    public function del( $target=null )
     {
         $sourceColumn = $this->sourceColumn;
         $sourceValue = $this->source->$sourceColumn;
@@ -168,21 +193,6 @@ class Relation_HasJoinDao implements Relation_Interface
         return $this->target;
     }
 
-    public function load()
-    {
-        $model = $this->joinModel;
-        $column = $this->joinSourceColumn;
-        $value = $this->source->$column;
-        $this->joints = $model->fetch( $value, $this->joinSourceColumn );
-        if( empty( $this->joints ) ) return $this;
-        $list = array();
-        $column = $this->joinTargetColumn;
-        foreach( $this->joints as $entity ) {
-            $list[] = $entity->$column;
-        }
-        $this->target = $this->targetModel->fetch( $list, $this->targetColumn );
-        return $this;
-    }
     /**
      * @param string $order
      * @return \WScore\DbAccess\Relation_HasJoinDao
