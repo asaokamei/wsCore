@@ -199,9 +199,10 @@ class Model
      * @return Entity_Interface
      */
     public function find( $id ) {
-        $record = $this->query( $this->entityClass )->id( $id )->limit(1)->select();
+        $limit = count( $id );
+        $record = $this->query( $this->entityClass )->id( $id )->limit( $limit )->select();
         $this->entityClass = null;
-        if( $record ) $record = $record[0];
+        if( count( $record ) == 1 ) $record = $record[0];
         /** @var $record Entity_Interface */
         return $record;
     }

@@ -368,6 +368,7 @@ class Query
         return $this;
     }
     public function id( $val, $type=NULL ) {
+        if( is_array( $val ) ) return $this->w( $this->id_name )->in( $val, $type );
         return $this->w( $this->id_name )->mod( $val, '=', $type );
     }
     public function eq( $val, $type=NULL ) {
