@@ -75,6 +75,7 @@ class Relation_HasJoinDao implements Relation_Interface
         $value  = $this->source[ $this->sourceColumn ];
         $joints = $this->joinModel->fetch( $value, $this->joinSourceColumn );
         if( empty( $joints ) ) return $this;
+        
         // set joints based on joinTargetColumn value.
         $column = $this->joinTargetColumn;
         foreach( $joints as $j ) {
@@ -106,6 +107,8 @@ class Relation_HasJoinDao implements Relation_Interface
     }
 
     /**
+     * create relation between the target and source entity. returns the joint entity. 
+     * 
      * @param \WScore\DbAccess\Entity_Interface $target
      * @return \WScore\DbAccess\Entity_Interface
      */
@@ -145,6 +148,8 @@ class Relation_HasJoinDao implements Relation_Interface
     }
 
     /**
+     * create joint entity for the target and register it to em. hence linked. 
+     * 
      * @param \WScore\DbAccess\Entity_Interface $target
      * @return \WScore\DbAccess\Entity_Interface
      */
@@ -167,6 +172,8 @@ class Relation_HasJoinDao implements Relation_Interface
     }
 
     /**
+     * deletes the relation between the source and target entities. 
+     * 
      * @param null|\WScore\DbAccess\Entity_Interface $target
      * @return Relation_HasOne
      */
@@ -192,6 +199,9 @@ class Relation_HasJoinDao implements Relation_Interface
     }
 
     /**
+     * returns the joint entity for the target (without creating a new relation). 
+     * returns false if no relation exists. 
+     * 
      * @param DataRecord $target
      * @return bool|array|\WScore\DbAccess\Entity_Interface|\WScore\DbAccess\Entity_Interface[]
      */
@@ -204,6 +214,8 @@ class Relation_HasJoinDao implements Relation_Interface
     }
 
     /**
+     * returns the related entities (i.e. targets) for the source entity. 
+     * 
      * @return DataRecord[]
      */
     public function get()
