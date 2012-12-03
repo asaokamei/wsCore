@@ -164,20 +164,25 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function get()
     {
-        $table  = $this->targetModel->getTable();
-        $order  = ( $this->order ) ?: $this->joinModel->getIdName();
-        $column = $this->sourceColumn;
-        $record = $this->targetModel->query()
-            ->joinOn(
-                $this->joinTable,
-                "{$table}.{$this->targetColumn}={$this->joinTable}.{$this->joinTargetColumn}"
-            )
-            ->w( $this->joinSourceColumn )->eq( $this->source->$column )
-            ->order( $order )
-            ->select();
-        return $record;
+        if( !$this->target ) $this->load();
+        return $this->target;
     }
 
+    public function load()
+    {
+        $model = $this->joinModel;
+        $column = $this->joinSourceColumn;
+        $value = $this->source->$column;
+        $this->joints = $model->fetch( $value, $this->joinSourceColumn );
+        if( empty( $this->joints ) ) return $this;
+        $list = array();
+        $column = $this->joinTargetColumn;
+        foreach( $this->joints as $entity ) {
+            $list[] = $entity->$column;
+        }
+        $this->target = $this->targetModel->fetch( $list, $this->targetColumn );
+        return $this;
+    }
     /**
      * @param string $order
      * @return \WScore\DbAccess\Relation_HasJoinDao
