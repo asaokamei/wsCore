@@ -167,6 +167,12 @@ class EntityManager
     public function setupEntity( $entity, $type=null, $identifier=null )
     {
         if( !$entity ) return;
+        if( is_array( $entity ) ) {
+            foreach( $entity as $ent ) {
+                $this->setupEntity( $ent, $type, $identifier );
+            }
+            return;
+        }
         // force to set type.
         if( $type ) {
             $this->setEntityProperty( $entity, 'type', $type );
@@ -306,6 +312,47 @@ class EntityManager
         $entities = $model->fetch( $value, $column, $packed );
         $entities = $this->register( $entities );
         return $entities;
+    }
+
+    /**
+     * @param array $arr
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function arrGet( $arr, $key, $default=null ) {
+        if( is_array( $arr ) && array_key_exists( $key, $arr ) ) {
+            return $arr[ $key ];
+        }
+        elseif( is_object( $arr ) && isset( $arr->$key ) ) {
+            return $arr->$key;
+        }
+        return $default;
+    }
+
+    /**
+     * @param array|object  $record
+     * @param string|array  $select
+     * @return array
+     */
+    public function packToArray( $record, $select )
+    {
+        $result = array();
+        if( empty( $record ) ) return $result;
+        foreach( $record as $rec ) {
+            if( !is_array( $select ) ) {
+                $result[] = $this->arrGet( $rec, $select );
+            }
+            else {
+                $pack = array();
+                foreach( $select as $item ) {
+                    $pack[] = $this->arrGet( $rec, $item );
+                }
+                $result[] = $pack;
+            }
+        }
+        $result = array_values( $result );
+        return $result;
     }
     // +----------------------------------------------------------------------+
 }
