@@ -31,7 +31,7 @@ class Relation_HasJoinDao implements Relation_Interface
     protected $order  = null;    // select order for get
     protected $values = array(); // extra values when set
 
-    protected $linked = false;
+    protected $linked = true;
 
     /**
      * @param EntityManager $em
@@ -116,7 +116,7 @@ class Relation_HasJoinDao implements Relation_Interface
     {
         if( !$target ) return $this;
         $this->target[ $target->_get_cenaId() ] = $target;
-        $this->linked = false;
+        $this->linked = true;
         $this->link();
         return $this->getJoinRecord( $target );
     }
@@ -136,8 +136,6 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function link( $save=false )
     {
-        if( $this->linked )  return $this;
-        if( !$this->source ) return $this;
         if( !$this->target ) return $this;
         // check if relation already exists.
         foreach( $this->target as $target ) {
