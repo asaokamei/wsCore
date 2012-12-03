@@ -93,7 +93,7 @@ class Form extends Tags
      * @internal param array $value
      * @return Form|Tags
      */
-    public function select( $name, $items, $checked=NULL, $attributes=array() ) 
+    public function select( $name, $items, $checked=array(), $attributes=array() )
     {
         $form = clone $this;
         $form->style = 'select';
