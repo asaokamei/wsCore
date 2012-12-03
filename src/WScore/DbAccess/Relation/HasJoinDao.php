@@ -66,6 +66,8 @@ class Relation_HasJoinDao implements Relation_Interface
             $relInfo[ 'join_target_column' ] : $this->targetModel->getIdName();
         $this->targetColumn     = isset( $relInfo[ 'target_column' ] ) ?
             $relInfo[ 'target_column' ] : $this->targetModel->getIdName();
+        // always load relations. 
+        $this->load();
     }
 
     /**
@@ -76,7 +78,7 @@ class Relation_HasJoinDao implements Relation_Interface
     public function load()
     {
         // get joints (join records).
-        $value  = $this->source[ $this->joinSourceColumn ];
+        $value  = $this->source[ $this->sourceColumn ];
         $joints = $this->joinModel->fetch( $value, $this->joinSourceColumn );
         if( empty( $joints ) ) return $this;
         // set joints based on joinTargetColumn value.
@@ -88,19 +90,35 @@ class Relation_HasJoinDao implements Relation_Interface
         $lists   = $this->em->packToArray( $joints, $this->joinTargetColumn );
         $targets = $this->targetModel->fetch( $lists, $this->targetColumn );
         foreach( $targets as $t ) {
+            $this->loadJoint( $t );
             $this->target[ $t->_get_cenaId() ] = $t;
         }
         return $this;
     }
 
     /**
-     * @param DataRecord $target
+     * load joint data associated with the target entity into the entity. 
+     * 
+     * @param \WScore\DbAccess\Entity_Interface $target
+     */
+    public function loadJoint( $target )
+    {
+        $value = $target[ $this->targetColumn ];
+        if( isset( $this->joints[ $value ] ) ) {
+            foreach( $this->joints[ $value ] as $k => $v ) {
+                if( !isset( $target->$k ) ) $target->$k = $v;
+            }
+        }
+    }
+
+    /**
+     * @param \WScore\DbAccess\Entity_Interface $target
      * @return Relation_Interface|Relation_HasJoinDao
      */
     public function set( $target )
     {
-        $this->target = $target;
         if( !$target ) return $this;
+        $this->target[ $target->_get_cenaId() ] = $target;
         $this->linked = false;
         $this->link();
         return $this;
@@ -125,63 +143,61 @@ class Relation_HasJoinDao implements Relation_Interface
         if( !$this->source ) return $this;
         if( !$this->target ) return $this;
         // check if relation already exists.
-        $record = $this->getJoinRecord( $this->target );
-        // adding new relation.
-        // TODO: check if id is permanent or tentative.
-        if( empty( $record ) ) {
-            $sourceColumn = $this->sourceColumn;
-            $targetColumn = $this->targetColumn;
-            $values = array(
-                $this->joinSourceColumn => $this->source->$sourceColumn,
-                $this->joinTargetColumn => $this->target->$targetColumn,
-            );
-            if( is_array( $this->values ) && !empty( $this->values ) ) {
-                $values = array_merge( $this->values, $values );
+        foreach( $this->target as $target )
+        {
+            $targetValue = $target[ $this->targetColumn ];
+            if( !isset( $this->joints[ $targetValue ] ) ) {
+                $values = array(
+                    $this->joinSourceColumn => $this->source[ $this->sourceColumn ],
+                    $this->joinTargetColumn => $target[ $this->targetColumn ],
+                );
+                if( is_array( $this->values ) && !empty( $this->values ) ) {
+                    $values = array_merge( $this->values, $values );
+                }
+                $joint = $this->joinModel->getRecord( $values );
+                $joint = $this->em->register( $joint );
+                $this->joints[ $targetValue ] = $joint;
             }
-            $this->joinModel->insert( $values );
         }
         $this->linked = true;
         return $this;
     }
 
     /**
-     * @param null|DataRecord $target
+     * @param null|\WScore\DbAccess\Entity_Interface $target
      * @return Relation_HasOne
      */
     public function del( $target=null )
     {
-        $sourceColumn = $this->sourceColumn;
-        $sourceValue = $this->source->$sourceColumn;
-        $query = $this->joinModel->query();
-        $query->w( $this->joinSourceColumn )->eq( $sourceValue );
-        if( !$target ) $target = $this->target;
-        if( $target ) {
-            $targetColumn = $this->targetColumn;
-            $targetValue = $target->$targetColumn;
-            $query->w( $this->joinTargetColumn )->eq( $targetValue );
+        if( !$target && !empty( $this->joints ) ) {
+            foreach( $this->joints as $joint ) {
+                $this->em->delete( $joint );
+            }
+            $this->joints = array();
+            return $this;
         }
-        $query->makeDelete()->exec();
+        $targetValue = $target[ $this->targetColumn ];
+        if( isset( $this->target[ $target->_get_cenaId() ] ) ) {
+            unset( $this->target[ $target->_get_cenaId() ] );
+        }
+        if( isset( $this->joints[ $targetValue ] ) ) {
+            $this->em->delete( $this->joints[ $targetValue ] );
+            unset( $this->joints[ $targetValue ] );
+            return $this;
+        }
         return $this;
     }
 
     /**
      * @param DataRecord $target
-     * @return bool|array|DataRecord[]
+     * @return bool|array|\WScore\DbAccess\Entity_Interface|\WScore\DbAccess\Entity_Interface[]
      */
     public function getJoinRecord( $target=null )
     {
-        $sourceColumn = $this->sourceColumn;
-        $sourceValue = $this->source->$sourceColumn;
-        $query = $this->joinModel->query();
-        $query->w( $this->joinSourceColumn )->eq( $sourceValue );
-        if( !$target ) $target = $this->target;
-        if( $target ) {
-            $targetColumn = $this->targetColumn;
-            $targetValue = $target->$targetColumn;
-            $query->w( $this->joinTargetColumn )->eq( $targetValue );
-        }
-        $record = $query->select();
-        return $record;
+        if( !$target ) return $this->joints;
+        $targetValue = $target[ $this->targetColumn ];
+        if( isset( $this->joints[ $targetValue ] ) ) return $this->joints[ $targetValue ];
+        return false;
     }
 
     /**

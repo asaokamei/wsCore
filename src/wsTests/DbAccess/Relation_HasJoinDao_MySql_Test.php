@@ -15,6 +15,9 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
     /** @var \WScore\DbAccess\Query */
     public $query;
 
+    /** @var \WScore\DbAccess\EntityManager */
+    public $em;
+    
     /** @var Dao_Friend */
     public $friend;
 
@@ -32,6 +35,7 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->setupFriend();
         $this->setupNetwork();
 
+        $this->em      = Core::get( 'EntityManager' );
         $this->friend  = Core::get( '\wsTests\DbAccess\Dao_Friend' );
         $this->network = Core::get( '\wsTests\DbAccess\Dao_Network' );
 
@@ -57,6 +61,30 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->query->execSQL( Dao_SetUp::setupNetwork( $table ) );
     }
     // +----------------------------------------------------------------------+
+    function test_set_joint_properties()
+    {
+        // create a friend data.
+        $id1 = $this->friend->insert( Dao_SetUp::makeFriend() );
+        $friend1 = $this->friend->find( $id1 );
+        $id2 = $this->friend->insert( Dao_SetUp::makeFriend(1) );
+        $friend2 = $this->friend->find( $id2 );
+
+        // first network from friend1 -> friend2.
+        $join1  = $this->friend->relation( $friend1, 'network' )->set( $friend2 )->getJoinRecord( $friend2 );
+        // and set some properties in the joint. 
+        $join1->comment = 'first comment';
+        $join1->status  = 1;
+        $this->em->save();
+
+        // assert that friend1's good friend is a friend2.
+        $friend1 = $this->em->getEntity( '\wsTests\DbAccess\Dao_Friend', $id1 );
+        $friends = $this->friend->relation( $friend1, 'network' )->get();
+        $goodFriend = array_shift( $friends );
+        $this->assertEquals( $friend2->_get_Id(), $goodFriend->_get_Id() );
+        // and joint data is propagated into the friend data. 
+        $this->assertEquals( 'first comment', $goodFriend->comment );
+        $this->assertEquals( '1', $goodFriend->status );
+    }
     function test_simple_HasJoinDao()
     {
         // create a friend data.
@@ -66,45 +94,25 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         $friend2 = $this->friend->find( $id );
         $id = $this->friend->insert( Dao_SetUp::makeFriend(2) );
         $friend3 = $this->friend->find( $id );
-        $id = $this->friend->insert( Dao_SetUp::makeFriend(3) );
-        $friend4 = $this->friend->find( $id );
 
         // first network from friend1 -> friend2.
-        $join  = $this->friend->relation( $friend1, 'network' )->set( $friend2 )->getJoinRecord();
-        $join1 = $join[0];
-        $join1->comment = 'first comment';
-        $join1->status  = 1;
-        $this->network->update( $join1->_get_Id(), $join1 );
+        $this->friend->relation( $friend1, 'network' )->set( $friend2 );
+        $this->friend->relation( $friend1, 'network' )->set( $friend3 );
+        $this->em->save();
 
         // assert that friend1's good friend is a friend2.
         $friends = $friend1->relation( 'network' )->get();
-        $goodFriend = $friends[0];
+        $goodFriend = array_shift( $friends );
         $this->assertEquals( $friend2->_get_Id(), $goodFriend->_get_Id() );
-        $this->assertEquals( 'first comment', $goodFriend->comment );
-        $this->assertEquals( '1', $goodFriend->status );
-
-        // add more friends. get them.
-        $this->friend->relation( $friend1, 'network' )->setValues( array( 'comment' => '2nd comment', 'status' => 2 ) )->set( $friend3 );
-        $friends = $this->friend->relation( $friend1, 'network' )->get();
-        $goodFriend2 = $friends[1];
+        $goodFriend2 = array_shift( $friends );
         $this->assertEquals( $friend3->_get_Id(), $goodFriend2->_get_Id() );
-        $this->assertEquals( '2nd comment', $goodFriend2->comment );
-        $this->assertEquals( '2', $goodFriend2->status );
-
-        // get all friends. in reverse order.
-        $friend1->relation( 'network' )->set( $friend3 );
-        $friends = $friend1->relation( 'network' )->setOrder( 'network_id DESC' )->get();
-        $goodFriend = $friends[0];
-        $this->assertEquals( $friend3->_get_Id(), $goodFriend->_get_Id() );
-        $goodFriend = $friends[1];
-        $this->assertEquals( $friend2->_get_Id(), $goodFriend->_get_Id() );
     }
     // +----------------------------------------------------------------------+
     function test_HasJoinDao_del()
     {
         // create a friend data.
-        $id = $this->friend->insert( Dao_SetUp::makeFriend() );
-        $friend1 = $this->friend->find( $id );
+        $id1 = $this->friend->insert( Dao_SetUp::makeFriend() );
+        $friend1 = $this->friend->find( $id1 );
         $id = $this->friend->insert( Dao_SetUp::makeFriend(1) );
         $friend2 = $this->friend->find( $id );
         $id = $this->friend->insert( Dao_SetUp::makeFriend(2) );
@@ -112,6 +120,7 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         // first network from friend1 -> friend2.
         $this->friend->relation( $friend1, 'network' )->set( $friend2 );
         $this->friend->relation( $friend1, 'network' )->set( $friend3 );
+        $this->em->save();
         
         // get my network.
         $myNetwork1 = $friend1->relation( 'network' )->get();
@@ -119,11 +128,21 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         
         // remove one of the network
         $friend1->relation( 'network' )->del( $friend2 );
+        $this->em->save();
 
-        // get my network, again.
+        // check my network in the relation object.
         $myNetwork2 = $friend1->relation( 'network' )->get();
         $this->assertEquals( 1, count( $myNetwork2 ) );
-        $this->assertEquals( $myNetwork1[1]->_get_Id(), $myNetwork2[0]->_get_Id() );
+        $goodFriend = array_shift( $myNetwork2 );
+        $this->assertEquals( $friend3->_get_Id(), $goodFriend->_get_Id() );
+
+        // read data from database again, and do the same check. 
+        $friend1 = $this->friend->find( $id1 );
+        $this->friend->relation( $friend1, 'network' );
+        $myNetwork2 = $friend1->relation( 'network' )->get();
+        $this->assertEquals( 1, count( $myNetwork2 ) );
+        $goodFriend = array_shift( $myNetwork2 );
+        $this->assertEquals( $friend3->_get_Id(), $goodFriend->_get_Id() );
     }
     // +----------------------------------------------------------------------+
 }
