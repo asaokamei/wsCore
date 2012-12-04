@@ -15,7 +15,9 @@ class Relation_HasRefs implements Relation_Interface
 
     /** @var Entity_Interface[] */
     protected $targets = array();
+    /** @var Model */
     protected $targetModel;
+    protected $targetModelName;
     protected $targetColumn;
 
     protected $linked = false;
@@ -26,13 +28,17 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function __construct( $em, $source, $relInfo )
     {
-        $this->em     = $em;
-        $this->source = $source;
-        $this->sourceColumn = isset( $relInfo[ 'source_column' ] ) ?
-            $relInfo[ 'source_column' ] : $this->em->getModel( $source->_get_Model() )->getIdName() ;
-        $this->targetModel  = $relInfo[ 'target_model' ];
-        $this->targetColumn = ( isset( $relInfo[ 'target_column' ] ) ) ?
-            $relInfo[ 'target_column' ] : $this->sourceColumn ;
+        $this->em = $em;
+        $default  = array(
+            'target_column' => null,
+            'source_column' => null,
+        );
+        $relInfo  = array_merge( $default, $relInfo );
+
+        $this->source          = $source;
+        $this->sourceColumn    = $relInfo[ 'source_column' ] ? : $this->em->getModel( $source->_get_Model() )->getIdName();
+        $this->targetModelName = $relInfo[ 'target_model' ];
+        $this->targetColumn    = $relInfo[ 'target_column' ] ? : $this->sourceColumn;
     }
 
     /**
@@ -42,7 +48,7 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function set( $target )
     {
-        if( $target->_get_Model() != $this->targetModel ) {
+        if( $target->_get_Model() != $this->targetModelName ) {
             throw new \RuntimeException( "target model not match!" );
         }
         $this->targets[] = $target;
@@ -95,7 +101,7 @@ class Relation_HasRefs implements Relation_Interface
     {
         $column = $this->sourceColumn;
         $value  = $this->source->$column;
-        $this->targets = $this->em->fetch( $this->targetModel, $value, $this->targetColumn );
+        $this->targets = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
         return $this->targets;
     }
 
