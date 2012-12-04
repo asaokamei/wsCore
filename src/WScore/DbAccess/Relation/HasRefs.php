@@ -106,9 +106,6 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function get()
     {
-        $column = $this->sourceColumn;
-        $value  = $this->source->$column;
-        $this->targets = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
         return $this->targets;
     }
 
