@@ -36,6 +36,18 @@ class Relation_HasOne implements Relation_Interface
         $this->targetModel     = $this->em->getModel( $relInfo[ 'target_model' ] );
         $this->targetColumn    = $relInfo[ 'target_column' ] ? : $this->targetModel->getIdName();
         $this->sourceColumn    = $relInfo[ 'source_column' ] ? : $this->targetColumn;
+        // always load relation data. 
+        $this->load();
+    }
+
+    /**
+     */
+    public function load()
+    {
+        $value   = $this->source[ $this->sourceColumn ];
+        if( $value ) {
+            $this->target = $this->targetModel->fetch( $value, $this->targetColumn );
+        }
     }
 
     /**
@@ -48,7 +60,7 @@ class Relation_HasOne implements Relation_Interface
         if( $target->_get_Model() != $this->targetModel->getModelName() ) {
             throw new \RuntimeException( "target model not match! " );
         }
-        $this->target = $target;
+        $this->target = array( $target );
         $this->linked = false;
         $this->link();
         return $this;
@@ -63,10 +75,9 @@ class Relation_HasOne implements Relation_Interface
         if( $this->linked )  return $this;
         if( !$this->target ) return $this;
         // TODO: check if id is permanent or tentative.
-        $column = $this->targetColumn;
-        $value  = $this->target->$column;
-        $column = $this->sourceColumn;
-        $this->source->$column = $value;
+        $target = $this->target[0];
+        $value  = $target[ $this->targetColumn ];
+        $this->source[ $this->sourceColumn ] = $value;
         $this->linked = true;
         if( $save ) { // TODO: check if this works or not.
             $this->em->saveEntity( $this->source );
@@ -79,8 +90,7 @@ class Relation_HasOne implements Relation_Interface
      * @return Relation_HasOne
      */
     public function del( $target=null ) {
-        $column = $this->sourceColumn;
-        $this->source->$column = null;
+        $this->source[ $this->sourceColumn ] = null;
         return $this;
     }
 
@@ -89,11 +99,7 @@ class Relation_HasOne implements Relation_Interface
      */
     public function get()
     {
-        $column  = $this->sourceColumn;
-        $value   = $this->source->$column;
-        $records = $this->targetModel->fetch( $value, $this->targetColumn );
-        $this->target = $records[0]; // HasOne has only one record, as name indicates.
-        return $records;
+        return $this->target;
     }
 
     /**
