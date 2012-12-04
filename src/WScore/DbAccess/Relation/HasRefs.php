@@ -39,6 +39,16 @@ class Relation_HasRefs implements Relation_Interface
         $this->sourceColumn    = $relInfo[ 'source_column' ] ? : $this->em->getModel( $source->_get_Model() )->getIdName();
         $this->targetModelName = $relInfo[ 'target_model' ];
         $this->targetColumn    = $relInfo[ 'target_column' ] ? : $this->sourceColumn;
+        // get relation data always. 
+        //$this->load();
+    }
+
+    /**
+     */
+    public function load()
+    {
+        $value  = $this->source[ $this->sourceColumn ];
+        $this->targets = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
     }
 
     /**
@@ -69,11 +79,9 @@ class Relation_HasRefs implements Relation_Interface
             !$this->source->isIdPermanent() ) {
             return $this;
         }
-        $column = $this->sourceColumn;
-        $value  = $this->source->$column;
-        $column = $this->targetColumn;
+        $value  = $this->source[ $this->sourceColumn ];
         foreach( $this->targets as &$entity ) {
-            $entity->$column = $value;
+            $entity[ $this->targetColumn ] = $value;
             if( $save ) { // TODO: check if this works or not.
                 $this->em->saveEntity( $entity );
             }
@@ -88,8 +96,7 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function del( $target=null ) {
         if( !is_null( $target ) ) {
-            $column = $this->targetColumn;
-            $target->$column = null;
+            $target[ $this->targetColumn ] = null;
         }
         return $this;
     }
