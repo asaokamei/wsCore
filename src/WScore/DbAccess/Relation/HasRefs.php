@@ -40,7 +40,7 @@ class Relation_HasRefs implements Relation_Interface
         $this->targetModelName = $relInfo[ 'target_model' ];
         $this->targetColumn    = $relInfo[ 'target_column' ] ? : $this->sourceColumn;
         // get relation data always. 
-        //$this->load();
+        $this->load();
     }
 
     /**
@@ -95,7 +95,7 @@ class Relation_HasRefs implements Relation_Interface
      * @return Relation_HasOne
      */
     public function del( $target=null ) {
-        if( !is_null( $target ) ) {
+        foreach( $this->targets as $target ) {
             $target[ $this->targetColumn ] = null;
         }
         return $this;

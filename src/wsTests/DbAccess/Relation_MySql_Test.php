@@ -138,7 +138,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         
         // delete relation. 
         $newFriend = $this->em->getEntity( 'wsTests\DbAccess\Dao_Friend', $idFriend );
-        $this->em->relation( $newFriend, 'contact' )->del( $contact );
+        $this->em->relation( $newFriend, 'contact' )->del();
         $this->em->save();
 
         // verify relation is deleted.
