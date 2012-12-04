@@ -14,7 +14,6 @@ class Relation_HasOne implements Relation_Interface
     protected $target;
     /** @var Model */
     protected $targetModel;
-    protected $targetModelName;
     protected $targetColumn;
 
     protected $linked = false;
@@ -34,8 +33,7 @@ class Relation_HasOne implements Relation_Interface
         $relInfo      = array_merge( $default, $relInfo );
         $this->source = $source;
         // set up target/source
-        $this->targetModelName = $relInfo[ 'target_model' ];
-        $this->targetModel     = $this->em->getModel( $this->targetModelName );
+        $this->targetModel     = $this->em->getModel( $relInfo[ 'target_model' ] );
         $this->targetColumn    = $relInfo[ 'target_column' ] ? : $this->targetModel->getIdName();
         $this->sourceColumn    = $relInfo[ 'source_column' ] ? : $this->targetColumn;
     }
@@ -47,7 +45,7 @@ class Relation_HasOne implements Relation_Interface
      */
     public function set( $target ) 
     {
-        if( $target->_get_Model() != $this->targetModelName ) {
+        if( $target->_get_Model() != $this->targetModel->getModelName() ) {
             throw new \RuntimeException( "target model not match! " );
         }
         $this->target = $target;
@@ -93,7 +91,7 @@ class Relation_HasOne implements Relation_Interface
     {
         $column  = $this->sourceColumn;
         $value   = $this->source->$column;
-        $records = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
+        $records = $this->targetModel->fetch( $value, $this->targetColumn );
         $this->target = $records[0]; // HasOne has only one record, as name indicates.
         return $records;
     }
