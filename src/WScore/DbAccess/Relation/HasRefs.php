@@ -62,7 +62,7 @@ class Relation_HasRefs implements Relation_Interface
             throw new \RuntimeException( "target model not match!" );
         }
         $this->targets[] = $target;
-        $this->linked = false;
+        $this->linked = true;
         $this->link();
         return $this;
     }
@@ -73,10 +73,10 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function link( $save=false )
     {
-        if( $this->linked )  return $this;
         if( empty( $this->targets ) ) return $this;
         if( $this->sourceColumn == $this->em->getModel( $this->source->_get_Model() )->getIdName() &&
             !$this->source->isIdPermanent() ) {
+            $this->linked = false;
             return $this;
         }
         $value  = $this->source[ $this->sourceColumn ];
@@ -86,7 +86,6 @@ class Relation_HasRefs implements Relation_Interface
                 $this->em->saveEntity( $entity );
             }
         }
-        $this->linked = true;
         return $this;
     }
 
