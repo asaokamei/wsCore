@@ -12,10 +12,12 @@ class Relation_HasOne implements Relation_Interface
 
     /** @var Entity_Interface */
     protected $target;
+    /** @var Model */
     protected $targetModel;
+    protected $targetModelName;
     protected $targetColumn;
 
-    protected $linked = FALSE;
+    protected $linked = false;
 
     /**
      * @param EntityManager $em
@@ -25,12 +27,17 @@ class Relation_HasOne implements Relation_Interface
     public function __construct( $em, $source, $relInfo )
     {
         $this->em     = $em;
+        $default      = array(
+            'target_column' => null,
+            'source_column' => null,
+        );
+        $relInfo      = array_merge( $default, $relInfo );
         $this->source = $source;
-        $this->targetModel  = $relInfo[ 'target_model' ];
-        $this->targetColumn = isset( $relInfo[ 'target_column' ] ) ?
-            $relInfo[ 'target_column' ] : $this->em->getModel( $this->targetModel )->getIdName();
-        $this->sourceColumn = isset( $relInfo[ 'source_column' ] ) ?
-            $relInfo[ 'source_column' ] : $this->targetColumn;
+        // set up target/source
+        $this->targetModelName = $relInfo[ 'target_model' ];
+        $this->targetModel     = $this->em->getModel( $this->targetModelName );
+        $this->targetColumn    = $relInfo[ 'target_column' ] ? : $this->targetModel->getIdName();
+        $this->sourceColumn    = $relInfo[ 'source_column' ] ? : $this->targetColumn;
     }
 
     /**
@@ -40,11 +47,11 @@ class Relation_HasOne implements Relation_Interface
      */
     public function set( $target ) 
     {
-        if( $target->_get_Model() != $this->targetModel ) {
+        if( $target->_get_Model() != $this->targetModelName ) {
             throw new \RuntimeException( "target model not match! " );
         }
         $this->target = $target;
-        $this->linked = FALSE;
+        $this->linked = false;
         $this->link();
         return $this;
     }
@@ -53,7 +60,7 @@ class Relation_HasOne implements Relation_Interface
      * @param bool $save
      * @return Relation_HasOne
      */
-    public function link( $save=FALSE )
+    public function link( $save=false )
     {
         if( $this->linked )  return $this;
         if( !$this->target ) return $this;
@@ -62,7 +69,7 @@ class Relation_HasOne implements Relation_Interface
         $value  = $this->target->$column;
         $column = $this->sourceColumn;
         $this->source->$column = $value;
-        $this->linked = TRUE;
+        $this->linked = true;
         if( $save ) { // TODO: check if this works or not.
             $this->em->saveEntity( $this->source );
         }
@@ -73,9 +80,9 @@ class Relation_HasOne implements Relation_Interface
      * @param null $target
      * @return Relation_HasOne
      */
-    public function del( $target=NULL ) {
+    public function del( $target=null ) {
         $column = $this->sourceColumn;
-        $this->source->$column = NULL;
+        $this->source->$column = null;
         return $this;
     }
 
@@ -86,7 +93,7 @@ class Relation_HasOne implements Relation_Interface
     {
         $column  = $this->sourceColumn;
         $value   = $this->source->$column;
-        $records = $this->em->fetch( $this->targetModel, $value, $this->targetColumn );
+        $records = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
         $this->target = $records[0]; // HasOne has only one record, as name indicates.
         return $records;
     }
