@@ -54,7 +54,7 @@ interface Entity_Interface
     public function _pop_error( $name=null );
     /**
      * @param $name
-     * @return \WScore\DbAccess\Relation_Interface
+     * @return \WScore\DbAccess\Entity_Interface[]
      */
     public function relation( $name );
 
