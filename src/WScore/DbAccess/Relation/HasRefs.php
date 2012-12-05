@@ -16,8 +16,6 @@ class Relation_HasRefs implements Relation_Interface
     protected $source;
     protected $sourceColumn;
 
-    /** @var Entity_Interface[] */
-    protected $targets = array();
     /** @var Model */
     protected $targetModel;
     protected $targetModelName;
@@ -52,7 +50,13 @@ class Relation_HasRefs implements Relation_Interface
     public function load()
     {
         $value  = $this->source[ $this->sourceColumn ];
-        $this->targets = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
+        $targets = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
+        $results = array();
+        if( !empty( $targets ) )
+        foreach( $targets as $t ) {
+            $results[ $t->_get_cenaId() ] = $t;
+        }
+        $this->source->setRelation( $this->relationName, $results );
     }
 
     /**
@@ -65,7 +69,9 @@ class Relation_HasRefs implements Relation_Interface
         if( $target->_get_Model() != $this->targetModelName ) {
             throw new \RuntimeException( "target model not match!" );
         }
-        $this->targets[] = $target;
+        $targets = $this->source->relation( $this->relationName );
+        $targets[ $target->_get_cenaId() ] = $target;
+        $this->source->setRelation( $this->relationName, $targets );
         $this->linked = true;
         $this->link();
         return $this;
@@ -77,14 +83,15 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function link( $save=false )
     {
-        if( empty( $this->targets ) ) return $this;
+        $targets = $this->source->relation( $this->relationName );
+        if( empty( $targets ) ) return $this;
         if( $this->sourceColumn == $this->em->getModel( $this->source->_get_Model() )->getIdName() &&
             !$this->source->isIdPermanent() ) {
             $this->linked = false;
             return $this;
         }
         $value  = $this->source[ $this->sourceColumn ];
-        foreach( $this->targets as &$entity ) {
+        foreach( $targets as $entity ) {
             $entity[ $this->targetColumn ] = $value;
             if( $save ) { // TODO: check if this works or not.
                 $this->em->saveEntity( $entity );
@@ -97,10 +104,22 @@ class Relation_HasRefs implements Relation_Interface
      * @param Entity_Interface $target
      * @return Relation_HasOne
      */
-    public function del( $target=null ) {
-        foreach( $this->targets as $target ) {
+    public function del( $target=null )
+    {
+        $targets = $this->source->relation( $this->relationName );
+        if( $target ) {
             $target[ $this->targetColumn ] = null;
+            if( isset( $targets[ $target->_get_cenaId() ] ) ) {
+                unset( $targets[ $target->_get_cenaId() ] );
+            }
         }
+        else {
+            foreach( $targets as $target ) {
+                $target[ $this->targetColumn ] = null;
+            }
+            $targets = array();
+        }
+        $this->source->setRelation( $this->relationName, $targets );
         return $this;
     }
 
@@ -109,7 +128,8 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function get()
     {
-        return $this->targets;
+        $targets = $this->source->relation( $this->relationName );
+        return $targets;
     }
 
     /**

@@ -88,22 +88,23 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         // create a contact with a relation with the friend.
         $dataContact = Dao_SetUp::makeContact();
         $contact1 = $this->contact->getRecord( $dataContact );
-        $this->friend->relation( $friend, 'contact' )->set( $contact1 );
+        $relation = $this->friend->relation( $friend, 'contact' );
+        $relation->set( $contact1 );
         $this->contact->insert( $contact1 );
 
         $this->assertEquals( $id1, $contact1->friend_id );
 
         // create another contact with the friendship.
         $contact2 = $this->contact->getRecord( Dao_SetUp::makeContact(2) );
-        $this->friend->relation( $friend, 'contact' )->set( $contact2 );
+        $relation->set( $contact2 );
         $this->contact->insert( $contact2 );
 
         $this->assertEquals( $id1, $contact2->friend_id );
 
         // get contacts from friend.
-        $contacts = $this->friend->relation( $friend, 'contact' )->get();
-        $con1 = $contacts[0];
-        $con2 = $contacts[1];
+        $contacts = $relation->get();
+        $con1 = array_shift( $contacts );
+        $con2 = array_shift( $contacts );
         $this->assertEquals( $contact1->contact_id, $con1->contact_id );
         $this->assertEquals( $contact2->contact_id, $con2->contact_id );
         $this->assertEquals( $contact1->contact_info, $con1->contact_info );

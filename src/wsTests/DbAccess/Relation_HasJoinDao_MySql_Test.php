@@ -96,12 +96,13 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         $friend3 = $this->friend->find( $id );
 
         // first network from friend1 -> friend2.
-        $this->friend->relation( $friend1, 'network' )->set( $friend2 );
-        $this->friend->relation( $friend1, 'network' )->set( $friend3 );
+        $relation = $this->friend->relation( $friend1, 'network' );
+        $relation->set( $friend2 );
+        $relation->set( $friend3 );
         $this->em->save();
 
         // assert that friend1's good friend is a friend2.
-        $friends = $friend1->relation( 'network' )->get();
+        $friends = $relation->get();
         $goodFriend = array_shift( $friends );
         $this->assertEquals( $friend2->_get_Id(), $goodFriend->_get_Id() );
         $goodFriend2 = array_shift( $friends );
@@ -118,28 +119,29 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         $id = $this->friend->insert( Dao_SetUp::makeFriend(2) );
         $friend3 = $this->friend->find( $id );
         // first network from friend1 -> friend2.
-        $this->friend->relation( $friend1, 'network' )->set( $friend2 );
-        $this->friend->relation( $friend1, 'network' )->set( $friend3 );
+        $relation1 = $this->friend->relation( $friend1, 'network' );
+        $relation1->set( $friend2 );
+        $relation1->set( $friend3 );
         $this->em->save();
         
         // get my network.
-        $myNetwork1 = $friend1->relation( 'network' )->get();
+        $myNetwork1 = $relation1->get();
         $this->assertEquals( 2, count( $myNetwork1 ) );
         
         // remove one of the network
-        $friend1->relation( 'network' )->del( $friend2 );
+        $relation1->del( $friend2 );
         $this->em->save();
 
         // check my network in the relation object.
-        $myNetwork2 = $friend1->relation( 'network' )->get();
+        $myNetwork2 = $relation1->get();
         $this->assertEquals( 1, count( $myNetwork2 ) );
         $goodFriend = array_shift( $myNetwork2 );
         $this->assertEquals( $friend3->_get_Id(), $goodFriend->_get_Id() );
 
         // read data from database again, and do the same check. 
         $friend1 = $this->friend->find( $id1 );
-        $this->friend->relation( $friend1, 'network' );
-        $myNetwork2 = $friend1->relation( 'network' )->get();
+        $relation2 = $this->friend->relation( $friend1, 'network' );
+        $myNetwork2 = $relation2->get();
         $this->assertEquals( 1, count( $myNetwork2 ) );
         $goodFriend = array_shift( $myNetwork2 );
         $this->assertEquals( $friend3->_get_Id(), $goodFriend->_get_Id() );

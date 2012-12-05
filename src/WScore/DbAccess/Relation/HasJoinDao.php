@@ -88,10 +88,12 @@ class Relation_HasJoinDao implements Relation_Interface
         // get target entities. save it as: $this->targets[ cena_id ] = $entity.
         $lists   = $this->em->packToArray( $joints, $this->joinTargetColumn );
         $targets = $this->targetModel->fetch( $lists, $this->targetColumn );
+        $results = array();
         foreach( $targets as $t ) {
             $this->loadJoint( $t );
-            $this->target[ $t->_get_cenaId() ] = $t;
+            $results[ $t->_get_cenaId() ] = $t;
         }
+        $this->source->setRelation( $this->relationName, $results );
         return $this;
     }
 
@@ -119,7 +121,9 @@ class Relation_HasJoinDao implements Relation_Interface
     public function set( $target )
     {
         if( !$target ) return $this;
-        $this->target[ $target->_get_cenaId() ] = $target;
+        $targets = $this->source->relation( $this->relationName );
+        $targets[ $target->_get_cenaId() ] = $target;
+        $this->source->setRelation( $this->relationName, $targets );
         $this->linked = true;
         $this->link();
         return $this->getJoinRecord( $target );
@@ -140,9 +144,10 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function link( $save=false )
     {
-        if( !$this->target ) return $this;
+        $targets = $this->source->relation( $this->relationName );
+        if( !$targets ) return $this;
         // check if relation already exists.
-        foreach( $this->target as $target ) {
+        foreach( $targets as $target ) {
             $this->linkTarget( $target );
         }
         $this->linked = true;
@@ -181,22 +186,25 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function del( $target=null )
     {
-        if( !$target && !empty( $this->joints ) ) {
+        $targets = $this->source->relation( $this->relationName );
+        if( $target ) {
+            $targetValue = $target[ $this->targetColumn ];
+            if( isset( $this->joints[ $targetValue ] ) ) {
+                $this->em->delete( $this->joints[ $targetValue ] );
+                unset( $this->joints[ $targetValue ] );
+            }
+            if( isset( $targets[ $target->_get_cenaId() ] ) ) {
+                unset( $targets[ $target->_get_cenaId() ] );
+            }
+        }
+        else {
             foreach( $this->joints as $joint ) {
                 $this->em->delete( $joint );
             }
+            $targets = array();
             $this->joints = array();
-            return $this;
         }
-        $targetValue = $target[ $this->targetColumn ];
-        if( isset( $this->target[ $target->_get_cenaId() ] ) ) {
-            unset( $this->target[ $target->_get_cenaId() ] );
-        }
-        if( isset( $this->joints[ $targetValue ] ) ) {
-            $this->em->delete( $this->joints[ $targetValue ] );
-            unset( $this->joints[ $targetValue ] );
-            return $this;
-        }
+        $this->source->setRelation( $this->relationName, $targets );
         return $this;
     }
 
@@ -222,8 +230,8 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function get()
     {
-        if( !$this->target ) $this->load();
-        return $this->target;
+        $targets = $this->source->relation( $this->relationName );
+        return $targets;
     }
 
     /**

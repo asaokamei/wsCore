@@ -13,8 +13,6 @@ class Relation_HasOne implements Relation_Interface
     protected $source;
     protected $sourceColumn;
 
-    /** @var Entity_Interface */
-    protected $target;
     /** @var Model */
     protected $targetModel;
     protected $targetColumn;
@@ -50,7 +48,8 @@ class Relation_HasOne implements Relation_Interface
     {
         $value   = $this->source[ $this->sourceColumn ];
         if( $value ) {
-            $this->target = $this->targetModel->fetch( $value, $this->targetColumn );
+            $target = $this->targetModel->fetch( $value, $this->targetColumn );
+            $this->source->setRelation( $this->relationName, $target );
         }
     }
 
@@ -64,7 +63,7 @@ class Relation_HasOne implements Relation_Interface
         if( $target->_get_Model() != $this->targetModel->getModelName() ) {
             throw new \RuntimeException( "target model not match! " );
         }
-        $this->target = array( $target );
+        $this->source->setRelation( $this->relationName, array( $target ) );
         $this->linked = false;
         $this->link();
         return $this;
@@ -77,10 +76,11 @@ class Relation_HasOne implements Relation_Interface
     public function link( $save=false )
     {
         if( $this->linked )  return $this;
-        if( !$this->target ) return $this;
+        if( !$this->source->relation( $this->relationName ) ) return $this;
         // TODO: check if id is permanent or tentative.
-        $target = $this->target[0];
-        $value  = $target[ $this->targetColumn ];
+        $targets = $this->source->relation( $this->relationName );
+        $target  = $targets[0];
+        $value   = $target[ $this->targetColumn ];
         $this->source[ $this->sourceColumn ] = $value;
         $this->linked = true;
         if( $save ) { // TODO: check if this works or not.
@@ -103,7 +103,7 @@ class Relation_HasOne implements Relation_Interface
      */
     public function get()
     {
-        return $this->target;
+        return $this->source->relation( $this->relationName );
     }
 
     /**
