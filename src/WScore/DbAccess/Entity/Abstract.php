@@ -159,7 +159,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     // +----------------------------------------------------------------------+
     /**
      * @param $name
-     * @return \WScore\DbAccess\Relation_Interface
+     * @return \WScore\DbAccess\Entity_Interface[]
      */
     public function relation( $name ) {
         if( isset( $this->_relations[ $name ] ) ) return $this->_relations[ $name ];
@@ -168,7 +168,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
 
     /**
      * @param $name
-     * @param $relation
+     * @param \WScore\DbAccess\Entity_Interface[] $relation
      * @return Entity_Interface
      */
     public function setRelation( $name, $relation ) {
