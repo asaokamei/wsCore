@@ -5,6 +5,9 @@ class Role_Active extends Role_Abstract
 {
     /** @var \WScore\DbAccess\EntityManager */
     protected $em;
+
+    /** @var \WScore\DbAccess\Relation_Interface[] */
+    protected $relations = array();
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DbAccess\EntityManager    $em
@@ -24,11 +27,11 @@ class Role_Active extends Role_Abstract
      */
     public function relation( $name )
     {
-        if( !$relation = $this->entity->relation( $name ) ) {
+        if( !isset( $this->relations[ $name ] ) ) {
             $relation = $this->em->relation( $this->entity, $name );
-            $this->entity->setRelation( $name, $relation );
+            $this->relations[ $name ] = $relation;
         }
-        return $relation;
+        return $this->relations[ $name ];
     }
     // +----------------------------------------------------------------------+
     //  saving data to db using dao.
