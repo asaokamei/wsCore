@@ -254,7 +254,6 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function replace( $targets )
     {
-        if( !is_array( $targets ) ) $targets = array( $targets );
         $newTarget = array();
         foreach( $targets as $t ) {
             $newTarget[ $t->_get_cenaId() ] = $t;
