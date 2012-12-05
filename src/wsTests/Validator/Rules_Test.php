@@ -24,7 +24,7 @@ class Rules_Test extends \PHPUnit_Framework_TestCase
     }
     function test_mail_type()
     {
-        $rule2 = $this->rule->email( 'test:test 1st' );
+        $rule2 = $this->rule->mail( 'test:test 1st' );
         
         // mail should return new rule object.
         $this->assertNotSame( $this->rule, $rule2 );
@@ -39,7 +39,7 @@ class Rules_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( 'email', $filter[ 'sanitize' ] );
         
         // type is email. 
-        $this->assertEquals( 'email', $rule2->getType() );
+        $this->assertEquals( 'mail', $rule2->getType() );
     }
     function test_date_type()
     {
@@ -56,7 +56,7 @@ class Rules_Test extends \PHPUnit_Framework_TestCase
 
         // date should have multiple type, date.
         $this->assertArrayHasKey( 'multiple', $filter );
-        $this->assertEquals( 'date', $filter[ 'multiple' ] );
+        $this->assertEquals( 'YMD', $filter[ 'multiple' ] );
         
         // email filter have sanitize original value, false. 
         $this->assertArrayHasKey( 'sanitize', $filter );
