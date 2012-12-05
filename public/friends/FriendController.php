@@ -67,7 +67,7 @@ class FriendController
         $id = $parameter[ 'id' ];
         $friend   = $this->em->getEntity( 'friends\model\Friends', $id );
         $contacts = $this->em->relation( $friend, 'contacts' )->get();
-        $groups   = $this->em->relation( $friend, 'groups' );
+        $this->em->relation( $friend, 'groups' );
         $this->view->showForm_info( $friend, $contacts );
         
         return $this->view;
@@ -84,6 +84,7 @@ class FriendController
         if( $this->front->request->isPost() )
         {
             // update groups
+            // group entities without registering to em.
             $groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
             $this->em->relation( $friend, 'groups' )->replace( $groups );
 

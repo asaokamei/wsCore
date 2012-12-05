@@ -77,8 +77,8 @@ class friendsView
     }
 
     /**
-     * @param \friends\entity\friend   $entity
-     * @param \friends\entity\contact[] $contacts
+     * @param \WScore\DbAccess\Entity_Interface   $entity
+     * @param \WScore\DbAccess\Entity_Interface[] $contacts
      */
     public function showForm_info( $entity, $contacts )
     {
@@ -96,7 +96,7 @@ class friendsView
         }
         else {
             foreach( $groups as $group ) {
-                $groupInfo[] = $group->group_code;
+                $groupInfo[] = $group[ 'group_code' ];
             }
         }
         $groupInfo = implode( ', ', $groupInfo );
