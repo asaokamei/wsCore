@@ -89,7 +89,7 @@ class friendsView
         $appUrl      = $this->get( 'appUrl' );
         $editUrl     = $appUrl . 'detail/' . $id;
         // about groups
-        $groups = $entity->relation( 'groups' )->get();
+        $groups = $entity->relation( 'groups' );
         $groupInfo = array();
         if( empty( $groups ) ) {
             $groupInfo[] = '-no group-';
@@ -154,7 +154,7 @@ class friendsView
     public function showForm_detail( $entity, $groups )
     {
         // get groups
-        $myGroup = $entity->relation( 'groups' )->get();
+        $myGroup = $entity->relation( 'groups' );
         $selectedGroup = array();
         foreach( $myGroup as $grp ) {
             $selectedGroup[] = $grp->group_code;
@@ -337,7 +337,7 @@ class friendsView
         $appUrl = $this->view->get( 'appUrl' );
         foreach ( $entity as $row )
         {
-            $groups = $row->relation( 'groups' )->get();
+            $groups = $row->relation( 'groups' );
             $row = $this->role->applySelectable( $row );
             $id  = $row->getId();
             $row->setHtmlType( $type );
