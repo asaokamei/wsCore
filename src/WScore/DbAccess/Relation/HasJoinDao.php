@@ -187,6 +187,7 @@ class Relation_HasJoinDao implements Relation_Interface
         if( $target ) {
             $targetValue = $target[ $this->targetColumn ];
             if( isset( $this->joints[ $targetValue ] ) ) {
+                $this->em->register( $this->joints[ $targetValue ] );
                 $this->em->delete( $this->joints[ $targetValue ] );
                 unset( $this->joints[ $targetValue ] );
             }
@@ -246,5 +247,29 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function isLinked() {
         return $this->linked;
+    }
+
+    /**
+     * @param \WScore\DbAccess\Entity_Interface[] $targets
+     */
+    public function replace( $targets )
+    {
+        if( !is_array( $targets ) ) $targets = array( $targets );
+        $newTarget = array();
+        foreach( $targets as $t ) {
+            $newTarget[ $t->_get_cenaId() ] = $t;
+        }
+        if( $currTargets = $this->source->relation( $this->relationName ) ) {
+            foreach( $currTargets as $t ) {
+                if( !isset( $newTarget[ $t->_get_cenaId() ] ) ) {
+                    $this->del( $t );
+                }
+            }
+        }
+        foreach( $newTarget as $cenaId => $t ) {
+            if( !isset( $currTargets[ $cenaId ] ) ) {
+                $this->set( $t );
+            }
+        }
     }
 }
