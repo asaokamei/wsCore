@@ -84,16 +84,15 @@ class FriendController
         if( $this->front->request->isPost() )
         {
             // update groups
-            $groups = $this->em->getEntity( 'friends\model\Group', $_POST[ 'groups' ] );
-            $this->em->relation( $friend, 'groups' );
+            $groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
+            $this->em->relation( $friend, 'groups' )->replace( $groups );
 
             // update friends info
             $loadable = $this->role->applyLoadable( $friend );
             $loadable->loadData();
             if( $loadable->validate() )
             {
-                $active = $this->role->applyActive( $friend );
-                $active->save();
+                $this->em->save();
                 $jump = $this->view->get( 'appUrl' ) . $id;
                 header( 'Location: ' . $jump );
                 exit;
