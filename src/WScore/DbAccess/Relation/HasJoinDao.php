@@ -44,7 +44,7 @@ class Relation_HasJoinDao implements Relation_Interface
         $this->relationName = $relInfo[ 'relation_name' ];
         $this->em     = $em;
         $default      = array(
-            'source_column'       => null,
+            'source_column'      => null,
             'target_column'      => null,
             'join_source_column' => null,
             'join_target_column' => null,
