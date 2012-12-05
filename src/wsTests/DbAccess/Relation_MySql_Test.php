@@ -68,15 +68,15 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $contact = $this->contact->getRecord( $dataContact );
         $this->contact->relation( $contact, 'friend' )->set( $friend );
         $this->contact->insert( $contact );
-        $this->assertEquals( $id1, $contact->friend_id );
+        $this->assertEquals( $id1, $contact[ 'friend_id' ] );
 
         // read the contact, and get the friend data via relation
-        $id2 = $contact->friend_id;
+        $id2 = $contact[ 'friend_id' ];
         $contact2 = $this->contact->find( $id2 );
         $friend2 = $this->contact->relation( $contact2, 'friend' )->get();
         $this->assertTrue( is_array( $friend2 ) );
         $friend2 = $friend2[0];
-        $this->assertEquals( $id1, $friend2->friend_id );
+        $this->assertEquals( $id1, $friend2[ 'friend_id' ] );
     }
     function test_simple_HasRefs()
     {
@@ -92,23 +92,23 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $relation->set( $contact1 );
         $this->contact->insert( $contact1 );
 
-        $this->assertEquals( $id1, $contact1->friend_id );
+        $this->assertEquals( $id1, $contact1[ 'friend_id' ] );
 
         // create another contact with the friendship.
         $contact2 = $this->contact->getRecord( Dao_SetUp::makeContact(2) );
         $relation->set( $contact2 );
         $this->contact->insert( $contact2 );
 
-        $this->assertEquals( $id1, $contact2->friend_id );
+        $this->assertEquals( $id1, $contact2[ 'friend_id' ] );
 
         // get contacts from friend.
         $contacts = $relation->get();
         $con1 = array_shift( $contacts );
         $con2 = array_shift( $contacts );
-        $this->assertEquals( $contact1->contact_id, $con1->contact_id );
-        $this->assertEquals( $contact2->contact_id, $con2->contact_id );
-        $this->assertEquals( $contact1->contact_info, $con1->contact_info );
-        $this->assertEquals( $contact2->contact_info, $con2->contact_info );
+        $this->assertEquals( $contact1[ 'contact_id' ], $con1->contact_id );
+        $this->assertEquals( $contact2[ 'contact_id' ], $con2->contact_id );
+        $this->assertEquals( $contact1[ 'contact_info' ], $con1->contact_info );
+        $this->assertEquals( $contact2[ 'contact_info' ], $con2->contact_info );
     }
     function test_HasOne_del()
     {
@@ -120,13 +120,13 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->em->save();
 
         // delete relation. 
-        $newContact = $this->em->getEntity( 'wsTests\DbAccess\Dao_Contact', $contact->contact_id );
+        $newContact = $this->em->getEntity( 'wsTests\DbAccess\Dao_Contact', $contact[ 'contact_id' ] );
         $this->contact->relation( $newContact, 'friend' )->del();
         $this->em->save();
 
         // verify relation is deleted.
         $finalContact = $this->contact->find( $contact->_get_Id() );
-        $this->assertEquals( null, $finalContact->friend_id );
+        $this->assertEquals( null, $finalContact[ 'friend_id' ] );
     }
     function test_HasRefs_del()
     {
@@ -144,7 +144,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
 
         // verify relation is deleted.
         $finalContact = $this->contact->find( $contact->_get_Id() );
-        $this->assertEquals( null, $finalContact->friend_id );
+        $this->assertEquals( null, $finalContact[ 'friend_id' ] );
     }
 }
 

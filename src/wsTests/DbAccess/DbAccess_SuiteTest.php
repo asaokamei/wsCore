@@ -23,7 +23,7 @@ class DbAccess_SuiteTests
         //TODO: activate or remove DataRecord test. 
         //$suite->addTestFile( $folder . 'DataRecord_MySql_Test.php' );
         $suite->addTestFile( $folder . 'Relation_MySql_Test.php' );
-        //$suite->addTestFile( $folder . 'Relation_HasJoined_MySql_Test.php' );
+        $suite->addTestFile( $folder . 'Relation_HasJoined_MySql_Test.php' );
         $suite->addTestFile( $folder . 'Relation_HasJoinDao_MySql_Test.php' );
         return $suite;
     }

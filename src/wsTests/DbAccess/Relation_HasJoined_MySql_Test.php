@@ -94,7 +94,7 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $groups = $this->friend->relation( $friend, 'group' )->get();
         $this->assertEquals( 1, count( $groups ) );
         $groups = $groups[0];
-        $this->assertEquals( $dataGroup[ 'group_code' ], $groups->group_code );
+        $this->assertEquals( $dataGroup[ 'group_code' ], $groups[ 'group_code' ] );
         $this->assertEquals( $id1, $groups->friend_id );
         
         // relate the new group with the friend.
