@@ -202,7 +202,7 @@ class Model
         $limit = count( $id );
         $record = $this->query( $this->entityClass )->id( $id )->limit( $limit )->select();
         $this->entityClass = null;
-        if( count( $record ) == 1 ) $record = $record[0];
+        if( !is_array( $id ) ) $record = $record[0];
         /** @var $record Entity_Interface */
         return $record;
     }
