@@ -121,11 +121,12 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $idGroup2 = $this->group->insert( Dao_SetUp::makeGroup(1) );
         $group1   = $this->group->find( $idGroup1 );
         $group2   = $this->group->find( $idGroup2 );
-        $this->friend->relation( $friend, 'group' )->setValues( array( 'created_date' => '1999-12-31' ) )->set( $group1 );
-        $this->friend->relation( $friend, 'group' )->set( $group2 );
+        $relation = $this->friend->relation( $friend, 'group' );
+        $relation->setValues( array( 'created_date' => '1999-12-31' ) )->set( $group1 );
+        $relation->set( $group2 );
         
         // get groups using relations. 
-        $groups = $this->friend->relation( $friend, 'group' )->setOrder( 'myGroup.group_code DESC' )->get();
+        $groups = $relation->setOrder( 'myGroup.group_code DESC' )->get();
         $group = $groups[1];
         $dataGroup = Dao_SetUp::makeGroup(0);
         $this->assertEquals( $dataGroup[ 'group_code' ], $group->group_code );
@@ -146,18 +147,19 @@ class Relation_HasJoined_MySql_Test extends \PHPUnit_Framework_TestCase
         $idGroup2 = $this->group->insert( Dao_SetUp::makeGroup(1) );
         $group1   = $this->group->find( $idGroup1 );
         $group2   = $this->group->find( $idGroup2 );
-        $this->friend->relation( $friend, 'group' )->setValues( array( 'created_date' => '1999-12-31' ) )->set( $group1 );
-        $this->friend->relation( $friend, 'group' )->set( $group2 );
+        $relation = $this->friend->relation( $friend, 'group' );
+        $relation->setValues( array( 'created_date' => '1999-12-31' ) )->set( $group1 );
+        $relation->set( $group2 );
         
         // get groups.
-        $groups1 = $this->friend->relation( $friend, 'group' )->get();
+        $groups1 = $relation->get();
         $this->assertEquals( 2, count( $groups1 ) );
         
         // delete one of the group.
-        $this->friend->relation( $friend, 'group' )->del( $group1 );
+        $relation->del( $group1 );
         
         // get groups, again. 
-        $groups2 = $friend->relation( 'group' )->get();
+        $groups2 = $friend->relation( 'group' );
         $this->assertEquals( 1, count( $groups2 ) );
         $this->assertEquals( $groups1[1]->_get_Id(), $groups2[0]->_get_Id() );
     }

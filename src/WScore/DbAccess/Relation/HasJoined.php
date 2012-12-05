@@ -2,7 +2,8 @@
 namespace WScore\DbAccess;
 
 /**
- * represents many-to-many relationship using join-table.
+ * represents many-to-many relationship using join-table without Model.
+ * WARNING: this class is not fully maintained.
  */
 class Relation_HasJoined implements Relation_Interface
 {
@@ -24,9 +25,6 @@ class Relation_HasJoined implements Relation_Interface
     protected $source;
     protected $sourceColumn;
     
-    /** @var Entity_Interface */
-    protected $target;
-
     /** @var \WScore\DbAccess\Model */
     protected $targetModel;
     protected $targetModelName;
@@ -47,23 +45,36 @@ class Relation_HasJoined implements Relation_Interface
     {
         $this->relationName = $relInfo[ 'relation_name' ];
         $this->em     = $em;
+        $default      = array(
+            'source_column'      => null,
+            'target_column'      => null,
+            'join_source_column' => null,
+            'join_target_column' => null,
+        );
+        $relInfo = array_merge( $default, $relInfo );
         // set up join table information.
-        $this->source           = $source;
-        $sourceModel            = $em->getModel( $source->_get_Model() );
-        $this->query            = clone $sourceModel->query();
-        $this->joinTable        = $relInfo[ 'join_table' ];
+        $this->source    = $source;
+        $sourceModel     = $em->getModel( $source->_get_Model() );
+        $this->query     = clone $sourceModel->query();
+        $this->joinTable = $relInfo[ 'join_table' ];
         // set up about source data.
-        $this->joinSourceColumn = isset( $relInfo[ 'join_source_column' ] ) ?
-            $relInfo[ 'join_source_column' ] : $sourceModel->getIdName();
-        $this->sourceColumn = isset( $relInfo[ 'sourceColumn' ] ) ?
-            $relInfo[ 'sourceColumn' ] : $sourceModel->getIdName();
+        $this->joinSourceColumn = $relInfo[ 'join_source_column' ] ? : $sourceModel->getIdName();
+        $this->sourceColumn     = $relInfo[ 'source_column' ] ? : $sourceModel->getIdName();
         // set up about target data.
-        $this->targetModelName      = $relInfo[ 'target_model' ];
-        $this->targetModel = $em->getModel( $this->targetModelName );
-        $this->joinTargetColumn = isset( $relInfo[ 'join_target_column' ] ) ?
-            $relInfo[ 'join_target_column' ] : $this->targetModel->getIdName();
-        $this->targetColumn     = isset( $relInfo[ 'target_column' ] ) ?
-            $relInfo[ 'target_column' ] : $this->targetModel->getIdName();
+        $this->targetModelName  = $relInfo[ 'target_model' ];
+        $this->targetModel      = $em->getModel( $this->targetModelName );
+        $this->joinTargetColumn = $relInfo[ 'join_target_column' ] ? : $this->targetModel->getIdName();
+        $this->targetColumn     = $relInfo[ 'target_column' ] ? : $this->targetModel->getIdName();
+    }
+    /**
+     * load relations information. use it prior to get/del/add/etc.
+     *
+     * @return Relation_HasJoinDao
+     */
+    public function load()
+    {
+        $targets = $this->get();
+        $this->source->setRelation( $this->relationName, $targets );
     }
 
     /**
@@ -72,8 +83,10 @@ class Relation_HasJoined implements Relation_Interface
      */
     public function set( $target )
     {
-        $this->target = $target;
         if( !$target ) return $this;
+        $targets = $this->source->relation( $this->relationName );
+        $targets[] = $target;
+        $this->source->setRelation( $this->relationName, $targets );
         $this->linked = false;
         $this->link();
         return $this;
@@ -93,22 +106,22 @@ class Relation_HasJoined implements Relation_Interface
     {
         if( $this->linked )  return $this;
         if( !$this->source ) return $this;
-        if( !$this->target ) return $this;
+        $targets = $this->source->relation( $this->relationName );
+        if( !$targets ) return $this;
         // check if relation already exists.
-        $record = $this->getJoinRecord( $this->target );
-        // adding new relation.
-        // TODO: check if id is permanent or tentative.
-        if( empty( $record ) ) {
-            $sourceColumn = $this->sourceColumn;
-            $targetColumn = $this->targetColumn;
-            $values = array(
-                $this->joinSourceColumn => $this->source->$sourceColumn,
-                $this->joinTargetColumn => $this->target->$targetColumn,
-            );
-            if( is_array( $this->values ) && !empty( $this->values ) ) {
-                $values = array_merge( $this->values, $values );
+        foreach( $targets as $target )
+        {
+            $record = $this->getJoinRecord( $target );
+            if( empty( $record ) ) {
+                $values = array(
+                    $this->joinSourceColumn => $this->source[ $this->sourceColumn ],
+                    $this->joinTargetColumn => $target[       $this->targetColumn ],
+                );
+                if( is_array( $this->values ) && !empty( $this->values ) ) {
+                    $values = array_merge( $this->values, $values );
+                }
+                $this->query->table( $this->joinTable )->insert( $values );
             }
-            $this->query->table( $this->joinTable )->insert( $values );
         }
         $this->linked = true;
         return $this;
@@ -120,17 +133,15 @@ class Relation_HasJoined implements Relation_Interface
      */
     public function del( $target=null ) 
     {
-        $sourceColumn = $this->sourceColumn;
-        $sourceValue = $this->source->$sourceColumn;
+        $sourceValue = $this->source[ $this->sourceColumn ];
         $query = $this->query->table( $this->joinTable );
         $query->w( $this->joinSourceColumn )->eq( $sourceValue );
-        if( !$target ) $target = $this->target;
         if( $target ) {
-            $targetColumn = $this->targetColumn;
-            $targetValue = $target->$targetColumn;
+            $targetValue = $target[ $this->targetColumn ];
             $query->w( $this->joinTargetColumn )->eq( $targetValue );
         }
         $query->makeDelete()->exec();
+        $this->load();
         return $this;
     }
 
@@ -140,14 +151,11 @@ class Relation_HasJoined implements Relation_Interface
      */
     public function getJoinRecord( $target=null )
     {
-        $sourceColumn = $this->sourceColumn;
-        $sourceValue = $this->source->$sourceColumn;
+        $sourceValue = $this->source[ $this->sourceColumn ];
         $query = $this->query->table( $this->joinTable );
         $query->w( $this->joinSourceColumn )->eq( $sourceValue );
-        if( !$target ) $target = $this->target;
         if( $target ) {
-            $targetColumn = $this->targetColumn;
-            $targetValue = $target->$targetColumn;
+            $targetValue = $target[ $this->targetColumn ];
             $query->w( $this->joinTargetColumn )->eq( $targetValue );
         }
         $record = $query->select();
