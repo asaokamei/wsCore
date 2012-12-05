@@ -156,6 +156,7 @@ class friendsView
         // get groups
         $myGroup = $entity->relation( 'groups' );
         $selectedGroup = array();
+        if( !empty( $myGroup ) )
         foreach( $myGroup as $grp ) {
             $selectedGroup[] = $grp->group_code;
         }
