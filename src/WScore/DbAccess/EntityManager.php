@@ -205,7 +205,7 @@ class EntityManager
         $model = $this->getModel( $modelName );
         if( $this->isEntity( $modelName ) ) $model->setEntityClass( $modelName );
         $entity = $model->find( $id );
-        $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_GET_, $id );
+        $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_GET_ );
         $entity = $this->register( $entity );
         return $entity;
     }
