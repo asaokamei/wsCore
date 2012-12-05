@@ -6,6 +6,9 @@ namespace WScore\DbAccess;
  */
 class Relation_HasJoinDao implements Relation_Interface
 {
+    /** @var string */
+    protected $relationName = '';
+
     /** @var EntityManager */
     protected $em;
 
@@ -41,6 +44,7 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function __construct( $em, $source, $relInfo )
     {
+        $this->relationName = $relInfo[ 'relation_name' ];
         $this->em     = $em;
         $default      = array(
             'sourceColumn'       => null,
