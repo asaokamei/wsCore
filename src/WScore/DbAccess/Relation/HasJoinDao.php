@@ -44,7 +44,7 @@ class Relation_HasJoinDao implements Relation_Interface
         $this->relationName = $relInfo[ 'relation_name' ];
         $this->em     = $em;
         $default      = array(
-            'sourceColumn'       => null,
+            'source_column'       => null,
             'target_column'      => null,
             'join_source_column' => null,
             'join_target_column' => null,
@@ -53,7 +53,7 @@ class Relation_HasJoinDao implements Relation_Interface
         // set up about source data.
         $sourceModel            = $em->getModel( $source->_get_Model() );
         $this->source           = $source;
-        $this->sourceColumn     = $relInfo[ 'sourceColumn' ] ?: $sourceModel->getIdName();
+        $this->sourceColumn     = $relInfo[ 'source_column' ] ?: $sourceModel->getIdName();
         // set up about target data.
         $this->targetModel      = $em->getModel( $relInfo[ 'target_model' ] );
         $this->targetColumn     = $relInfo[ 'target_column' ] ?: $this->targetModel->getIdName();
