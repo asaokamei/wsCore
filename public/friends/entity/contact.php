@@ -1,7 +1,7 @@
 <?php
 namespace friends\entity;
 
-class contact extends \WScore\DbAccess\Entity_Abstract
+class contact extends \WScore\DataMapper\Entity_Abstract
 {
     protected $_model = 'Contacts';
     

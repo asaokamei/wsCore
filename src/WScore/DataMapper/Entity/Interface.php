@@ -1,5 +1,5 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 interface Entity_Interface
 {
@@ -54,7 +54,7 @@ interface Entity_Interface
     public function _pop_error( $name=null );
     /**
      * @param $name
-     * @return \WScore\DbAccess\Entity_Interface[]
+     * @return \WScore\DataMapper\Entity_Interface[]
      */
     public function relation( $name );
 

@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DbAccess;
 
-class Dao_Group extends \WScore\DbAccess\Model
+class Dao_Group extends \WScore\DataMapper\Model
 {
     /** @var string     name of database table     */
     protected $table = 'myGroup';

@@ -10,7 +10,7 @@ Core::setPdo( 'dsn=sqlite::memory:' );
 /** @var $model Interaction\model */
 /** @var $intAct Interaction\interact */
 /** @var $view \Interaction\view1 */
-/** @var $entity \WScore\DbAccess\Role_Input */
+/** @var $entity \WScore\DataMapper\Role_Input */
 
 Core::set( 'interactView', '\Interaction\view1' );
 $model   = Core::get( 'Interaction\model' );

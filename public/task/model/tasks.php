@@ -3,7 +3,7 @@ namespace task\model;
 
 use \task\entity\task;
 
-class tasks extends \WScore\DbAccess\Model
+class tasks extends \WScore\DataMapper\Model
 {
     /** @var string     name of database table     */
     protected $table = 'demoTask';
@@ -42,7 +42,7 @@ class tasks extends \WScore\DbAccess\Model
 
     // +----------------------------------------------------------------------+
     /**
-     * @param $em       \WScore\DbAccess\EntityManager
+     * @param $em       \WScore\DataMapper\EntityManager
      * @param $query    \WScore\DbAccess\Query
      * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query

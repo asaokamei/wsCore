@@ -1,7 +1,7 @@
 <?php
 namespace Interaction;
 
-class entity extends \WScore\DbAccess\Entity_Abstract
+class entity extends \WScore\DataMapper\Entity_Abstract
 {
     protected $_model = 'Interaction\model';
 

@@ -6,14 +6,14 @@ class view1
     /** @var \wsModule\Alt\Html\View_Bootstrap */
     private $view;
 
-    /** @var \WScore\DbAccess\Role */
+    /** @var \WScore\DataMapper\Role */
     private $role;
 
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DbAccess\Role $role
+     * @param \WScore\DataMapper\Role $role
      * @param \wsModule\Alt\Html\View_Bootstrap $view
-     * @DimInjection Get   \WScore\DbAccess\Role
+     * @DimInjection Get   \WScore\DataMapper\Role
      * @DimInjection Fresh \wsModule\Alt\Html\View_Bootstrap
      */
     public function __construct( $role, $view ) {
@@ -55,7 +55,7 @@ class view1
     //  building views for forms etc.
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DataMapper\Role_Input $entity
      */
     public function showForm_form( $entity )
     {
@@ -70,7 +70,7 @@ class view1
         $this->set( 'button-sub', 'reset' );
     }
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DataMapper\Role_Input $entity
      */
     public function showForm_confirm( $entity )
     {
@@ -83,7 +83,7 @@ class view1
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DataMapper\Role_Input $entity
      */
     public function showForm_done( $entity )
     {

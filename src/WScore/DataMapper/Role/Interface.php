@@ -1,10 +1,10 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 interface Role_Interface
 {
     /**
-     * @param \WScore\DbAccess\Entity_Interface    $entity
+     * @param \WScore\DataMapper\Entity_Interface    $entity
      */
     public function register( $entity );
     public function retrieve();

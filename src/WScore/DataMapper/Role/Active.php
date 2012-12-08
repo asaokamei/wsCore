@@ -1,17 +1,17 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 class Role_Active extends Role_Abstract
 {
-    /** @var \WScore\DbAccess\EntityManager */
+    /** @var \WScore\DataMapper\EntityManager */
     protected $em;
 
-    /** @var \WScore\DbAccess\Relation_Interface[] */
+    /** @var \WScore\DataMapper\Relation_Interface[] */
     protected $relations = array();
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DbAccess\EntityManager    $em
-     * @DimInjection Get \WScore\DbAccess\EntityManager
+     * @param \WScore\DataMapper\EntityManager    $em
+     * @DimInjection Get \WScore\DataMapper\EntityManager
      */
     public function __construct( $em )
     {

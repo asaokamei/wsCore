@@ -1,5 +1,5 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 interface Relation_Interface
 {
@@ -38,13 +38,13 @@ interface Relation_Interface
 
     /**
      * @param string $order
-     * @return \WScore\DbAccess\Relation_Interface
+     * @return \WScore\DataMapper\Relation_Interface
      */
     public function setOrder( $order );
 
     /**
      * @param array $values
-     * @return \WScore\DbAccess\Relation_Interface
+     * @return \WScore\DataMapper\Relation_Interface
      */
     public function setValues( $values );
 

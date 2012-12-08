@@ -1,7 +1,7 @@
 <?php
 namespace friends\model;
 
-class Friends extends \WScore\DbAccess\Model
+class Friends extends \WScore\DataMapper\Model
 {
     const STATUS_ACTIVE = '1';
     const STATUS_DONE   = '9';
@@ -37,7 +37,7 @@ class Friends extends \WScore\DbAccess\Model
 
     // +----------------------------------------------------------------------+
     /**
-     * @param $em       \WScore\DbAccess\EntityManager
+     * @param $em       \WScore\DataMapper\EntityManager
      * @param $query    \WScore\DbAccess\Query
      * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query

@@ -1,15 +1,15 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 class Role_Abstract implements Role_Interface
 {
-    /** @var \WScore\DbAccess\EntityManager */
+    /** @var \WScore\DataMapper\EntityManager */
     protected $em;
 
-    /** @var \WScore\DbAccess\Model */
+    /** @var \WScore\DataMapper\Model */
     protected $model;
 
-    /** @var \WScore\DbAccess\Entity_Interface */
+    /** @var \WScore\DataMapper\Entity_Interface */
     protected $entity;
 
     /** @var \WScore\Validator\DataIO */
@@ -19,7 +19,7 @@ class Role_Abstract implements Role_Interface
     protected $selector;
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface    $entity
+     * @param \WScore\DataMapper\Entity_Interface    $entity
      */
     public function register( $entity )
     {

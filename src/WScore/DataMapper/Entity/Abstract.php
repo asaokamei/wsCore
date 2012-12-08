@@ -1,5 +1,5 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
 {
@@ -21,7 +21,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     /** @var bool */
     private $_toDelete = false;
 
-    /** @var \WScore\DbAccess\Relation_Interface[] */
+    /** @var \WScore\DataMapper\Relation_Interface[] */
     private $_relations = array();
 
     /** @var int */
@@ -42,7 +42,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     //  construction and modifying protected properties.
     // +----------------------------------------------------------------------+
     /**
-     * @param null|\WScore\DbAccess\Model $model
+     * @param null|\WScore\DataMapper\Model $model
      * @param null|string               $type
      * @throws \RuntimeException
      */
@@ -159,7 +159,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
     // +----------------------------------------------------------------------+
     /**
      * @param $name
-     * @return \WScore\DbAccess\Entity_Interface[]
+     * @return \WScore\DataMapper\Entity_Interface[]
      */
     public function relation( $name ) {
         if( isset( $this->_relations[ $name ] ) ) return $this->_relations[ $name ];
@@ -168,7 +168,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
 
     /**
      * @param $name
-     * @param \WScore\DbAccess\Entity_Interface[] $relation
+     * @param \WScore\DataMapper\Entity_Interface[] $relation
      * @return Entity_Interface
      */
     public function setRelation( $name, $relation ) {

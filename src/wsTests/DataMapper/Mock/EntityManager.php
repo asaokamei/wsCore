@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DataMapper\Mock;
 
-class EntityManager extends \WScore\DbAccess\EntityManager
+class EntityManager extends \WScore\DataMapper\EntityManager
 {
     public function returnModels() {
         return $this->models;

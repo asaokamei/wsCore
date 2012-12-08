@@ -4,13 +4,13 @@ namespace Interaction;
 class view2 extends \wsModule\Alt\Html\View_Bootstrap
 {
 
-    /** @var \WScore\DbAccess\Role */
+    /** @var \WScore\DataMapper\Role */
     private $role;
 
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DbAccess\Role $role
-     * @DimInjection Get   \WScore\DbAccess\Role
+     * @param \WScore\DataMapper\Role $role
+     * @DimInjection Get   \WScore\DataMapper\Role
      */
     public function __construct( $role ) {
         parent::__construct();
@@ -18,7 +18,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DataMapper\Role_Input $entity
      * @param string $form
      * @return void
      */
@@ -37,7 +37,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DataMapper\Role_Input $entity
      */
     public function showForm_wizard1( $entity )
     {
@@ -47,7 +47,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DataMapper\Role_Input $entity
      */
     public function showForm_wizard2( $entity )
     {
@@ -57,7 +57,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DataMapper\Role_Input $entity
      */
     public function showForm_wizard3( $entity )
     {
@@ -67,7 +67,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DataMapper\Role_Input $entity
      */
     public function showForm_confirm( $entity )
     {
@@ -80,7 +80,7 @@ class view2 extends \wsModule\Alt\Html\View_Bootstrap
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Input $entity
+     * @param \WScore\DataMapper\Role_Input $entity
      */
     public function showForm_done( $entity )
     {

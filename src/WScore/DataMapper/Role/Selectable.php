@@ -1,5 +1,5 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 class Role_Selectable extends Role_Abstract
 {
@@ -7,9 +7,9 @@ class Role_Selectable extends Role_Abstract
     private $html_type = 'html';
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DbAccess\EntityManager    $em
+     * @param \WScore\DataMapper\EntityManager    $em
      * @param \WScore\Html\Selector             $selector
-     * @DimInjection Get \WScore\DbAccess\EntityManager
+     * @DimInjection Get \WScore\DataMapper\EntityManager
      * @DimInjection Get \WScore\Html\Selector
      */
     public function __construct( $em, $selector )

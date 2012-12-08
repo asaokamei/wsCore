@@ -6,7 +6,7 @@ namespace WScore\DataMapper;
  */
 class EntityManager
 {
-    /** @var \WScore\DbAccess\Model[] */
+    /** @var \WScore\DataMapper\Model[] */
     protected $models = array();
 
     /** @var Entity_Interface[] */
@@ -39,7 +39,7 @@ class EntityManager
     //  Managing Model.
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DbAccess\Model $model
+     * @param \WScore\DataMapper\Model $model
      */
     public function registerModel( $model )
     {
@@ -53,7 +53,7 @@ class EntityManager
      * get model object from an entity object, entity class name, or model name.
      *
      * @param Entity_Interface|string $entity
-     * @return \WScore\DbAccess\Model
+     * @return \WScore\DataMapper\Model
      */
     public function getModel( $entity )
     {
@@ -76,7 +76,7 @@ class EntityManager
             return true;
         }
         $interfaces = class_implements( $entity );
-        if( is_string( $entity ) && is_array( $interfaces ) && in_array( 'WScore\DbAccess\Entity_Interface', $interfaces ) ) {
+        if( is_string( $entity ) && is_array( $interfaces ) && in_array( 'WScore\DataMapper\Entity_Interface', $interfaces ) ) {
             return true;
         }
         return false;
@@ -284,7 +284,7 @@ class EntityManager
      *
      * @param Entity_Interface $entity
      * @param string           $name
-     * @return \WScore\DbAccess\Relation_Interface
+     * @return \WScore\DataMapper\Relation_Interface
      */
     public function relation( $entity, $name )
     {
@@ -300,7 +300,7 @@ class EntityManager
      * @param string|array             $value      pass array to fetch multiple entities.
      * @param null|string              $column     set to null to fetch by id.
      * @param bool                     $packed     to get only the column value.
-     * @return array|\WScore\DbAccess\Entity_Interface[]
+     * @return array|\WScore\DataMapper\Entity_Interface[]
      */
     public function fetch( $name, $value, $column=null, $packed=false )
     {

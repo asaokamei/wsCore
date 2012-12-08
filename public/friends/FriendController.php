@@ -3,7 +3,7 @@ namespace friends;
 
 class FriendController
 {
-    /** @var \WScore\DbAccess\EntityManager */
+    /** @var \WScore\DataMapper\EntityManager */
     protected $em;
 
     /** @var \wsModule\Alt\Web\FrontMC */
@@ -12,15 +12,15 @@ class FriendController
     /** @var \friends\views\friendsView */
     protected $view;
 
-    /** @var \WScore\DbAccess\Role */
+    /** @var \WScore\DataMapper\Role */
     protected $role;
     /**
-     * @param \WScore\DbAccess\EntityManager $em
+     * @param \WScore\DataMapper\EntityManager $em
      * @param \friends\views\friendsView     $view
-     * @param \WScore\DbAccess\Role          $role
+     * @param \WScore\DataMapper\Role          $role
      * @DimInjection get EntityManager
      * @DimInjection get \friends\views\friendsView
-     * @DimInjection get \WScore\DbAccess\Role
+     * @DimInjection get \WScore\DataMapper\Role
      */
     public function __construct( $em, $view, $role )
     {

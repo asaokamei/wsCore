@@ -1,7 +1,7 @@
 <?php
 namespace friends\model;
 
-class Group extends \WScore\DbAccess\Model
+class Group extends \WScore\DataMapper\Model
 {
     /** @var string     name of database table     */
     protected $table = 'demoGroup';
@@ -40,7 +40,7 @@ class Group extends \WScore\DbAccess\Model
         ),
     );
     /**
-     * @param \WScore\DbAccess\EntityManager $em
+     * @param \WScore\DataMapper\EntityManager $em
      * @param \WScore\DbAccess\Query         $query
      * @DimInjection   Get      EntityManager
      * @DimInjection   Fresh    Query

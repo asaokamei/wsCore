@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DataMapper\Model;
 
-class Contact extends \WScore\DbAccess\Model
+class Contact extends \WScore\DataMapper\Model
 {
     /** @var string     name of database table     */
     protected $table = 'mapContact';

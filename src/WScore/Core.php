@@ -12,7 +12,7 @@ class Core
         'Validator' => '\WScore\Validator\Validator',
         'DataIO'    => '\WScore\Validator\DataIO',
         'Selector'  => '\WScore\Html\Selector',
-        'EntityManager' => '\WScore\DbAccess\EntityManager',
+        'EntityManager' => '\WScore\DataMapper\EntityManager',
         'Session'   => '\WScore\Web\Session',
         '' => '',
     );

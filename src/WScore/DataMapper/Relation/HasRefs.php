@@ -1,5 +1,5 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 /**
  * opposite of Relation_HasOne. 
@@ -146,7 +146,7 @@ class Relation_HasRefs implements Relation_Interface
 
     /**
      * @param string $order
-     * @return \WScore\DbAccess\Relation_Interface
+     * @return \WScore\DataMapper\Relation_Interface
      */
     public function setOrder( $order ) {
         return $this;
@@ -154,7 +154,7 @@ class Relation_HasRefs implements Relation_Interface
 
     /**
      * @param array $values
-     * @return \WScore\DbAccess\Relation_Interface
+     * @return \WScore\DataMapper\Relation_Interface
      */
     public function setValues( $values ) {
         return $this;

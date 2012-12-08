@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DbAccess;
 
-class Dao_Network extends \WScore\DbAccess\Model
+class Dao_Network extends \WScore\DataMapper\Model
 {
     /** @var string     name of database table     */
     protected $table = 'network';

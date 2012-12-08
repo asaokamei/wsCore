@@ -9,11 +9,11 @@ class interact extends \wsModule\Alt\Web\Interaction
     /**
      * @param \wsModule\Alt\Web\Request   $request
      * @param \WScore\Web\Session $session
-     * @param \WScore\DbAccess\Role $role
+     * @param \WScore\DataMapper\Role $role
      * @param \Interaction\view1|\Interaction\view2 $view
      * @DimInjection Get   \wsModule\Alt\Web\Request
      * @DimInjection Fresh Session
-     * @DimInjection Get   \WScore\DbAccess\Role
+     * @DimInjection Get   \WScore\DataMapper\Role
      * @DimInjection Get   interactView
      */
     public function __construct( $request, $session, $role, $view )

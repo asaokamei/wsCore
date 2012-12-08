@@ -11,16 +11,16 @@ class friendsView
     /** @var \WScore\Html\Tags */
     private $tags;
 
-    /** @var \WScore\DbAccess\Role */
+    /** @var \WScore\DataMapper\Role */
     private $role;
 
     /**
      * @param \wsModule\Alt\Html\View_Bootstrap $view
      * @param \WScore\Html\Form                 $tags
-     * @param \WScore\DbAccess\Role             $role
+     * @param \WScore\DataMapper\Role             $role
      * @DimInjection Fresh \wsModule\Alt\Html\View_Bootstrap
      * @DimInjection Fresh \WScore\Html\Form
-     * @DimInjection get \WScore\DbAccess\Role
+     * @DimInjection get \WScore\DataMapper\Role
      */
     public function __construct( $view, $tags, $role )
     {
@@ -65,7 +65,7 @@ class friendsView
     //  about my friends. 
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DbAccess\Role_Selectable[] $entity
+     * @param \WScore\DataMapper\Role_Selectable[] $entity
      */
     public function showForm_list( $entity )
     {
@@ -77,8 +77,8 @@ class friendsView
     }
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface   $entity
-     * @param \WScore\DbAccess\Entity_Interface[] $contacts
+     * @param \WScore\DataMapper\Entity_Interface   $entity
+     * @param \WScore\DataMapper\Entity_Interface[] $contacts
      */
     public function showForm_info( $entity, $contacts )
     {
@@ -132,7 +132,7 @@ class friendsView
             if( isset( $roleContacts[ $type[0] ] ) )
             {
                 $contents[] = $dl = $tags->dl()->_class( 'dl-horizontal' );
-                /** @var $role \WScore\DbAccess\Role_Selectable */
+                /** @var $role \WScore\DataMapper\Role_Selectable */
                 foreach( $roleContacts[ $type[0] ] as $role )
                 {
                     $link = $appUrl . 'contact/' . $id . '/' . $role->getId();
@@ -148,7 +148,7 @@ class friendsView
     }
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DataMapper\Entity_Interface $entity
      * @param string[] $groups
      */
     public function showForm_detail( $entity, $groups )
@@ -217,7 +217,7 @@ class friendsView
     //  about Groups
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DbAccess\Entity_Interface $groups
+     * @param \WScore\DataMapper\Entity_Interface $groups
      * @param $action
      */
     public function showForm_group( $groups, $action )
@@ -266,7 +266,7 @@ class friendsView
     // +----------------------------------------------------------------------+
 
     /**
-     * @param \WScore\DbAccess\Role_Selectable $entity
+     * @param \WScore\DataMapper\Role_Selectable $entity
      * @param array                            $list
      * @return \WScore\Html\Tags
      */
@@ -281,7 +281,7 @@ class friendsView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Selectable $entity
+     * @param \WScore\DataMapper\Role_Selectable $entity
      * @param array                            $list
      * @return \WScore\Html\Tags
      */
@@ -297,7 +297,7 @@ class friendsView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Selectable $entity
+     * @param \WScore\DataMapper\Role_Selectable $entity
      * @param                                  $name
      * @return \WScore\Html\Tags
      */
@@ -307,7 +307,7 @@ class friendsView
     }
 
     /**
-     * @param \WScore\DbAccess\Role_Selectable $entity
+     * @param \WScore\DataMapper\Role_Selectable $entity
      * @param                                  $name
      * @return \WScore\Html\Tags
      */
@@ -321,7 +321,7 @@ class friendsView
     }
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface[] $entity
+     * @param \WScore\DataMapper\Entity_Interface[] $entity
      * @param string                             $type
      * @return \WScore\Html\Tags
      */

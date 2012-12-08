@@ -1,7 +1,7 @@
 <?php
 namespace task\entity;
 
-class task extends \WScore\DbAccess\Entity_Abstract
+class task extends \WScore\DataMapper\Entity_Abstract
 {
     const STATUS_ACTIVE = '1';
     const STATUS_DONE   = '9';

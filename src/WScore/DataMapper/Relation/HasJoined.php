@@ -1,5 +1,5 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 /**
  * represents many-to-many relationship using join-table without Model.
@@ -25,7 +25,7 @@ class Relation_HasJoined implements Relation_Interface
     protected $source;
     protected $sourceColumn;
     
-    /** @var \WScore\DbAccess\Model */
+    /** @var \WScore\DataMapper\Model */
     protected $targetModel;
     protected $targetModelName;
     protected $targetColumn;
@@ -39,7 +39,7 @@ class Relation_HasJoined implements Relation_Interface
      * @param EntityManager $em
      * @param Entity_Interface   $source
      * @param $relInfo
-     * @return \WScore\DbAccess\Relation_HasJoined
+     * @return \WScore\DataMapper\Relation_HasJoined
      */
     public function __construct( $em, $source, $relInfo )
     {
@@ -94,7 +94,7 @@ class Relation_HasJoined implements Relation_Interface
 
     /**
      * @param array $values
-     * @return \WScore\DbAccess\Relation_Interface
+     * @return \WScore\DataMapper\Relation_Interface
      */
     public function setValues( $values )
     {
@@ -184,7 +184,7 @@ class Relation_HasJoined implements Relation_Interface
 
     /**
      * @param string $order
-     * @return \WScore\DbAccess\Relation_Interface
+     * @return \WScore\DataMapper\Relation_Interface
      */
     public function setOrder( $order )
     {

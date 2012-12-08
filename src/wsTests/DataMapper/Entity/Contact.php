@@ -1,7 +1,7 @@
 <?php
 namespace wsTests\DataMapper\Entity;
 
-class Contact extends \WScore\DbAccess\Entity_Abstract
+class Contact extends \WScore\DataMapper\Entity_Abstract
 {
     protected $_model = 'Contact';
 

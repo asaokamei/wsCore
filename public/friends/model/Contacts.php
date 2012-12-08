@@ -1,7 +1,7 @@
 <?php
 namespace friends\model;
 
-class Contacts extends \WScore\DbAccess\Model
+class Contacts extends \WScore\DataMapper\Model
 {
     const TYPE_TELEPHONE  = '1';
     const TYPE_EMAIL      = '2';
@@ -25,7 +25,7 @@ class Contacts extends \WScore\DbAccess\Model
 
     // +----------------------------------------------------------------------+
     /**
-     * @param $em       \WScore\DbAccess\EntityManager
+     * @param $em       \WScore\DataMapper\EntityManager
      * @param $query    \WScore\DbAccess\Query
      * @DimInjection Get      EntityManager
      * @DimInjection Fresh    Query

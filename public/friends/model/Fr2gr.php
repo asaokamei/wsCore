@@ -1,7 +1,7 @@
 <?php
 namespace friends\model;
 
-class Fr2gr extends \WScore\DbAccess\Model
+class Fr2gr extends \WScore\DataMapper\Model
 {
     /** @var string     name of database table */
     protected $table = 'fr2gr';

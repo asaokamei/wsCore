@@ -1,5 +1,5 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 /**
  * represents many-to-many relationship using join-table.
@@ -12,19 +12,19 @@ class Relation_HasJoinDao implements Relation_Interface
     /** @var EntityManager */
     protected $em;
 
-    /** @var \WScore\DbAccess\Model */
+    /** @var \WScore\DataMapper\Model */
     protected $joinModel;
     
-    /** @var \WScore\DbAccess\Entity_Interface[] */
+    /** @var \WScore\DataMapper\Entity_Interface[] */
     protected $joints;
     protected $joinSourceColumn;
     protected $joinTargetColumn;
 
-    /** @var \WScore\DbAccess\Entity_Interface */
+    /** @var \WScore\DataMapper\Entity_Interface */
     protected $source;
     protected $sourceColumn;
     
-    /** @var \WScore\DbAccess\Model */
+    /** @var \WScore\DataMapper\Model */
     protected $targetModel;
     protected $targetColumn;
 
@@ -37,7 +37,7 @@ class Relation_HasJoinDao implements Relation_Interface
      * @param EntityManager $em
      * @param Entity_Interface   $source
      * @param $relInfo
-     * @return \WScore\DbAccess\Relation_HasJoinDao
+     * @return \WScore\DataMapper\Relation_HasJoinDao
      */
     public function __construct( $em, $source, $relInfo )
     {
@@ -97,7 +97,7 @@ class Relation_HasJoinDao implements Relation_Interface
     /**
      * load joint data associated with the target entity into the entity. 
      * 
-     * @param \WScore\DbAccess\Entity_Interface $target
+     * @param \WScore\DataMapper\Entity_Interface $target
      */
     public function loadJoint( $target )
     {
@@ -112,8 +112,8 @@ class Relation_HasJoinDao implements Relation_Interface
     /**
      * create relation between the target and source entity. returns the joint entity. 
      * 
-     * @param \WScore\DbAccess\Entity_Interface $target
-     * @return \WScore\DbAccess\Entity_Interface
+     * @param \WScore\DataMapper\Entity_Interface $target
+     * @return \WScore\DataMapper\Entity_Interface
      */
     public function set( $target )
     {
@@ -128,7 +128,7 @@ class Relation_HasJoinDao implements Relation_Interface
 
     /**
      * @param array $values
-     * @return \WScore\DbAccess\Relation_HasJoinDao
+     * @return \WScore\DataMapper\Relation_HasJoinDao
      */
     public function setValues( $values )
     {
@@ -154,8 +154,8 @@ class Relation_HasJoinDao implements Relation_Interface
     /**
      * create joint entity for the target and register it to em. hence linked. 
      * 
-     * @param \WScore\DbAccess\Entity_Interface $target
-     * @return \WScore\DbAccess\Entity_Interface
+     * @param \WScore\DataMapper\Entity_Interface $target
+     * @return \WScore\DataMapper\Entity_Interface
      */
     public function linkTarget( $target )
     {
@@ -178,7 +178,7 @@ class Relation_HasJoinDao implements Relation_Interface
     /**
      * deletes the relation between the source and target entities. 
      * 
-     * @param null|\WScore\DbAccess\Entity_Interface $target
+     * @param null|\WScore\DataMapper\Entity_Interface $target
      * @return Relation_HasOne
      */
     public function del( $target=null )
@@ -211,7 +211,7 @@ class Relation_HasJoinDao implements Relation_Interface
      * returns false if no relation exists. 
      * 
      * @param DataRecord $target
-     * @return bool|array|\WScore\DbAccess\Entity_Interface|\WScore\DbAccess\Entity_Interface[]
+     * @return bool|array|\WScore\DataMapper\Entity_Interface|\WScore\DataMapper\Entity_Interface[]
      */
     public function getJoinRecord( $target=null )
     {
@@ -234,7 +234,7 @@ class Relation_HasJoinDao implements Relation_Interface
 
     /**
      * @param string $order
-     * @return \WScore\DbAccess\Relation_HasJoinDao
+     * @return \WScore\DataMapper\Relation_HasJoinDao
      */
     public function setOrder( $order )
     {
@@ -250,7 +250,7 @@ class Relation_HasJoinDao implements Relation_Interface
     }
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface[] $targets
+     * @param \WScore\DataMapper\Entity_Interface[] $targets
      */
     public function replace( $targets )
     {

@@ -1,7 +1,7 @@
 <?php
 namespace Interaction;
 
-class model extends \WScore\DbAccess\Model
+class model extends \WScore\DataMapper\Model
 {
     /** @var string     name of database table     */
     protected $table = 'noDbFriend';
@@ -41,7 +41,7 @@ class model extends \WScore\DbAccess\Model
 
     // +----------------------------------------------------------------------+
     /**
-     * @param $em       \WScore\DbAccess\EntityManager
+     * @param $em       \WScore\DataMapper\EntityManager
      * @param $query    \WScore\DbAccess\Query
      * @param $selector \WScore\DiContainer\Dimplet
      * @DimInjection Get      EntityManager

@@ -1,5 +1,5 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 /**
  * base class for dao's for database tables.
@@ -78,11 +78,11 @@ class Model
     /** @var array                           for validation of inputs        */
     protected $validators = array();
 
-    /** @var Query                                                           */
+    /** @var \WScore\DbAccess\Query                                                  */
     protected $query;
 
-    /** @var \WScore\DbAccess\Entity_Interface    return class from Pdo            */
-    public $recordClassName = 'WScore\DbAccess\Entity_Generic';
+    /** @var \WScore\DataMapper\Entity_Interface    return class from Pdo            */
+    public $recordClassName = 'WScore\DataMapper\Entity_Generic';
 
     /** @var null|string    entity class name for quick methods (find/fetch). */
     protected $entityClass = null;
@@ -90,7 +90,7 @@ class Model
     //  Managing Object and Instances. 
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DbAccess\EntityManager $em
+     * @param \WScore\DataMapper\EntityManager $em
      * @param \WScore\DbAccess\Query         $query
      * @DimInjection   Get      EntityManager
      * @DimInjection   Fresh    Query
@@ -175,11 +175,11 @@ class Model
     }
     /**
      * @param array $data
-     * @return \WScore\DbAccess\Entity_Interface
+     * @return \WScore\DataMapper\Entity_Interface
      */
     public function getRecord( $data=array() ) 
     {
-        /** @var $record \WScore\DbAccess\Entity_Interface */
+        /** @var $record \WScore\DataMapper\Entity_Interface */
         $class  = ( $this->entityClass ) ?: $this->recordClassName;
         $record = new $class( $this, Entity_Interface::_ENTITY_TYPE_NEW_ );
         $this->entityClass = null;
@@ -214,7 +214,7 @@ class Model
      * @param string|array $value
      * @param null         $column
      * @param bool         $packed
-     * @return array|\WScore\DbAccess\Entity_Interface[]
+     * @return array|\WScore\DataMapper\Entity_Interface[]
      */
     public function fetch( $value, $column=null, $packed=false )
     {
@@ -355,7 +355,7 @@ class Model
     }
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DataMapper\Entity_Interface $entity
      * @return null|string
      */
     public function getId( $entity ) {
@@ -405,7 +405,7 @@ class Model
     /**
      * note: relation method body is moved to EntityManager.
      *
-     * @param \WScore\DbAccess\Entity_Interface $source
+     * @param \WScore\DataMapper\Entity_Interface $source
      * @param string $name
      * @return Relation_Interface
      */

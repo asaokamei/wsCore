@@ -1,13 +1,13 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 class Role
 {
-    /** @var \WScore\DbAccess\EntityManager */
+    /** @var \WScore\DataMapper\EntityManager */
     public $em;
 
     /**
-     * @param \WScore\DbAccess\EntityManager    $em
+     * @param \WScore\DataMapper\EntityManager    $em
      * @DimInjection get  EntityManager
      */
     public function __construct( $em )
@@ -16,24 +16,24 @@ class Role
     }
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface|\WScore\DbAccess\Role_Interface $entity
+     * @param \WScore\DataMapper\Entity_Interface|\WScore\DataMapper\Role_Interface $entity
      * @param string                                                            $role
      * @throws \RuntimeException
-     * @return \WScore\DbAccess\Role_Interface
+     * @return \WScore\DataMapper\Role_Interface
      */
     public function applyRole( $entity, $role )
     {
-        if( $entity instanceof \WScore\DbAccess\Role_Interface ) {
+        if( $entity instanceof \WScore\DataMapper\Role_Interface ) {
             $entity = $entity->retrieve();
         }
-        if( !$entity instanceof \WScore\DbAccess\Entity_Interface ) {
+        if( !$entity instanceof \WScore\DataMapper\Entity_Interface ) {
             throw new \RuntimeException( 'Can apply role to: ' . get_class( $entity ) );
         }
         if( strpos( $role, '\\' ) !== false ) {
             $class = $role;
         }
         else {
-            $class = '\WScore\DbAccess\Role_' . ucwords( $role );
+            $class = '\WScore\DataMapper\Role_' . ucwords( $role );
         }
         $role = $this->em->container()->fresh( $class );
         /** @var $role Role_Interface */
@@ -42,8 +42,8 @@ class Role
     }
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface $entity
-     * @return \WScore\DbAccess\Role_Active
+     * @param \WScore\DataMapper\Entity_Interface $entity
+     * @return \WScore\DataMapper\Role_Active
      */
     public function applyActive( $entity )
     {
@@ -52,8 +52,8 @@ class Role
     }
 
     /**
-     * @param \WScore\DbAccess\Entity_Interface $entity
-     * @return \WScore\DbAccess\Role_Input
+     * @param \WScore\DataMapper\Entity_Interface $entity
+     * @return \WScore\DataMapper\Role_Input
      */
     public function applyInputAndSelectable( $entity )
     {
@@ -63,7 +63,7 @@ class Role
 
     /**
      * @param $entity
-     * @return \WScore\DbAccess\Role_Loadable
+     * @return \WScore\DataMapper\Role_Loadable
      */
     public function applyLoadable( $entity ) {
         return $this->applyRole( $entity, 'Loadable' );
@@ -71,7 +71,7 @@ class Role
 
     /**
      * @param $entity
-     * @return \WScore\DbAccess\Role_Selectable
+     * @return \WScore\DataMapper\Role_Selectable
      */
     public function applySelectable( $entity ) {
         return $this->applyRole( $entity, 'Selectable' );

@@ -3,7 +3,7 @@ namespace friends\entity;
 
 use \friends\model\Friends;
 
-class friend extends \WScore\DbAccess\Entity_Abstract
+class friend extends \WScore\DataMapper\Entity_Abstract
 {
     protected $_model = 'Friends';
 
