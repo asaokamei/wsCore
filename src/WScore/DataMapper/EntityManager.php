@@ -1,5 +1,5 @@
 <?php
-namespace WScore\DbAccess;
+namespace WScore\DataMapper;
 
 /**
  * todo: entity maybe not registered automatically at generation.
