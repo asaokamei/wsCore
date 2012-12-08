@@ -78,7 +78,7 @@ class Dba_Rdb_Sqlite_Test extends \PHPUnit_Framework_TestCase
     public function test_connection_to_WScore_db()
     {
         // should not throw any exceptions.
-        $pdo = $this->rdb->connect( $this->config );
+        $this->rdb->connect( $this->config );
     }
 
     /**
@@ -99,7 +99,7 @@ class Dba_Rdb_Sqlite_Test extends \PHPUnit_Framework_TestCase
         $badDsn = array(
             'dsn' => 'db=noDb dbname=test username=admin password=admin'
         );
-        $pdo = $this->rdb->connect( $badDsn );
+        $this->rdb->connect( $badDsn );
     }
     // +----------------------------------------------------------------------+
 }
