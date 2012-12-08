@@ -25,7 +25,7 @@ class DataIO_Test extends \PHPUnit_Framework_TestCase
     {
         $input = array( 'num' => array( '1', '2', 'bad', '4' ) );
         $err_msg = 'Not a Number';
-        $errors = FALSE;
+        $errors = array();
         $this->dio->source( $input );
         $this->dio->pushValue( 'num', 'pattern:number | err_msg:'.$err_msg );
         // check errors.
