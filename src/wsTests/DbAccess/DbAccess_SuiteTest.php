@@ -26,4 +26,4 @@ class DbAccess_SuiteTests
         return $suite;
     }
 }
-?>
+

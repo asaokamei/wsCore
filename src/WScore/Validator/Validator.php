@@ -12,7 +12,7 @@ namespace WScore\Validator;
  *   - Message class (i18n), and 
  *   - Rules class. 
  *
- * TODO: implement more filters: code, maxlength, number, min, max, range, checkdate, mbCheckKana, sameAs, sameEmtpy
+ * TODO: implement more filters: code, maxlength, number, min, max, range, checkdate, mbCheckKana, sameAs, sameEmpty
  *
  * TODO: more types with err_msg: text, code, mail, number, integer, float, date, time, etc.
  */

@@ -18,7 +18,7 @@ class Interaction
     /** @var \WScore\Web\Session             saves itself and token for CSRF */
     protected $session;
 
-    /** @var \WScore\DbAccess\Role */
+    /** @var \WScore\DataMapper\Role */
     protected $role;
 
     public $showForm = 'showForm';
@@ -34,10 +34,10 @@ class Interaction
     /**
      * @param \wsModule\Alt\Web\Request   $request
      * @param \WScore\Web\Session   $session
-     * @param \WScore\DbAccess\Role $role
+     * @param \WScore\DataMapper\Role $role
      * @DimInjection Get   \wsModule\Alt\Web\Request
      * @DimInjection Fresh Session
-     * @DimInjection Get   \WScore\DbAccess\Role
+     * @DimInjection Get   \WScore\DataMapper\Role
      */
     public function __construct( $request, $session, $role )
     {
@@ -153,7 +153,7 @@ class Interaction
      * returns true if $action is in this context, otherwise
      * returns false.
      *
-     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DataMapper\Entity_Interface $entity
      * @param string                            $action
      * @param string                            $form
      * @param string|null                       $prevForm
@@ -193,7 +193,7 @@ class Interaction
      * returns true if $action is in this context, otherwise
      * returns false.
      * 
-     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DataMapper\Entity_Interface $entity
      * @param string                            $action
      * @param string                            $form
      * @return bool
@@ -216,7 +216,7 @@ class Interaction
      * returns true if $action is in this context (i.e. entity is saved), otherwise
      * returns false.
      * 
-     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DataMapper\Entity_Interface $entity
      * @param string                            $action
      * @param string                            $form
      * @return bool
@@ -243,7 +243,7 @@ class Interaction
      * shows form, load and validates input data.
      * returns the form name if action is in this context, and false if not.
      *
-     * @param \WScore\DbAccess\Entity_Interface $entity
+     * @param \WScore\DataMapper\Entity_Interface $entity
      * @param string $action
      * @param array  $forms
      * @return bool|string

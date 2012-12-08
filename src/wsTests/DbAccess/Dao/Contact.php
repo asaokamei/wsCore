@@ -42,7 +42,7 @@ class Dao_Contact extends \WScore\DataMapper\Model
     
     // +----------------------------------------------------------------------+
     /**
-     * @param $em       \WScore\DbAccess\EntityManager
+     * @param $em       \WScore\DataMapper\EntityManager
      * @param $query    \WScore\DbAccess\Query
      * @param $selector \WScore\DiContainer\Dimplet
      * @DimInjection Get      EntityManager

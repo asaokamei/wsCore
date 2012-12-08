@@ -210,7 +210,7 @@ class Relation_HasJoinDao implements Relation_Interface
      * returns the joint entity for the target (without creating a new relation). 
      * returns false if no relation exists. 
      * 
-     * @param DataRecord $target
+     * @param \WScore\DataMapper\Entity_Interface $target
      * @return bool|array|\WScore\DataMapper\Entity_Interface|\WScore\DataMapper\Entity_Interface[]
      */
     public function getJoinRecord( $target=null )
@@ -224,7 +224,7 @@ class Relation_HasJoinDao implements Relation_Interface
     /**
      * returns the related entities (i.e. targets) for the source entity. 
      * 
-     * @return DataRecord[]
+     * @return \WScore\DataMapper\Entity_Interface[]
      */
     public function get()
     {

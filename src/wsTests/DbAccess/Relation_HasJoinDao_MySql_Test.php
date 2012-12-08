@@ -15,7 +15,7 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
     /** @var \WScore\DbAccess\Query */
     public $query;
 
-    /** @var \WScore\DbAccess\EntityManager */
+    /** @var \WScore\DataMapper\EntityManager */
     public $em;
     
     /** @var Dao_Friend */

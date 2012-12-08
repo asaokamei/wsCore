@@ -64,7 +64,7 @@ class DataIO
     }
 
     /**
-     * @param array|\WScore\DbAccess\Entity_Interface $data
+     * @param array|\WScore\DataMapper\Entity_Interface $data
      */
     public function source( $data=array() ) {
         $this->source = $data;
