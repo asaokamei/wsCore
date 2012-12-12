@@ -137,12 +137,14 @@ class Paginate implements \ArrayAccess
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DbAccess\Query $query
+     * @return \WScore\DbAccess\Query
      */
     public function setQuery( $query )
     {
         $this->calc();
         $query->offset( $this->getOffset() );
         $query->limit(  $this->getLimit() );
+        return $query;
     }
     /**
      * @return int
