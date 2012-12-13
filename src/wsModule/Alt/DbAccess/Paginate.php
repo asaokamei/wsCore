@@ -42,7 +42,7 @@ class Paginate implements \ArrayAccess
     //  constructor and setup pagination information.
     // +----------------------------------------------------------------------+
     /**
-     *
+     * no dependencies!
      */
     public function __construct() {
     }
@@ -79,6 +79,7 @@ class Paginate implements \ArrayAccess
         return $this;
     }
     // +----------------------------------------------------------------------+
+    //  converts page number into url.
     // +----------------------------------------------------------------------+
     /**
      * @return Paginate
@@ -133,6 +134,7 @@ class Paginate implements \ArrayAccess
         return $url;
     }
     // +----------------------------------------------------------------------+
+    //  calculates pages.
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DbAccess\Query $query
@@ -165,15 +167,16 @@ class Paginate implements \ArrayAccess
     public function calc()
     {
         // check the current page.
+        // set to the 1st page if not set.
         if( !$this->curr_page ) $this->curr_page = 1;
-        // setting top page.
+        // setting the top page, which is the very first page (i.e. 1).
         $this->top_page = 1;
         $start = $this->curr_page - $this->num_links;
-        if( $start <= 1 ) {
+        if( $start <= 1 ) { // top page will be included in the pages.
             $start = 1;
             $this->top_page = null;
         }
-        // setting last page.
+        // setting the last page.
         if( !$this->total ) { // in case total is not set...
             $this->last_page = null;
             $last = $this->num_links + $this->curr_page; // show pages up to the num_links.
@@ -186,7 +189,7 @@ class Paginate implements \ArrayAccess
                 $this->last_page = null;
             }
         }
-        // create pages
+        // create the pages list
         for( $page = $start; $page <= $last; $page ++ ) {
             if( $page == $this->curr_page ) {
                 $this->data[ 'pages' ][ $page ] = '';
@@ -195,6 +198,7 @@ class Paginate implements \ArrayAccess
                 $this->data[ 'pages' ][ $page ] = $page;
             }
         }
+        // setting the previous and next pages.
         if( $this->curr_page > 1 ) $this->prev_page = $this->curr_page - 1;
         if( $this->curr_page != $last ) $this->next_page = $this->curr_page + 1;
     }
