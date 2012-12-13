@@ -37,7 +37,6 @@ class Paginate implements \ArrayAccess
         'pages' => array(),
     );
     public $page_parameter = 'page';
-    protected $curr_page = null;
 
     // +----------------------------------------------------------------------+
     //  constructor and setup pagination information.
@@ -180,7 +179,7 @@ class Paginate implements \ArrayAccess
             $last = $this->num_links + $this->curr_page; // show pages up to the num_links.
         }
         else {
-            $this->last_page = (integer) ( ceil( $this->total / $this->per_page ) + 1 );
+            $this->last_page = (integer) ( ceil( $this->total / $this->per_page ) );
             $last = $this->curr_page + $this->num_links;
             if( $this->last_page <= $last ) {
                 $last = $this->last_page;
@@ -190,10 +189,10 @@ class Paginate implements \ArrayAccess
         // create pages
         for( $page = $start; $page <= $last; $page ++ ) {
             if( $page == $this->curr_page ) {
-                $this->pages[ $page ] = '';
+                $this->data[ 'pages' ][ $page ] = '';
             }
             else {
-                $this->pages[ $page ] = $page;
+                $this->data[ 'pages' ][ $page ] = $page;
             }
         }
         if( $this->curr_page > 1 ) $this->prev_page = $this->curr_page - 1;
