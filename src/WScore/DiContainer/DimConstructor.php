@@ -1,7 +1,7 @@
 <?php
 namespace WScore\DiContainer;
 
-class DimDocs
+class DimConstructor
 {
     /**
      * gets constructor document for DimInjection.
@@ -9,7 +9,7 @@ class DimDocs
      * @param \ReflectionClass $refClass
      * @return array
      */
-    public function getConstructorDoc( $refClass )
+    public function getList( $refClass )
     {
         $refConst   = $refClass->getConstructor();
         if( !$refConst ) return array();

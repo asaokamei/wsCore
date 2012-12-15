@@ -20,14 +20,14 @@ class Dimplet
     /** @var array      */
     private $extends = array();
 
-    /** @var \WScore\DiContainer\DimDocs */
-    private $dimDocs = '\WScore\DiContainer\DimDocs';
+    /** @var \WScore\DiContainer\DimConstructor */
+    private $dimConstructor = '\WScore\DiContainer\DimConstructor';
     
     /**
-     * @param DimDocs $dimDocs
+     * @param DimConstructor $dimDocs
      */
     public function __construct( $dimDocs=null ) {
-        $this->dimDocs = $dimDocs ?: new $this->dimDocs;
+        $this->dimConstructor = $dimDocs ?: new $this->dimConstructor;
     }
     // +----------------------------------------------------------------------+
     /**
@@ -119,7 +119,7 @@ class Dimplet
     public function injectConstruction( $className )
     {
         $refClass  = new \ReflectionClass( $className );
-        $injectList   = $this->dimDocs->getConstructorDoc( $refClass );
+        $injectList   = $this->dimConstructor->getList( $refClass );
         if( empty( $injectList ) ) {
             $object = $refClass->newInstance();
         }
