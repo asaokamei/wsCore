@@ -78,7 +78,8 @@ class Dimplet
      */
     public function fresh( $id )
     {
-        if( array_key_exists($id, $this->values) ) {
+        if( array_key_exists($id, $this->values) ) 
+        {
             $found = $this->values[$id];
             if( $found instanceof \Closure ) {
                 /** @var $found \Closure */
@@ -120,16 +121,11 @@ class Dimplet
     {
         $refClass   = new \ReflectionClass( $className );
         $injectList = $this->dimConstructor->getList( $refClass );
-        if( empty( $injectList ) ) {
-            $object = $refClass->newInstance();
+        $args = array();
+        foreach( $injectList as $injectInfo ) {
+            $args[] = $this->forgeObject( $injectInfo );
         }
-        else {
-            $args = array();
-            foreach( $injectList as $injectInfo ) {
-                $args[] = $this->forgeObject( $injectInfo );
-            }
-            $object = $refClass->newInstanceArgs( $args );
-        }
+        $object = $refClass->newInstanceArgs( $args );
         return $object;
     }
 
@@ -137,7 +133,7 @@ class Dimplet
      * @param array $injectInfo
      * @return mixed|null
      */
-    public function forgeObject( $injectInfo )
+    private function forgeObject( $injectInfo )
     {
         extract( $injectInfo ); // gets $by, $ob, and $id.
         /** @var $by string   type of object fresh/get   */
@@ -167,11 +163,9 @@ class Dimplet
     {
         return function ($c) use ($callable) {
             static $object;
-
             if (null === $object) {
                 $object = $callable($c);
             }
-
             return $object;
         };
     }
@@ -201,9 +195,9 @@ class Dimplet
      */
     public function raw( $id, $by='get' )
     {
-        if( array_key_exists($id, $this->values) && 
-            $this->values[$id] instanceof \Closure ) {
-            return $this->values[$id];
+        if( array_key_exists( $id, $this->values ) && 
+            $this->values[ $id ] instanceof \Closure ) {
+            return $this->values[ $id ];
         }
         $c = $this;
         return function() use( $c, $id, $by ) {
@@ -225,11 +219,11 @@ class Dimplet
      * @param string   $id       The unique identifier for the object
      * @param \Closure $callable A \Closure to extend the original
      */
-    public function extend($id, \Closure $callable)
+    public function extend( $id, \Closure $callable )
     {
         /** @var $factory \Closure */
-        if( isset( $this->extends[$id] ) ) {
-            $callable2 = $this->extends[$id];
+        if( isset( $this->extends[ $id ] ) ) {
+            $callable2 = $this->extends[ $id ];
             $this->extends[$id] = function( $obj ) use( $callable, $callable2 ) {
                 $obj = $callable2( $obj );
                 return $callable ( $obj );

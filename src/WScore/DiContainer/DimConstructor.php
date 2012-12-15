@@ -26,7 +26,7 @@ class DimConstructor
      * @param array  $injectInfo
      * @return array
      */
-    function parseDimDoc( $comments, $injectInfo=array() )
+    private function parseDimDoc( $comments, $injectInfo=array() )
     {
         if( !preg_match_all( "/(@.*)$/mU", $comments, $matches ) ) return array();
         $injectList = array();
@@ -44,7 +44,7 @@ class DimConstructor
      * @param array $injectInfo
      * @return array
      */
-    function parseDimInjection( $dimInfo, $injectInfo=array() )
+    private function parseDimInjection( $dimInfo, $injectInfo=array() )
     {
         if( empty( $injectInfo ) ) {
             $injectInfo = array(
