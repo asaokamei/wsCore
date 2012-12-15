@@ -92,11 +92,11 @@ class Dimplet
             if( $found instanceof \Closure ) {
                 $found = $found( $this );
             }
-            elseif( is_string( $found ) && class_exists( $found ) ) {
+            elseif( $this->maybeClassName( $found ) && class_exists( $found ) ) {
                 $found = $this->injectConstruction( $found );
             }
         }
-        elseif( class_exists( $id ) ) {
+        elseif( $this->maybeClassName( $id ) && class_exists( $id ) ) {
             $found = $this->injectConstruction( $id );
         }
         else {
@@ -107,6 +107,13 @@ class Dimplet
             $found = $extender( $found, $this );
         }
         return $found;
+    }
+    
+    public function maybeClassName( $name ) {
+        if( is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name ) ) {
+            return true;
+        }
+        return false;
     }
 
     /**
