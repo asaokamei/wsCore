@@ -50,9 +50,6 @@ class Dimple_Test extends \PHPUnit_Framework_TestCase
     {
         // call class1 -> class2 
         $mock1 = 'wsTests\DiContainer\DimpleMockBiz\Invoice';
-        $mock2 = 'wsTests\DiContainer\DimpleMockDb\DbAccess';
-        $this->container->set( $mock1, $mock2 );
-        $this->container->set( 'mock', $mock1 );
 
         // extend twice. 
         $text1 = 'extend #1';
@@ -64,10 +61,10 @@ class Dimple_Test extends \PHPUnit_Framework_TestCase
             $obj->extended2 = $text2;
         };
         $this->container->extend( $mock1, $func1 );
-        $this->container->extend( $mock2, $func2 );
+        $this->container->extend( $mock1, $func2 );
         $mock  = $this->container->get( $mock1 );
         $this->assertTrue( is_object( $mock ) );
-        $this->assertEquals( $mock2, get_class( $mock ) );
+        $this->assertEquals( $mock1, get_class( $mock ) );
         $this->assertEquals( $text1, $mock->extended1 );
         $this->assertEquals( $text2, $mock->extended2 );
    }

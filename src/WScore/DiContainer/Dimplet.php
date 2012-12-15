@@ -291,6 +291,15 @@ class Dimplet
     public function extend($id, \Closure $callable)
     {
         /** @var $factory \Closure */
-        $this->extends[$id] = $callable;
+        if( isset( $this->extends[$id] ) ) {
+            $callable2 = $this->extends[$id];
+            $this->extends[$id] = function( $obj ) use( $callable, $callable2 ) {
+                $callable2( $obj );
+                $callable ( $obj );
+            };
+        }
+        else {
+            $this->extends[$id] = $callable;
+        }
     }
 }
