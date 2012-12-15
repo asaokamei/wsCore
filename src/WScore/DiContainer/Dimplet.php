@@ -25,6 +25,7 @@ class Dimplet
     
     /**
      * @param DimConstructor $dimConst
+     * @DimInjection Get \WScore\DiContainer\DimConstructor
      */
     public function __construct( $dimConst=null ) {
         $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
