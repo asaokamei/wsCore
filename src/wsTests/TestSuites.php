@@ -13,7 +13,7 @@ class WScore_SuiteTests
         $suite->addTestFile( $folder . 'Validator/All_Validate_Tests.php' );
         
         // wait until Dimplet test rewrite. 
-        //$suite->addTestFile( $folder . 'DiContainer/Dimple_Test.php' );
+        $suite->addTestFile( $folder . 'DiContainer/Dimple_Test.php' );
         
         // Html Tests
         $suite->addTestFile( $folder . 'Html/Form_Test.php' );
