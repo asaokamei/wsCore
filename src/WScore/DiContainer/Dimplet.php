@@ -11,13 +11,13 @@ namespace WScore\DiContainer;
 
 class Dimplet
 {
-    /** @var array      */
+    /** @var array|\Closure[]      */
     private $values = array();
 
     /** @var array      */
     private $objects = array();
     
-    /** @var array      */
+    /** @var \Closure[]      */
     private $extends = array();
 
     /** @var \WScore\DiContainer\DimConstructor */
@@ -82,29 +82,19 @@ class Dimplet
         {
             $found = $this->values[$id];
             if( $found instanceof \Closure ) {
-                /** @var $found \Closure */
                 $found = $found( $this );
             }
-            /*** not to chain id's. turn off by comments!? 
-            elseif( $this->exists( $found ) ) {
-                $found = $this->get( $found );
-            }
-            ***/
             elseif( is_string( $found ) && class_exists( $found ) ) {
                 $found = $this->injectConstruction( $found );
             }
         }
         elseif( class_exists( $id ) ) {
-            // construct the class, and inject via interfaces.
             $found = $this->injectConstruction( $id );
-            // $found = new $id;
-            // $this->injectSetter( $found );
         }
         else {
             throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
         }
         if( array_key_exists( $id, $this->extends ) ) {
-            /** @var $extender \Closure */
             $extender = $this->extends[ $id ];
             $found = $extender( $found, $this );
         }
