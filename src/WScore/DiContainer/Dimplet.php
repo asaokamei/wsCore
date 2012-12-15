@@ -72,9 +72,8 @@ class Dimplet
         if( array_key_exists( $id, $this->objects ) ) {
             return $this->objects[ $id ];
         }
-        $found = $this->fresh( $id );
-        $this->objects[ $id ] = $found;
-        return $found;
+        $this->objects[ $id ] = $this->fresh( $id );
+        return $this->objects[ $id ];
     }
     /**
      * gets _fresh_ id from container. returns freshly constructed objects 
@@ -115,10 +114,7 @@ class Dimplet
      * @return bool
      */
     public function maybeClassName( $name ) {
-        if( is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name ) ) {
-            return true;
-        }
-        return false;
+        return is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name );
     }
 
     /**
