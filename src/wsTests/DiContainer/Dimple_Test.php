@@ -56,9 +56,11 @@ class Dimple_Test extends \PHPUnit_Framework_TestCase
         $text2 = 'extend #2';
         $func1 = function( $obj ) use( $text1 ) {
             $obj->extended1 = $text1;
+            return $obj;
         };
         $func2 = function( $obj ) use( $text2 ) {
             $obj->extended2 = $text2;
+            return $obj;
         };
         $this->container->extend( $mock1, $func1 );
         $this->container->extend( $mock1, $func2 );
@@ -75,6 +77,7 @@ class Dimple_Test extends \PHPUnit_Framework_TestCase
         $text = 'extended text';
         $extend = function( $obj ) use( $text ) {
             $obj->extended = $text;
+            return $obj;
         };
         $this->container->extend( $mock1, $extend );
         $mock  = $this->container->get( $mock1 );

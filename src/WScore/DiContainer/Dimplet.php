@@ -105,7 +105,7 @@ class Dimplet
         if( array_key_exists( $id, $this->extends ) ) {
             /** @var $extender \Closure */
             $extender = $this->extends[ $id ];
-            $extender( $found, $this );
+            $found = $extender( $found, $this );
         }
         return $found;
     }
@@ -229,6 +229,11 @@ class Dimplet
      * Extends generated objects.
      * Useful when you want to extend an existing object definition,
      * without necessarily loading that object.
+     * 
+     * $extend = function( $obj, $c ) {
+     *   // do whatever with $obj
+     *   return $obj;
+     * }
      *
      * @param string   $id       The unique identifier for the object
      * @param \Closure $callable A \Closure to extend the original
@@ -239,8 +244,8 @@ class Dimplet
         if( isset( $this->extends[$id] ) ) {
             $callable2 = $this->extends[$id];
             $this->extends[$id] = function( $obj ) use( $callable, $callable2 ) {
-                $callable2( $obj );
-                $callable ( $obj );
+                $obj = $callable2( $obj );
+                return $callable ( $obj );
             };
         }
         else {
