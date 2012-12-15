@@ -20,10 +20,15 @@ class Dimplet
     /** @var array      */
     private $extends = array();
 
+    /** @var \WScore\DiContainer\DimDocs */
+    private $dimDocs = '\WScore\DiContainer\DimDocs';
+    
     /**
-     * 
+     * @param DimDocs $dimDocs
      */
-    public function __construct() {}
+    public function __construct( $dimDocs=null ) {
+        $this->dimDocs = $dimDocs ?: new $this->dimDocs;
+    }
     // +----------------------------------------------------------------------+
     /**
      * Sets a parameter or an object.
@@ -114,7 +119,7 @@ class Dimplet
     public function injectConstruction( $className )
     {
         $refClass  = new \ReflectionClass( $className );
-        $injectList   = $this->getConstructorDoc( $refClass );
+        $injectList   = $this->dimDocs->getConstructorDoc( $refClass );
         if( empty( $injectList ) ) {
             $object = $refClass->newInstance();
         }
@@ -134,7 +139,7 @@ class Dimplet
         /** @var $by string   type of object fresh/get   */
         /** @var $ob string   type of construct obj/raw  */
         /** @var $id string   look for id to generate    */
-        $object = NULL;
+        $object = null;
         if( $by && $ob && $id ) {
             if( $ob == 'raw' ) {
                 $object = $this->raw( $id, $by );
@@ -144,66 +149,6 @@ class Dimplet
             }
         }
         return $object;
-    }
-    /**
-     * @param \ReflectionClass $refClass
-     * @return array
-     */
-    public function getConstructorDoc( $refClass ) 
-    {
-        $refConst   = $refClass->getConstructor();
-        if( !$refConst ) return array();
-        $comments   = $refConst->getDocComment();
-        if( empty( $comments ) ) return array();
-        $injectList = $this->parseDimDoc( $comments );
-        return $injectList;
-    }
-
-    /**
-     * parse phpDoc comments for DimInjection.
-     *
-     * @param string $comments
-     * @param array  $injectInfo
-     * @return array
-     */
-    function parseDimDoc( $comments, $injectInfo=array() )
-    {
-        if( !preg_match_all( "/(@.*)$/mU", $comments, $matches ) ) return array();
-        $injectList = array();
-        foreach( $matches[1] as $comment ) {
-            if( !preg_match( '/@DimInjection[ \t]+(.*)$/', $comment, $comMatch ) ) continue;
-            $dimInfo = preg_split( '/[ \t]+/', trim( $comMatch[1] ) );
-            $injectList[] = $this->parseDimInjection( $dimInfo, $injectInfo );
-        }
-        return $injectList;
-    }
-
-    /**
-     * parse @DimInjection comment into injection information. 
-     * @param array $dimInfo
-     * @param array $injectInfo
-     * @return array
-     */
-    function parseDimInjection( $dimInfo, $injectInfo=array() )
-    {
-        if( empty( $injectInfo ) ) {
-            $injectInfo = array(
-                'by' => 'fresh',
-                'ob' => 'obj',
-                'id' => NULL,
-            );
-        }
-        foreach( $dimInfo as $info ) {
-            switch( strtolower( $info ) ) {
-                case 'none':   $injectInfo[ 'by' ] = NULL;      break;
-                case 'get':    $injectInfo[ 'by' ] = 'get';     break;
-                case 'fresh':  $injectInfo[ 'by' ] = 'fresh';   break;
-                case 'raw':    $injectInfo[ 'ob' ] = 'raw';     break;
-                case 'obj':    $injectInfo[ 'ob' ] = 'obj';     break;
-                default:       $injectInfo[ 'id' ] = $info;     break;
-            }
-        }
-        return $injectInfo;
     }
     /**
      * injects object using interfaces.
@@ -237,7 +182,7 @@ class Dimplet
         return function ($c) use ($callable) {
             static $object;
 
-            if (NULL === $object) {
+            if (null === $object) {
                 $object = $callable($c);
             }
 
