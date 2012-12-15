@@ -24,10 +24,10 @@ class Dimplet
     private $dimConstructor = '\WScore\DiContainer\DimConstructor';
     
     /**
-     * @param DimConstructor $dimDocs
+     * @param DimConstructor $dimConst
      */
-    public function __construct( $dimDocs=null ) {
-        $this->dimConstructor = $dimDocs ?: new $this->dimConstructor;
+    public function __construct( $dimConst=null ) {
+        $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
     }
     // +----------------------------------------------------------------------+
     /**
@@ -118,8 +118,8 @@ class Dimplet
      */
     public function injectConstruction( $className )
     {
-        $refClass  = new \ReflectionClass( $className );
-        $injectList   = $this->dimConstructor->getList( $refClass );
+        $refClass   = new \ReflectionClass( $className );
+        $injectList = $this->dimConstructor->getList( $refClass );
         if( empty( $injectList ) ) {
             $object = $refClass->newInstance();
         }
@@ -133,6 +133,10 @@ class Dimplet
         return $object;
     }
 
+    /**
+     * @param array $injectInfo
+     * @return mixed|null
+     */
     public function forgeObject( $injectInfo )
     {
         extract( $injectInfo ); // gets $by, $ob, and $id.
@@ -150,7 +154,7 @@ class Dimplet
         }
         return $object;
     }
-    /**
+
      * injects object using interfaces.
      *
      * @param $object
