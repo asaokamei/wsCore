@@ -175,6 +175,7 @@ class Dimplet
             return $object;
         };
     }
+    
     /**
      * from Pimple!
      * Protects a callable from being interpreted as a service. This is useful
