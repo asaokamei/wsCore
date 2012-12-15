@@ -22,7 +22,8 @@ class Dimplet
 
     /** @var \WScore\DiContainer\DimConstructor */
     private $dimConstructor = '\WScore\DiContainer\DimConstructor';
-    
+
+    // +----------------------------------------------------------------------+
     /**
      * @param DimConstructor $dimConst
      * @DimInjection Get \WScore\DiContainer\DimConstructor
@@ -30,7 +31,7 @@ class Dimplet
     public function __construct( $dimConst=null ) {
         $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
     }
-    // +----------------------------------------------------------------------+
+
     /**
      * Sets a parameter or an object.
      *
@@ -47,7 +48,13 @@ class Dimplet
     {
         $this->values[$id] = $value;
     }
-    
+
+    /**
+     * check if id is set. 
+     * 
+     * @param $id
+     * @return bool
+     */
     public function exists( $id ) {
         return array_key_exists( $id, $this->values );
     }
