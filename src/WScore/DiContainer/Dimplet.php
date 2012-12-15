@@ -108,7 +108,12 @@ class Dimplet
         }
         return $found;
     }
-    
+
+    /**
+     * test if a string maybe a class name, which contains backslash and a-zA-Z0-9. 
+     * @param mixed $name
+     * @return bool
+     */
     public function maybeClassName( $name ) {
         if( is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name ) ) {
             return true;
