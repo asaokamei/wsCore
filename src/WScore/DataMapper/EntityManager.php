@@ -106,7 +106,7 @@ class EntityManager
     /**
      * setup entities hidden state properties: _type and _identifier.
      *
-     * @param Entity_Interface $entity
+     * @param Entity_Interface|Entity_Interface[] $entity
      * @param string           $type
      * @param null|string           $identifier
      * @throws \RuntimeException
@@ -172,9 +172,7 @@ class EntityManager
         $model = $this->getModel( $name );
         if( $this->isEntity( $name ) ) $model->setEntityClass( $name );
         $entities = $model->fetch( $value, $column, $packed );
-        foreach( $entities as $entity ) {
-            $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_GET_ );
-        }
+        $this->setupEntity( $entities, Entity_Interface::_ENTITY_TYPE_GET_ );
         $entities = $this->register( $entities );
         return $entities;
     }
