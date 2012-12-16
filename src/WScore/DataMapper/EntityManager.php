@@ -12,9 +12,6 @@ class EntityManager
     /** @var Entity_Interface[] */
     protected $entities = array();
 
-    /** @var \ReflectionMethod[] */
-    protected $reflections = array();
-
     /** @var array    array( entityClass => modelClass ) */
     protected $entityToModel = array();
     
