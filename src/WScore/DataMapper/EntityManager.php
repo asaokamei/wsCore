@@ -12,15 +12,13 @@ class EntityManager
     /** @var Entity_Interface[] */
     protected $entities = array();
 
-    /** @var array    array( entityClass => modelClass ) */
-    protected $entityToModel = array();
-    
     /** @var \WScore\DiContainer\Dimplet */
     protected $container;
-    
+
     /** @var \WScore\DataMapper\Entity_Property */
     protected $entityProperty = '\WScore\DataMapper\Entity_Property';
 
+    // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DiContainer\Dimplet $container
      * @param \WScore\DataMapper\Entity_Property $entityProperty
@@ -60,7 +58,7 @@ class EntityManager
     public function getModel( $entity )
     {
         // get model class name.
-        $model = $this->getModelNameFromEntity( $entity );
+        $model = $this->entityProperty->getModelName( $entity );
         if( substr( $model, 0, 1 ) == '\\' ) $model = substr( $model, 1 );
         if( !isset( $this->models[ $model ] ) ) {
             $this->models[ $model ] = $this->container->get( $model );
@@ -72,38 +70,8 @@ class EntityManager
      * @param string|object $entity
      * @return bool
      */
-    public function isEntity( $entity )
-    {
-        if( is_object( $entity ) && $entity instanceof Entity_Interface ) {
-            return true;
-        }
-        $interfaces = class_implements( $entity );
-        if( is_string( $entity ) && is_array( $interfaces ) && in_array( 'WScore\DataMapper\Entity_Interface', $interfaces ) ) {
-            return true;
-        }
-        return false;
-    }
-    /**
-     * gets model class name from entity class name or entity object.
-     *
-     * @param string $entity    entity class name.
-     * @throws \RuntimeException
-     * @return string
-     */
-    public function getModelNameFromEntity( $entity )
-    {
-        if( !$this->isEntity( $entity ) ) return $entity;
-        if( is_object( $entity ) ) { // $entity is an *entity* object.
-            return $entity->_get_Model();
-        }
-        if( isset( $this->entityToModel[ $entity ] ) ) { // found it in the table.
-            return $this->entityToModel[ $entity ];
-        }
-        // get model name from entity class by getting $_model default value using reflection.
-        $refClass = new \ReflectionClass( $entity );
-        $propList = $refClass->getDefaultProperties();
-        $this->entityToModel[ $entity ] = $propList[ '_model' ];
-        return $this->entityToModel[ $entity ];
+    public function isEntity( $entity ) {
+        return $this->entityProperty->isEntity( $entity );
     }
 
     // +----------------------------------------------------------------------+
@@ -117,6 +85,7 @@ class EntityManager
     public  function setEntityProperty( $entity, $prop, $value ) {
         $this->entityProperty->set( $entity, $prop, $value );
     }
+    
     /**
      * @param Entity_Interface|Entity_Interface[] $entity
      * @return Entity_Interface|Entity_Interface[]

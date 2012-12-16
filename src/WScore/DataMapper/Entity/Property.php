@@ -6,6 +6,9 @@ class Entity_Property
     /** @var \ReflectionMethod[] */
     protected $reflections = array();
 
+    /** @var array    array( entityClass => modelClass ) */
+    protected $entityToModel = array();
+
     // +----------------------------------------------------------------------+
     public function __construct() {}
 
@@ -23,7 +26,7 @@ class Entity_Property
         $ref = $this->reflections[ $class ];
         $ref->invoke( $entity, $prop, $value );
     }
-    
+
     /**
      * @param Entity_Interface|string $entity
      */
@@ -37,5 +40,45 @@ class Entity_Property
             $reflections->setAccessible( true );
             $this->reflections[ $class ] = $reflections;
         }
+    }
+
+
+    /**
+     * @param string|object $entity
+     * @return bool
+     */
+    public function isEntity( $entity )
+    {
+        if( is_object( $entity ) && $entity instanceof Entity_Interface ) {
+            return true;
+        }
+        $interfaces = class_implements( $entity );
+        if( is_string( $entity ) && is_array( $interfaces ) && in_array( 'WScore\DataMapper\Entity_Interface', $interfaces ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * gets model class name from entity class name or entity object.
+     *
+     * @param string $entity    entity class name.
+     * @throws \RuntimeException
+     * @return string
+     */
+    public function getModelName( $entity )
+    {
+        if( !$this->isEntity( $entity ) ) return $entity;
+        if( is_object( $entity ) ) { // $entity is an *entity* object.
+            return $entity->_get_Model();
+        }
+        if( isset( $this->entityToModel[ $entity ] ) ) { // found it in the table.
+            return $this->entityToModel[ $entity ];
+        }
+        // get model name from entity class by getting $_model default value using reflection.
+        $refClass = new \ReflectionClass( $entity );
+        $propList = $refClass->getDefaultProperties();
+        $this->entityToModel[ $entity ] = $propList[ '_model' ];
+        return $this->entityToModel[ $entity ];
     }
 }
