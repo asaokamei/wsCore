@@ -1,9 +1,6 @@
 <?php
 namespace WScore\DataMapper;
 
-/**
- * todo: entity maybe not registered automatically at generation.
- */
 class EntityManager
 {
     /** @var \WScore\DataMapper\Model[] */
@@ -145,6 +142,7 @@ class EntityManager
     // +----------------------------------------------------------------------+
     /**
      * returns an entity object for a given id value.
+     * TODO: merge getEntity and fetch methods. 
      *
      * @param string $modelName   entity or model class name, or entity object.
      * @param string $id
@@ -158,6 +156,27 @@ class EntityManager
         $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_GET_ );
         $entity = $this->register( $entity );
         return $entity;
+    }
+
+    /**
+     * fetch entities for a simple condition;
+     *
+     * @param Entity_Interface|string  $name       entity or model class name, or entity object.
+     * @param string|array             $value      pass array to fetch multiple entities.
+     * @param null|string              $column     set to null to fetch by id.
+     * @param bool                     $packed     to get only the column value.
+     * @return array|\WScore\DataMapper\Entity_Interface[]
+     */
+    public function fetch( $name, $value, $column=null, $packed=false )
+    {
+        $model = $this->getModel( $name );
+        if( $this->isEntity( $name ) ) $model->setEntityClass( $name );
+        $entities = $model->fetch( $value, $column, $packed );
+        foreach( $entities as $entity ) {
+            $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_GET_ );
+        }
+        $entities = $this->register( $entities );
+        return $entities;
     }
 
     /**
@@ -241,24 +260,6 @@ class EntityManager
         $model = $this->getModel( $entity );
         $relation = Relation::getRelation( $this, $entity, $model->getRelationInfo(), $name );
         return $relation;
-    }
-
-    /**
-     * fetch entities for a simple condition;
-     *
-     * @param Entity_Interface|string  $name       entity or model class name, or entity object.
-     * @param string|array             $value      pass array to fetch multiple entities.
-     * @param null|string              $column     set to null to fetch by id.
-     * @param bool                     $packed     to get only the column value.
-     * @return array|\WScore\DataMapper\Entity_Interface[]
-     */
-    public function fetch( $name, $value, $column=null, $packed=false )
-    {
-        $model = $this->getModel( $name );
-        if( $this->isEntity( $name ) ) $model->setEntityClass( $name );
-        $entities = $model->fetch( $value, $column, $packed );
-        $entities = $this->register( $entities );
-        return $entities;
     }
 
     /**
