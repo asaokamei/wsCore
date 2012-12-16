@@ -47,6 +47,41 @@ class Entity_Property
         }
     }
 
+    /**
+     * initialize entities hidden state properties: _type and _identifier.
+     *
+     * @param Entity_Interface|Entity_Interface[] $entity
+     * @param string           $type
+     * @param null|string           $identifier
+     * @throws \RuntimeException
+     */
+    public function initialize( $entity, $type=null, $identifier=null )
+    {
+        if( !$entity ) return;
+        if( is_array( $entity ) ) {
+            foreach( $entity as $ent ) {
+                $this->initialize( $ent, $type, $identifier );
+            }
+            return;
+        }
+        // force to set type.
+        if( $type ) {
+            $this->set( $entity, 'type', $type );
+        }
+        // type is not set.
+        elseif( !$entity->_get_Type() ) {
+            // assume it is a new entity.
+            $this->set( $entity, 'type', Entity_Interface::_ENTITY_TYPE_NEW_ );
+        }
+        // force to set identifier.
+        if( $identifier ) {
+            $this->set( $entity, 'identifier', $identifier );
+        }
+        elseif( !$entity->_get_Id() ) {
+            throw new \RuntimeException( 'identifier not set. ' );
+        }
+    }
+
     // +----------------------------------------------------------------------+
     //  check if it is an entity. 
     // +----------------------------------------------------------------------+
