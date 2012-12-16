@@ -27,7 +27,7 @@ class Entity_Property
     /**
      * @param Entity_Interface|string $entity
      */
-    private function setup( $entity )
+    public function setup( $entity )
     {
         // get class name of entity if it is an object.
         $class = is_object( $entity ) ? get_class( $entity ) : $entity;
