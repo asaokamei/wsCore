@@ -485,30 +485,27 @@ class Query
      */
     public function makeSQL( $type )
     {
-        $type = 'make' . strtoupper( $type );
-        return $this->$type();
+        $type = 'make' . ucwords( $type );
+        if( in_array( $type, array( 'makeInsert', 'makeUpdate' ) ) ) {
+            $this->sqlObj->processValues();
+        }
+        $this->sql = SqlBuilder::$type( $this->sqlObj );
+        return $this;
     }
     public function makeSelect() {
-        $this->sql = SqlBuilder::makeSelect( $this->sqlObj );
-        return $this;
+        return $this->makeSQL( 'Select' );
     }
     public function makeCount() {
-        $this->sql = SqlBuilder::makeCount( $this->sqlObj );
-        return $this;
+        return $this->makeSQL( 'Count' );
     }
     public function makeDelete() {
-        $this->sql = SqlBuilder::makeDelete( $this->sqlObj );
-        return $this;
+        return $this->makeSQL( 'Delete' );
     }
     public function makeInsert() {
-        $this->sqlObj->processValues();
-        $this->sql = SqlBuilder::makeInsert( $this->sqlObj );
-        return $this;
+        return $this->makeSQL( 'Insert' );
     }
     public function makeUpdate() {
-        $this->sqlObj->processValues();
-        $this->sql = SqlBuilder::makeUpdate( $this->sqlObj );
-        return $this;
+        return $this->makeSQL( 'Update' );
     }
     // +----------------------------------------------------------------------+
 }
