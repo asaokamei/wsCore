@@ -76,4 +76,12 @@ class Role
     public function applySelectable( $entity ) {
         return $this->applyRole( $entity, 'Selectable' );
     }
+
+    /**
+     * @param $entity
+     * @return \WScore\DataMapper\Role_Cenatar
+     */
+    public function applyCenatar( $entity ) {
+        return $this->applyRole( $entity, 'Cenatar' );
+    }
 }
