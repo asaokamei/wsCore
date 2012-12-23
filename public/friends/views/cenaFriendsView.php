@@ -390,7 +390,7 @@ class cenaFriendsView
     {
         $view = $this->view;
         ob_start();
-        include( __DIR__ . '/template.php' );
+        include( __DIR__ . '/cenaTemplate.php' );
         return ob_get_clean();
     }
 }
