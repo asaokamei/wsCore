@@ -4,7 +4,7 @@ namespace WScore\DataMapper;
 class Role_Selectable extends Role_Abstract
 {
     /** @var string                html, form, or ...? */
-    private $html_type = 'html';
+    protected $html_type = 'html';
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DataMapper\EntityManager    $em
