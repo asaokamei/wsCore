@@ -301,7 +301,7 @@ class Tags
      */
     public function walk( $func, $attribute=null )
     {
-        if( !$attribute || $this->$attribute || isset( $this->attributes[ $attribute ] ) ) {
+        if( !$attribute || isset( $this->$attribute ) || isset( $this->attributes[ $attribute ] ) ) {
             $func( $this );
         }
         if( !empty( $this->contents ) ) {
