@@ -15,6 +15,7 @@ class Role_CenaLoad extends Role_Loadable
         $this->em = $em;
         $this->dio = $dio;
     }
+    
     /**
      * @param null|string $name
      * @param array       $data
@@ -28,6 +29,11 @@ class Role_CenaLoad extends Role_Loadable
         parent::loadData( $name, $data );
         return $this;
     }
+
+    /**
+     * @param $data
+     * @return array
+     */
     public function getData( $data ) 
     {
         // the data is not in Cena format. 

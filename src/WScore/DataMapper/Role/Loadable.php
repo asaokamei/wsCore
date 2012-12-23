@@ -9,7 +9,6 @@ class Role_Loadable extends Role_Abstract
      * @param \WScore\Validator\DataIO          $dio
      * @DimInjection Get \WScore\DataMapper\EntityManager
      * @DimInjection Get \WScore\Validator\DataIO
-     * @DimInjection Get \WScore\Html\Selector
      */
     public function __construct( $em, $dio )
     {
