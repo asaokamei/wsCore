@@ -3,7 +3,7 @@ namespace friends\views;
 
 use \friends\model\Contacts;
 
-class friendsView
+class cenaFriendsView
 {
     /** @var \wsModule\Alt\Html\View_Bootstrap */
     private $view;
@@ -82,7 +82,7 @@ class friendsView
      */
     public function showForm_info( $entity, $contacts )
     {
-        $role        = $this->role->applySelectable( $entity );
+        $role        = $this->role->applyCenatar( $entity );
         $id          = $role->getId();
         $this->set( 'title', $role->popHtml( 'name' ) );
         $tags        = $this->tags;
@@ -118,7 +118,7 @@ class friendsView
         if( !empty( $contacts ) ) 
         foreach( $contacts as $contact ) {
             $type = $contact->type;
-            $roleContacts[ $type ][] = $this->role->applySelectable( $contact );
+            $roleContacts[ $type ][] = $this->role->applyCenatar( $contact );
         }
         // -----------------------------
         // show contact for each type
@@ -166,7 +166,7 @@ class friendsView
             $this->tags->dd( $select )
         );
         // form basic info
-        $entity = $this->role->applySelectable( $entity );
+        $entity = $this->role->applyCenatar( $entity );
         $entity->setHtmlType( 'form' );
         $this->set( 'title', $entity->popHtml( 'name', 'html' ) );
         $back = $this->view->get( 'appUrl' ) . $entity->getId();
@@ -195,8 +195,8 @@ class friendsView
         $friend_id = $friend->friend_id;
         $back = $this->view->get( 'appUrl' ) . $friend_id;
         $contact_type = $contact->type;
-        $friend  = $this->role->applySelectable( $friend );
-        $contact = $this->role->applySelectable( $contact );
+        $friend  = $this->role->applyCenatar( $friend );
+        $contact = $this->role->applyCenatar( $contact );
         $contact->setHtmlType( 'form' );
         $this->set( 'title', $friend->popHtml( 'name' ) );
         $contents    = array();
@@ -228,7 +228,7 @@ class friendsView
         $dl->contain_( $this->tags->dd( 'group\'s name/description' ) );
         foreach( $groups as $group )
         {
-            $sel = $this->role->applySelectable( $group );
+            $sel = $this->role->applyCenatar( $group );
             $link = $this->get( 'appUrl' ) . 'group/' . $sel->popHtml( 'group_code' );
             $link = $this->tags->a( $this->tags->dd( $sel->popHtml( 'name' ) ) )->href( $link );
             $dl->contain_( $this->tags->dt( $sel->popHtml( 'group_code' ) ) );
@@ -246,7 +246,7 @@ class friendsView
     }
     public function showForm_groupView( $group )
     {
-        $sel = $this->role->applySelectable( $group );
+        $sel = $this->role->applyCenatar( $group );
         $sel->setHtmlType( 'form' );
         $this->set( 'title', 'My Groups' );
         $dl = $this->tags->dl();
@@ -339,7 +339,7 @@ class friendsView
         foreach ( $entity as $row )
         {
             $groups = $row->relation( 'groups' );
-            $row = $this->role->applySelectable( $row );
+            $row = $this->role->applyCenatar( $row );
             $id  = $row->getId();
             $row->setHtmlType( $type );
 

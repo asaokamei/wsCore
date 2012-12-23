@@ -10,15 +10,15 @@ $front = Core::get( 'wsModule\Alt\Web\FrontMC' );
 $front->debug = true;
 $front->namespace = 'friends';
 $routes = array(
-    'myFriends/group/:gCode'   => array( 'controller' => 'Friend', 'action' => 'groupMod' ),
-    'myFriends/group'   => array( 'controller' => 'Friend', 'action' => 'group' ),
-    'myFriends/contact/:id/type/:type'   => array( 'controller' => 'Friend', 'action' => 'contactNew' ),
-    'myFriends/contact/:id/:cid'   => array( 'controller' => 'Friend', 'action' => 'contactMod' ),
-    'myFriends/detail/:id'   => array( 'controller' => 'Friend', 'action' => 'detail' ),
-    'myFriends/setup' => array( 'controller' => 'Friend', 'action' => 'setup' ),
-    'myFriends/:id'   => array( 'controller' => 'Friend', 'action' => 'info' ),
-    'myFriends/'      => array( 'controller' => 'Friend', 'action' => 'index' ),
-    'myFriends'       => array( 'controller' => 'Friend', 'action' => 'index' ),
+    'cenaFriends/group/:gCode'   => array( 'controller' => 'CenaFriend', 'action' => 'groupMod' ),
+    'cenaFriends/group'   => array( 'controller' => 'CenaFriend', 'action' => 'group' ),
+    'cenaFriends/contact/:id/type/:type'   => array( 'controller' => 'CenaFriend', 'action' => 'contactNew' ),
+    'cenaFriends/contact/:id/:cid'   => array( 'controller' => 'CenaFriend', 'action' => 'contactMod' ),
+    'cenaFriends/detail/:id'   => array( 'controller' => 'CenaFriend', 'action' => 'detail' ),
+    'cenaFriends/setup' => array( 'controller' => 'CenaFriend', 'action' => 'setup' ),
+    'cenaFriends/:id'   => array( 'controller' => 'CenaFriend', 'action' => 'info' ),
+    'cenaFriends/'      => array( 'controller' => 'CenaFriend', 'action' => 'index' ),
+    'cenaFriends'       => array( 'controller' => 'CenaFriend', 'action' => 'index' ),
 );
 $front->router->set( $routes );
 $front->run();

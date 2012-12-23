@@ -1,7 +1,7 @@
 <?php
 namespace friends;
 
-class FriendController
+class CenaFriendController
 {
     /** @var \WScore\DataMapper\EntityManager */
     protected $em;
@@ -9,17 +9,17 @@ class FriendController
     /** @var \wsModule\Alt\Web\FrontMC */
     protected $front;
 
-    /** @var \friends\views\friendsView */
+    /** @var \friends\views\cenaFriendsView */
     protected $view;
 
     /** @var \WScore\DataMapper\Role */
     protected $role;
     /**
      * @param \WScore\DataMapper\EntityManager $em
-     * @param \friends\views\friendsView     $view
+     * @param \friends\views\cenaFriendsView     $view
      * @param \WScore\DataMapper\Role          $role
      * @DimInjection get EntityManager
-     * @DimInjection get \friends\views\friendsView
+     * @DimInjection get \friends\views\cenaFriendsView
      * @DimInjection get \WScore\DataMapper\Role
      */
     public function __construct( $em, $view, $role )
@@ -35,7 +35,7 @@ class FriendController
     public function pre_action( $front ) {
         $this->front = $front;
         $this->view->set( 'baseUrl', $front->request->getBaseUrl() );
-        $this->view->set( 'appUrl',  $front->request->getBaseUrl() . 'myFriends/' );
+        $this->view->set( 'appUrl',  $front->request->getBaseUrl() . 'cenaFriends/' );
         class_exists( '\WScore\DbAccess\Relation' ); // just for debugger.
     }
 
@@ -60,7 +60,7 @@ class FriendController
 
     /**
      * @param array $parameter
-     * @return views\friendsView
+     * @return views\cenaFriendsView
      */
     public function actInfo( $parameter )
     {
@@ -75,7 +75,7 @@ class FriendController
 
     /**
      * @param array $parameter
-     * @return views\friendsView
+     * @return views\cenaFriendsView
      */
     public function actDetail( $parameter )
     {
@@ -133,7 +133,7 @@ class FriendController
     }
     /**
      * @param $parameter
-     * @return views\friendsView
+     * @return views\cenaFriendsView
      */
     public function actContactNew( $parameter )
     {
