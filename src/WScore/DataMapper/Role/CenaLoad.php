@@ -1,40 +1,46 @@
 <?php
 namespace WScore\DataMapper;
 
-class Role_Cenatar extends Role_Selectable
+class Role_CenaLoad extends Role_Loadable
 {
-    // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DataMapper\EntityManager    $em
-     * @param \WScore\Html\Selector             $selector
+     * @param \WScore\Validator\DataIO          $dio
      * @DimInjection Get \WScore\DataMapper\EntityManager
+     * @DimInjection Get \WScore\Validator\DataIO
      * @DimInjection Get \WScore\Html\Selector
      */
-    public function __construct( $em, $selector )
+    public function __construct( $em, $dio )
     {
-        $this->em       = $em;
-        $this->selector = $selector;
+        $this->em = $em;
+        $this->dio = $dio;
     }
-    public function popHtml( $name, $html_type=null )
+    /**
+     * @param null|string $name
+     * @param array       $data
+     * @return Role_Loadable
+     */
+    public function loadData( $name=null, $data=array() )
     {
-        $html = parent::popHtml( $name, $html_type );
-        if( $html instanceof \WScore\Html\Form ) {
-            $cenaId = $this->entity->_get_cenaId();
-            $format = $this->getFormName( $cenaId );
-            $makeCena = function( $form ) use( $format ) {
-                /** @var $tags \WScore\Html\Form */
-                if( isset( $form->attributes[ 'name' ] ) ) {
-                    $form->attributes[ 'name' ] = $format . '[' . $form->attributes[ 'name' ] . ']';
-                }
-            };
-            $html->walk( $makeCena, 'name' );
-        }
-        return $html;
+        if( is_array(  $name ) ) $data = $name;
+        if( empty( $data ) ) $data = $_POST;
+        $data = $this->getData( $data );
+        parent::loadData( $name, $data );
+        return $this;
     }
-    public function getFormName( $cenaId, $name=null ) {
+    public function getData( $data ) 
+    {
+        // the data is not in Cena format. 
+        // return the data as is. 
+        if( !isset( $data[ 'Cena' ] ) ) return $data;
+        // OK, got Cena formatted data. 
+        $cenaId = $this->entity->_get_cenaId();
         $cena = explode( '.', $cenaId );
-        $formName = 'Cena[' . implode( '][', $cena ) . ']';
-        if( $name ) $formName .= "[{$name}]";
-        return $formName;
+        $data = $data[ 'Cena' ];
+        foreach( $cena as $item ) {
+            if( !isset( $data[ $item ] ) ) return array();
+            $data = $data[ $item ];
+        }
+        return $data;
     }
 }

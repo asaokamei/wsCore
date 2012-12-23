@@ -84,4 +84,12 @@ class Role
     public function applyCenatar( $entity ) {
         return $this->applyRole( $entity, 'Cenatar' );
     }
+
+    /**
+     * @param $entity
+     * @return \WScore\DataMapper\Role_CenaLoad
+     */
+    public function applyCenaLoad( $entity ) {
+        return $this->applyRole( $entity, 'CenaLoad' );
+    }
 }

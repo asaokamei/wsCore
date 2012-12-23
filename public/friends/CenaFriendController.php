@@ -89,7 +89,7 @@ class CenaFriendController
             $this->em->relation( $friend, 'groups' )->replace( $groups );
 
             // update friends info
-            $loadable = $this->role->applyLoadable( $friend );
+            $loadable = $this->role->applyCenaLoad( $friend );
             $loadable->loadData();
             if( $loadable->validate() )
             {
@@ -116,7 +116,7 @@ class CenaFriendController
         $contact = $this->em->getEntity( 'friends\model\Contacts', $cid );
         if( $this->front->request->isPost() )
         {
-            $loadable = $this->role->applyLoadable( $contact );
+            $loadable = $this->role->applyCenaLoad( $contact );
             $loadable->loadData();
             if( $loadable->validate() )
             {
@@ -147,7 +147,7 @@ class CenaFriendController
         /** @var $contact \friends\entity\contact */
         if( $this->front->request->isPost() ) 
         {
-            $loadable = $this->role->applyLoadable( $contact );
+            $loadable = $this->role->applyCenaLoad( $contact );
             $loadable->loadData();
             if( $loadable->validate() ) 
             {
@@ -170,7 +170,7 @@ class CenaFriendController
         if( $this->front->request->isPost() )
         {
             $group = $this->em->newEntity( 'friends\model\Group' );
-            $loadable = $this->role->applyLoadable( $group );
+            $loadable = $this->role->applyCenaLoad( $group );
             $loadable->loadData();
             if( $loadable->validate() )
             {
@@ -192,7 +192,7 @@ class CenaFriendController
         $group = $this->em->getEntity( 'friends\model\Group', $parameter[ 'gCode' ] );
         if( $this->front->request->isPost() )
         {
-            $loadable = $this->role->applyLoadable( $group );
+            $loadable = $this->role->applyCenaLoad( $group );
             $loadable->loadData();
             if( $loadable->validate() )
             {
