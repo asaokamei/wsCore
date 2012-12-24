@@ -55,6 +55,7 @@ class CenaFriendController
      */
     public function actIndex()
     {
+        $uri = $this->front->request->getRequestUri();
         $pager = $this->pager;
         $pager = $pager();
         /** @var $pager \wsModule\Alt\DbAccess\Paginate */
@@ -62,10 +63,27 @@ class CenaFriendController
         $pager->setOptions( $_GET );
         $model = $this->em->getModel( 'friends\model\Friends' );
         $entities   = $pager->setQuery( $model->query() )->select();
-        foreach( $entities as $friend ) {
-            $this->role->applyActive( $friend )->relation( 'groups' );
+        if( $this->front->request->isPost() )
+        {
+            $method = $this->front->request->getPost( 'method' );
+            if( $method == 'save' ) {
+                header( 'Location: ' . $uri );
+                exit;
+            }
+            else {
+                $model->selectors[ 'name'     ][ 2 ] .= 'class:span4';
+                $model->selectors[ 'star'     ][ 1 ]  = 'select';
+                $model->selectors[ 'star'     ][ 2 ] .= 'class:span1';
+                $model->selectors[ 'star'     ][ 'items' ] = \friends\model\Friends::$stars_in_select;
+                $model->selectors[ 'gender'   ][ 1 ]  = 'select';
+                $model->selectors[ 'gender'   ][ 2 ] .= 'class:span2';
+                $model->selectors[ 'birthday' ][ 2 ] .= 'class:span2';
+                $this->view->showForm_list( $entities, $pager, 'save', $uri );
+            }
         }
-        $this->view->showForm_list( $entities, $pager );
+        else {
+            $this->view->showForm_list( $entities, $pager, 'edit', $uri );
+        }
         return $this->view;
     }
 

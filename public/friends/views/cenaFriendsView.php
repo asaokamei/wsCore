@@ -73,18 +73,25 @@ class cenaFriendsView
     /**
      * @param \WScore\DataMapper\Role_Selectable[] $entity
      * @param \wsModule\Alt\DbAccess\Paginate      $pager
+     * @param string                               $button
+     * @param string                               $uri
      */
-    public function showForm_list( $entity, $pager )
+    public function showForm_list( $entity, $pager, $button, $uri )
     {
         $appUrl   = $this->get( 'appUrl' );
         $pageUrls = $pager->setupUrls( $appUrl."?page=%d" );
         $this->set( 'title', 'My Friends' );
         $contents    = array();
-        $table       = $this->tableView( $entity, 'html' );
+        $htmlType    = $button=='save'?'form':'html';
+        $table       = $this->tableView( $entity, $htmlType );
         $contents[ ] = $table;
         // pagination
         $this->pager->setUrls( $pageUrls );
-        $contents[] = $this->pager->bootstrap( $pageUrls );
+        $contents[] = $form = $this->tags->form()->action( $uri )->method( 'post' );
+        $form->contain_(
+            $this->pager->bootstrap( $pageUrls ),
+            $this->tags->input( 'submit', 'method', $button, array( 'class' => 'btn btn-primary') )
+        );
         $this->set( 'content', $contents );
     }
 

@@ -22,6 +22,12 @@ class Friends extends \WScore\DataMapper\Model
         array( 'C', '<i class="img-user"></i> ' ),
     );
 
+    public static $stars_in_select = array(
+        array( 'A', '<i class="img-heart">heart</i> ' ),
+        array( 'B', '<i class="img-star">star</i> ' ),
+        array( 'C', '<i class="img-user">friend</i> ' ),
+    );
+
     public static $status = array(
         array( self::STATUS_ACTIVE, 'active' ),
         array( self::STATUS_DONE, 'done' )
