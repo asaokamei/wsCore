@@ -7,9 +7,18 @@ Core::go();
 Core::setPdo( array( 'dsn' => 'sqlite:' . __DIR__ . '/task/data/tasks.sqlite' ) );
 
 /** @var $front wsModule\Alt\Web\FrontMC */
-$front            = Core::get( 'wsModule\Alt\Web\FrontMC' );
-$front->debug     = true;
-$front->namespace = 'task';
+/** @var $request \wsModule\Alt\Web\Request */
+/** @var $router \wsModule\Alt\Web\Router */
+$front          = Core::get( 'wsModule\Alt\Web\FrontMC' );
+$request        = Core::get( 'wsModule\Alt\Web\Request' );
+$router         = Core::get( 'wsModule\Alt\Web\Router' );
+$front->request = $request;
+$front->setDefaultParameter( array(
+    'namespace'  => 'task',
+    'controller' => 'task',
+    'action'     => 'index'
+) );
+
 $routes           = array(
     'myTasks/printO/:name' => array( 'controller' => 'task', 'action' => 'PrintO' ),
     'myTasks/printO'       => array( 'controller' => 'task', 'action' => 'PrintO', 'name' => 'em' ),
@@ -21,5 +30,6 @@ $routes           = array(
     'myTasks/'             => array( 'controller' => 'task', 'action' => 'index' ),
     'myTasks'              => array( 'controller' => 'task', 'action' => 'index' ),
 );
-$front->router->set( $routes );
-$front->run();
+$router->set( $routes );
+$parameter = $router->match( $request->getPathInfo() );
+$front->run( $parameter );

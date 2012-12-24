@@ -6,19 +6,29 @@ Core::go();
 Core::setPdo( array( 'dsn' => 'mysql:dbname=test_friends', 'username' => 'admin', 'password' => 'admin' ) );
 
 /** @var $front wsModule\Alt\Web\FrontMC */
-$front = Core::get( 'wsModule\Alt\Web\FrontMC' );
-$front->debug = true;
-$front->namespace = 'friends';
+/** @var $request \wsModule\Alt\Web\Request */
+/** @var $router \wsModule\Alt\Web\Router */
+$front          = Core::get( 'wsModule\Alt\Web\FrontMC' );
+$request        = Core::get( 'wsModule\Alt\Web\Request' );
+$router         = Core::get( 'wsModule\Alt\Web\Router' );
+$front->request = $request;
+$front->setDefaultParameter( array(
+    'namespace'  => 'friends',
+    'controller' => 'Friend',
+    'action'     => 'index'
+) );
 $routes = array(
-    'myFriends/group/:gCode'   => array( 'controller' => 'Friend', 'action' => 'groupMod' ),
-    'myFriends/group'   => array( 'controller' => 'Friend', 'action' => 'group' ),
-    'myFriends/contact/:id/type/:type'   => array( 'controller' => 'Friend', 'action' => 'contactNew' ),
-    'myFriends/contact/:id/:cid'   => array( 'controller' => 'Friend', 'action' => 'contactMod' ),
-    'myFriends/detail/:id'   => array( 'controller' => 'Friend', 'action' => 'detail' ),
-    'myFriends/setup' => array( 'controller' => 'Friend', 'action' => 'setup' ),
-    'myFriends/:id'   => array( 'controller' => 'Friend', 'action' => 'info' ),
-    'myFriends/'      => array( 'controller' => 'Friend', 'action' => 'index' ),
-    'myFriends'       => array( 'controller' => 'Friend', 'action' => 'index' ),
+    'myFriends/group/:gCode'           => array( 'action' => 'groupMod' ),
+    'myFriends/group'                  => array( 'action' => 'group' ),
+    'myFriends/contact/:id/type/:type' => array( 'action' => 'contactNew' ),
+    'myFriends/contact/:id/:cid'       => array( 'action' => 'contactMod' ),
+    'myFriends/detail/:id'             => array( 'action' => 'detail' ),
+    'myFriends/setup'                  => array( 'action' => 'setup' ),
+    'myFriends/:id'                    => array( 'action' => 'info' ),
+    'myFriends/'                       => array( 'action' => 'index' ),
+    'myFriends'                        => array( 'action' => 'index' ),
 );
-$front->router->set( $routes );
-$front->run();
+$router->set( $routes );
+$parameter = $router->match( $request->getPathInfo() );
+
+$front->run( $parameter );

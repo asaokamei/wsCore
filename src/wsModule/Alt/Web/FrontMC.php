@@ -10,51 +10,53 @@ class FrontMC
     /** @var \WScore\DiContainer\Dimplet */
     protected $container;
 
-    /** @var \wsModule\Alt\Web\Request */
-    public $request;
-
-    /** @var \wsModule\Alt\Web\Router */
-    public $router;
-
     /** @var \wsModule\Alt\Web\Response */
     public $response;
-
+    
+    public $request;
+    
     /** @var array */
     public $parameter = array();
     
-    public $namespace;
-
-    public $debug = false;
-
     /**
      * @param \WScore\DiContainer\Dimplet $container
-     * @param \wsModule\Alt\Web\Request $request
-     * @param \wsModule\Alt\Web\Router  $router
      * @param \wsModule\Alt\Web\Response  $response
      * @DimInjection get Container
-     * @DimInjection Fresh \wsModule\Alt\Web\Request
-     * @DimInjection Fresh \wsModule\Alt\Web\Router
      * @DimInjection Fresh \wsModule\Alt\Web\Response
      */
-    public function __construct( $container, $request, $router, $response )
+    public function __construct( $container, $response )
     {
         $this->container = $container;
-        $this->request   = $request;
-        $this->router    = $router;
         $this->response  = $response;
     }
 
-    public function run()
+    /**
+     * @param array $parameter
+     */
+    public function setDefaultParameter( $parameter )
     {
-        try {
-            $this->parameter = $this->router->match( $this->request->getPathInfo() );
-            if( $this->parameter === false ) {
-                throw new \RuntimeException( 'No route found for ' . $this->request->getPathInfo() );
-            }
+        $this->parameter = $parameter;
+    }
 
-            $controller_name  = $this->parameter[ 'controller' ];
-            $controller_class = $this->namespace . '\\' . ucfirst( $controller_name ) . 'Controller';
-            $controller       = $this->container->fresh( $controller_class );
+    /**
+     * @param array $parameter
+     * @throws \RuntimeException
+     */
+    public function run( $parameter=null )
+    {
+        try 
+        {
+            // set up parameter from default. 
+            $this->parameter = array_merge( $this->parameter, $parameter );
+            if( !isset( $this->parameter[ 'controller' ] ) ) {
+                throw new \RuntimeException( 'No controller is set');
+            }
+            // create controller object. 
+            $controller_name  = $this->parameter[ 'controller' ] . 'Controller';
+            if( isset( $this->parameter[ 'namespace' ] ) && $this->parameter[ 'namespace' ] ) {
+                $controller_name = $this->parameter[ 'namespace' ] . '\\' . ucfirst( $controller_name );
+            }
+            $controller       = $this->container->fresh( $controller_name );
             // set up pre_action method if exists.
             if( method_exists( $controller, 'pre_action' ) ) {
                 $controller->pre_action( $this );
