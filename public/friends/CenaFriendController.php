@@ -61,6 +61,7 @@ class CenaFriendController
         /** @var $pager \wsModule\Alt\DbAccess\Paginate */
         $pager->per_page = 4;
         $pager->setOptions( $_GET );
+        /** @var $model \friends\model\Friends */
         $model = $this->em->getModel( 'friends\model\Friends' );
         $entities   = $pager->setQuery( $model->query() )->select();
         if( $this->front->request->isPost() )
@@ -71,13 +72,7 @@ class CenaFriendController
                 exit;
             }
             else {
-                $model->selectors[ 'name'     ][ 2 ] .= 'class:span4';
-                $model->selectors[ 'star'     ][ 1 ]  = 'select';
-                $model->selectors[ 'star'     ][ 2 ] .= 'class:span1';
-                $model->selectors[ 'star'     ][ 'items' ] = \friends\model\Friends::$stars_in_select;
-                $model->selectors[ 'gender'   ][ 1 ]  = 'select';
-                $model->selectors[ 'gender'   ][ 2 ] .= 'class:span2';
-                $model->selectors[ 'birthday' ][ 2 ] .= 'class:span2';
+                $model->setupFormForListings();
                 $this->view->showForm_list( $entities, $pager, 'save', $uri );
             }
         }

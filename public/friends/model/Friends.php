@@ -163,4 +163,15 @@ class Friends extends \WScore\DataMapper\Model
         );
         return $task;
     }
+    
+    public function setupFormForListings()
+    {
+        $this->selectors[ 'name'     ][ 2 ] .= 'class:span4';
+        $this->selectors[ 'star'     ][ 1 ]  = 'select';
+        $this->selectors[ 'star'     ][ 2 ]  = 'class:span1';
+        $this->selectors[ 'star'     ][ 'items' ] = \friends\model\Friends::$stars_in_select;
+        $this->selectors[ 'gender'   ][ 1 ]  = 'select';
+        $this->selectors[ 'gender'   ][ 2 ]  = 'class:span2';
+        $this->selectors[ 'birthday' ][ 2 ]  = 'class:span2';
+    }
 }
