@@ -14,19 +14,25 @@ class cenaFriendsView
     /** @var \WScore\DataMapper\Role */
     private $role;
 
+    /** @var \wsModule\Alt\Html\Paginate */
+    private $pager;
+
     /**
      * @param \wsModule\Alt\Html\View_Bootstrap $view
      * @param \WScore\Html\Form                 $tags
-     * @param \WScore\DataMapper\Role             $role
+     * @param \WScore\DataMapper\Role           $role
+     * @param \wsModule\Alt\Html\Paginate       $pager
      * @DimInjection Fresh \wsModule\Alt\Html\View_Bootstrap
      * @DimInjection Fresh \WScore\Html\Form
      * @DimInjection get \WScore\DataMapper\Role
+     * @DimInjection get \wsModule\Alt\Html\Paginate
      */
-    public function __construct( $view, $tags, $role )
+    public function __construct( $view, $tags, $role, $pager )
     {
         $this->view = $view;
         $this->tags = $tags;
         $this->role = $role;
+        $this->pager = $pager;
     }
 
     /**
@@ -77,33 +83,11 @@ class cenaFriendsView
         $table       = $this->tableView( $entity, 'html' );
         $contents[ ] = $table;
         // pagination
-        $contents[] = $this->paginate( $pageUrls );
+        $this->pager->setUrls( $pageUrls );
+        $contents[] = $this->pager->bootstrap( $pageUrls );
         $this->set( 'content', $contents );
     }
 
-    function paginate( $urls )
-    {
-        $tags = $this->tags;
-        $getLi = function( $name, $label ) use( $tags, $urls ) {
-            if( isset( $urls[ $name ] ) && $urls[ $name ] ) {
-                return $tags->li( $tags->a( $label )->href( $urls[ $name ] ) );
-            }
-            return $tags->li( $tags->a( $label )->href( '#' ) )->_class( 'disabled' );
-        };
-        $pageDiv = $this->tags->div( $ul = $this->tags->ul() )->_class( 'pagination' );
-        if( $li = $getLi( 'top_page',  'top' ) ) $ul->contain_( $li );
-        if( $li = $getLi( 'prev_page', '≪' ) ) $ul->contain_( $li );
-        foreach( $urls['pages'] as $page => $url ) {
-            if( !$url ) {
-                $ul->contain_( $this->tags->li( $this->tags->a( $page )->href( '#' ) )->_class( 'disabled' ) );
-            } else {
-                $ul->contain_( $this->tags->li( $this->tags->a( $page )->href( $url ) ) );
-            }
-        }
-        if( $li = $getLi( 'next_page', '≫' ) ) $ul->contain_( $li );
-        if( $li = $getLi( 'last_page', 'last' ) ) $ul->contain_( $li );
-        return $pageDiv;
-    }
     /**
      * @param \WScore\DataMapper\Entity_Interface   $entity
      * @param \WScore\DataMapper\Entity_Interface[] $contacts
