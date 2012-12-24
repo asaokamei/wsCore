@@ -20,7 +20,7 @@ class FrontMC
     public $response;
 
     /** @var array */
-    public $parameter;
+    public $parameter = array();
     
     public $namespace;
 
