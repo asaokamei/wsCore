@@ -83,15 +83,15 @@ class cenaFriendsView
         $this->set( 'title', 'My Friends' );
         $contents    = array();
         $htmlType    = $button=='save'?'form':'html';
-        $table       = $this->tableView( $entity, $htmlType );
-        $contents[ ] = $table;
         // pagination
         $this->pager->setUrls( $pageUrls );
-        $contents[] = $form = $this->tags->form()->action( $uri )->method( 'post' );
+        $form = $this->tags->form()->action( $uri )->method( 'post' );
         $form->contain_(
+            $this->tableView( $entity, $htmlType ),
             $this->pager->bootstrap( $pageUrls ),
             $this->tags->input( 'submit', 'method', $button, array( 'class' => 'btn btn-primary') )
         );
+        $contents[] = $form;
         $this->set( 'content', $contents );
     }
 
