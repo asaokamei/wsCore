@@ -55,7 +55,7 @@ class FrontMC
             if( !isset( $this->parameter[ 'controller' ] ) ) {
                 throw new FrontMcNotFoundException( 'No controller is set' );
             }
-            $this->parameter[ 'method' ] = $this->request->getHttpMethod();
+            $this->parameter[ 'method' ] = $this->request->getMethod();
 
             // create controller object. 
             $controller_name = $this->parameter[ 'controller' ] . 'Controller';

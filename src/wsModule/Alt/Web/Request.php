@@ -64,7 +64,7 @@ class Request
     /**
      * @return string
      */
-    function getHttpMethod() {
+    function getMethod() {
         if( $this->_server[ 'REQUEST_METHOD' ] === 'POST' ) {
             return 'post';
         }
