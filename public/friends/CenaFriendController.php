@@ -14,19 +14,25 @@ class CenaFriendController
 
     /** @var \WScore\DataMapper\Role */
     protected $role;
+
+    protected $pager;
+
     /**
-     * @param \WScore\DataMapper\EntityManager $em
+     * @param \WScore\DataMapper\EntityManager   $em
      * @param \friends\views\cenaFriendsView     $view
-     * @param \WScore\DataMapper\Role          $role
+     * @param \WScore\DataMapper\Role            $role
+     * @param \Closure                           $pager
      * @DimInjection get EntityManager
      * @DimInjection get \friends\views\cenaFriendsView
      * @DimInjection get \WScore\DataMapper\Role
+     * @DimInjection get Raw \wsModule\Alt\DbAccess\Paginate
      */
-    public function __construct( $em, $view, $role )
+    public function __construct( $em, $view, $role, $pager )
     {
         $this->em = $em;
         $this->view = $view;
         $this->role = $role;
+        $this->pager = $pager;
     }
 
     /**
@@ -49,12 +55,17 @@ class CenaFriendController
      */
     public function actIndex()
     {
+        $pager = $this->pager;
+        $pager = $pager();
+        /** @var $pager \wsModule\Alt\DbAccess\Paginate */
+        $pager->per_page = 4;
+        $pager->setOptions( $_GET );
         $model = $this->em->getModel( 'friends\model\Friends' );
-        $entities   = $model->query()->select();
+        $entities   = $pager->setQuery( $model->query() )->select();
         foreach( $entities as $friend ) {
             $this->role->applyActive( $friend )->relation( 'groups' );
         }
-        $this->view->showForm_list( $entities, 'list' );
+        $this->view->showForm_list( $entities, $pager );
         return $this->view;
     }
 

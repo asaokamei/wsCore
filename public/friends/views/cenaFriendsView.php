@@ -66,16 +66,44 @@ class cenaFriendsView
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DataMapper\Role_Selectable[] $entity
+     * @param \wsModule\Alt\DbAccess\Paginate      $pager
      */
-    public function showForm_list( $entity )
+    public function showForm_list( $entity, $pager )
     {
+        $appUrl   = $this->get( 'appUrl' );
+        $pageUrls = $pager->setupUrls( $appUrl."?page=%d" );
         $this->set( 'title', 'My Friends' );
         $contents    = array();
         $table       = $this->tableView( $entity, 'html' );
         $contents[ ] = $table;
+        // pagination
+        $contents[] = $this->paginate( $pageUrls );
         $this->set( 'content', $contents );
     }
 
+    function paginate( $urls )
+    {
+        $tags = $this->tags;
+        $getLi = function( $name, $label ) use( $tags, $urls ) {
+            if( isset( $urls[ $name ] ) && $urls[ $name ] ) {
+                return $tags->li( $tags->a( $label )->href( $urls[ $name ] ) );
+            }
+            return $tags->li( $tags->a( $label )->href( '#' ) )->_class( 'disabled' );
+        };
+        $pageDiv = $this->tags->div( $ul = $this->tags->ul() )->_class( 'pagination' );
+        if( $li = $getLi( 'top_page',  'top' ) ) $ul->contain_( $li );
+        if( $li = $getLi( 'prev_page', '≪' ) ) $ul->contain_( $li );
+        foreach( $urls['pages'] as $page => $url ) {
+            if( !$url ) {
+                $ul->contain_( $this->tags->li( $this->tags->a( $page )->href( '#' ) )->_class( 'disabled' ) );
+            } else {
+                $ul->contain_( $this->tags->li( $this->tags->a( $page )->href( $url ) ) );
+            }
+        }
+        if( $li = $getLi( 'next_page', '≫' ) ) $ul->contain_( $li );
+        if( $li = $getLi( 'last_page', 'last' ) ) $ul->contain_( $li );
+        return $pageDiv;
+    }
     /**
      * @param \WScore\DataMapper\Entity_Interface   $entity
      * @param \WScore\DataMapper\Entity_Interface[] $contacts
