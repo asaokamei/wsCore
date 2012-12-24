@@ -67,7 +67,7 @@ class TaskController
      *
      * @return string
      */
-    public function actIndex()
+    public function getIndex()
     {
         $model = $this->em->getModel( 'task\entity\task' );
         $all   = $model->query()->order( 'task_status, task_date' )->select();
@@ -80,51 +80,73 @@ class TaskController
     }
 
     /**
-     * for adding a new task.
-     * shows insert form, or insert task if post method.
+     * shows insert form for adding a new task.
      *
      * @param array $args
      * @return views\taskView
      */
-    public function actNew( $args )
+    public function getNew( $args )
     {
         $entity = $this->em->newEntity( 'task\entity\task' );
-        if( $this->front->request->isPost() ) {
-            $this->contextLoadAndSave( $entity );
-            $this->view->set( 'alert-error', 'insert failed...' );
-        }
         $role   = $this->role->applySelectable( $entity );
         $this->view->showForm_form( $role, 'insert task' );
         return $this->view;
     }
 
     /**
-     * for modifying an existing task.
-     * shows update form, or update task if post method.
+     * adds new task. 
+     * 
+     * @param $args
+     * @return views\taskView
+     */
+    public function postNew( $args )
+    {
+        $entity = $this->em->newEntity( 'task\entity\task' );
+        $this->contextLoadAndSave( $entity );
+        $this->view->set( 'alert-error', 'insert failed...' );
+        $role   = $this->role->applySelectable( $entity );
+        $this->view->showForm_form( $role, 'insert task' );
+        return $this->view;
+    }
+
+    /**
+     * shows update form or modifying an existing task.
      *
      * @param array $args
      * @return views\taskView
      */
-    public function actTask( $args )
+    public function getTask( $args )
     {
         $id = $args[ 'id' ];
         $entity = $this->em->getEntity( 'task\entity\task', $id );
-        if( $this->front->request->isPost() ) {
-            $this->contextLoadAndSave( $entity );
-            $this->view->set( 'alert-error', 'update failed...' );
-        }
         $role   = $this->role->applySelectable( $entity );
         $this->view->showForm_form( $role, 'update task' );
         return $this->view;
     }
 
     /**
+     * updates a task. 
+     * 
+     * @param $args
+     * @return views\taskView
+     */
+    public function postTask( $args )
+    {
+        $id = $args[ 'id' ];
+        $entity = $this->em->getEntity( 'task\entity\task', $id );
+        $this->contextLoadAndSave( $entity );
+        $this->view->set( 'alert-error', 'update failed...' );
+        $role   = $this->role->applySelectable( $entity );
+        $this->view->showForm_form( $role, 'update task' );
+        return $this->view;
+    }
+    /**
      * for toggling status between active/done.
      *
      * @param array $args
      * @return views\taskView
      */
-    public function actDone( $args )
+    public function getDone( $args )
     {
         $id = $args[ 'id' ];
         /** @var $entity \task\entity\task */
@@ -146,18 +168,21 @@ class TaskController
     //  initialize database
     // +----------------------------------------------------------------------+
     /**
-     * initialize the task database.
+     * show a view to initialize the task database.
      *
      * @return string
      */
-    public function actSetup() {
-        if( $this->front->request->isPost() ) {
-            $this->initDb( $this->front->request->getPost( 'initDb' ) );
-        }
+    public function getSetup() {
         $this->view->showSetup();
         return $this->view;
     }
 
+    /**
+     * initialize the task database. 
+     */
+    public function postSetup() {
+        $this->initDb( $this->front->request->getPost( 'initDb' ) );
+    }
     /**
      * @param string $initDb
      */
@@ -187,7 +212,7 @@ class TaskController
         exit;
     }
 
-    public function actPrintO( $args ) {
+    public function getPrintO( $args ) {
         $name = $args[ 'name' ];
         require_once( __DIR__ . '/../../vendor/print_o/src.php' );
 

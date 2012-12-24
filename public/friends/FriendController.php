@@ -47,7 +47,7 @@ class FriendController
      *
      * @return \task\views\taskView
      */
-    public function actIndex()
+    public function getIndex()
     {
         $model = $this->em->getModel( 'friends\model\Friends' );
         $entities   = $model->query()->select();
@@ -62,7 +62,7 @@ class FriendController
      * @param array $parameter
      * @return views\friendsView
      */
-    public function actInfo( $parameter )
+    public function getInfo( $parameter )
     {
         $id = $parameter[ 'id' ];
         $friend   = $this->em->getEntity( 'friends\model\Friends', $id );
@@ -74,31 +74,54 @@ class FriendController
     }
 
     /**
+     * shows modify form to update friends' information. 
+     * 
      * @param array $parameter
      * @return views\friendsView
      */
-    public function actDetail( $parameter )
+    public function getDetail( $parameter )
     {
         $id = $parameter[ 'id' ];
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
-        if( $this->front->request->isPost() )
-        {
-            // update groups
-            // group entities without registering to em.
-            $groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
-            $this->em->relation( $friend, 'groups' )->replace( $groups );
+        return $this->showDetail( $friend );
+    }
 
-            // update friends info
-            $loadable = $this->role->applyLoadable( $friend );
-            $loadable->loadData();
-            if( $loadable->validate() )
-            {
-                $this->em->save();
-                $jump = $this->view->get( 'appUrl' ) . $id;
-                header( 'Location: ' . $jump );
-                exit;
-            }
+    /**
+     * updates Friend's detail information. 
+     * 
+     * @param $parameter
+     * @return views\friendsView
+     */
+    public function postDetail( $parameter )
+    {
+        $id = $parameter[ 'id' ];
+        $friend = $this->em->getEntity( 'friends\model\Friends', $id );
+        // update groups
+        // group entities without registering to em.
+        $groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
+        $this->em->relation( $friend, 'groups' )->replace( $groups );
+
+        // update friends info
+        $loadable = $this->role->applyLoadable( $friend );
+        $loadable->loadData();
+        if( $loadable->validate() )
+        {
+            $this->em->save();
+            $jump = $this->view->get( 'appUrl' ) . $id;
+            header( 'Location: ' . $jump );
+            exit;
         }
+        return $this->showDetail( $friend );
+    }
+
+    /**
+     * shows Friend's form. 
+     * 
+     * @param $friend
+     * @return views\friendsView
+     */
+    private function showDetail( $friend )
+    {
         $groups = $this->em->getModel( 'friends\model\Group' )->query()->select();
         $groups = $this->em->packToArray( $groups, array( 'group_code', 'name' ) );
         $this->em->relation( $friend, 'groups' );
@@ -108,56 +131,108 @@ class FriendController
     // +----------------------------------------------------------------------+
     //  about contacts
     // +----------------------------------------------------------------------+
-    public function actContactMod( $parameter )
+    /**
+     * returns Friend and Contact entity. 
+     * 
+     * @param $parameter
+     * @return array
+     */
+    private function loadFriendAndContact( $parameter )
     {
         $id   = $parameter[ 'id' ];
-        $cid  = $parameter[ 'cid' ];
         $friend  = $this->em->getEntity( 'friends\model\Friends', $id );
-        $contact = $this->em->getEntity( 'friends\model\Contacts', $cid );
-        if( $this->front->request->isPost() )
+        if( isset( $parameter[ 'cid' ] ) ) {
+            $contact = $this->em->getEntity( 'friends\model\Contacts', $parameter[ 'cid' ] );
+        }
+        else {
+            $contact = $this->em->newEntity( 'friends\model\Contacts' );
+        }
+        return array( $friend, $contact );
+    }
+
+    /**
+     * shows modify form for a contact.
+     * 
+     * @param $parameter
+     * @return views\friendsView
+     */
+    public function getContactMod( $parameter )
+    {
+        $id   = $parameter[ 'id' ];
+        /** @var $contact \friends\entity\contact */
+        list( $friend, $contact ) = $this->loadFriendAndContact( $parameter );
+        $this->view->showContact_form( $friend, $contact );
+        return $this->view;
+    }
+
+    /**
+     * updates contact information. 
+     * 
+     * @param $parameter
+     * @return views\friendsView
+     */
+    public function postContactMod( $parameter )
+    {
+        $id   = $parameter[ 'id' ];
+        /** @var $contact \friends\entity\contact */
+        list( $friend, $contact ) = $this->loadFriendAndContact( $parameter );
+
+        $loadable = $this->role->applyLoadable( $contact );
+        $loadable->loadData();
+        if( $loadable->validate() )
         {
-            $loadable = $this->role->applyLoadable( $contact );
-            $loadable->loadData();
-            if( $loadable->validate() )
-            {
-                $active = $this->role->applyActive( $contact );
-                $active->relation( 'friend' )->set( $friend );
-                $active->save();
-                $jump = $this->view->get( 'appUrl' ) . $id;
-                header( 'Location: ' . $jump );
-                exit;
-            }
+            $active = $this->role->applyActive( $contact );
+            $active->relation( 'friend' )->set( $friend );
+            $active->save();
+            $jump = $this->view->get( 'appUrl' ) . $id;
+            header( 'Location: ' . $jump );
+            exit;
         }
         $this->view->showContact_form( $friend, $contact );
         return $this->view;
     }
+    
     /**
+     * shows contact form. 
+     * 
      * @param $parameter
      * @return views\friendsView
      */
-    public function actContactNew( $parameter )
+    public function getContactNew( $parameter )
     {
-        $id   = $parameter[ 'id' ];
+        list( $friend, $contact ) = $this->loadFriendAndContact( $parameter );
         $type = $parameter[ 'type' ];
         /** @var $friend  \friends\entity\friend */
         /** @var $contact \friends\entity\contact */
-        $friend  = $this->em->getEntity( 'friends\model\Friends', $id );
-        $contact = $this->em->newEntity( 'friends\model\Contacts' );
         $contact->type = $type;
+        $this->view->showContact_form( $friend, $contact );
+        return $this->view;
+    }
+
+    /**
+     * create new contact for a friend. 
+     * 
+     * @param $parameter
+     * @return views\friendsView
+     */
+    public function postContactNew( $parameter )
+    {
+        $id   = $parameter[ 'id' ];
+        $type = $parameter[ 'type' ];
         /** @var $contact \friends\entity\contact */
-        if( $this->front->request->isPost() ) 
+        list( $friend, $contact ) = $this->loadFriendAndContact( $parameter );
+        $contact->type = $type;
+        
+        $loadable = $this->role->applyLoadable( $contact );
+        $loadable->loadData();
+        if( $loadable->validate() )
         {
-            $loadable = $this->role->applyLoadable( $contact );
-            $loadable->loadData();
-            if( $loadable->validate() ) 
-            {
-                $active = $this->role->applyActive( $loadable );
-                $active->relation( 'friend' )->set( $friend );
-                $active->save();
-                $jump = $this->view->get( 'appUrl' ) . $id;
-                header( 'Location: ' . $jump );
-                exit;
-            }
+            $active = $this->role->applyActive( $loadable );
+            $active->relation( 'friend' )->set( $friend );
+            $active->save();
+            $jump = $this->view->get( 'appUrl' ) . $id;
+            header( 'Location: ' . $jump );
+            exit;
         }
         $this->view->showContact_form( $friend, $contact );
         return $this->view;
@@ -165,43 +240,71 @@ class FriendController
     // +----------------------------------------------------------------------+
     //  about Groups
     // +----------------------------------------------------------------------+
-    public function actGroup( $parameter )
+    /**
+     * shows list of groups. 
+     * 
+     * @return views\friendsView
+     */
+    public function getGroup()
     {
-        if( $this->front->request->isPost() )
-        {
-            $group = $this->em->newEntity( 'friends\model\Group' );
-            $loadable = $this->role->applyLoadable( $group );
-            $loadable->loadData();
-            if( $loadable->validate() )
-            {
-                $active = $this->role->applyActive( $group );
-                $active->save();
-                $jump = $this->view->get( 'appUrl' ) . 'group';
-                header( 'Location: ' . $jump );
-                exit;
-            }
-        }
-        // show list of groups.
         $model = $this->em->getModel( 'friends\model\Group' );
         $entities   = $model->query()->select();
         $this->view->showForm_group( $entities, 'list' );
         return $this->view;
     }
-    public function actGroupMod( $parameter )
+
+    /**
+     * creates a new group data.
+     * 
+     * @return views\friendsView
+     */
+    public function postGroup()
+    {
+        $group = $this->em->newEntity( 'friends\model\Group' );
+        $loadable = $this->role->applyLoadable( $group );
+        $loadable->loadData();
+        if( $loadable->validate() )
+        {
+            $active = $this->role->applyActive( $group );
+            $active->save();
+            $jump = $this->view->get( 'appUrl' ) . 'group';
+            header( 'Location: ' . $jump );
+            exit;
+        }
+        return $this->getGroup();
+    }
+    /**
+     * shows update form for a group. 
+     * 
+     * @param $parameter
+     * @return views\friendsView
+     */
+    public function getGroupMod( $parameter )
     {
         $group = $this->em->getEntity( 'friends\model\Group', $parameter[ 'gCode' ] );
-        if( $this->front->request->isPost() )
+        $this->view->showForm_groupView( $group, 'list' );
+        return $this->view;
+    }
+
+    /**
+     * updates group information.
+     * 
+     * @param $parameter
+     * @return views\friendsView
+     */
+    public function postGroupMod( $parameter )
+    {
+        $group = $this->em->getEntity( 'friends\model\Group', $parameter[ 'gCode' ] );
+
+        $loadable = $this->role->applyLoadable( $group );
+        $loadable->loadData();
+        if( $loadable->validate() )
         {
-            $loadable = $this->role->applyLoadable( $group );
-            $loadable->loadData();
-            if( $loadable->validate() )
-            {
-                $active = $this->role->applyActive( $group );
-                $active->save();
-                $jump = $this->view->get( 'appUrl' ) . 'group';
-                header( 'Location: ' . $jump );
-                exit;
-            }
+            $active = $this->role->applyActive( $group );
+            $active->save();
+            $jump = $this->view->get( 'appUrl' ) . 'group';
+            header( 'Location: ' . $jump );
+            exit;
         }
         $this->view->showForm_groupView( $group, 'list' );
         return $this->view;
@@ -210,33 +313,25 @@ class FriendController
     //  initialize database
     // +----------------------------------------------------------------------+
     /**
-     * initialize the task database.
+     * show view to initialize the Friends database.
      *
      * @return string
      */
-    public function actSetup() 
+    public function getSetup() 
     {
-        $folder = __DIR__ . '/data/';
-        if( !file_exists( $folder ) ) {
-            if( !@mkdir( $folder, 0777 ) ) {
-                $this->view->set( 'alert-error', "
-                cannot create folder: {$folder}. <br />\n
-                please make the folder writable to the webserver.
-                ex) mkdir -m 0777 data
-                " );
-            }
-            $this->view->showSetup();
-            return $this->view;
-        }
-        if( $this->front->request->isPost() ) {
-            \WScore\Core::get( 'friends\model\Friends' );
-            \WScore\Core::get( 'friends\model\Contacts' );
-            $this->initDb( $this->front->request->getPost( 'initDb' ) );
-        }
         $this->view->showSetup();
         return $this->view;
     }
 
+    /**
+     * initialize the Friends database. 
+     */
+    public function postSetup() 
+    {
+        \WScore\Core::get( 'friends\model\Friends' );
+        \WScore\Core::get( 'friends\model\Contacts' );
+        $this->initDb( $this->front->request->getPost( 'initDb' ) );
+    }
     /**
      * @param string $initDb
      */

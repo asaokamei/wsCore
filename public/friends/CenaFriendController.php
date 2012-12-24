@@ -49,44 +49,68 @@ class CenaFriendController
     //  basic action methods.
     // +----------------------------------------------------------------------+
     /**
-     * list of tasks.
+     * load friends entities using pagination.
      *
-     * @return \task\views\taskView
+     * @param \wsModule\Alt\DbAccess\Paginate $pager
+     * @return \WScore\DbAccess\DataRecord[]
      */
-    public function actIndex()
+    private function loadIndex( $pager )
     {
-        $uri = $this->front->request->getRequestUri();
-        $pager = $this->pager;
-        $pager = $pager();
-        /** @var $pager \wsModule\Alt\DbAccess\Paginate */
         $pager->per_page = 4;
         $pager->setOptions( $_GET );
         /** @var $model \friends\model\Friends */
         $model = $this->em->getModel( 'friends\model\Friends' );
         $entities   = $pager->setQuery( $model->query() )->select();
-        if( $this->front->request->isPost() )
-        {
-            $method = $this->front->request->getPost( 'method' );
-            if( $method == 'save' ) {
-                header( 'Location: ' . $uri );
-                exit;
-            }
-            else {
-                $model->setupFormForListings();
-                $this->view->showForm_list( $entities, $pager, 'save', $uri );
-            }
-        }
-        else {
-            $this->view->showForm_list( $entities, $pager, 'edit', $uri );
-        }
+        return $entities;
+    }
+    /**
+     * list of tasks.
+     *
+     * @return \task\views\taskView
+     */
+    public function getIndex()
+    {
+        $uri = $this->front->request->getRequestUri();
+        $pager = $this->pager;
+        $pager = $pager();
+        $entities   = $this->loadIndex( $pager );
+        $this->view->showForm_list( $entities, $pager, 'edit', $uri );
         return $this->view;
     }
 
     /**
+     * shows edit form *and* saves friends data.
+     * 
+     * @return views\cenaFriendsView
+     */
+    public function postIndex()
+    {
+        $uri = $this->front->request->getRequestUri();
+        $pager = $this->pager;
+        $pager = $pager();
+        $entities   = $this->loadIndex( $pager );
+        /** @var $model \friends\model\Friends */
+        $model = $this->em->getModel( 'friends\model\Friends' );
+        $method = $this->front->request->getPost( 'method' );
+        if( $method == 'save' ) {
+            header( 'Location: ' . $uri );
+            exit;
+        }
+        else {
+            $model->setupFormForListings();
+            $this->view->showForm_list( $entities, $pager, 'save', $uri );
+        }
+        return $this->view;
+    }
+
+    // +----------------------------------------------------------------------+
+    //
+    // +----------------------------------------------------------------------+
+    /**
      * @param array $parameter
      * @return views\cenaFriendsView
      */
-    public function actInfo( $parameter )
+    public function getInfo( $parameter )
     {
         $id = $parameter[ 'id' ];
         $friend   = $this->em->getEntity( 'friends\model\Friends', $id );
@@ -101,7 +125,7 @@ class CenaFriendController
      * @param array $parameter
      * @return views\cenaFriendsView
      */
-    public function actDetail( $parameter )
+    public function getDetail( $parameter )
     {
         $id = $parameter[ 'id' ];
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
@@ -132,7 +156,7 @@ class CenaFriendController
     // +----------------------------------------------------------------------+
     //  about contacts
     // +----------------------------------------------------------------------+
-    public function actContactMod( $parameter )
+    public function getContactMod( $parameter )
     {
         $id   = $parameter[ 'id' ];
         $cid  = $parameter[ 'cid' ];
@@ -159,7 +183,7 @@ class CenaFriendController
      * @param $parameter
      * @return views\cenaFriendsView
      */
-    public function actContactNew( $parameter )
+    public function getContactNew( $parameter )
     {
         $id   = $parameter[ 'id' ];
         $type = $parameter[ 'type' ];
@@ -189,7 +213,7 @@ class CenaFriendController
     // +----------------------------------------------------------------------+
     //  about Groups
     // +----------------------------------------------------------------------+
-    public function actGroup( $parameter )
+    public function getGroup( $parameter )
     {
         if( $this->front->request->isPost() )
         {
@@ -211,7 +235,7 @@ class CenaFriendController
         $this->view->showForm_group( $entities, 'list' );
         return $this->view;
     }
-    public function actGroupMod( $parameter )
+    public function getGroupMod( $parameter )
     {
         $group = $this->em->getEntity( 'friends\model\Group', $parameter[ 'gCode' ] );
         if( $this->front->request->isPost() )
@@ -234,31 +258,24 @@ class CenaFriendController
     //  initialize database
     // +----------------------------------------------------------------------+
     /**
-     * initialize the task database.
+     * show view to initialize the Friends database.
      *
      * @return string
      */
-    public function actSetup() 
+    public function getSetup()
     {
-        $folder = __DIR__ . '/data/';
-        if( !file_exists( $folder ) ) {
-            if( !@mkdir( $folder, 0777 ) ) {
-                $this->view->set( 'alert-error', "
-                cannot create folder: {$folder}. <br />\n
-                please make the folder writable to the webserver.
-                ex) mkdir -m 0777 data
-                " );
-            }
-            $this->view->showSetup();
-            return $this->view;
-        }
-        if( $this->front->request->isPost() ) {
-            \WScore\Core::get( 'friends\model\Friends' );
-            \WScore\Core::get( 'friends\model\Contacts' );
-            $this->initDb( $this->front->request->getPost( 'initDb' ) );
-        }
         $this->view->showSetup();
         return $this->view;
+    }
+
+    /**
+     * initialize the Friends database.
+     */
+    public function postSetup()
+    {
+        \WScore\Core::get( 'friends\model\Friends' );
+        \WScore\Core::get( 'friends\model\Contacts' );
+        $this->initDb( $this->front->request->getPost( 'initDb' ) );
     }
 
     /**
