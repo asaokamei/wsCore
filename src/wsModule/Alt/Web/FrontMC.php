@@ -20,7 +20,7 @@ class FrontMC
     
     /** @var array */
     public $parameter = array(
-        'method' => 'act',
+        'method' => 'get',
     );
     
     /**
@@ -44,33 +44,35 @@ class FrontMC
 
     /**
      * @param array $parameter
-     * @throws \RuntimeException
+     * @throws FrontMcNotFoundException
      */
     public function run( $parameter=null )
     {
-        try 
-        {
+        try {
+            
             // set up parameter from default. 
             $this->parameter = array_merge( $this->parameter, $parameter );
             if( !isset( $this->parameter[ 'controller' ] ) ) {
-                throw new \RuntimeException( 'No controller is set');
+                throw new FrontMcNotFoundException( 'No controller is set' );
             }
             $this->parameter[ 'method' ] = $this->request->getHttpMethod();
+
             // create controller object. 
-            $controller_name  = $this->parameter[ 'controller' ] . 'Controller';
+            $controller_name = $this->parameter[ 'controller' ] . 'Controller';
             if( isset( $this->parameter[ 'namespace' ] ) && $this->parameter[ 'namespace' ] ) {
                 $controller_name = $this->parameter[ 'namespace' ] . '\\' . ucfirst( $controller_name );
             }
-            if( !class_exists( $controller_name ) ) {
+            if ( !class_exists( $controller_name ) ) {
                 throw new FrontMcNotFoundException( 'no such class: ' . $controller_name );
             }
-            $controller       = $this->container->fresh( $controller_name );
+            $controller = $this->container->fresh( $controller_name );
+
             // set up pre_action method if exists.
             if( method_exists( $controller, 'pre_action' ) ) {
                 $controller->pre_action( $this );
             }
             // do the action.
-            $action  = $this->parameter[ 'method' ] . ucwords( $this->parameter[ 'action' ] );
+            $action = $this->parameter[ 'method' ] . ucwords( $this->parameter[ 'action' ] );
             if( !method_exists( $controller, $action ) ) {
                 throw new FrontMcNotFoundException( 'no such method: ' . $action );
             }
