@@ -61,7 +61,7 @@ class Model
     protected $relations  = array();
     
     /** @var array                           protected properties            */
-    public $protected  = array();
+    protected $protected  = array();
 
     /**
      * for selector construction. to use with WScore\Html\Selector,
@@ -73,10 +73,10 @@ class Model
      * )
      *
      * @var array                                  */
-    public $selectors  = array();
+    protected $selectors  = array();
 
     /** @var array                           for validation of inputs        */
-    public $validators = array();
+    protected $validators = array();
 
     /** @var \WScore\DbAccess\Query                                                  */
     protected $query;
