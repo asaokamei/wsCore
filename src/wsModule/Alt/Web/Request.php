@@ -13,10 +13,10 @@ class Request
     protected $_server  = array();
 
     /** @var string|bool   path info */
-    protected $path_info = NULL;
+    protected $path_info = null;
 
     /** @var string|null   base URL */
-    protected $base_url  = NULL;
+    protected $base_url  = null;
 
     /** @var array         post data */
     protected $_post     = array();
@@ -58,7 +58,17 @@ class Request
      * @return bool
      */
     function isPost() {
-        return ( $this->_server[ 'REQUEST_METHOD' ] === 'POST' ) ? TRUE: FALSE;
+        return ( $this->_server[ 'REQUEST_METHOD' ] === 'POST' ) ? true: false;
+    }
+
+    /**
+     * @return string
+     */
+    function getHttpMethod() {
+        if( $this->_server[ 'REQUEST_METHOD' ] === 'POST' ) {
+            return 'post';
+        }
+        return 'get';
     }
     /**
      * get host name of server.
@@ -98,7 +108,7 @@ class Request
      * @param null|string $url
      * @return string
      */
-    function getBaseUrl( $url=NULL )
+    function getBaseUrl( $url=null )
     {
         if( !isset( $this->base_url ) ) {
             $this->base_url = $this->calBaseUrl();
@@ -162,7 +172,7 @@ class Request
     function calPathInfo() {
         $base_url    = $this->getBaseUrl();
         $request_uri = $this->getRequestUri();
-        if( ( $pos = strpos( $request_uri, '?' ) ) !== FALSE ) {
+        if( ( $pos = strpos( $request_uri, '?' ) ) !== false ) {
             $request_uri = substr( $request_uri, 0, $pos );
         }
         $path_info = (string) substr( $request_uri, strlen( $base_url ) );
@@ -185,7 +195,7 @@ class Request
         /** @var $lastSlash string */
         $lastSlash = ( substr($path, -1, 1 ) === '/' ) ? '/' : '';
         // attempts to detect if path is relative in which case, add cwd
-        if(strpos($path,':')===FALSE && $unipath)
+        if(strpos($path,':')===false && $unipath)
             $path=getcwd().DIRECTORY_SEPARATOR.$path;
         // resolve path parts (single dot, double dot and double delimiters)
         $path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
@@ -224,11 +234,11 @@ class Request
     function _verify( $val, $verifyName ) {
         /** @var $verify \closure */
         $verify = $this->$verifyName;
-        $result = FALSE;
+        $result = false;
         if( is_callable( $verify ) ) {
             $result = ( is_array( $val ) ) ?
-                array_reduce( $val, $verify, TRUE ):
-                $verify( TRUE, $val );
+                array_reduce( $val, $verify, true ):
+                $verify( true, $val );
         }
         return $result;
     }
@@ -244,11 +254,11 @@ class Request
         else {
             $post = &$_REQUEST;
         }
-        $val = FALSE;
+        $val = false;
         if( array_key_exists( $name, $post ) ) {
             $val = $post[ $name ];
             $ok  = $this->_verify( $val, 'verifyEncoding' );
-            if( !$ok ) { $val = FALSE;}
+            if( !$ok ) { $val = false;}
         }
         return $val;
     }
@@ -258,10 +268,10 @@ class Request
      * @param null|string $type
      * @return bool
      */
-    function getPost( $name, $type=NULL ) {
+    function getPost( $name, $type=null ) {
         $val = $this->_getPost( $name );
-        $ok  = TRUE;
-        if( $val === FALSE ) return $val;
+        $ok  = true;
+        if( $val === false ) return $val;
         if( $type == 'filename' ) {
             $ok = $this->_verify( $val, 'verifyFile' );
         }
@@ -273,7 +283,7 @@ class Request
             //$verify = $this->getVerifyMatch( $type );
             //$ok = $this->_verify( $val, 'verifyCode' );
         }
-        if( !$ok ) $val = FALSE;
+        if( !$ok ) $val = false;
         return $val;
     }
     // +-------------------------------------------------------------+
@@ -281,12 +291,12 @@ class Request
      * @param bool $langOnly
      * @return array
      */
-    function getLanguageList( $langOnly=TRUE ) {
+    function getLanguageList( $langOnly=true ) {
         $languages = array();
         if( isset( $this->_server[ 'HTTP_ACCEPT_LANGUAGE' ] ) ) {
             $languages = $this->parseAcceptLanguage( $this->_server[ 'HTTP_ACCEPT_LANGUAGE' ] );
             foreach( $languages as &$lang ) {
-                if( $langOnly && strpos( $lang, '-' ) !== FALSE ) {
+                if( $langOnly && strpos( $lang, '-' ) !== false ) {
                     $lang = substr( $lang, 0, strpos( $lang, '-' ) );
                 }
             }
@@ -300,7 +310,7 @@ class Request
      * @return array|bool
      */
     function parseAcceptLanguage( $accept ) {
-        if( strlen( $accept ) <= 0 ) return FALSE;
+        if( strlen( $accept ) <= 0 ) return false;
         $list = explode( ',', $accept );
         $unsorted = array();
         foreach( $list as $val ) {

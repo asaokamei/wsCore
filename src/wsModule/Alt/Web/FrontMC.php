@@ -1,6 +1,8 @@
 <?php
 namespace wsModule\Alt\Web;
 
+class FrontMcNotFoundException extends \Exception {}
+
 /**
  * simple front-end mini-controller.
  * mostly from PerfectPHP book.
@@ -13,10 +15,13 @@ class FrontMC
     /** @var \wsModule\Alt\Web\Response */
     public $response;
     
+    /** @var \wsModule\Alt\Web\Request */
     public $request;
     
     /** @var array */
-    public $parameter = array();
+    public $parameter = array(
+        'method' => 'act',
+    );
     
     /**
      * @param \WScore\DiContainer\Dimplet $container
@@ -33,9 +38,8 @@ class FrontMC
     /**
      * @param array $parameter
      */
-    public function setDefaultParameter( $parameter )
-    {
-        $this->parameter = $parameter;
+    public function setDefaultParameter( $parameter ) {
+        $this->parameter = array_merge( $this->parameter, $parameter );
     }
 
     /**
@@ -51,10 +55,14 @@ class FrontMC
             if( !isset( $this->parameter[ 'controller' ] ) ) {
                 throw new \RuntimeException( 'No controller is set');
             }
+            $this->parameter[ 'method' ] = $this->request->getHttpMethod();
             // create controller object. 
             $controller_name  = $this->parameter[ 'controller' ] . 'Controller';
             if( isset( $this->parameter[ 'namespace' ] ) && $this->parameter[ 'namespace' ] ) {
                 $controller_name = $this->parameter[ 'namespace' ] . '\\' . ucfirst( $controller_name );
+            }
+            if( !class_exists( $controller_name ) ) {
+                throw new FrontMcNotFoundException( 'no such class: ' . $controller_name );
             }
             $controller       = $this->container->fresh( $controller_name );
             // set up pre_action method if exists.
@@ -62,11 +70,14 @@ class FrontMC
                 $controller->pre_action( $this );
             }
             // do the action.
-            $action  = 'act' . ucwords( $this->parameter[ 'action' ] );
+            $action  = $this->parameter[ 'method' ] . ucwords( $this->parameter[ 'action' ] );
+            if( !method_exists( $controller, $action ) ) {
+                throw new FrontMcNotFoundException( 'no such method: ' . $action );
+            }
             $content = $controller->$action( $this->parameter );
             $this->response->setContent( $content );
 
-        } catch( \RuntimeException $e ) {
+        } catch( FrontMcNotFoundException $e ) {
             $this->render404Page( $e );
         }
 
@@ -79,14 +90,11 @@ class FrontMC
     protected function render404Page( $e )
     {
         $this->response->setStatusCode( 404, 'Not Found' );
-        $message = 'Page Not Found.';
-        if( $this->debug ) {
-            $message  = $e->getMessage() . '<br />';
-            $message .= 'file:' . $e->getFile() . ', line#' . $e->getLine();
-            ob_start();
-            var_dump( $e->getTrace() );
-            $message .= ob_get_clean();
-        }
+        $message = '<h1>Page Not Found</h1>';
+        $message .= '<p>' . $e->getMessage() . '</p>';
+        ob_start();
+        var_dump( $this->parameter );
+        $message .= ob_get_clean();
 
         $this->response->setContent( <<< END_OF_HTML
         <!DOCTYPE html>
