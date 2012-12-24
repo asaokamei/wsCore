@@ -71,7 +71,7 @@ class Paginate implements \ArrayAccess
      */
     public function setOptions( $option )
     {
-        if( !$this->curr_page && isset( $option[ $this->page_parameter ] ) ) {
+        if( isset( $option[ $this->page_parameter ] ) ) {
             $this->curr_page = $option[ $this->page_parameter ];
             unset( $option[ $this->page_parameter ] );
         }
@@ -110,8 +110,8 @@ class Paginate implements \ArrayAccess
      * @return string
      */
     public function url( $name ) {
-        if( is_numeric( $name ) ) return $this->url[ 'pages' ][ $name ];
-        return $this->url[ $name ];
+        $target = is_numeric( $name ) ? $this->url[ 'pages' ] : $this->url;
+        return isset( $target[ $name ] ) ? $target[ $name ] : null;
     }
 
     /**
@@ -123,7 +123,7 @@ class Paginate implements \ArrayAccess
         if( !$page ) return '';
         $url = sprintf( $this->page_url, $page );
         if( !empty( $this->options ) ) {
-            $url .= '?';
+            if( strpos( $url, '?' ) !== false ) $url .= '?';
             foreach( $this->options as $key => $val ) {
                 $key = htmlentities( $key, ENT_QUOTES );
                 $val = urlencode( $val );
@@ -138,10 +138,12 @@ class Paginate implements \ArrayAccess
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DbAccess\Query $query
+     * @param bool                   $count
      * @return \WScore\DbAccess\Query
      */
-    public function setQuery( $query )
+    public function setQuery( $query, $count=true )
     {
+        if( $count ) $this->total = $query->count();
         $this->calc();
         $query->offset( $this->getOffset() );
         $query->limit(  $this->getLimit() );
