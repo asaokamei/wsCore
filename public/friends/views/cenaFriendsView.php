@@ -341,39 +341,30 @@ class cenaFriendsView
     {
         $table  = $this->tags->table()->_class( 'table' )->contain_(
             $this->tags->tr(
-                $this->tags->th( ' ' ),
+                $this->tags->th( '' ),
                 $this->tags->th( 'name' ),
-                $this->tags->th( 'group' ),
+                $this->tags->th( 'gender' ),
+                $this->tags->th( 'birthday' ),
                 $this->tags->th( '' )
             )
         );
         $appUrl = $this->view->get( 'appUrl' );
         foreach ( $entity as $row )
         {
-            $groups = $row->relation( 'groups' );
             $row = $this->role->applyCenatar( $row );
             $id  = $row->getId();
             $row->setHtmlType( $type );
 
             /** @var $task \task\entity\task */
-            $memo   = $this->tags->a( $row->popHtml( 'name' ) )->href( $appUrl . $id )->style( 'font-weight:bold' );
+            $name   = $this->tags->a( $row->popHtml( 'name' ) )->href( $appUrl . $id )->style( 'font-weight:bold' );
             $star   = $row->popHtml( 'star' );
-            $groupInfo = array();
-            if( empty( $groups ) ) {
-                $groupInfo[] = '--';
-            }
-            else {
-                foreach( $groups as $group ) {
-                    $groupInfo[] = $group->group_code;
-                }
-            }
-            $groupInfo = implode( ', ', $groupInfo );
             $button = $this->tags->a( '>>' )->href( $appUrl . $id )->_class( 'btn btn-small btn' );
             $table->contain_(
                 $tr = $this->tags->tr(
                     $this->tags->td( $star ),
-                    $this->tags->td( $memo ),
-                    $this->tags->td( $groupInfo ),
+                    $this->tags->td( $name ),
+                    $this->tags->td( $row->popHtml( 'gender' ) ),
+                    $this->tags->td( $row->popHtml( 'birthday' ) ),
                     $this->tags->td( $button )
                 )
             );
