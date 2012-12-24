@@ -26,6 +26,9 @@ class Relation
                 $relInfo[ 'relation_name' ] = $name;
                 $type = $relInfo[ 'relation_type' ];
                 $class = '\WScore\DataMapper\Relation_' . ucwords( $type );
+                if( !class_exists( $class ) ) {
+                    throw new \RuntimeException( "no relation class for $class" );
+                }
                 $relation = new $class( $em, $source, $relInfo );
             }
         }
