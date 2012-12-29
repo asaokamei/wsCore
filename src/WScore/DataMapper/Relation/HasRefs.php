@@ -49,9 +49,14 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function load()
     {
-        $value   = $this->source[ $this->sourceColumn ];
-        $targets = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
-        $targets->bind( $this->targetColumn, $value );
+        if( $this->ready() ) {
+            $value   = $this->source[ $this->sourceColumn ];
+            $targets = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
+            $targets->bind( $this->targetColumn, $value );
+        }
+        else {
+            $targets = $this->em->emptyCollection();
+        }
         $this->source->setRelation( $this->relationName, $targets );
     }
 
@@ -67,6 +72,7 @@ class Relation_HasRefs implements Relation_Interface
         }
         $targets = $this->source->relation( $this->relationName );
         $targets->add( $target );
+        $this->link();
         return $this;
     }
 
@@ -77,12 +83,15 @@ class Relation_HasRefs implements Relation_Interface
     public function link( $save=false )
     {
         $targets = $this->source->relation( $this->relationName );
-        if( !$targets->count() ) return $this;
+        if( !$targets->count() ) return $this; // nothing to link. 
         // check if the source ID is ready to use. 
-        if( $this->sourceColumn == $this->source->_get_id_name() &&
-            !$this->source->isIdPermanent() ) {
-            $this->linked = false;
-            return $this;
+        if( !$this->linked ) { // not linked yet. 
+            if( !$this->ready() ) { // not ready to link (id not ready(. 
+                return $this;
+            }
+            $value   = $this->source[ $this->sourceColumn ];
+            $targets->bind( $this->targetColumn, $value );
+            $this->linked = true;
         }
         if( $save ) { // TODO: check if this works or not.
             foreach( $targets as $entity ) {
@@ -150,5 +159,16 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function setValues( $values ) {
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    private function ready() {
+        if( $this->sourceColumn == $this->source->_get_id_name() &&
+            !$this->source->isIdPermanent() ) {
+            return false;
+        }
+        return true;
     }
 }
