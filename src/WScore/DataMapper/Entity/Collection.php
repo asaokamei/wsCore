@@ -37,6 +37,12 @@ class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
         }
     }
 
+    /**
+     * clears the collection. 
+     */
+    public function clear() {
+        $this->_elements = array();
+    }
     // +----------------------------------------------------------------------+
     /**
      * specify bind condition. 
@@ -135,6 +141,9 @@ class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
     // +----------------------------------------------------------------------+
     //  for ArrayAccess and Iterator. 
     // +----------------------------------------------------------------------+
+    public function first() {
+        return reset( $this->_elements );
+    }
     /**
      * Return the current element
      *
