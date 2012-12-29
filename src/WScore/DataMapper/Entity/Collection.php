@@ -79,7 +79,7 @@ class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
         {
             if( $model && $model !== $entity->_get_Model() ) continue;
             if( !$column ) {
-                $prop = $entity[ $entity->_get_id_name() ];
+                $prop = $entity->_get_id();
             }
             else {
                 $prop = $entity[ $column ];

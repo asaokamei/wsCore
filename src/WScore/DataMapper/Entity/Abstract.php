@@ -140,6 +140,14 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
         return $this->_identifier;
     }
 
+    /** 
+     * returns id value. 
+     * 
+     * @return string|null
+     */
+    public function _get_id() {
+        return isset( $this[ $this->_get_id_name() ] ) ? $this[ $this->_get_id_name() ]: null;
+    }
     /**
      * returns id (primary key) name. 
      * 

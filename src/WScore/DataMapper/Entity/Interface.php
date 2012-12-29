@@ -31,6 +31,9 @@ interface Entity_Interface
      */
     public function _get_Identifier();
 
+    /** @return null|string */
+    public function _get_id();
+    
     /**
      * @return null|string
      */
