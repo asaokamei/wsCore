@@ -163,8 +163,8 @@ class CenaFriendController
                 exit;
             }
         }
-        $groups = $this->em->getModel( 'friends\model\Group' )->query()->select();
-        $groups = $this->em->packToArray( $groups, array( 'group_code', 'name' ) );
+        $groups = $this->em->fetch( 'friends\model\Group' );
+        $groups = $groups->pack( array( 'group_code', 'name' ) );
         $this->em->relation( $friend, 'groups' );
         $this->view->showForm_detail( $friend, $groups );
         return $this->view;
