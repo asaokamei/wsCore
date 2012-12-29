@@ -141,11 +141,11 @@ class CenaFriendController
      * @param array $parameter
      * @return views\cenaFriendsView
      */
-    public function getDetail( $parameter )
+    public function postInfo( $parameter )
     {
         $id = $parameter[ 'id' ];
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
-        if( $this->front->request->isPost() )
+        if( $this->front->request->getPost( '_method' ) == 'save' )
         {
             // update groups
             // group entities without registering to em.

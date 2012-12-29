@@ -106,7 +106,7 @@ class cenaFriendsView
         $this->set( 'title', $role->popHtml( 'name' ) );
         $tags        = $this->tags;
         $appUrl      = $this->get( 'appUrl' );
-        $editUrl     = $appUrl . 'detail/' . $id;
+        $editUrl     = $appUrl . $id;
         // about groups
         $groups = $entity->relation( 'groups' );
         $groupInfo = array();
@@ -121,8 +121,10 @@ class cenaFriendsView
         $groupInfo = implode( ', ', $groupInfo );
         // -----------------------------
         // show brief info about my friend.
+        $form = $tags->form()->method( 'post' )->action( $editUrl );
+        $form->contain_( $tags->input( 'submit', '_method', 'edit info', array( 'class'=>'btn btn-primary', 'style'=>'float:right' ) ) );
         $contents    = array();
-        $contents[ ] = $tags->a( 'edit info' )->href( $editUrl )->_class( 'btn btn-primary' )->style( 'float:right' );
+        $contents[ ] = $form;
         $dl = $this->tags->dl()->_class( 'dl-horizontal' );
         $dl->contain_( $this->tags->dt( 'basic info' ) );
         $dl->contain_( $this->tags->dd( $this->lists( $role, array( 'gender', 'birthday', 'star' ) ) ) );
@@ -194,7 +196,8 @@ class cenaFriendsView
             $selGroup,
             $this->dl( $entity, array( 'name', 'gender', 'birthday', 'star', 'memo' ) ),
             $this->view->bootstrapButton( 'submit', 'update info', 'btn btn-primary' ),
-            $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' )
+            $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' ),
+            $this->tags->input( 'hidden', '_method', 'save' )
         );
         $contents    = array();
         $contents[ ] = $form;
