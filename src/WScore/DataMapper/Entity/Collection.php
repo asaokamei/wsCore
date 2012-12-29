@@ -154,9 +154,20 @@ class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
     // +----------------------------------------------------------------------+
     //  for ArrayAccess and Iterator. 
     // +----------------------------------------------------------------------+
+    /**
+     * @return mixed
+     */
+    public function getNext() {
+        return next( $this->_elements );
+    }
+
+    /**
+     * @return mixed
+     */
     public function first() {
         return reset( $this->_elements );
     }
+    
     /**
      * Return the current element
      *

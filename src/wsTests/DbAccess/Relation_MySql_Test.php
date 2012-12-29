@@ -103,8 +103,8 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
 
         // get contacts from friend.
         $contacts = $relation->get();
-        $con1 = array_shift( $contacts );
-        $con2 = array_shift( $contacts );
+        $con1 = $contacts->first();
+        $con2 = $contacts->getNext();
         $this->assertEquals( $contact1[ 'contact_id' ], $con1->contact_id );
         $this->assertEquals( $contact2[ 'contact_id' ], $con2->contact_id );
         $this->assertEquals( $contact1[ 'contact_info' ], $con1->contact_info );
