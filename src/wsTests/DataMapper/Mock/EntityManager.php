@@ -13,6 +13,6 @@ class EntityManager extends \WScore\DataMapper\EntityManager
         return $this->reflections;
     }
     public function returnEntities() {
-        return $this->entities;
+        return $this->collection;
     }
 }
