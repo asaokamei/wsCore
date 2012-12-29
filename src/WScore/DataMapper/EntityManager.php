@@ -75,6 +75,14 @@ class EntityManager
         return $this->entityProperty->isEntity( $entity );
     }
 
+    /**
+     * @param string $modelName
+     * @return string
+     */
+    public function getIdName( $modelName ) {
+        $model = $this->getModel( $modelName );
+        return $model->getIdName();
+    }
     // +----------------------------------------------------------------------+
     //  Managing entities
     // +----------------------------------------------------------------------+

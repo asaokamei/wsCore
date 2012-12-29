@@ -13,8 +13,8 @@ class Relation_HasOne implements Relation_Interface
     protected $source;
     protected $sourceColumn;
 
-    /** @var Model */
-    protected $targetModel;
+    /** @var string */
+    protected $targetModelName;
     protected $targetColumn;
 
     protected $linked = false;
@@ -35,8 +35,8 @@ class Relation_HasOne implements Relation_Interface
         $relInfo      = array_merge( $default, $relInfo );
         $this->source = $source;
         // set up target/source
-        $this->targetModel     = $this->em->getModel( $relInfo[ 'target_model' ] );
-        $this->targetColumn    = $relInfo[ 'target_column' ] ? : $this->targetModel->getIdName();
+        $this->targetModelName = $relInfo[ 'target_model' ];
+        $this->targetColumn    = $relInfo[ 'target_column' ] ? : $this->em->getIdName( $this->targetModelName );
         $this->sourceColumn    = $relInfo[ 'source_column' ] ? : $this->targetColumn;
         // always load relation data. 
         $this->load();
@@ -48,7 +48,7 @@ class Relation_HasOne implements Relation_Interface
     {
         $value   = $this->source[ $this->sourceColumn ];
         if( $value ) {
-            $target = $this->targetModel->fetch( $value, $this->targetColumn );
+            $target = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
             $this->source->setRelation( $this->relationName, $target );
         }
     }
@@ -60,7 +60,7 @@ class Relation_HasOne implements Relation_Interface
      */
     public function set( $target ) 
     {
-        if( $target->_get_Model() != $this->targetModel->getModelName() ) {
+        if( $target->_get_Model() != $this->targetModelName ) {
             throw new \RuntimeException( "target model not match! " );
         }
         $this->source->setRelation( $this->relationName, array( $target ) );
