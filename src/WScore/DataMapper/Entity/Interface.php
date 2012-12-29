@@ -32,6 +32,11 @@ interface Entity_Interface
     public function _get_Id();
 
     /**
+     * @return null|string
+     */
+    public function _get_id_name();
+    
+    /**
      * @throws \RuntimeException
      * @return string
      */

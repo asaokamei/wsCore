@@ -17,6 +17,9 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
 
     /** @var null|string */
     private $_identifier = null;
+    
+    /** @var null|string */
+    private $_id_name = null;
 
     /** @var bool */
     private $_toDelete = false;
@@ -53,6 +56,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
         }
         // setting up identifier.
         $this->_identifier = $model->getId( $this );
+        $this->_id_name    = $model->getIdName();
         if( $type == static::_ENTITY_TYPE_NEW_ && !$this->_identifier ) {
             $this->_identifier = static::$_id_for_new++;
         }
@@ -96,7 +100,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
      */
     public function _get_ShortModel() {
         $model = $this->_model;
-        if( strpos( $model, '\\' ) !== FALSE ) {
+        if( strpos( $model, '\\' ) !== false ) {
             $model = substr( $model, strrpos( $model, '\\' )+1 );
         }
         return $model;
@@ -134,6 +138,15 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
      */
     public function _get_Id() {
         return $this->_identifier;
+    }
+
+    /**
+     * returns id (primary key) name. 
+     * 
+     * @return null|string
+     */
+    public function _get_id_name() {
+        return $this->_id_name;
     }
 
     /**
