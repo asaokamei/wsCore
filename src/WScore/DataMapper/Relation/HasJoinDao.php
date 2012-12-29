@@ -12,8 +12,8 @@ class Relation_HasJoinDao implements Relation_Interface
     /** @var EntityManager */
     protected $em;
 
-    /** @var \WScore\DataMapper\Model */
-    protected $joinModel;
+    /** @var string */
+    protected $joinModelName;
     
     /** @var \WScore\DataMapper\Entity_Interface[] */
     protected $joints;
@@ -24,6 +24,8 @@ class Relation_HasJoinDao implements Relation_Interface
     protected $source;
     protected $sourceColumn;
     
+    /** @var string */
+    protected $targetModelName;
     /** @var \WScore\DataMapper\Model */
     protected $targetModel;
     protected $targetColumn;
@@ -54,13 +56,16 @@ class Relation_HasJoinDao implements Relation_Interface
         $sourceModel            = $em->getModel( $source->_get_Model() );
         $this->source           = $source;
         $this->sourceColumn     = $relInfo[ 'source_column' ] ?: $sourceModel->getIdName();
+        
         // set up about target data.
+        $this->targetModelName  = $relInfo[ 'target_model' ];
         $this->targetModel      = $em->getModel( $relInfo[ 'target_model' ] );
-        $this->targetColumn     = $relInfo[ 'target_column' ] ?: $this->targetModel->getIdName();
+        $this->targetColumn     = $relInfo[ 'target_column' ] ?: $this->em->getIdName( $this->targetModelName );
+        
         // set up join table information.
-        $this->joinModel        = $this->em->getModel( $relInfo[ 'join_model' ] );
+        $this->joinModelName    = $relInfo[ 'join_model' ];
         $this->joinSourceColumn = $relInfo[ 'join_source_column' ] ?: $sourceModel->getIdName();
-        $this->joinTargetColumn = $relInfo[ 'join_target_column' ] ?: $this->targetModel->getIdName();
+        $this->joinTargetColumn = $relInfo[ 'join_target_column' ] ?: $this->em->getIdName( $this->targetModelName );
         // always load relations. 
         $this->load();
     }
@@ -74,8 +79,8 @@ class Relation_HasJoinDao implements Relation_Interface
     {
         // get joints (join records).
         $value  = $this->source[ $this->sourceColumn ];
-        $joints = $this->joinModel->fetch( $value, $this->joinSourceColumn );
-        if( empty( $joints ) ) return $this;
+        $joints = $this->em->fetch( $this->joinModelName, $value, $this->joinSourceColumn );
+        if( !$joints->count() ) return $this;
         
         // set joints based on joinTargetColumn value.
         $column = $this->joinTargetColumn;
@@ -83,14 +88,13 @@ class Relation_HasJoinDao implements Relation_Interface
             $this->joints[ $j->$column ] = $j;
         }
         // get target entities. save it as: $this->targets[ cena_id ] = $entity.
-        $lists   = $this->em->packToArray( $joints, $this->joinTargetColumn );
-        $targets = $this->targetModel->fetch( $lists, $this->targetColumn );
-        $results = array();
+        $lists   = $joints->pack( $this->joinTargetColumn );
+        $targets = $this->em->fetch( $this->targetModelName, $lists, $this->targetColumn );
+        $this->source->setRelation( $this->relationName, $targets );
         foreach( $targets as $t ) {
             $this->loadJoint( $t );
-            $results[ $t->_get_cenaId() ] = $t;
+            $joints->add( $t );
         }
-        $this->source->setRelation( $this->relationName, $results );
         return $this;
     }
 
@@ -168,7 +172,7 @@ class Relation_HasJoinDao implements Relation_Interface
             if( is_array( $this->values ) && !empty( $this->values ) ) {
                 $values = array_merge( $this->values, $values );
             }
-            $joint = $this->joinModel->getRecord( $values );
+            $joint = $this->em->newEntity( $this->joinModelName, $values );
             $joint = $this->em->register( $joint );
             $this->joints[ $targetValue ] = $joint;
         }
@@ -224,7 +228,7 @@ class Relation_HasJoinDao implements Relation_Interface
     /**
      * returns the related entities (i.e. targets) for the source entity. 
      * 
-     * @return \WScore\DataMapper\Entity_Interface[]
+     * @return Entity_Collection
      */
     public function get()
     {
