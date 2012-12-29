@@ -136,7 +136,7 @@ abstract class Entity_Abstract implements Entity_Interface, \ArrayAccess
      *
      * @return null|string
      */
-    public function _get_Id() {
+    public function _get_Identifier() {
         return $this->_identifier;
     }
 

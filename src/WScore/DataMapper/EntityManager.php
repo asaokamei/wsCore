@@ -202,7 +202,7 @@ class EntityManager
         $delete = $entity->toDelete();
         if( $delete ) {
             if( $entity->isIdPermanent() ) { // i.e. entity is from db.
-                $model->delete( $entity->_get_Id() );
+                $model->delete( $entity->_get_Identifier() );
             }
             // ignore if type is new; just not saving the entity.
         }
@@ -211,7 +211,7 @@ class EntityManager
             $this->setupEntity( $entity, Entity_Interface::_ENTITY_TYPE_GET_ , $id );
         }
         else {
-            $id = $entity->_get_Id();
+            $id = $entity->_get_Identifier();
             $model->update( $id, $entity );
         }
     }

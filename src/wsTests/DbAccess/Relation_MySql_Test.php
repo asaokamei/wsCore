@@ -125,7 +125,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->em->save();
 
         // verify relation is deleted.
-        $finalContact = $this->contact->find( $contact->_get_Id() );
+        $finalContact = $this->contact->find( $contact->_get_Identifier() );
         $this->assertEquals( null, $finalContact[ 'friend_id' ] );
     }
     function test_HasRefs_del()
@@ -143,7 +143,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $this->em->save();
 
         // verify relation is deleted.
-        $finalContact = $this->contact->find( $contact->_get_Id() );
+        $finalContact = $this->contact->find( $contact->_get_Identifier() );
         $this->assertEquals( null, $finalContact[ 'friend_id' ] );
     }
 }

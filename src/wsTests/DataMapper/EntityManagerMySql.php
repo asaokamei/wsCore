@@ -74,7 +74,7 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $idx    = 1;
         $friend = $this->em->getEntity( 'wsTests\DataMapper\Model\Friend', $idx );
         $this->assertEquals( 'wsTests\DataMapper\Entity\Friend', get_class( $friend ) );
-        $this->assertEquals( $idx, $friend->_get_Id() );
+        $this->assertEquals( $idx, $friend->_get_Identifier() );
         $this->assertEquals( 'wsTests\DataMapper\Model\Friend', $friend->_get_Model() );
     }
     function test_em_saves_existing_entity_to_db()
@@ -96,7 +96,7 @@ class EntityManagerMySql extends \PHPUnit_Framework_TestCase
         $friend->friend_name = 'my real friend';
         $friend->friend_bday = '1989-01-31';
         $this->em->save();
-        $id1 = $friend->_get_Id();
+        $id1 = $friend->_get_Identifier();
         $this->assertEquals( '4', $id1 );
     }
     function test_em_register_entity_from_select()

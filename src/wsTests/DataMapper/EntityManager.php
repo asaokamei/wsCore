@@ -35,13 +35,13 @@ class EntityManager extends \PHPUnit_Framework_TestCase
     function test_Em_registers_new_entity()
     {
         $friend = $this->em->newEntity( 'wsTests\DataMapper\Model\Friend' );
-        $id = $friend->_get_Id();
+        $id = $friend->_get_Identifier();
         $this->assertTrue( $id > 0 );
     }
     function test_new_entity_id_returns_null_if_not_registered()
     {
         $friend = $this->friend->getRecord();
-        $id = $friend->_get_Id();
+        $id = $friend->_get_Identifier();
         $this->assertTrue( $id > 0 );
     }
     function test_getModel_from_string()
@@ -60,8 +60,8 @@ class EntityManager extends \PHPUnit_Framework_TestCase
         $this->assertEquals( 'wsTests\DataMapper\Entity\Friend', get_class( $friend ) );
 
         $friend2 = $this->em->newEntity( 'wsTests\DataMapper\Model\Friend' );
-        $id1 = $friend->_get_Id();
-        $id2 = $friend2->_get_Id();
+        $id1 = $friend->_get_Identifier();
+        $id2 = $friend2->_get_Identifier();
         $this->assertNotEquals( $id1, $id2 );
         $this->assertEquals( $id1+1, $id2 );
     }

@@ -77,7 +77,7 @@ class Entity_Property
         if( $identifier ) {
             $this->set( $entity, 'identifier', $identifier );
         }
-        elseif( !$entity->_get_Id() ) {
+        elseif( !$entity->_get_Identifier() ) {
             throw new \RuntimeException( 'identifier not set. ' );
         }
     }
