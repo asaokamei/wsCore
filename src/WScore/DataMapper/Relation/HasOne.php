@@ -63,7 +63,13 @@ class Relation_HasOne implements Relation_Interface
         if( $target->_get_Model() != $this->targetModelName ) {
             throw new \RuntimeException( "target model not match! " );
         }
-        $this->source->setRelation( $this->relationName, array( $target ) );
+        $collection = $this->source->relation( $this->relationName );
+        if( !$collection ) {
+            $collection = $this->em->emptyCollection();
+        }
+        $collection->clear();
+        $collection->add( $target );
+        $this->source->setRelation( $this->relationName, $collection );
         $this->linked = false;
         $this->link();
         return $this;
@@ -76,10 +82,10 @@ class Relation_HasOne implements Relation_Interface
     public function link( $save=false )
     {
         if( $this->linked )  return $this;
-        if( !$this->source->relation( $this->relationName ) ) return $this;
+        if( !$collection = $this->source->relation( $this->relationName ) ) return $this;
         // TODO: check if id is permanent or tentative.
-        $targets = $this->source->relation( $this->relationName );
-        $target  = $targets[0];
+        if( !$target  = $collection->first() ) return $this;
+        
         $value   = $target[ $this->targetColumn ];
         $this->source[ $this->sourceColumn ] = $value;
         $this->linked = true;
