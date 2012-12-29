@@ -16,7 +16,7 @@ interface Relation_Interface
     public function del( $target=null );
 
     /**
-     * @return Entity_Interface[]
+     * @return Entity_Collection|Entity_Interface[]
      */
     public function get();
 
