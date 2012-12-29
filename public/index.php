@@ -60,6 +60,8 @@
                 <li><a href="interaction1.php" >demo #1: insert friend's data</a></li>
                 <li><a href="interaction2.php" >demo #2: interaction like a wizard</a></li>
             </ul>
+            <h4>&gt; <a href="cenaFriends" >cena data transfer agent</a></h4>
+            <p>a conceptual demo for using Cena-DTA using friends and contact demo. </p>
         </div>
         <div class="span12">
             <p>development still undergoing. more demo should come up, hopefully sometime soon...</p>
