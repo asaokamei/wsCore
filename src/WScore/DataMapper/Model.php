@@ -223,7 +223,11 @@ class Model
         $this->entityClass = null;
         if( !$column         ) $column = $this->getIdName();
         if( $packed === true ) $packed = $column;
-        $query->w( $column )->eq( $value )->column( $packed );
+        if( is_null( $value ) ) {
+            $query->column( $packed );
+        } else {
+            $query->w( $column )->eq( $value )->column( $packed );
+        }
         $record = $query->select();
         if( $packed ) {
             return HelperModel::packToArray( $record, $packed );
