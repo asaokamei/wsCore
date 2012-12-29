@@ -49,8 +49,11 @@ class Relation_HasOne implements Relation_Interface
         $value   = $this->source[ $this->sourceColumn ];
         if( $value ) {
             $target = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
-            $this->source->setRelation( $this->relationName, $target );
         }
+        else {
+            $target = $this->em->emptyCollection();
+        }
+        $this->source->setRelation( $this->relationName, $target );
     }
 
     /**
@@ -64,12 +67,8 @@ class Relation_HasOne implements Relation_Interface
             throw new \RuntimeException( "target model not match! " );
         }
         $collection = $this->source->relation( $this->relationName );
-        if( !$collection ) {
-            $collection = $this->em->emptyCollection();
-        }
         $collection->clear();
         $collection->add( $target );
-        $this->source->setRelation( $this->relationName, $collection );
         $this->linked = false;
         $this->link();
         return $this;
