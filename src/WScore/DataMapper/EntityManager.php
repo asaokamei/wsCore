@@ -36,6 +36,13 @@ class EntityManager
     public function container() {
         return $this->container;
     }
+
+    /**
+     * @return Entity_Collection
+     */
+    public function emptyCollection() {
+        return $this->collection->collection();
+    }
     // +----------------------------------------------------------------------+
     //  Managing Model.
     // +----------------------------------------------------------------------+
@@ -154,16 +161,16 @@ class EntityManager
      * @param string|array             $value      pass array to fetch multiple entities.
      * @param null|string              $column     set to null to fetch by id.
      * @param bool                     $packed     to get only the column value.
-     * @return array|\WScore\DataMapper\Entity_Interface[]
+     * @return \WScore\DataMapper\Entity_Collection
      */
-    public function fetch( $name, $value, $column=null, $packed=false )
+    public function fetch( $name, $value=null, $column=null, $packed=false )
     {
         $model = $this->getModel( $name );
         if( $this->isEntity( $name ) ) $model->setEntityClass( $name );
         $entities = $model->fetch( $value, $column, $packed );
         $this->setupEntity( $entities, Entity_Interface::_ENTITY_TYPE_GET_ );
         $entities = $this->register( $entities );
-        return $entities;
+        return $this->collection->collection( $entities );
     }
 
     /**
