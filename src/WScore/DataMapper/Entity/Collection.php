@@ -20,8 +20,10 @@ class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
      */
     public function collection( $entities = array() )
     {
-        $collection            = clone( $this );
-        $collection->_elements = $entities;
+        $collection            = new static();
+        foreach( $entities as $entity ) {
+            $collection->_elements[ $entity->_get_cenaId() ] = $entity;
+        }
         return $collection;
     }
 
