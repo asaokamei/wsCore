@@ -199,6 +199,7 @@ class Model
      * @return Entity_Interface
      */
     public function find( $id ) {
+        if( !$id ) return null;
         $limit = count( $id );
         $record = $this->query( $this->entityClass )->id( $id )->limit( $limit )->select();
         $this->entityClass = null;
