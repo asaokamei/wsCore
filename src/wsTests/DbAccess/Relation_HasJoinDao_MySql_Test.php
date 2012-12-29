@@ -79,7 +79,7 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         // assert that friend1's good friend is a friend2.
         $friend1 = $this->em->getEntity( '\wsTests\DbAccess\Dao_Friend', $id1 );
         $friends = $this->friend->relation( $friend1, 'network' )->get();
-        $goodFriend = array_shift( $friends );
+        $goodFriend = $friends->first();
         $this->assertEquals( $friend2->_get_Identifier(), $goodFriend->_get_Identifier() );
         // and joint data is propagated into the friend data. 
         $this->assertEquals( 'first comment', $goodFriend->comment );
@@ -143,7 +143,7 @@ class Relation_HasJoinDao_MySql_Test extends \PHPUnit_Framework_TestCase
         $relation2 = $this->friend->relation( $friend1, 'network' );
         $myNetwork2 = $relation2->get();
         $this->assertEquals( 1, count( $myNetwork2 ) );
-        $goodFriend = array_shift( $myNetwork2 );
+        $goodFriend = $myNetwork2->first();
         $this->assertEquals( $friend3->_get_Identifier(), $goodFriend->_get_Identifier() );
     }
     // +----------------------------------------------------------------------+
