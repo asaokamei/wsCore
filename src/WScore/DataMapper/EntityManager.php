@@ -101,7 +101,7 @@ class EntityManager
         }
         $this->setupEntity( $entity );
         $cenaId = $entity->_get_cenaId();
-        if( !array_key_exists( $cenaId, $this->collection ) ) {
+        if( !isset( $this->collection[ $cenaId ] ) ) {
             $this->collection->add( $entity );
         }
         return $entity;
