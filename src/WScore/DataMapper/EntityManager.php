@@ -6,15 +6,13 @@ class EntityManager
     /** @var \WScore\DataMapper\Model[] */
     protected $models = array();
 
-    /** @var Entity_Interface[] */
-    protected $entities = array();
-
     /** @var \WScore\DiContainer\Dimplet */
     protected $container;
 
     /** @var \WScore\DataMapper\Entity_Property */
-    protected $entityProperty = '\WScore\DataMapper\Entity_Property';
+    protected $entityProperty;
     
+    /** @var \WScore\DataMapper\Entity_Collection */
     protected $collection;
 
     // +----------------------------------------------------------------------+
@@ -118,7 +116,7 @@ class EntityManager
      * @throws \RuntimeException
      */
     public function setupEntity( $entity, $type=null, $identifier=null ) {
-        return $this->entityProperty->initialize( $entity, $type, $identifier );
+        $this->entityProperty->initialize( $entity, $type, $identifier );
     }
     // +----------------------------------------------------------------------+
     //  Generating and saving Entities to database
