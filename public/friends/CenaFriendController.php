@@ -15,24 +15,31 @@ class CenaFriendController
     /** @var \WScore\DataMapper\Role */
     protected $role;
 
+    /** @var callable */
     protected $pager;
+    
+    /** @var callable */
+    protected $cena;
 
     /**
      * @param \WScore\DataMapper\EntityManager   $em
      * @param \friends\views\cenaFriendsView     $view
      * @param \WScore\DataMapper\Role            $role
      * @param \Closure                           $pager
+     * @param \Closure                           $cena
      * @DimInjection get EntityManager
      * @DimInjection get \friends\views\cenaFriendsView
      * @DimInjection get \WScore\DataMapper\Role
      * @DimInjection get Raw \wsModule\Alt\DbAccess\Paginate
+     * @DimInjection GET Raw \WScore\DataMapper\CenaManager
      */
-    public function __construct( $em, $view, $role, $pager )
+    public function __construct( $em, $view, $role, $pager, $cena )
     {
         $this->em = $em;
         $this->view = $view;
         $this->role = $role;
         $this->pager = $pager;
+        $this->cena  = $cena;
     }
 
     /**
@@ -86,17 +93,26 @@ class CenaFriendController
     public function postIndex()
     {
         $uri = $this->front->request->getRequestUri();
-        $pager = $this->pager;
-        $pager = $pager();
-        $entities   = $this->loadIndex( $pager );
-        /** @var $model \friends\model\Friends */
-        $model = $this->em->getModel( 'friends\model\Friends' );
         $method = $this->front->request->getPost( 'method' );
-        if( $method == 'save' ) {
+        if( $method == 'save' ) 
+        {
+            $cena = $this->cena;
+            /** @var $cena \Closure */
+            $cena = $cena();
+            /** @var $cena \WScore\DataMapper\CenaManager */
+            $cena->useModel( 'friends\model\Friends' );
+            $cena->serveEntities();
+            $this->em->save();
             header( 'Location: ' . $uri );
             exit;
         }
-        else {
+        else 
+        {
+            $pager = $this->pager;
+            $pager = $pager();
+            $entities   = $this->loadIndex( $pager );
+            /** @var $model \friends\model\Friends */
+            $model = $this->em->getModel( 'friends\model\Friends' );
             $model->setupFormForListings();
             $this->view->showForm_list( $entities, $pager, 'save', $uri );
         }
