@@ -14,16 +14,22 @@ class EntityManager
 
     /** @var \WScore\DataMapper\Entity_Property */
     protected $entityProperty = '\WScore\DataMapper\Entity_Property';
+    
+    protected $collection;
 
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DiContainer\Dimplet $container
+     * @param \WScore\DiContainer\Dimplet        $container
      * @param \WScore\DataMapper\Entity_Property $entityProperty
+     * @param \WScore\DataMapper\Entity_Collection $collection
      * @DimInjection Fresh Container
+     * @DimInjection Fresh \WScore\DataMapper\Entity_Property
+     * @DimInjection Fresh \WScore\DataMapper\Entity_Collection
      */
-    public function __construct( $container, $entityProperty=null ) {
+    public function __construct( $container, $entityProperty, $collection ) {
         $this->container = $container;
-        $this->entityProperty = $entityProperty ?: new $this->entityProperty;
+        $this->entityProperty = $entityProperty;
+        $this->collection = $collection;
     }
 
     /**
@@ -97,8 +103,8 @@ class EntityManager
         }
         $this->setupEntity( $entity );
         $cenaId = $entity->_get_cenaId();
-        if( !array_key_exists( $cenaId, $this->entities ) ) {
-            $this->entities[ $cenaId ] = $entity;
+        if( !array_key_exists( $cenaId, $this->collection ) ) {
+            $this->collection->add( $entity );
         }
         return $entity;
     }
@@ -181,8 +187,8 @@ class EntityManager
      */
     public function save()
     {
-        if( empty( $this->entities ) ) return;
-        foreach( $this->entities as $entity ) {
+        if( empty( $this->collection ) ) return;
+        foreach( $this->collection as $entity ) {
             $this->saveEntity( $entity );
         }
     }

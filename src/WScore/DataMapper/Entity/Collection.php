@@ -32,7 +32,7 @@ class Entity_Collection implements \ArrayAccess, \Iterator
     {
         $this->bindEntity( $entity );
         $cenaId = $entity->_get_cenaId();
-        if( $this->offsetExists( $cenaId ) ) {
+        if( !$this->offsetExists( $cenaId ) ) {
             $this->offsetSet( $cenaId, $entity );
         }
     }
