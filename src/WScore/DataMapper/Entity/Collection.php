@@ -40,10 +40,39 @@ class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
     }
 
     /**
+     * @param \WScore\DataMapper\Entity_Interface $entity
+     */
+    public function del( $entity )
+    {
+        $cenaId = $entity->_get_cenaId();
+        if( $this->offsetExists( $cenaId ) ) {
+            $this->offsetUnset( $cenaId );
+        }
+    }
+    /**
      * clears the collection. 
      */
     public function clear() {
         $this->_elements = array();
+    }
+
+    /**
+     * clean up entities.
+     * removes entities whose properties does not match with bind condition. 
+     * they are likely modified elsewhere and should not belong to the collection. 
+     */
+    public function cleanUpBind()
+    {
+        if( empty( $this->binds ) ) return;
+        if( empty( $this->_elements ) ) return;
+        foreach( $this->binds as $prop => $val ) {
+            foreach( $this->_elements as $key => $entity ) {
+                if( $entity[ $prop ] !== $val ) {
+                    unset( $this->_elements[ $key ] );
+                    break;
+                }
+            }
+        }
     }
     // +----------------------------------------------------------------------+
     /**
@@ -70,7 +99,7 @@ class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
             $this->bindEntity( $entity );
         }
     }
-
+    
     /**
      * binds an entity. i.e. sets certain value for a property. 
      * 
