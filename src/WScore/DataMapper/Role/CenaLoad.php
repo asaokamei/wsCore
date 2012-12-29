@@ -3,17 +3,21 @@ namespace WScore\DataMapper;
 
 class Role_CenaLoad extends Role_Loadable
 {
+    protected $cena;
+
     /**
      * @param \WScore\DataMapper\EntityManager    $em
-     * @param \WScore\Validator\DataIO          $dio
+     * @param \WScore\Validator\DataIO            $dio
+     * @param \WScore\DataMapper\CenaManager      $cena
      * @DimInjection Get \WScore\DataMapper\EntityManager
      * @DimInjection Get \WScore\Validator\DataIO
-     * @DimInjection Get \WScore\Html\Selector
+     * @DimInjection Get \WScore\DataMapper\CenaManager
      */
-    public function __construct( $em, $dio )
+    public function __construct( $em, $dio, $cena )
     {
         $this->em = $em;
         $this->dio = $dio;
+        $this->cena = $cena;
     }
     
     /**
@@ -25,28 +29,9 @@ class Role_CenaLoad extends Role_Loadable
     {
         if( is_array(  $name ) ) $data = $name;
         if( empty( $data ) ) $data = $_POST;
-        $data = $this->getData( $data );
-        parent::loadData( $name, $data );
+        $data = $this->cena->getDataForCenaId( $data, $this->entity->_get_cenaId() );
+        parent::loadData( $name, $data[ 'prop' ] );
+        // TODO: implement relation.
         return $this;
-    }
-
-    /**
-     * @param $data
-     * @return array
-     */
-    public function getData( $data ) 
-    {
-        // the data is not in Cena format. 
-        // return the data as is. 
-        if( !isset( $data[ 'Cena' ] ) ) return $data;
-        // OK, got Cena formatted data. 
-        $cenaId = $this->entity->_get_cenaId();
-        $cena = explode( '.', $cenaId );
-        $data = $data[ 'Cena' ];
-        foreach( $cena as $item ) {
-            if( !isset( $data[ $item ] ) ) return array();
-            $data = $data[ $item ];
-        }
-        return $data;
     }
 }
