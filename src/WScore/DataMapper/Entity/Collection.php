@@ -47,6 +47,17 @@ class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
     }
     // +----------------------------------------------------------------------+
     /**
+     * @param string $name
+     * @param string $value
+     */
+    public function set( $name, $value )
+    {
+        if( empty( $this->_elements ) ) return;
+        foreach( $this->_elements as $entity ) {
+            $entity[ $name ] = $value;
+        }
+    }
+    /**
      * specify bind condition. 
      * 
      * @param string $name
