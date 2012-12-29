@@ -160,14 +160,13 @@ class EntityManager
      * @param Entity_Interface|string  $name       entity or model class name, or entity object.
      * @param string|array             $value      pass array to fetch multiple entities.
      * @param null|string              $column     set to null to fetch by id.
-     * @param bool                     $packed     to get only the column value.
      * @return \WScore\DataMapper\Entity_Collection
      */
-    public function fetch( $name, $value=null, $column=null, $packed=false )
+    public function fetch( $name, $value=null, $column=null )
     {
         $model = $this->getModel( $name );
         if( $this->isEntity( $name ) ) $model->setEntityClass( $name );
-        $entities = $model->fetch( $value, $column, $packed );
+        $entities = $model->fetch( $value, $column );
         $this->setupEntity( $entities, Entity_Interface::_ENTITY_TYPE_GET_ );
         $entities = $this->register( $entities );
         return $this->collection->collection( $entities );
@@ -254,47 +253,6 @@ class EntityManager
         $model = $this->getModel( $entity );
         $relation = Relation::getRelation( $this, $entity, $model->getRelationInfo(), $name );
         return $relation;
-    }
-
-    /**
-     * @param array $arr
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
-     */
-    public function arrGet( $arr, $key, $default=null ) {
-        if( is_array( $arr ) && array_key_exists( $key, $arr ) ) {
-            return $arr[ $key ];
-        }
-        elseif( is_object( $arr ) && isset( $arr->$key ) ) {
-            return $arr->$key;
-        }
-        return $default;
-    }
-
-    /**
-     * @param array|object  $record
-     * @param string|array  $select
-     * @return array
-     */
-    public function packToArray( $record, $select )
-    {
-        $result = array();
-        if( empty( $record ) ) return $result;
-        foreach( $record as $rec ) {
-            if( !is_array( $select ) ) {
-                $result[] = $this->arrGet( $rec, $select );
-            }
-            else {
-                $pack = array();
-                foreach( $select as $item ) {
-                    $pack[] = $this->arrGet( $rec, $item );
-                }
-                $result[] = $pack;
-            }
-        }
-        $result = array_values( $result );
-        return $result;
     }
     // +----------------------------------------------------------------------+
 }
