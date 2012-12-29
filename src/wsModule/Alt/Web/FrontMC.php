@@ -76,7 +76,9 @@ class FrontMC
             if( !method_exists( $controller, $action ) ) {
                 throw new FrontMcNotFoundException( 'no such method: ' . $action );
             }
+            // -------- run --------
             $content = $controller->$action( $this->parameter );
+            // -------- end --------
             $this->response->setContent( $content );
 
         } catch( FrontMcNotFoundException $e ) {
