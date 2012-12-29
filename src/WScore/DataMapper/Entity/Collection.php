@@ -1,7 +1,7 @@
 <?php
 namespace WScore\DataMapper;
 
-class Entity_Collection implements \ArrayAccess, \Iterator
+class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
 {
     /** @var Entity_Interface[]  */
     public $_elements = array();
@@ -220,5 +220,14 @@ class Entity_Collection implements \ArrayAccess, \Iterator
      */
     public function offsetUnset( $offset ) {
         if ( $this->offsetExists( $offset ) ) unset( $this->_elements[ $offset ] );
+    }
+
+    /**
+     * Count elements of an object
+     *
+     * @return int The custom count as an integer.
+     */
+    public function count() {
+        return count( $this->_elements );
     }
 }
