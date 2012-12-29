@@ -16,8 +16,6 @@ class Relation_HasRefs implements Relation_Interface
     protected $source;
     protected $sourceColumn;
 
-    /** @var Model */
-    protected $targetModel;
     protected $targetModelName;
     protected $targetColumn;
 
@@ -38,7 +36,7 @@ class Relation_HasRefs implements Relation_Interface
         $relInfo  = array_merge( $default, $relInfo );
 
         $this->source          = $source;
-        $this->sourceColumn    = $relInfo[ 'source_column' ] ? : $this->em->getModel( $source->_get_Model() )->getIdName();
+        $this->sourceColumn    = $relInfo[ 'source_column' ] ? : $this->em->getIdName( $source->_get_Model() );
         $this->targetModelName = $relInfo[ 'target_model' ];
         $this->targetColumn    = $relInfo[ 'target_column' ] ? : $this->sourceColumn;
         // get relation data always. 
@@ -84,9 +82,9 @@ class Relation_HasRefs implements Relation_Interface
     {
         $targets = $this->source->relation( $this->relationName );
         if( !$targets->count() ) return $this; // nothing to link. 
-        // check if the source ID is ready to use. 
-        if( !$this->linked ) { // not linked yet. 
-            if( !$this->ready() ) { // not ready to link (id not ready(. 
+        if( !$this->linked )  // not linked yet.
+        {
+            if( !$this->ready() ) { // not ready to link (id not ready). 
                 return $this;
             }
             $value   = $this->source[ $this->sourceColumn ];
@@ -109,28 +107,21 @@ class Relation_HasRefs implements Relation_Interface
     {
         $targets = $this->source->relation( $this->relationName );
         if( $target ) {
-            $target[ $this->targetColumn ] = null;
-            if( isset( $targets[ $target->_get_cenaId() ] ) ) {
-                unset( $targets[ $target->_get_cenaId() ] );
-            }
+            $targets->del( $target );
         }
         else {
-            foreach( $targets as $target ) {
-                $target[ $this->targetColumn ] = null;
-            }
-            $targets = array();
+            $targets->cleanUpBind();
+            $targets->set( $this->targetColumn, null );
+            $targets->clear();
         }
-        $this->source->setRelation( $this->relationName, $targets );
         return $this;
     }
 
     /**
      * @return Entity_Interface[]
      */
-    public function get()
-    {
-        $targets = $this->source->relation( $this->relationName );
-        return $targets;
+    public function get() {
+        return $this->source->relation( $this->relationName );
     }
 
     /**
