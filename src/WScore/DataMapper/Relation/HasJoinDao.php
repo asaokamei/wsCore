@@ -26,8 +26,6 @@ class Relation_HasJoinDao implements Relation_Interface
     
     /** @var string */
     protected $targetModelName;
-    /** @var \WScore\DataMapper\Model */
-    protected $targetModel;
     protected $targetColumn;
 
     protected $order  = null;    // select order for get
@@ -59,7 +57,6 @@ class Relation_HasJoinDao implements Relation_Interface
         
         // set up about target data.
         $this->targetModelName  = $relInfo[ 'target_model' ];
-        $this->targetModel      = $em->getModel( $relInfo[ 'target_model' ] );
         $this->targetColumn     = $relInfo[ 'target_column' ] ?: $this->em->getIdName( $this->targetModelName );
         
         // set up join table information.
@@ -83,9 +80,8 @@ class Relation_HasJoinDao implements Relation_Interface
         if( !$joints->count() ) return $this;
         
         // set joints based on joinTargetColumn value.
-        $column = $this->joinTargetColumn;
         foreach( $joints as $j ) {
-            $this->joints[ $j->$column ] = $j;
+            $this->joints[ $j[ $this->joinTargetColumn ] ] = $j;
         }
         // get target entities. save it as: $this->targets[ cena_id ] = $entity.
         $lists   = $joints->pack( $this->joinTargetColumn );
@@ -93,7 +89,6 @@ class Relation_HasJoinDao implements Relation_Interface
         $this->source->setRelation( $this->relationName, $targets );
         foreach( $targets as $t ) {
             $this->loadJoint( $t );
-            $joints->add( $t );
         }
         return $this;
     }
