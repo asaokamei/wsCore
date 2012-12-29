@@ -3,17 +3,21 @@ namespace WScore\DataMapper;
 
 class Role_Cenatar extends Role_Selectable
 {
+    protected $cena;
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DataMapper\EntityManager    $em
-     * @param \WScore\Html\Selector             $selector
+     * @param \WScore\Html\Selector               $selector
+     * @param \WScore\DataMapper\CenaManager      $cena
      * @DimInjection Get \WScore\DataMapper\EntityManager
      * @DimInjection Get \WScore\Html\Selector
+     * @DimInjection Get \WScore\DataMapper\CenaManager
      */
-    public function __construct( $em, $selector )
+    public function __construct( $em, $selector, $cena )
     {
         $this->em       = $em;
         $this->selector = $selector;
+        $this->cena     = $cena;
     }
     /**
      * pops value of the $name (property name).
@@ -33,7 +37,7 @@ class Role_Cenatar extends Role_Selectable
         if( $html instanceof \WScore\Html\Form ) 
         {
             $cenaId = $this->entity->_get_cenaId();
-            $format = $this->getFormName( $cenaId );
+            $format = $this->cena->getFormName( $cenaId );
             $makeCena = function( $form ) use( $format ) {
                 /** @var $tags \WScore\Html\Form */
                 if( isset( $form->attributes[ 'name' ] ) ) {
@@ -45,18 +49,4 @@ class Role_Cenatar extends Role_Selectable
         return $html;
     }
 
-    /**
-     * returns cena-formatted name for form elements.
-     * 
-     * @param string  $cenaId
-     * @param null    $name
-     * @return string
-     */
-    public function getFormName( $cenaId, $name=null ) 
-    {
-        $cena = explode( '.', $cenaId );
-        $formName = 'Cena[' . implode( '][', $cena ) . ']';
-        if( $name ) $formName .= "[{$name}]";
-        return $formName;
-    }
 }
