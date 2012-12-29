@@ -74,7 +74,7 @@ class Relation_MySql_Test extends \PHPUnit_Framework_TestCase
         $id2 = $contact[ 'friend_id' ];
         $contact2 = $this->contact->find( $id2 );
         $friend2 = $this->contact->relation( $contact2, 'friend' )->get();
-        $this->assertTrue( is_array( $friend2 ) );
+        $this->assertTrue( $friend2 instanceof \ArrayAccess );
         $friend2 = $friend2[0];
         $this->assertEquals( $id1, $friend2[ 'friend_id' ] );
     }
