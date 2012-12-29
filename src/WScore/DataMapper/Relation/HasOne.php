@@ -81,13 +81,17 @@ class Relation_HasOne implements Relation_Interface
     public function link( $save=false )
     {
         if( $this->linked )  return $this;
-        if( !$collection = $this->source->relation( $this->relationName ) ) return $this;
-        // TODO: check if id is permanent or tentative.
-        if( !$target  = $collection->first() ) return $this;
-        
-        $value   = $target[ $this->targetColumn ];
-        $this->source[ $this->sourceColumn ] = $value;
-        $this->linked = true;
+        $collection = $this->source->relation( $this->relationName );
+        if( !$collection->count() ) return $this;
+        $target  = $collection->first();
+        if( !$this->linked ) 
+        {
+            if( !$this->ready( $target ) ) {
+                return $this;
+            }
+            $this->source[ $this->sourceColumn ] = $target[ $this->targetColumn ];
+            $this->linked = true;
+        }
         if( $save ) { // TODO: check if this works or not.
             $this->em->saveEntity( $this->source );
         }
@@ -106,8 +110,7 @@ class Relation_HasOne implements Relation_Interface
     /**
      * @return Entity_Interface[]
      */
-    public function get()
-    {
+    public function get() {
         return $this->source->relation( $this->relationName );
     }
 
@@ -137,6 +140,18 @@ class Relation_HasOne implements Relation_Interface
      */
     public function setValues( $values ) {
         return $this;
+    }
+
+    /**
+     * @param Entity_Interface $target
+     * @return bool
+     */
+    private function ready( $target ) {
+        if( $this->targetColumn == $target->_get_id_name() &&
+            !$target->isIdPermanent() ) {
+            return false;
+        }
+        return true;
     }
 }
 
