@@ -5,6 +5,8 @@ class CenaManager
 {
     public $cena = 'Cena';
     
+    public $connector = '.';
+    
     // +----------------------------------------------------------------------+
     public function __construct()
     {
@@ -23,7 +25,7 @@ class CenaManager
      */
     public function getFormName( $cenaId, $type='prop', $name=null )
     {
-        $cena = explode( '.', $cenaId );
+        $cena = explode( $this->connector, $cenaId );
         $formName = $this->cena . '[' . implode( '][', $cena ) . "][{$type}]";
         if( $name ) $formName .= "[{$name}]";
         return $formName;
