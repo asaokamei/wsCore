@@ -59,7 +59,7 @@ class CenaManager
                 {
                     // now create entities... 
                     $entity = $this->getEntity( $model, $type, $id );
-                    $role   = $this->role->applyCenaLoad( $entity );
+                    $role   = $this->role->applyLoadable( $entity );
                     $role->loadData( $info[ 'prop' ] );
                     // TODO: implement relation. 
                     $list[] = $entity;
