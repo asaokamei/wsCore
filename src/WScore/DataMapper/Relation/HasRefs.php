@@ -21,7 +21,7 @@ class Relation_HasRefs implements Relation_Interface
     protected $targetModelName;
     protected $targetColumn;
 
-    protected $linked = false;
+    protected $linked = true;
     /**
      * @param EntityManager $em
      * @param Entity_Interface   $source
@@ -49,14 +49,10 @@ class Relation_HasRefs implements Relation_Interface
      */
     public function load()
     {
-        $value  = $this->source[ $this->sourceColumn ];
+        $value   = $this->source[ $this->sourceColumn ];
         $targets = $this->em->fetch( $this->targetModelName, $value, $this->targetColumn );
-        $results = array();
-        if( !empty( $targets ) )
-        foreach( $targets as $t ) {
-            $results[ $t->_get_cenaId() ] = $t;
-        }
-        $this->source->setRelation( $this->relationName, $results );
+        $targets->bind( $this->targetColumn, $value );
+        $this->source->setRelation( $this->relationName, $targets );
     }
 
     /**
@@ -70,10 +66,7 @@ class Relation_HasRefs implements Relation_Interface
             throw new \RuntimeException( "target model not match!" );
         }
         $targets = $this->source->relation( $this->relationName );
-        $targets[ $target->_get_cenaId() ] = $target;
-        $this->source->setRelation( $this->relationName, $targets );
-        $this->linked = true;
-        $this->link();
+        $targets->add( $target );
         return $this;
     }
 
@@ -84,16 +77,15 @@ class Relation_HasRefs implements Relation_Interface
     public function link( $save=false )
     {
         $targets = $this->source->relation( $this->relationName );
-        if( empty( $targets ) ) return $this;
-        if( $this->sourceColumn == $this->em->getModel( $this->source->_get_Model() )->getIdName() &&
+        if( !$targets->count() ) return $this;
+        // check if the source ID is ready to use. 
+        if( $this->sourceColumn == $this->source->_get_id_name() &&
             !$this->source->isIdPermanent() ) {
             $this->linked = false;
             return $this;
         }
-        $value  = $this->source[ $this->sourceColumn ];
-        foreach( $targets as $entity ) {
-            $entity[ $this->targetColumn ] = $value;
-            if( $save ) { // TODO: check if this works or not.
+        if( $save ) { // TODO: check if this works or not.
+            foreach( $targets as $entity ) {
                 $this->em->saveEntity( $entity );
             }
         }
