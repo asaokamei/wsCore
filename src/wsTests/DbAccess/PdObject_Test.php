@@ -17,7 +17,7 @@ class PdObject_Test extends \PHPUnit_Framework_TestCase
     // +----------------------------------------------------------------------+
     public function setUp()
     {
-        $this->config = 'db=mysql dbname=test_WScore username=admin password=admin';
+        $this->config = 'dsn=mysql:dbname=test_WScore username=admin password=admin';
         Core::clear();
         Core::go();
         Core::setPdo( $this->config );

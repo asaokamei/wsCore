@@ -9,7 +9,7 @@ class DbAccess_SuiteTests
     {
         $suite = new \PHPUnit_Framework_TestSuite( 'all tests for WScore\'s DbAccess' );
         $folder = dirname( __FILE__ ) . '/';
-        $suite->addTestFile( $folder . 'Rdb_Test.php' );
+        //$suite->addTestFile( $folder . 'Rdb_Test.php' );
         $suite->addTestFile( $folder . 'Rdb_MySql_Test.php' );
         $suite->addTestFile( $folder . 'Rdb_PgSql_Test.php' );
         $suite->addTestFile( $folder . 'Rdb_Sqlite_Test.php' );

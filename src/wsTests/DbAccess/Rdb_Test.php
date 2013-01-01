@@ -2,6 +2,9 @@
 namespace wsTests\DbAccess;
 use \WScore\DbAccess\Rdb as Rdb;
 
+/*
+ * TODO: RDB written, i.e. rewrite this test as well. 
+ */
 require_once( __DIR__ . '/../../autoloader.php' );
 
 class Dba_Rdb_Test extends \PHPUnit_Framework_TestCase
