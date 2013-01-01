@@ -6,15 +6,15 @@ class Query
     // PdObject for executing and fetching result from DB.
 
     /** @var PdObject                   PDO object           */
-    protected $pdoObj  = NULL;
+    protected $pdoObj  = null;
 
     /** @var \PdoStatement               PDO statement obj   */
-    protected $pdoStmt = NULL;
+    protected $pdoStmt = null;
 
     // variables to build SQL statement.
 
     /** @var null|\WScore\DbAccess\SqlObject                 */
-    protected $sqlObj = NULL;
+    protected $sqlObj = null;
 
     /** @var string   SQL Statement created by this class    */
     protected $sql = '';
@@ -29,7 +29,7 @@ class Query
     var $col_data_types = array();
 
     /** @var null             prepare/quote? null default    */
-    public $prepQuoteUseType = NULL;
+    public $prepQuoteUseType = null;
 
     /** @var string           default prepare/quote          */
     public static $pqDefault = 'prepare';
@@ -43,7 +43,7 @@ class Query
      * @param PdObject $pdoObj
      * @DimInjection  Fresh   \WScore\DbAccess\PdObject
      */
-    public function __construct( $pdoObj=NULL ) {
+    public function __construct( $pdoObj=null ) {
         $this->pdoObj = $pdoObj;
         $this->clear();
     }
@@ -71,7 +71,7 @@ class Query
      * @param array $args
      * @return Query
      */
-    public function setFetchMode( $mode, $class=NULL, $args=array() ) {
+    public function setFetchMode( $mode, $class=null, $args=array() ) {
         $this->pdoObj->setFetchMode( $mode, $class, $args );
         return $this;
     }
@@ -89,7 +89,7 @@ class Query
      * @param string $table
      * @return Query
      */
-    public function lockTable( $table=NULL ) {
+    public function lockTable( $table=null ) {
         $table = ( $table )?: $this->table;
         $this->pdoObj->lockTable( $table );
         return $this;
@@ -123,7 +123,7 @@ class Query
      * @throws \RuntimeException
      * @return Query
      */
-    public function execSQL( $sql=NULL, $prepared=array(), $dataType=array() ) {
+    public function execSQL( $sql=null, $prepared=array(), $dataType=array() ) {
         if( !$this->pdoObj ) throw new \RuntimeException( 'Pdo Object not set.' );
         $this->pdoStmt = $this->pdoObj->exec( $sql, $prepared, $dataType );
         return $this;
@@ -179,7 +179,7 @@ class Query
                     throw new \RuntimeException( "Cannot fetch with offset for ".$driver );
                 }
             }
-            return $this->pdoStmt->fetch( NULL, \PDO::FETCH_ORI_ABS, $row );
+            return $this->pdoStmt->fetch( null, \PDO::FETCH_ORI_ABS, $row );
         }
         return array();
     }
@@ -260,7 +260,7 @@ class Query
         return $this;
     }
     public function limit( $limit ) {
-        $this->sqlObj->limit  = ( $limit  ) ? $limit : FALSE;
+        $this->sqlObj->limit  = ( $limit  ) ? $limit : false;
         return $this;
     }
     public function offset( $offset ) {
@@ -273,7 +273,7 @@ class Query
      * @return Query
      */
     public function distinct(){
-        $this->sqlObj->distinct = TRUE;
+        $this->sqlObj->distinct = true;
         return $this;
     }
 
@@ -282,7 +282,7 @@ class Query
      * @return Query
      */
     public function forUpdate() {
-        $this->sqlObj->forUpdate = TRUE;
+        $this->sqlObj->forUpdate = true;
         return $this;
     }
 
@@ -296,7 +296,7 @@ class Query
      * @param null $columns
      * @return Query
      */
-    public function join( $table, $join, $by=NULL, $columns=NULL ) {
+    public function join( $table, $join, $by=null, $columns=null ) {
         $join  = "{$join} {$table}";
         $join .= ($by)? " {$by}( {$columns} )": '';
         $this->sqlObj->join[] = $join;
@@ -326,7 +326,7 @@ class Query
      * @param null|string|bool   $type
      * @return Query
      */
-    public function where( $col, $val, $rel='=', $type=NULL ) {
+    public function where( $col, $val, $rel='=', $type=null ) {
         $this->sqlObj->where( $col, $val, $rel, $type );
         return $this;
     }
@@ -357,7 +357,7 @@ class Query
         $this->sqlObj->col( $col );
         return $this;
     }
-    public function mod( $val, $rel, $type=NULL ) {
+    public function mod( $val, $rel, $type=null ) {
         $mod = array( 'val' => $val, 'rel' => $rel );
         $this->sqlObj->mod( $mod, $type );
         return $this;
@@ -367,54 +367,54 @@ class Query
         $this->sqlObj->modRaw( $mod );
         return $this;
     }
-    public function id( $val, $type=NULL ) {
+    public function id( $val, $type=null ) {
         if( is_array( $val ) ) return $this->w( $this->id_name )->in( $val, $type );
         return $this->w( $this->id_name )->mod( $val, '=', $type );
     }
-    public function eq( $val, $type=NULL ) {
+    public function eq( $val, $type=null ) {
         if( is_array( $val ) ) return $this->in( $val, $type );
         return $this->mod( $val, '=', $type );
     }
-    public function ne( $val, $type=NULL ) {
+    public function ne( $val, $type=null ) {
         return $this->mod( $val, '!=', $type );
     }
-    public function lt( $val, $type=NULL ) {
+    public function lt( $val, $type=null ) {
         return $this->mod( $val, '<', $type );
     }
-    public function le( $val, $type=NULL ) {
+    public function le( $val, $type=null ) {
         return $this->mod( $val, '<=', $type );
     }
-    public function gt( $val, $type=NULL ) {
+    public function gt( $val, $type=null ) {
         return $this->mod( $val, '>', $type );
     }
-    public function ge( $val, $type=NULL ) {
+    public function ge( $val, $type=null ) {
         return $this->mod( $val, '>=', $type );
     }
-    public function in( $val, $type=NULL ) {
+    public function in( $val, $type=null ) {
         return $this->mod( $val, 'IN', $type );
     }
-    public function notIn( $val, $type=NULL ) {
+    public function notIn( $val, $type=null ) {
         return $this->mod( $val, 'NOT IN', $type );
     }
-    public function between( $val, $type=NULL ) {
+    public function between( $val, $type=null ) {
         return $this->mod( $val, 'BETWEEN', $type );
     }
     public function isNull() {
-        return $this->modRaw( NULL, 'IS NULL' );
+        return $this->modRaw( null, 'IS NULL' );
     }
     public function notNull() {
-        return $this->modRaw( NULL, 'IS NOT NULL' );
+        return $this->modRaw( null, 'IS NOT NULL' );
     }
-    public function like( $val, $type=NULL ) {
+    public function like( $val, $type=null ) {
         return $this->mod( $val, 'LIKE', $type );
     }
-    public function contain( $val, $type=NULL ) {
+    public function contain( $val, $type=null ) {
         return $this->mod( "%{$val}%", 'LIKE', $type );
     }
-    public function startWith( $val, $type=NULL ) {
+    public function startWith( $val, $type=null ) {
         return $this->mod( $val.'%', 'LIKE', $type );
     }
-    public function endWith( $val, $type=NULL ) {
+    public function endWith( $val, $type=null ) {
         return $this->mod( '%'.$val, 'LIKE', $type );
     }
     /**
@@ -465,7 +465,7 @@ class Query
      * @param array|null $column
      * @return array|DataRecord
      */
-    public function select( $column=NULL ) {
+    public function select( $column=null ) {
         if( $column ) $this->column( $column );
         return $this->makeSelect()->exec()->fetchAll();
     }
