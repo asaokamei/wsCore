@@ -63,6 +63,16 @@ class Query_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( "SELECT * FROM {$table} OFFSET 5", $this->pdo->sql );
     }
     // +----------------------------------------------------------------------+
+    function test_where_with_get() 
+    {
+        $table = 'testTable';
+        $this->query->table( $table )->abc->like( '%val%' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE abc LIKE :db_prep_1", $this->pdo->sql );
+        // add one more where clause
+        $this->query->xyz->like( '%string%' )->select();
+        $this->assertEquals( "SELECT * FROM {$table} WHERE abc LIKE :db_prep_1 "
+            . "AND xyz LIKE :db_prep_2", $this->pdo->sql );
+    }
     public function test_where_w_and_like()
     {
         // test setting column in select

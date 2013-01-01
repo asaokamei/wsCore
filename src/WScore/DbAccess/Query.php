@@ -353,6 +353,9 @@ class Query
         $this->sqlObj->modRaw( array( 'op' => 'OR' ) );
         return $this;
     }
+    public function __get( $name ) {
+        return $this->w( $name );
+    }
     public function w( $col ) {
         $this->sqlObj->col( $col );
         return $this;
