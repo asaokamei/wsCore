@@ -26,16 +26,16 @@ class Query
     protected $id_name = 'id';
 
     /** @var array            stores data types of columns   */
-    var $col_data_types = array();
+    public $_col_data_types = array();
 
     /** @var null             prepare/quote? null default    */
-    public $prepQuoteUseType = null;
+    public $_prepQuoteUseType = null;
 
     /** @var string           default prepare/quote          */
     public static $pqDefault = 'prepare';
 
     /** @var SqlObject   SqlObject class    */
-    public $sqlObject = '\WScore\DbAccess\SqlObject';
+    public $_sqlObject = '\WScore\DbAccess\SqlObject';
     // +----------------------------------------------------------------------+
     //  Construction and Managing Dba Object.
     // +----------------------------------------------------------------------+
@@ -55,10 +55,10 @@ class Query
      * @return Query
      */
     public function clear() {
-        $class = $this->sqlObject;
+        $class = $this->_sqlObject;
         $this->sqlObj = new $class( $this->pdoObj );
-        $this->sqlObj->prepQuoteUseType = ( $this->prepQuoteUseType ) ?: static::$pqDefault;
-        $this->sqlObj->col_data_types = $this->col_data_types;
+        $this->sqlObj->prepQuoteUseType = ( $this->_prepQuoteUseType ) ?: static::$pqDefault;
+        $this->sqlObj->col_data_types = $this->_col_data_types;
         return $this;
     }
 
