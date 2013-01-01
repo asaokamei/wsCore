@@ -17,6 +17,8 @@ class PdObject
 
     /** @var array                       arguments for fetch_class object  */
     protected $fetchConstArg = array();
+    
+    private $connConfig = null;
     // +----------------------------------------------------------------------+
     //  Constructor and Managing Objects.
     // +----------------------------------------------------------------------+
@@ -28,7 +30,12 @@ class PdObject
      */
     public function __construct( $pdoObj )
     {
-        $this->pdoObj = $pdoObj;
+        if( $pdoObj instanceof \PDO ) {
+            $this->pdoObj = $pdoObj;
+        } else {
+            $this->connConfig = $pdoObj;
+            $this->pdoObj = \WScore\DbAccess\Rdb::connect( $pdoObj );
+        }
     }
 
     /**

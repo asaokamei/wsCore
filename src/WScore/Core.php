@@ -87,13 +87,7 @@ class Core
      */
     public static function setPdo( $config, $id='Pdo', $class=NULL, $method= NULL )
     {
-        if( !$class  ) $class  = '\WScore\DbAccess\Rdb';
-        if( !$method ) $method = 'connect';
-        Static::set( $id, function($c) use( $config, $class, $method ) {
-            /** @var $c  \WScore\DiContainer\Dimplet */
-            $rdb = $c->get( $class );
-            return $rdb->$method( $config );
-        });
+        return self::$_container->set( $id, $config );
     }
     // +----------------------------------------------------------------------+
 }
