@@ -13,21 +13,11 @@ class Interaction_SaveWithConfirm extends Persist
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\Web\Session       $session
-     * @param \wsModule\Dci\Web\PersistInterface     $form
-     * @param \wsModule\Dci\Web\PersistInterface   $confirm
-     * @param \wsModule\Dci\Web\PersistInterface        $save
      * @DimInjection Get   Session
-     * @DimInjection Get   \wsModule\Dci\Web\Context_FormWizards
-     * @DimInjection Get   \wsModule\Dci\Web\Context_ConfirmUnless
-     * @DimInjection Get   \wsModule\Dci\Web\Context_SaveOnce
      */
-    public function __construct( $session, $form, $confirm, $save )
+    public function __construct( $session )
     {
         parent::__construct( $session );
-        $this->setContext( 'form',    $form );
-        $this->setContext( 'confirm', $confirm );
-        $this->setContext( 'save',    $save );
-        $this->setFormSteps( 'form' );
     }
 
     /**
@@ -38,49 +28,59 @@ class Interaction_SaveWithConfirm extends Persist
     }
 
     /**
-     * set steps of forms:
-     * $forms = array( 'form1', 'formAge', ... )
-     *
-     * @param array $forms
+     * @param PersistInterface $context
      */
-    public function setFormSteps( $forms )
-    {
-        $this->forms = $forms;
+    public function setContextForm( $context ) {
+        $this->setContext( 'form', $context );
     }
-    
+
+    /**
+     * @param PersistInterface $context
+     */
+    public function setContextConfirm( $context ) {
+        $this->setContext( 'confirm', $context );
+    }
+
+    /**
+     * @param PersistInterface $context
+     */
+    public function setContextSave( $context ) {
+        $this->setContext( 'save', $context );
+    }
+
     /**
      * inserts entity in 3 steps: form -> confirm -> save/done.
      *
      * @param Entity_Interface  $entity
-     * @param string $action
+     * @param string            $action
+     * @param string            $method
      * @return bool|string
      */
-    protected function main( $entity, $action )
+    protected function main( $entity, $action, $method='get' )
     {
         // get entity from saved in the session.
         $entity = $this->restoreData( 'entity' );
         if( !$entity ) {
             // create new entity.
-            $this->clearData();
             $entity = $this->context( 'entity' )->run( $entity );
             $this->registerData( 'entity', $entity );
         }
         // show the input form. also load and validates the input.
-        if( $this->context( 'form' )->run( $entity, $action, $this->forms ) ) {
-            return 'form';
+        if( $name = $this->context( 'form' )->run( $entity, $action, $method ) ) {
+            return $name;
         }
         // show the confirm view. save token as well.
-        if( $this->context( 'confirm' )->run( $entity, $action, 'save' ) ) {
+        if( $name = $this->context( 'confirm' )->run( $entity, $action ) ) {
             if( $entity->_is_valid() ) {
                 $token = $this->session->pushToken();
-                $this->registerData( 'token', $token );
+                $this->registerData( '_token', $token );
             }
-            return 'confirm';
+            return $name;
         }
         // save the entity.
-        if( $this->session->verifyToken() && 
-            $this->context( 'save' )->run( $entity, $action, 'save' ) ) {
-            return 'save';
+        if( $this->session->verifyToken() &&
+            $name = $this->context( 'save' )->run( $entity, $action ) ) {
+            return $name;
         }
         return 'done';
     }

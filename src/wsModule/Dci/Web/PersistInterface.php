@@ -7,8 +7,10 @@ interface PersistInterface
     
     public function context( $name );
     
-    public function run( $entity, $action=null, $form=null, $prevForm=null );
+    public function run( $entity, $action=null );
     
     public function restoreData( $name );
+    
+    function setActName( $name );
     
 }

@@ -47,14 +47,12 @@ class Persist implements PersistInterface
     /**
      * @param mixed       $entity
      * @param string      $action
-     * @param null|string $form
-     * @param null|string $prevForm
      * @return mixed
      */
-    public function run( $entity, $action=null, $form=null, $prevForm=null )
+    public function run( $entity, $action=null )
     {
         $this->loadRegistered();
-        $return = $this->main( $entity, $action, $form, $prevForm );
+        $return = call_user_func_array( array( $this, 'main' ), func_get_args() );
         $this->saveRegistered();
         return $return;
     }
@@ -62,11 +60,9 @@ class Persist implements PersistInterface
     /**
      * @param mixed       $entity
      * @param string      $action
-     * @param null|string $form
-     * @param null|string $prevForm
      * @return mixed
      */
-    protected function main( $entity, $action, $form, $prevForm ) {
+    protected function main( $entity, $action ) {
         return $entity;
     }
 
@@ -105,6 +101,14 @@ class Persist implements PersistInterface
     // +----------------------------------------------------------------------+
     /**
      * @param string $name
+     * @return void
+     */
+    public function setActName( $name )
+    {
+    }
+
+    /**
+     * @param string $name
      * @param mixed $data
      */
     protected function registerData( $name, $data ) {
@@ -125,8 +129,16 @@ class Persist implements PersistInterface
     /**
      * clears registered data
      */
-    protected function clearData() {
+    protected function clearData() 
+    {
         $this->registeredData = array();
+        if( empty( $this->contexts ) ) return;
+        foreach( $this->contexts as $context ) {
+            if( $context instanceof Persist ) {
+                /** @var $context Persist */
+                $context->clearData();
+            }
+        }
     }
 
     /**

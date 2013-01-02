@@ -12,7 +12,7 @@ class Context_FormWizards extends Persist
     protected $role;
 
     /** @var array */
-    protected $forms;
+    protected $actName;
     // +----------------------------------------------------------------------+
     //  object management
     // +----------------------------------------------------------------------+
@@ -26,23 +26,33 @@ class Context_FormWizards extends Persist
     }
 
     /**
+     * @param array|string $name
+     */
+    public function setActName( $name )
+    {
+        if( !is_array( $name ) ) $name = array( $name );
+        $this->actName = $name;
+    }
+
+    /**
      * a context to show form and load post data from the form.
      * returns $form name if $action is in this context,
      * otherwise returns false.
      *
      * @param Entity_Interface      $entity
      * @param string                $action
-     * @param array                 $forms
      * @return bool|string
      */
-    protected function main( $entity, $action, $forms=array() )
+    protected function main( $entity, $action )
     {
         $prevForm = null;
-        foreach( $forms as $form ) {
-            if( $this->context( 'form' )->run( $entity, $action, $form, $prevForm ) ) {
-                return $form;
+        foreach( $this->actName as $form ) {
+            /** @var $context \wsModule\Dci\Web\Context_FormAndLoad */
+            $context = $this->context( 'form' );
+            $context->setActName( $form );
+            if( $name = $context->run( $entity, $action ) ) {
+                return $name;
             }
-            $prevForm = $form;
         }
         return false;
     }

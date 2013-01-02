@@ -8,6 +8,9 @@ class Context_FormAndLoad extends Persist
     /** @var \WScore\DataMapper\Role */
     protected $role;
 
+    /** @var string */
+    protected $actName = 'confirm';
+
     // +----------------------------------------------------------------------+
     //  object management
     // +----------------------------------------------------------------------+
@@ -24,27 +27,34 @@ class Context_FormAndLoad extends Persist
     }
 
     /**
+     * @param string $name
+     * @return void
+     */
+    public function setActName( $name )
+    {
+        $this->actName   = $name;
+    }
+
+    /**
      * saves the entity if $action is $form and token is verified. pin points the $form.
      * returns $form if $action is in this context (i.e. entity is saved), otherwise
      * returns false.
      *
      * @param Entity_Interface       $entity
      * @param string                 $action
-     * @param string                 $form
-     * @param string|null            $prevForm
      * @return bool|string
      */
-    protected function main( $entity, $action, $form, $prevForm=null )
+    protected function main( $entity, $action )
     {
         // it's new. and further check the token.
-        if( $action == $form )
+        if( $action == $this->actName )
         {
             // check if already saved.
-            if( $this->checkPin( $form ) ) return false;
+            if( $this->checkPin( $this->actName ) ) return false;
             // OK, let's save the entity. 
             $this->role->applyActive( $entity )->save();
-            $this->registerPin( $form );
-            return $form;
+            $this->registerPin( $this->actName );
+            return $this->actName;
         }
         return false;
     }

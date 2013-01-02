@@ -5,28 +5,35 @@ use \WScore\DataMapper\Entity_Interface;
 
 class Context_FormAndLoad extends Persist
 {
-    /** @var \wsModule\Alt\Web\Request */
-    protected $request;
-
     /** @var \WScore\DataMapper\Role */
     protected $role;
+    
+    protected $actName = 'form';
+    
+    protected $prevForm = null;
 
     // +----------------------------------------------------------------------+
     //  object management
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\Web\Session         $session
-     * @param \wsModule\Alt\Web\Request   $request
      * @param \WScore\DataMapper\Role     $role
      * @DimInjection Get   Session
-     * @DimInjection Get   \wsModule\Alt\Web\Request
      * @DimInjection Get   \WScore\DataMapper\Role
      */
-    public function __construct( $session, $request, $role )
+    public function __construct( $session, $role )
     {
         parent::__construct( $session );
-        $this->request = $request;
         $this->role = $role;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setActName( $name )
+    {
+        $this->prevForm = $this->actName;
+        $this->actName = $name;
     }
 
     /**
@@ -36,33 +43,32 @@ class Context_FormAndLoad extends Persist
      *
      * @param Entity_Interface       $entity
      * @param string                 $action
-     * @param string                 $form
-     * @param string|null            $prevForm
+     * @param string                 $method
      * @return bool|string
      */
-    protected function main( $entity, $action, $form='form', $prevForm=null )
+    protected function main( $entity, $action, $method='get' )
     {
         $role     = $this->role->applyLoadable( $entity );
-        $isPost   = $this->request->isPost();
+        $isPost   = ( $method == 'post' );
         // show form at least once. check for pin-point. 
-        if ( !$this->checkPin( $form ) ) {
+        if ( !$this->checkPin( $this->actName ) ) {
             // no validation result is necessary when showing the form.
             $role->resetValidation( true );
-            return $form;
+            return $this->actName;
         }
         // requesting for a form. 
-        if ( $action == $prevForm || ( $action == $form && !$isPost ) ) {
+        if ( $action == $this->prevForm || ( $action == $this->actName && !$isPost ) ) {
             // no validation result is necessary when showing the form.
             $role->resetValidation( true );
-            return $form;
+            return $this->actName;
         }
         // load data if it is a post for a form. 
-        if ( $action == $form && $isPost ) {
-            $role->loadData( $form );
+        if ( $action == $this->actName && $isPost ) {
+            $role->loadData( $this->actName );
         }
         // validate data *always*. 
-        if ( !$role->validate( $form ) ) {
-            return $form;
+        if ( !$role->validate( $this->actName ) ) {
+            return $this->actName;
         }
         // all pass. not in this context. 
         return false;

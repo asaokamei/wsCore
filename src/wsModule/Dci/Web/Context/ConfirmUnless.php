@@ -5,28 +5,39 @@ use \WScore\DataMapper\Entity_Interface;
 
 class Context_ConfirmUnless extends Persist
 {
-    /** @var \wsModule\Alt\Web\Request */
-    protected $request;
-
     /** @var \WScore\DataMapper\Role */
     protected $role;
 
+    /** @var string */
+    protected $goSave = 'save';
+    
+    /** @var string */
+    protected $actName = 'confirm';
+    
     // +----------------------------------------------------------------------+
     //  object management
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\Web\Session         $session
-     * @param \wsModule\Alt\Web\Request   $request
      * @param \WScore\DataMapper\Role     $role
      * @DimInjection Get   Session
-     * @DimInjection Get   \wsModule\Alt\Web\Request
      * @DimInjection Get   \WScore\DataMapper\Role
      */
-    public function __construct( $session, $request, $role )
+    public function __construct( $session, $role )
     {
         parent::__construct( $session );
-        $this->request = $request;
         $this->role = $role;
+    }
+
+    /**
+     * @param string $name
+     * @param string $unless
+     * @return void
+     */
+    public function setActName( $name, $unless='save' )
+    {
+        $this->actName   = $name;
+        $this->goSave    = $unless;
     }
 
     /**
@@ -35,20 +46,18 @@ class Context_ConfirmUnless extends Persist
      *
      * @param Entity_Interface       $entity
      * @param string                 $action
-     * @param string                 $form
-     * @param string|null            $default
      * @return bool|string
      */
-    protected function main( $entity, $action, $form, $default='confirm' )
+    protected function main( $entity, $action )
     {
         $role = $this->role->applyLoadable( $entity );
         // validate data *always*. 
         if ( !$role->validate() ) {
-            return $default;
+            return $this->actName;
         }
-        if( $action == $form ) {
+        if( $action == $this->goSave ) {
             return false;
         }
-        return $default;
+        return $this->actName;
     }
 }
