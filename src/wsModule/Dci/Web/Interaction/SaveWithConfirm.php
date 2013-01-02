@@ -17,9 +17,9 @@ class Interaction_SaveWithConfirm extends Persist
      * @param \wsModule\Dci\Web\PersistInterface   $confirm
      * @param \wsModule\Dci\Web\PersistInterface        $save
      * @DimInjection Get   Session
-     * @DimInjection Get   \wsModule\Dci\Web\ContextFormAndLoad
-     * @DimInjection Get   \wsModule\Dci\Web\ContextConfirmUnless
-     * @DimInjection Get   \wsModule\Dci\Web\ContextSaveOnce
+     * @DimInjection Get   \wsModule\Dci\Web\Context_FormWizards
+     * @DimInjection Get   \wsModule\Dci\Web\Context_ConfirmUnless
+     * @DimInjection Get   \wsModule\Dci\Web\Context_SaveOnce
      */
     public function __construct( $session, $form, $confirm, $save )
     {
