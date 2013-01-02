@@ -1,7 +1,7 @@
 <?php
 namespace wsModule\Alt\Dci\Web;
 
-interface ContextInterface
+interface PersistInterface
 {
     public function setContext( $name, $context );
     

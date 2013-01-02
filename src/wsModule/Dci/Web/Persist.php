@@ -1,7 +1,7 @@
 <?php
 namespace wsModule\Alt\Dci\Web;
 
-class Context implements ContextInterface
+class Persist implements PersistInterface
 {
     /** @var array                          data to register as session data */
     protected $registeredData = array();
@@ -16,7 +16,7 @@ class Context implements ContextInterface
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\Web\Session   $session
-     * @return \wsModule\Alt\Dci\Web\Context
+     * @return \wsModule\Alt\Dci\Web\Persist
      * @DimInjection Get Session
      */
     public function __construct( $session )
@@ -26,7 +26,7 @@ class Context implements ContextInterface
 
     /**
      * @param string $name
-     * @param \wsModule\Alt\Dci\Web\ContextInterface $context
+     * @param \wsModule\Alt\Dci\Web\PersistInterface $context
      */
     public function setContext( $name, $context ) {
         $this->contexts[ $name ] = $context;
@@ -34,7 +34,7 @@ class Context implements ContextInterface
 
     /**
      * @param string $name
-     * @return \wsModule\Alt\Dci\Web\ContextInterface
+     * @return \wsModule\Alt\Dci\Web\PersistInterface
      * @throws \RuntimeException
      */
     public function context( $name ) {
