@@ -1,9 +1,9 @@
 <?php
-namespace wsModule\Alt\Dci\Web;
+namespace wsModule\Dci\Web;
 
 use \WScore\DataMapper\Entity_Interface;
 
-class InteractionSave3steps extends Context
+class InteractionSave3steps extends Persist
 {
     /** @var array|string */
     protected $forms = 'form';
@@ -13,13 +13,13 @@ class InteractionSave3steps extends Context
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\Web\Session       $session
-     * @param \wsModule\Alt\Dci\Web\ContextInterface     $form
-     * @param \wsModule\Alt\Dci\Web\ContextInterface   $confirm
-     * @param \wsModule\Alt\Dci\Web\ContextInterface        $save
+     * @param \wsModule\Dci\Web\PersistInterface     $form
+     * @param \wsModule\Dci\Web\PersistInterface   $confirm
+     * @param \wsModule\Dci\Web\PersistInterface        $save
      * @DimInjection Get   Session
-     * @DimInjection Get   \wsModule\Alt\Dci\Web\ContextFormAndLoad
-     * @DimInjection Get   \wsModule\Alt\Dci\Web\ContextConfirmUnless
-     * @DimInjection Get   \wsModule\Alt\Dci\Web\ContextSaveOnce
+     * @DimInjection Get   \wsModule\Dci\Web\ContextFormAndLoad
+     * @DimInjection Get   \wsModule\Dci\Web\ContextConfirmUnless
+     * @DimInjection Get   \wsModule\Dci\Web\ContextSaveOnce
      */
     public function __construct( $session, $form, $confirm, $save )
     {
@@ -31,7 +31,7 @@ class InteractionSave3steps extends Context
     }
 
     /**
-     * @param ContextInterface $context
+     * @param PersistInterface $context
      */
     public function setContextEntity( $context ) {
         $this->setContext( 'entity', $context );

@@ -1,9 +1,9 @@
 <?php
-namespace wsModule\Alt\Dci\Web;
+namespace wsModule\Dci\Web;
 
 use \WScore\DataMapper\Entity_Interface;
 
-class ContextFormAndLoad extends Context
+class ContextFormAndLoad extends Persist
 {
     /** @var \wsModule\Alt\Web\Request */
     protected $request;

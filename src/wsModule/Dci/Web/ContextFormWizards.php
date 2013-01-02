@@ -1,9 +1,9 @@
 <?php
-namespace wsModule\Alt\Dci\Web;
+namespace wsModule\Dci\Web;
 
 use \WScore\DataMapper\Entity_Interface;
 
-class ContextFormWizards extends Context
+class ContextFormWizards extends Persist
 {
     /** @var \wsModule\Alt\Web\Request */
     protected $request;
@@ -17,8 +17,8 @@ class ContextFormWizards extends Context
     //  object management
     // +----------------------------------------------------------------------+
     /**
-     * @param \wsModule\Alt\Dci\Web\ContextInterface   $context
-     * @DimInjection Get   \wsModule\Alt\Dci\Web\ContextFormAndLoad
+     * @param \wsModule\Dci\Web\PersistInterface   $context
+     * @DimInjection Get   \wsModule\Dci\Web\ContextFormAndLoad
      */
     public function __construct( $context )
     {

@@ -1,5 +1,5 @@
 <?php
-namespace wsModule\Alt\Dci\Web;
+namespace wsModule\Dci\Web;
 
 interface PersistInterface
 {
