@@ -51,7 +51,7 @@ class Context implements ContextInterface
      * @param null|string $prevForm
      * @return mixed
      */
-    public function run( $entity, $action, $form=null, $prevForm=null )
+    public function run( $entity, $action=null, $form=null, $prevForm=null )
     {
         $this->loadRegistered();
         $return = $this->main( $entity, $action, $form, $prevForm );
