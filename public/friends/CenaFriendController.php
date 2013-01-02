@@ -59,7 +59,7 @@ class CenaFriendController
      * load friends entities using pagination.
      *
      * @param \wsModule\Alt\DbAccess\Paginate $pager
-     * @return \WScore\DbAccess\DataRecord[]
+     * @return \WScore\DataMapper\Entity_Interface[]
      */
     private function loadIndex( $pager )
     {

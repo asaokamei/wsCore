@@ -71,7 +71,7 @@ class cenaFriendsView
     //  about my friends. 
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DataMapper\Role_Selectable[] $entity
+     * @param \WScore\DataMapper\Entity_Interface[] $entity
      * @param \wsModule\Alt\DbAccess\Paginate      $pager
      * @param string                               $button
      * @param string                               $uri
