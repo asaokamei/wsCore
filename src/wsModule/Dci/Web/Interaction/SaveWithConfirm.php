@@ -3,7 +3,7 @@ namespace wsModule\Dci\Web;
 
 use \WScore\DataMapper\Entity_Interface;
 
-class InteractionSave3steps extends Persist
+class Interaction_SaveWithConfirm extends Persist
 {
     /** @var array|string */
     protected $forms = 'form';

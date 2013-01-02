@@ -3,7 +3,7 @@ namespace wsModule\Dci\Web;
 
 use \WScore\DataMapper\Entity_Interface;
 
-class ContextFormWizards extends Persist
+class Context_FormWizards extends Persist
 {
     /** @var \wsModule\Alt\Web\Request */
     protected $request;
