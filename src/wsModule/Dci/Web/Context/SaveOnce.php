@@ -3,7 +3,7 @@ namespace wsModule\Dci\Web;
 
 use \WScore\DataMapper\Entity_Interface;
 
-class Context_FormAndLoad extends Persist
+class Context_SaveOnce extends Persist
 {
     /** @var \WScore\DataMapper\Role */
     protected $role;
