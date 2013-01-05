@@ -48,23 +48,32 @@ class Context_FormAndLoad extends Persist
      */
     protected function main( $entity, $action, $method='get' )
     {
-        $role     = $this->role->applyLoadable( $entity );
-        $isPost   = ( $method == 'post' );
-        // show form at least once. check for pin-point. 
+        $role = $this->role->applyLoadable( $entity );
         if ( !$this->checkPin( $this->actName ) ) {
             // no validation result is necessary when showing the form.
             $role->resetValidation( true );
             return $this->actName;
         }
-        // requesting for a form. 
-        if ( $action == $this->prevForm || ( $action == $this->actName && !$isPost ) ) {
-            // no validation result is necessary when showing the form.
-            $role->resetValidation( true );
-            return $this->actName;
+        if( strtolower( $method ) == 'post' ) 
+        {
+            // post method. load data if action is in this context. 
+            if( !is_null( $this->prevForm ) && $action == $this->prevForm ) {
+                $role->resetValidation( true );
+                return $this->actName;
+            }
+            if( $action == $this->actName ) {
+                // load data if it is a post for a form. 
+                $role->loadData( $this->actName );
+            }
         }
-        // load data if it is a post for a form. 
-        if ( $action == $this->actName && $isPost ) {
-            $role->loadData( $this->actName );
+        else 
+        {
+            // get method. display forms if action is in this context. 
+            if( $action == $this->actName ) {
+                // no validation result is necessary when showing the form.
+                $role->resetValidation( true );
+                return $this->actName;
+            }
         }
         // validate data *always*. 
         if ( !$role->validate( $this->actName ) ) {
