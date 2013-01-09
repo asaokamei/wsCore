@@ -147,26 +147,50 @@ class CenaFriendController
         $model = $this->em->getModel( 'friends\model\Friends' );
         $model->setupFormForListings();
         $id = $parameter[ 'id' ];
-        $friend = $this->em->getEntity( 'friends\model\Friends', $id );
         if( $this->front->request->getPost( '_method' ) == 'save' )
         {
-            // update groups
-            // group entities without registering to em.
-            $groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
-            $this->em->relation( $friend, 'groups' )->replace( $groups );
-
-            // update friends info
-            $loadable = $this->role->applyCenaLoad( $friend );
-            $loadable->loadData();
-            if( $loadable->validate() )
-            {
-                $this->em->save();
-                $jump = $this->view->get( 'appUrl' ) . $id;
-                header( 'Location: ' . $jump );
-                exit;
-            }
+            return $this->saveInfo( $id );
         }
+        return $this->editInfo( $id );
+    }
+
+    /**
+     * @param string $id
+     * @return views\cenaFriendsView
+     */
+    protected function editInfo( $id )
+    {
+        $friend = $this->em->getEntity( 'friends\model\Friends', $id );
         $groups = $this->em->fetch( 'friends\model\Group' );
+        $groups = $groups->pack( array( 'group_code', 'name' ) );
+        $this->em->relation( $friend, 'groups' );
+        $this->view->showForm_detail( $friend, $groups );
+        return $this->view;
+    }
+
+    /**
+     * @param string $id
+     * @return views\cenaFriendsView
+     */
+    protected function saveInfo( $id )
+    {
+        $friend = $this->em->getEntity( 'friends\model\Friends', $id );
+
+        // update groups
+        // group entities without registering to em.
+        $groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
+        $this->em->relation( $friend, 'groups' )->replace( $groups );
+
+        // update friends info
+        $loadable = $this->role->applyCenaLoad( $friend );
+        $loadable->loadData();
+        if( $loadable->validate() )
+        {
+            $this->em->save();
+            $jump = $this->view->get( 'appUrl' ) . $id;
+            header( 'Location: ' . $jump );
+            exit;
+        }
         $groups = $groups->pack( array( 'group_code', 'name' ) );
         $this->em->relation( $friend, 'groups' );
         $this->view->showForm_detail( $friend, $groups );
