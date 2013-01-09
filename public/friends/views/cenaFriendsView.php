@@ -174,9 +174,12 @@ class cenaFriendsView
      */
     public function showForm_detail( $entity, $groups )
     {
+        // use Cenatar to generate forms.
+        $entity = $this->role->applyCenatar( $entity );
+        $entity->setHtmlType( 'form' );
         // get groups
         $groups = $groups->pack( array( 'group_code', 'name' ) );
-        $myGroup = $entity->relation( 'groups' );
+        $myGroup = $entity->retrieve()->relation( 'groups' );
         $selectedGroup = array();
         if( !empty( $myGroup ) )
         foreach( $myGroup as $grp ) {
@@ -187,9 +190,8 @@ class cenaFriendsView
             $this->tags->dt( 'group list' ),
             $this->tags->dd( $select )
         )->_class( 'dl-horizontal' );
+        
         // form basic info
-        $entity = $this->role->applyCenatar( $entity );
-        $entity->setHtmlType( 'form' );
         $this->set( 'title', $entity->popHtml( 'name', 'html' ) );
         $back = $this->view->get( 'appUrl' ) . $entity->getId();
         $form = $this->tags->form()->method( 'post' )->action( '' );
