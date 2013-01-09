@@ -185,7 +185,7 @@ class cenaFriendsView
         $selGroup = $this->tags->dl(
             $this->tags->dt( 'group list' ),
             $this->tags->dd( $select )
-        );
+        )->_class( 'dl-horizontal' );
         // form basic info
         $entity = $this->role->applyCenatar( $entity );
         $entity->setHtmlType( 'form' );
@@ -193,8 +193,8 @@ class cenaFriendsView
         $back = $this->view->get( 'appUrl' ) . $entity->getId();
         $form = $this->tags->form()->method( 'post' )->action( '' );
         $form->contain_(
+            $this->dl( $entity, array( 'name', 'gender', 'birthday', 'star', 'memo' ) )->_class( 'dl-horizontal' ),
             $selGroup,
-            $this->dl( $entity, array( 'name', 'gender', 'birthday', 'star', 'memo' ) ),
             $this->view->bootstrapButton( 'submit', 'update info', 'btn btn-primary' ),
             $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' ),
             $this->tags->input( 'hidden', '_method', 'save' )

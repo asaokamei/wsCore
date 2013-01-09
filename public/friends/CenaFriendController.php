@@ -143,6 +143,9 @@ class CenaFriendController
      */
     public function postInfo( $parameter )
     {
+        /** @var $model \friends\model\Friends */
+        $model = $this->em->getModel( 'friends\model\Friends' );
+        $model->setupFormForListings();
         $id = $parameter[ 'id' ];
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
         if( $this->front->request->getPost( '_method' ) == 'save' )
