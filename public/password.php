@@ -37,19 +37,23 @@ if( $passwords = $view->get( 'passwords' ) )
 {
     /** @var $tags \WScore\Html\Tags */
     /** @var $table \WScore\Html\Tags */
+    $md5  = $view->get( 'md5' );
     $tags = Core::get( '\WScore\Html\Tags' );
     $table = $tags->table()->_class( 'table' )->contain_(
         $tags->tr(
             $tags->th( '#' ),
-            $tags->th( 'generated password' )
+            $tags->th( 'generated password' ),
+            $tags->th( 'crypt/md5' )
         )
     );
     $counter = 0;
-    foreach( $passwords as $pwd ) {
+    foreach( $passwords as $key => $pwd ) {
+
         $table->contain_(
             $tags->tr(
                 $tags->td( ++$counter ),
-                $tags->td( $tags->span( $pwd )->style( 'font-family: courier') )
+                $tags->td( $tags->span( $pwd )->style( 'font-family: courier') ),
+                $tags->td( $tags->span( $md5[$key]['crypt']. '<br />'.$md5[$key]['md5'] )->style( 'font-family: courier') )
             )
         );
     }

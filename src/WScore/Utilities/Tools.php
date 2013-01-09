@@ -46,6 +46,11 @@ class Tools
      */
     public static function password( $length=12, $all=false )
     {
+        if( $length < 5 ) return static::password4( $length, $all );
+        return static::password12( $length, $all );
+    }
+    public static function password12( $length=12, $all=false )
+    {
         $vows   = 'aiue';
         $number = '23456789';
         $letter = 'bcdfghjkmnpqrstvwxyz';
@@ -60,7 +65,7 @@ class Tools
         };
         // first, make password only with numbers and symbols.
         $password  = '';
-        $password .= $select( $number, mt_rand( 2, 3 ) );
+        $password .= $select( $number, mt_rand( 1, 3 ) );
         if( $all ) { // use symbols.
             $password .= $select( $symbol, mt_rand( 1, 2 ) );
         }
@@ -78,6 +83,18 @@ class Tools
         // put together and shuffle the password.
         $password = $password . $lower . $upper;
         $password = str_shuffle( $password );
+        return $password;
+    }
+    public static function password4( $length=4, $all=false )
+    {
+        $letter = '23456789aiuebcdfghjkmnpqrstvwxyz';
+        $symbol = '-_~!@#$%^&*()_+=';
+        if( $all ) $letter .= $symbol;
+        $password = '';
+        for( $i = 0; $i < $length; $i ++ ) {
+            $char =  $letter[ mt_rand( 0, strlen( $letter ) - 1 ) ];
+            $password .= (mt_rand(0,2)>1) ? strtoupper( $char ) : strtolower( $char );
+        }
         return $password;
     }
 }
