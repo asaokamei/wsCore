@@ -170,11 +170,12 @@ class cenaFriendsView
 
     /**
      * @param \WScore\DataMapper\Entity_Interface $entity
-     * @param string[] $groups
+     * @param \WScore\DataMapper\Entity_Collection $groups
      */
     public function showForm_detail( $entity, $groups )
     {
         // get groups
+        $groups = $groups->pack( array( 'group_code', 'name' ) );
         $myGroup = $entity->relation( 'groups' );
         $selectedGroup = array();
         if( !empty( $myGroup ) )

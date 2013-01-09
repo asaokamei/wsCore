@@ -162,7 +162,6 @@ class CenaFriendController
     {
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
         $groups = $this->em->fetch( 'friends\model\Group' );
-        $groups = $groups->pack( array( 'group_code', 'name' ) );
         $this->em->relation( $friend, 'groups' );
         $this->view->showForm_detail( $friend, $groups );
         return $this->view;
@@ -191,7 +190,7 @@ class CenaFriendController
             header( 'Location: ' . $jump );
             exit;
         }
-        $groups = $groups->pack( array( 'group_code', 'name' ) );
+        $groups = $this->em->fetch( 'friends\model\Group' );
         $this->em->relation( $friend, 'groups' );
         $this->view->showForm_detail( $friend, $groups );
         return $this->view;
