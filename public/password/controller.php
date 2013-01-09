@@ -84,7 +84,17 @@ class controller
         if( $input[ 'length' ] < 5 ) $input[ 'length' ] = $this->input[ 'length' ];
         $this->input = array_merge( $this->input, $input );
         $this->makeForm( $view );
-        $view->set( 'passwords', $this->generate_password( $input ) );
+        $passwords = $this->generate_password( $input );
+        $view->set( 'passwords', $passwords );
+
+        $md5 = array();
+        foreach( $passwords as $pass ) {
+            $md5[] = array(
+                'crypt' => crypt( $pass, \WScore\Utilities\Tools::password(2) ),
+                'md5'   => md5( $pass )
+            );
+        }
+        $view->set( 'md5', $md5 );
     }
 
     /**
