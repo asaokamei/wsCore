@@ -40,12 +40,14 @@ class Role_Cenatar extends Role_Selectable
 
     /**
      * @param \WScore\Html\Tags $html
+     * @param string            $type
+     * @return void
      */
-    protected function populateFormName( $html ) 
+    protected function populateFormName( $html, $type='prop' ) 
     {
         if( ! $html instanceof \WScore\Html\Form ) return;
         $cenaId = $this->entity->_get_cenaId();
-        $format = $this->cena->getFormName( $cenaId );
+        $format = $this->cena->getFormName( $cenaId, $type );
         $makeCena = function( $form ) use( $format ) {
             /** @var $tags \WScore\Html\Form */
             if( isset( $form->attributes[ 'name' ] ) ) {
@@ -77,7 +79,7 @@ class Role_Cenatar extends Role_Selectable
             $entity[ $entity->_get_id_name() ] = $cenaId;
         }
         $html = parent::popLinkSelect( $name, $lists, $display );
-        $this->populateFormName( $html );
+        $this->populateFormName( $html, 'link' );
         return $html;
     }
 }
