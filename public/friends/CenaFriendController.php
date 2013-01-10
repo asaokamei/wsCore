@@ -177,8 +177,8 @@ class CenaFriendController
 
         // update groups
         // group entities without registering to em.
-        $groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
-        $this->em->relation( $friend, 'groups' )->replace( $groups );
+        //$groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
+        //$this->em->relation( $friend, 'groups' )->replace( $groups );
 
         // update friends info
         $loadable = $this->role->applyCenaLoad( $friend );
