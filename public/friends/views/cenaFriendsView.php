@@ -178,14 +178,7 @@ class cenaFriendsView
         $entity = $this->role->applyCenatar( $entity );
         $entity->setHtmlType( 'form' );
         // get groups
-        $groups = $groups->pack( array( 'group_code', 'name' ) );
-        $myGroup = $entity->retrieve()->relation( 'groups' );
-        $selectedGroup = array();
-        if( !empty( $myGroup ) )
-        foreach( $myGroup as $grp ) {
-            $selectedGroup[] = $grp->group_code;
-        }
-        $select = $this->tags->select( 'groups', $groups, $selectedGroup, array( 'multiple'=>true ) );
+        $select = $entity->popLinkSelect( 'group', $groups, 'name' );
         $selGroup = $this->tags->dl(
             $this->tags->dt( 'group list' ),
             $this->tags->dd( $select )
