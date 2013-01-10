@@ -173,6 +173,12 @@ class CenaFriendController
      */
     protected function saveInfo( $id )
     {
+        $cena = $this->cena;
+        /** @var $cena \Closure */
+        $cena = $cena();
+        /** @var $cena \WScore\DataMapper\CenaManager */
+        $cena->useModel( 'friends\model\Friends' );
+        $cena->useModel( 'friends\model\Group' );
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
 
         // update groups
@@ -183,6 +189,7 @@ class CenaFriendController
         // update friends info
         $loadable = $this->role->applyCenaLoad( $friend );
         $loadable->loadData();
+        $loadable->loadLink( 'replace' );
         if( $loadable->validate() )
         {
             $this->em->save();
