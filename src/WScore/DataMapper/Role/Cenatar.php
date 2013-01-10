@@ -73,13 +73,20 @@ class Role_Cenatar extends Role_Selectable
      */
     public function popLinkSelect( $name, $lists, $display )
     {
+        $links = array();
         foreach( $lists as $entity ) {
             /** @var $entity Entity_Interface */
             $cenaId = $this->cena->cena . $this->cena->connector . $entity->_get_cenaId();
-            $entity[ $entity->_get_id_name() ] = $cenaId;
+            $links[] = array( $cenaId, $entity[ $display ] );
         }
-        $html = parent::popLinkSelect( $name, $lists, $display );
-        $this->populateFormName( $html, 'link' );
-        return $html;
+        $targets = $this->retrieve()->relation( $name );
+        $selected = array();
+        if( !empty( $targets ) )
+            foreach( $targets as $tgt ) {
+                $selected[] = $this->cena->cena . $this->cena->connector . $tgt->_get_cenaId();
+            }
+        $select = $this->selector->form()->select( 'groups', $links, $selected, array( 'multiple'=>true ) );
+        $this->populateFormName( $select, 'link' );
+        return $select;
     }
 }
