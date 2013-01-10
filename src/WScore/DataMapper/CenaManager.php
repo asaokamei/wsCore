@@ -70,6 +70,24 @@ class CenaManager
     }
 
     /**
+     * @param string $cenaId
+     * @return null|Entity_Interface|Entity_Interface[]
+     */
+    public function getCenaEntity( $cenaId )
+    {
+        if( is_array( $cenaId ) ) {
+            $entities = array();
+            foreach( $cenaId as $cId ) {
+                $entities[] = $this->getCenaEntity( $cId );
+            }
+            return $entities;
+        }
+        $list = explode( $this->connector, $cenaId );
+        if( $list[0] == $this->cena ) array_shift( $list );
+        if( count( $list ) < 3 ) return null;
+        return $this->getEntity( $list[0], $list[1], $list[2] );
+    }
+    /**
      * @param string $model
      * @param string $type
      * @param string $id
