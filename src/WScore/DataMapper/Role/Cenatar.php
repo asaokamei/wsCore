@@ -34,19 +34,50 @@ class Role_Cenatar extends Role_Selectable
     public function popHtml( $name, $html_type=null )
     {
         $html = parent::popHtml( $name, $html_type );
-        if( $html instanceof \WScore\Html\Form ) 
-        {
-            $cenaId = $this->entity->_get_cenaId();
-            $format = $this->cena->getFormName( $cenaId );
-            $makeCena = function( $form ) use( $format ) {
-                /** @var $tags \WScore\Html\Form */
-                if( isset( $form->attributes[ 'name' ] ) ) {
-                    $form->attributes[ 'name' ] = $format . '[' . $form->attributes[ 'name' ] . ']';
-                }
-            };
-            $html->walk( $makeCena, 'name' );
-        }
+        $this->populateFormName( $html );
         return $html;
     }
 
+    /**
+     * @param \WScore\Html\Tags $html
+     */
+    protected function populateFormName( $html ) 
+    {
+        if( ! $html instanceof \WScore\Html\Form ) return;
+        $cenaId = $this->entity->_get_cenaId();
+        $format = $this->cena->getFormName( $cenaId );
+        $makeCena = function( $form ) use( $format ) {
+            /** @var $tags \WScore\Html\Form */
+            if( isset( $form->attributes[ 'name' ] ) ) {
+                $name = $form->attributes[ 'name' ];
+                $post = '';
+                if( substr( $name, -2 ) == '[]' ) {
+                    $name = substr( $name, 0, -2 );
+                    $post = '[]';
+                }
+                $form->attributes[ 'name' ] = $format . '[' . $name . ']' . $post;
+            }
+        };
+        $html->walk( $makeCena, 'name' );
+    }
+    /**
+     * creates a select box for a relation (many-to-many).
+     * todo: refactor this method.
+     *
+     * @param string                               $name
+     * @param \WScore\DataMapper\Entity_Collection $lists
+     * @param string                               $display
+     * @return \WScore\Html\Form|\WScore\Html\Tags
+     */
+    public function popLinkSelect( $name, $lists, $display )
+    {
+        foreach( $lists as $entity ) {
+            /** @var $entity Entity_Interface */
+            $cenaId = $this->cena->cena . $this->cena->connector . $entity->_get_cenaId();
+            $entity[ $entity->_get_id_name() ] = $cenaId;
+        }
+        $html = parent::popLinkSelect( $name, $lists, $display );
+        $this->populateFormName( $html );
+        return $html;
+    }
 }
