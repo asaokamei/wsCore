@@ -178,7 +178,7 @@ class cenaFriendsView
         $entity = $this->role->applyCenatar( $entity );
         $entity->setHtmlType( 'form' );
         // get groups
-        $select = $entity->popLinkSelect( 'group', $groups, 'name' );
+        $select = $entity->popLinkSelect( 'groups', $groups, 'name' );
         $selGroup = $this->tags->dl(
             $this->tags->dt( 'group list' ),
             $this->tags->dd( $select )
