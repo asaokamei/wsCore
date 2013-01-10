@@ -42,7 +42,7 @@ class Selector
     public $attributes      = array( 'class' => 'FormSelector' );
 
     /** @var callable|null */
-    public $htmlFilter      = NULL;
+    public $htmlFilter      = null;
 
     /** @var Form */
     protected $form;
@@ -85,6 +85,12 @@ class Selector
         };
     }
 
+    /**
+     * @return \WScore\Html\Form
+     */
+    public function form() {
+        return $this->form;
+    }
     /**
      * set up Selector. make sure to overload this function. 
      *
@@ -153,7 +159,7 @@ class Selector
      * @param null $value
      * @return mixed
      */
-    public function popHtml( $type, $value=NULL )
+    public function popHtml( $type, $value=null )
     {
         $type = \strtolower( $type );
         $type = ( isset( static::$types[ $type ] ) ) ? ucwords( static::$types[ $type ] ) : 'Html';
@@ -166,7 +172,7 @@ class Selector
      * @param $value
      * @return mixed
      */
-    public function show( $type, $value=NULL ) {
+    public function show( $type, $value=null ) {
         return $this->popHtml( $type, $value );
     }
 
@@ -242,7 +248,7 @@ class Selector
                 return $item[1];
             }
         }
-        return FALSE;
+        return false;
     }
     // +----------------------------------------------------------------------+
     /**
@@ -304,7 +310,7 @@ class Selector
      */
     public function formSelect( $value ) {
         $form = $this->form;
-        if( $this->style == 'mult_select' ) $form->multiple = TRUE;
+        if( $this->style == 'mult_select' ) $form->multiple = true;
         return $form->select( $this->name, $this->item_data, $value, $this->attributes );
     }
 
@@ -361,10 +367,10 @@ class Selector
             $filter = explode( ':', $rule, 2 );
             array_walk( $filter, function( &$v ) { $v = trim( $v ); } );
             if( isset( $filter[1] ) ) {
-                $filter_array[ $filter[0] ] = ( $filter[1]=='FALSE' )? FALSE: $filter[1];
+                $filter_array[ $filter[0] ] = ( $filter[1]=='FALSE' )? false: $filter[1];
             }
             else {
-                $filter_array[ $filter[0] ] = TRUE;
+                $filter_array[ $filter[0] ] = true;
             }
         }
         return $filter_array;
@@ -376,7 +382,7 @@ class Selector
      * @param mixed $default
      * @return mixed
      */
-    public function arrGet( $arr, $key, $default=NULL ) {
+    public function arrGet( $arr, $key, $default=null ) {
         if( array_key_exists( $key, $arr ) ) {
             return $arr[ $key ];
         }
