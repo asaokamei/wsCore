@@ -184,14 +184,14 @@ class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
     //  for ArrayAccess and Iterator. 
     // +----------------------------------------------------------------------+
     /**
-     * @return mixed
+     * @return Entity_Interface
      */
     public function getNext() {
         return next( $this->_elements );
     }
 
     /**
-     * @return mixed
+     * @return Entity_Interface
      */
     public function first() {
         return reset( $this->_elements );
@@ -200,7 +200,7 @@ class Entity_Collection implements \ArrayAccess, \Iterator, \Countable
     /**
      * Return the current element
      *
-     * @return mixed Can return any type.
+     * @return Entity_Interface   Can return any type.
      */
     public function current() {
         return current( $this->_elements );
