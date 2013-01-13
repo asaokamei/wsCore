@@ -159,6 +159,7 @@ class CenaFriendController
     {
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
         $this->em->relation( $friend, 'contacts' )->get();
+        // add new contacts for each contact type. 
         foreach( \friends\model\Contacts::$types as $type ) {
             $contact = $this->em->newEntity( '\friends\model\Contacts' );
             $contact[ 'type' ] = $type[0];

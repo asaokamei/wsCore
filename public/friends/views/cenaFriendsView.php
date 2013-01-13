@@ -146,9 +146,6 @@ class cenaFriendsView
         foreach( Contacts::$types as $type )
         {
             $contents[ ] = '<hr>';
-            $contents[ ] = $tags->a( 'add new' )
-                ->href( $appUrl.'contact/' . $id . '/type/' . $type[0] )
-                ->_class( 'btn btn-mini btn-info' )->style( 'float:right' );
             $contents[ ] = $tags->h4( $type[1] );
             if( isset( $roleContacts[ $type[0] ] ) )
             {
