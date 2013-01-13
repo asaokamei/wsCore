@@ -174,16 +174,20 @@ class cenaFriendsView
      */
     public function showForm_detail( $entity, $groups )
     {
+        // -----------------------------
         // use Cenatar to generate forms.
+        $contacts = $entity->relation( 'contacts' );
         $entity = $this->role->applyCenatar( $entity );
         $entity->setHtmlType( 'form' );
+        // -----------------------------
         // get groups
         $select = $entity->popLinkSelect( 'groups', $groups, 'name' );
         $selGroup = $this->tags->dl(
             $this->tags->dt( 'group list' ),
             $this->tags->dd( $select )
         )->_class( 'dl-horizontal' );
-        
+
+        // -----------------------------
         // form basic info
         $this->set( 'title', $entity->popHtml( 'name', 'html' ) );
         $back = $this->view->get( 'appUrl' ) . $entity->getId();
@@ -195,8 +199,46 @@ class cenaFriendsView
             $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' ),
             $this->tags->input( 'hidden', '_method', 'save' )
         );
-        $contents    = array();
-        $contents[ ] = $form;
+        // -----------------------------
+        // form contact info
+        // organize contacts based on types
+        $roleContacts = array();
+        if( !empty( $contacts ) )
+            foreach( $contacts as $contact ) {
+                $type = $contact[ 'type' ];
+                $role = $this->role->applyCenatar( $contact );
+                $role->setHtmlType( 'form' );
+                $roleContacts[ $type ][] = $role;
+            }
+        // show contact for each type
+        foreach( Contacts::$types as $type )
+        {
+            $form->contain_( '<hr>',
+                $this->tags->h4( $type[1] )
+            );
+            if( isset( $roleContacts[ $type[0] ] ) )
+            {
+                $dl = $this->tags->dl()->_class( 'dl-horizontal' );
+                /** @var $role \WScore\DataMapper\Role_Selectable */
+                foreach( $roleContacts[ $type[0] ] as $role )
+                {
+                    $dl->contain_(
+                        $this->tags->dt( $role->popHtml( 'label' ) ),
+                        $this->tags->dd( $role->popHtml( 'info' ) )
+                    );
+                }
+                $form->contain_( $dl );
+            }
+            $form->contain_( $this->tags->div()->style( 'clear:both' ) );
+        }
+
+        $form->contain_(
+            $this->view->bootstrapButton( 'submit', 'update info', 'btn btn-primary' ),
+            $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' ),
+            $this->tags->input( 'hidden', '_method', 'save' )
+        );
+        
+        $contents    = array( $form );
         $this->set( 'content', $contents );
     }
 
