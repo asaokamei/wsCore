@@ -62,6 +62,28 @@ class Role_Cenatar extends Role_Selectable
         };
         $html->walk( $makeCena, 'name' );
     }
+
+    /**
+     * creates a hidden tag for a relation (HasOne or HasRefs).
+     * 
+     * @param string $name
+     * @return \WScore\Html\Form
+     */
+    public function popLinkHidden( $name )
+    {
+        $targets  = $this->retrieve()->relation( $name );
+        $hideDivs = $this->selector->form()->div();
+        if( !empty( $targets ) ) {
+            foreach( $targets as $target ) {
+                $cenaId = $this->cena->cena . $this->cena->connector . $target->_get_cenaId();
+                $tag = $this->selector->form()->input( 'hidden', $name, $cenaId )->multipleName();
+                $this->populateFormName( $tag, 'link' );
+                $hideDivs->contain_( $tag );
+            }
+        }
+        return $hideDivs;
+    }
+    
     /**
      * creates a select box for a relation (many-to-many).
      * todo: refactor this method.
