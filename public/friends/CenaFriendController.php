@@ -18,7 +18,7 @@ class CenaFriendController
     /** @var callable */
     protected $pager;
     
-    /** @var callable */
+    /** @var \WScore\DataMapper\CenaManager */
     protected $cena;
 
     /**
@@ -26,12 +26,12 @@ class CenaFriendController
      * @param \friends\views\cenaFriendsView     $view
      * @param \WScore\DataMapper\Role            $role
      * @param \Closure                           $pager
-     * @param \Closure                           $cena
+     * @param \WScore\DataMapper\CenaManager                           $cena
      * @DimInjection get EntityManager
      * @DimInjection get \friends\views\cenaFriendsView
      * @DimInjection get \WScore\DataMapper\Role
      * @DimInjection get Raw \wsModule\Alt\DbAccess\Paginate
-     * @DimInjection GET Raw \WScore\DataMapper\CenaManager
+     * @DimInjection GET \WScore\DataMapper\CenaManager
      */
     public function __construct( $em, $view, $role, $pager, $cena )
     {
@@ -97,9 +97,6 @@ class CenaFriendController
         if( $method == 'save' ) 
         {
             $cena = $this->cena;
-            /** @var $cena \Closure */
-            $cena = $cena();
-            /** @var $cena \WScore\DataMapper\CenaManager */
             $cena->useModel( 'friends\model\Friends' );
             $cena->serveEntities();
             $this->em->save();
@@ -174,9 +171,6 @@ class CenaFriendController
     protected function saveInfo( $id )
     {
         $cena = $this->cena;
-        /** @var $cena \Closure */
-        $cena = $cena();
-        /** @var $cena \WScore\DataMapper\CenaManager */
         $cena->useModel( 'friends\model\Friends' );
         $cena->useModel( 'friends\model\Group' );
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
