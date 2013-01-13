@@ -362,7 +362,11 @@ class cenaFriendsView
             $row->setHtmlType( $type );
 
             /** @var $task \task\entity\task */
-            $name   = $this->tags->a( $row->popHtml( 'name' ) )->href( $appUrl . $id )->style( 'font-weight:bold' );
+            if( $type == 'form' ) {
+                $name   = $this->tags->span( $row->popHtml( 'name' ) )->style( 'font-weight:bold' );
+            } else {
+                $name   = $this->tags->a( $row->popHtml( 'name' ) )->href( $appUrl . $id )->style( 'font-weight:bold' );
+            }
             $star   = $row->popHtml( 'star' );
             $button = $this->tags->a( '>>' )->href( $appUrl . $id )->_class( 'btn btn-small btn' );
             $table->contain_(
