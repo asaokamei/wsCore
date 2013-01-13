@@ -203,6 +203,7 @@ class cenaFriendsView
         if( !empty( $contacts ) )
             foreach( $contacts as $contact ) {
                 $type = $contact[ 'type' ];
+                /** @var $role \WScore\DataMapper\Role_Cenatar */
                 $role = $this->role->applyCenatar( $contact );
                 $role->setHtmlType( 'form' );
                 $roleContacts[ $type ][] = $role;
@@ -216,12 +217,14 @@ class cenaFriendsView
             if( isset( $roleContacts[ $type[0] ] ) )
             {
                 $dl = $this->tags->dl()->_class( 'dl-horizontal' );
-                /** @var $role \WScore\DataMapper\Role_Selectable */
                 foreach( $roleContacts[ $type[0] ] as $role )
                 {
                     $dl->contain_(
                         $this->tags->dt( $role->popHtml( 'label' ) ),
-                        $this->tags->dd( $role->popHtml( 'info' ) )
+                        $this->tags->dd( 
+                            $role->popHtml( 'info' ), 
+                            $role->popLinkHidden( 'friend' ) 
+                        )
                     );
                 }
                 $form->contain_( $dl );

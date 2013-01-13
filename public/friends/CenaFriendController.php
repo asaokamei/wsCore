@@ -158,12 +158,15 @@ class CenaFriendController
     protected function editInfo( $id )
     {
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
-        $this->em->relation( $friend, 'contacts' )->get();
+        $this->em->relation( $friend, 'contacts' );
         // add new contacts for each contact type. 
         foreach( \friends\model\Contacts::$types as $type ) {
             $contact = $this->em->newEntity( '\friends\model\Contacts' );
             $contact[ 'type' ] = $type[0];
             $this->em->relation( $friend, 'contacts' )->set( $contact );
+        }
+        foreach( $this->em->relation( $friend, 'contacts' )->get() as $contact ) {
+            $this->em->relation( $contact, 'friend' )->set( $friend );
         }
         $groups = $this->em->fetch( 'friends\model\Group' );
         $this->em->relation( $friend, 'groups' );
@@ -180,17 +183,19 @@ class CenaFriendController
         $cena = $this->cena;
         $cena->useModel( 'friends\model\Friends' );
         $cena->useModel( 'friends\model\Group' );
-        $friend = $this->em->getEntity( 'friends\model\Friends', $id );
+        $cena->useModel( 'friends\model\Contacts' );
+        $cena->serveEntities();
+        $this->em->save();
 
+        $jump = $this->view->get( 'appUrl' ) . $id;
+        header( 'Location: ' . $jump );
+        exit;
         // update groups
         // group entities without registering to em.
         //$groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
         //$this->em->relation( $friend, 'groups' )->replace( $groups );
 
         // update friends info
-        $loadable = $this->role->applyCenaLoad( $friend );
-        $loadable->loadData();
-        $loadable->loadLink( 'replace' );
         if( $loadable->validate() )
         {
             $this->em->save();
