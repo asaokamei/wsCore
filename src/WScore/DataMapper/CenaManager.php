@@ -51,7 +51,7 @@ class CenaManager
     {
         if( empty( $data ) ) $data = $_POST;
         $data = $data[ $this->cena ];
-        $list = array();
+        $list = $this->em->emptyCollection();
         if( empty( $data ) ) return $list;
         foreach( $data as $model => $types ) {
             foreach( $types as $type => $ids ) {
@@ -62,7 +62,12 @@ class CenaManager
                     $role   = $this->role->applyLoadable( $entity );
                     $role->loadData( $info[ 'prop' ] );
                     // TODO: implement relation. 
-                    $list[] = $entity;
+                    if( !empty( $data[ 'link' ] ) )
+                        foreach( $data[ 'link' ] as $name => $link ) {
+                            $entities = $this->getCenaEntity( $link );
+                            $this->em->relation( $entity, $name )->set( $entities );
+                        }
+                    $list->add( $entity );
                 }
             }
         }
