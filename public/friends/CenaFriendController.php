@@ -158,6 +158,12 @@ class CenaFriendController
     protected function editInfo( $id )
     {
         $friend = $this->em->getEntity( 'friends\model\Friends', $id );
+        $this->em->relation( $friend, 'contacts' )->get();
+        foreach( \friends\model\Contacts::$types as $type ) {
+            $contact = $this->em->newEntity( '\friends\model\Contacts' );
+            $contact[ 'type' ] = $type[0];
+            $this->em->relation( $friend, 'contacts' )->set( $contact );
+        }
         $groups = $this->em->fetch( 'friends\model\Group' );
         $this->em->relation( $friend, 'groups' );
         $this->view->showForm_detail( $friend, $groups );
