@@ -220,10 +220,11 @@ class cenaFriendsView
                 foreach( $roleContacts[ $type[0] ] as $role )
                 {
                     $dl->contain_(
-                        $this->tags->dt( $role->popHtml( 'label' ) ),
+                        $this->tags->dt( $role->popHtml( 'type' )->_class( 'span1' ) ),
                         $this->tags->dd( 
-                            $role->popHtml( 'info' ), 
-                            $role->popLinkHidden( 'friend' ) 
+                            $role->popHtml( 'label' )->_class( 'span1' ),
+                            $role->popHtml( 'info'  )->_class( 'span3' ), 
+                            $role->popLinkHidden( 'friend' )
                         )
                     );
                 }
