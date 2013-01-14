@@ -57,6 +57,7 @@ class CenaManager
      */
     public function serveEntities()
     {
+        $valid = true;
         if( empty( $this->source ) ) $this->source = $_POST;
         $data = $this->source[ $this->cena ];
         $list = $this->em->emptyCollection();
@@ -71,6 +72,7 @@ class CenaManager
                     foreach( $info as $method => $value ) {
                         $role->$method( $value );
                     }
+                    $valid &= $role->validate();
                     $list->add( $entity );
                 }
             }
