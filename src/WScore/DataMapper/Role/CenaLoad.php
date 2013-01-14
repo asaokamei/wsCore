@@ -9,16 +9,14 @@ class Role_CenaLoad extends Role_Loadable
     //  constructor
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DataMapper\EntityManager    $em
-     * @param \WScore\Validator\DataIO            $dio
      * @param \WScore\DataMapper\CenaManager      $cena
-     * @DimInjection Get EntityManager
-     * @DimInjection Get \WScore\Validator\DataIO
+     * @param \WScore\Validator\DataIO            $dio
      * @DimInjection Get \WScore\DataMapper\CenaManager
+     * @DimInjection Get \WScore\Validator\DataIO
      */
-    public function __construct( $em, $dio, $cena )
+    public function __construct( $cena, $dio )
     {
-        $this->em = $em;
+        $this->em = $cena->em();
         $this->dio = $dio;
         $this->cena = $cena;
     }
