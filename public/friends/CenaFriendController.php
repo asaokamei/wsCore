@@ -211,63 +211,6 @@ class CenaFriendController
         return $this->view;
     }
     // +----------------------------------------------------------------------+
-    //  about contacts
-    // +----------------------------------------------------------------------+
-    public function getContactMod( $parameter )
-    {
-        $id   = $parameter[ 'id' ];
-        $cid  = $parameter[ 'cid' ];
-        $friend  = $this->em->getEntity( 'friends\model\Friends', $id );
-        $contact = $this->em->getEntity( 'friends\model\Contacts', $cid );
-        if( $this->front->request->isPost() )
-        {
-            $loadable = $this->role->applyCenaLoad( $contact );
-            $loadable->loadData();
-            if( $loadable->validate() )
-            {
-                $active = $this->role->applyActive( $contact );
-                $active->relation( 'friend' )->set( $friend );
-                $active->save();
-                $jump = $this->view->get( 'appUrl' ) . $id;
-                header( 'Location: ' . $jump );
-                exit;
-            }
-        }
-        $this->view->showContact_form( $friend, $contact );
-        return $this->view;
-    }
-    /**
-     * @param $parameter
-     * @return views\cenaFriendsView
-     */
-    public function getContactNew( $parameter )
-    {
-        $id   = $parameter[ 'id' ];
-        $type = $parameter[ 'type' ];
-        /** @var $friend  \friends\entity\friend */
-        /** @var $contact \friends\entity\contact */
-        $friend  = $this->em->getEntity( 'friends\model\Friends', $id );
-        $contact = $this->em->newEntity( 'friends\model\Contacts' );
-        $contact->type = $type;
-        /** @var $contact \friends\entity\contact */
-        if( $this->front->request->isPost() ) 
-        {
-            $loadable = $this->role->applyCenaLoad( $contact );
-            $loadable->loadData();
-            if( $loadable->validate() ) 
-            {
-                $active = $this->role->applyActive( $loadable );
-                $active->relation( 'friend' )->set( $friend );
-                $active->save();
-                $jump = $this->view->get( 'appUrl' ) . $id;
-                header( 'Location: ' . $jump );
-                exit;
-            }
-        }
-        $this->view->showContact_form( $friend, $contact );
-        return $this->view;
-    }
-    // +----------------------------------------------------------------------+
     //  about Groups
     // +----------------------------------------------------------------------+
     public function getGroup( $parameter )

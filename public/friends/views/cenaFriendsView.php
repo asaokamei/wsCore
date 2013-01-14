@@ -153,10 +153,9 @@ class cenaFriendsView
                 /** @var $role \WScore\DataMapper\Role_Selectable */
                 foreach( $roleContacts[ $type[0] ] as $role )
                 {
-                    $link = $appUrl . 'contact/' . $id . '/' . $role->getId();
                     $dl->contain_(
                         $this->tags->dt( $role->popHtml( 'label' ) ),
-                        $this->tags->dd( $this->tags->a( $role->popHtml( 'info' ) )->href( $link ) )
+                        $this->tags->dd( $role->popHtml( 'info' ) )
                     );
                 }
             }
@@ -243,37 +242,6 @@ class cenaFriendsView
         $this->set( 'content', $contents );
     }
 
-    // +----------------------------------------------------------------------+
-    //  about contacts
-    // +----------------------------------------------------------------------+
-
-    /**
-     * @param \friends\entity\friend $friend
-     * @param \friends\entity\contact $contact
-     */
-    public function showContact_form( $friend, $contact )
-    {
-        $friend_id = $friend->friend_id;
-        $back = $this->view->get( 'appUrl' ) . $friend_id;
-        $contact_type = $contact->type;
-        $friend  = $this->role->applyCenatar( $friend );
-        $contact = $this->role->applyCenatar( $contact );
-        $contact->setHtmlType( 'form' );
-        $this->set( 'title', $friend->popHtml( 'name' ) );
-        $contents    = array();
-        $contents[ ] = $this->lists( $friend, array( 'gender', 'birthday', 'star' ) );
-        $contents[ ] = $this->tags->div()->style( 'clear:both' );
-        $contents[ ] = $this->tags->h4( 'contact info for: ', $contact->popHtml( 'type', 'html' ) );
-        
-        $form = $this->tags->form()->action('')->method( 'post' );
-        $form->contain_(
-            $this->dl( $contact, array( 'type', 'label', 'info', ) ),
-            $this->view->bootstrapButton( 'submit', 'save contact', 'btn btn-primary' ),
-            $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' )
-        );
-        $contents[ ] = $form;
-        $this->set( 'content', $contents );
-    }
     // +----------------------------------------------------------------------+
     //  about Groups
     // +----------------------------------------------------------------------+
