@@ -187,25 +187,21 @@ class CenaFriendController
         $cena->useSource( $_POST );
         $cena->cleanUpIfEmpty( 'Contacts', 'info' );
         $cena->serveEntities();
-        $this->em->save();
-
-        $jump = $this->view->get( 'appUrl' ) . $id;
-        header( 'Location: ' . $jump );
-        exit;
-        // update groups
-        // group entities without registering to em.
-        //$groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
-        //$this->em->relation( $friend, 'groups' )->replace( $groups );
-
-        // update friends info
-        if( $loadable->validate() )
-        {
+        
+        if( $cena->validate() ) {
             $this->em->save();
             $jump = $this->view->get( 'appUrl' ) . $id;
             header( 'Location: ' . $jump );
             exit;
         }
+        // update groups
+        // group entities without registering to em.
+        //$groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
+        //$this->em->relation( $friend, 'groups' )->replace( $groups );
         $groups = $this->em->fetch( 'friends\model\Group' );
+        // TODO: fetch from collection in em. 
+        $friend = $this->em->fetch( 'friends\model\Friends', $id );
+        $friend = $friend->first();
         $this->em->relation( $friend, 'groups' );
         $this->view->showForm_detail( $friend, $groups );
         return $this->view;
