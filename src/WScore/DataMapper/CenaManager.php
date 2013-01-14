@@ -67,14 +67,10 @@ class CenaManager
                 {
                     // now create entities... 
                     $entity = $this->getEntity( $model, $type, $id );
-                    $role   = $this->role->applyLoadable( $entity );
-                    $role->loadData( $info[ 'prop' ] );
-                    // setup relation. 
-                    if( isset( $info[ 'link' ] ) )
-                        foreach( $info[ 'link' ] as $name => $link ) {
-                            $entities = $this->getCenaEntity( $link );
-                            $this->em->relation( $entity, $name )->set( $entities );
-                        }
+                    $role   = $this->role->applyCenaLoad( $entity );
+                    foreach( $info as $method => $value ) {
+                        $role->$method( $value );
+                    }
                     $list->add( $entity );
                 }
             }
