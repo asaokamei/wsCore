@@ -16,6 +16,13 @@ class Role
     }
 
     /**
+     * @return \WScore\DataMapper\EntityManager
+     */
+    public function em() {
+        return $this->em;
+    }
+
+    /**
      * @param \WScore\DataMapper\Entity_Interface|\WScore\DataMapper\Role_Interface $entity
      * @param string                                                            $role
      * @throws \RuntimeException
