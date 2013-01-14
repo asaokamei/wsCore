@@ -19,6 +19,13 @@ class Role_CenaLoad extends Role_Loadable
         $this->dio = $dio;
         $this->cena = $cena;
     }
+
+    /**
+     * ignore when undefined method is called. 
+     */
+    public function __call( $method, $args ) {
+        return;
+    }
     
     /**
      * @param null|string $name
@@ -33,6 +40,12 @@ class Role_CenaLoad extends Role_Loadable
         parent::loadData( $name, $data[ 'prop' ] );
         return $this;
     }
+
+    /**
+     * @param string $method
+     * @param array  $data
+     * @return Role_CenaLoad
+     */
     public function loadLink( $method='set', $data=array() )
     {
         if( is_array(  $method ) ) $data = $method;
@@ -44,5 +57,37 @@ class Role_CenaLoad extends Role_Loadable
             $this->em->relation( $this->entity, $name )->$method( $entities );
         }
         return $this;
+    }
+
+    /**
+     * sets property. 
+     * 
+     * @param array $data
+     */
+    public function prop( $data )
+    {
+        parent::loadData( $data );
+    }
+
+    /**
+     * sets relation. 
+     * $data[ $name ] => [ targetEntity, targetEntity2, ... ]
+     * 
+     * @param array $data
+     */
+    public function links( $data )
+    {
+        foreach( $data as $name => $link ) {
+            $entities = $this->cena->getCenaEntity( $link );
+            $this->em->relation( $this->entity, $name )->set( $entities );
+        }
+    }
+
+    /**
+     * deletes an entity.
+     */
+    public function delete()
+    {
+        $this->em->delete( $this->entity );
     }
 }
