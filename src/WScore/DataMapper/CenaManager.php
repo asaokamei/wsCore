@@ -15,6 +15,8 @@ class CenaManager
     
     /** @var array     $models[ $modelName ] = $model */
     protected $models = array();
+    
+    protected $source = array();
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DataMapper\EntityManager    $em
@@ -40,17 +42,23 @@ class CenaManager
         }
         $this->models[ $modelName ] = $model;
     }
+
+    /**
+     * @param array $data
+     */
+    public function useSource( $data ) {
+        $this->source = $data;
+    }
     // +----------------------------------------------------------------------+
     //  managing entities with cena
     // +----------------------------------------------------------------------+
     /**
-     * @param array $data
-     * @return Entity_Interface[]
+     * @return Entity_Interface[]|Entity_Collection
      */
-    public function serveEntities( $data=array() )
+    public function serveEntities()
     {
-        if( empty( $data ) ) $data = $_POST;
-        $data = $data[ $this->cena ];
+        if( empty( $this->source ) ) $this->source = $_POST;
+        $data = $this->source[ $this->cena ];
         $list = $this->em->emptyCollection();
         if( empty( $data ) ) return $list;
         foreach( $data as $model => $types ) {
@@ -61,7 +69,7 @@ class CenaManager
                     $entity = $this->getEntity( $model, $type, $id );
                     $role   = $this->role->applyLoadable( $entity );
                     $role->loadData( $info[ 'prop' ] );
-                    // TODO: implement relation. 
+                    // setup relation. 
                     if( isset( $info[ 'link' ] ) )
                         foreach( $info[ 'link' ] as $name => $link ) {
                             $entities = $this->getCenaEntity( $link );
@@ -92,6 +100,7 @@ class CenaManager
         if( count( $list ) < 3 ) return null;
         return $this->getEntity( $list[0], $list[1], $list[2] );
     }
+    
     /**
      * @param string $model
      * @param string $type
@@ -125,7 +134,6 @@ class CenaManager
         return $formName;
     }
 
-
     /**
      * @param array  $data
      * @param string $cenaId
@@ -147,6 +155,30 @@ class CenaManager
             $data = $data[ $item ];
         }
         return $data;
+    }
+    // +----------------------------------------------------------------------+
+    //  utilities
+    // +----------------------------------------------------------------------+
+    /**
+     * removes cena data for data not having specified column ($name). 
+     * 
+     * @param        $model
+     * @param        $name
+     * @param string $type
+     */
+    public function cleanUpIfEmpty( $model, $name, $type='new' ) 
+    {
+        if( !isset( $this->source[ $this->cena ] ) ) return;
+        if( !isset( $this->source[ $this->cena ][ $model ] ) ) return;
+        if( !isset( $this->source[ $this->cena ][ $model ][ $type ] ) ) return; 
+        foreach( $this->source[ $this->cena ][ $model ][ $type ] as $id => $data ) {
+            if( !isset( $data[ 'prop' ][ $name ] ) || empty( $data[ 'prop' ][ $name ] ) ) {
+                unset( $this->source[ $this->cena ][ $model ][ $type ][ $id ] );
+            }
+        }
+        if( empty( $this->source[ $this->cena ][ $model ][ $type ] ) ) {
+            unset( $this->source[ $this->cena ][ $model ][ $type ] );
+        }
     }
     // +----------------------------------------------------------------------+
 }
