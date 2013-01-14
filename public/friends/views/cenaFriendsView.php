@@ -103,7 +103,7 @@ class cenaFriendsView
     {
         $role        = $this->role->applyCenatar( $entity );
         $id          = $role->getId();
-        $this->set( 'title', $role->popHtml( 'name' ) );
+        $this->set( 'title', $role->popHtml( 'star' ) . $role->popHtml( 'name' ));
         $tags        = $this->tags;
         $appUrl      = $this->get( 'appUrl' );
         $editUrl     = $appUrl . $id;
@@ -127,7 +127,7 @@ class cenaFriendsView
         $contents[ ] = $form;
         $dl = $this->tags->dl()->_class( 'dl-horizontal' );
         $dl->contain_( $this->tags->dt( 'basic info' ) );
-        $dl->contain_( $this->tags->dd( $this->lists( $role, array( 'gender', 'birthday', 'star' ) ) ) );
+        $dl->contain_( $this->tags->dd( $this->lists( $role, array( 'gender', 'birthday' ) ) ) );
         $dl->contain_( $this->tags->div()->style( 'clear:both') );
         $dl->contain_( $this->tags->dt( 'groups' ) );
         $dl->contain_( $this->tags->dd( $groupInfo ) );
