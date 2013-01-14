@@ -62,8 +62,8 @@ class CenaManager
                     $role   = $this->role->applyLoadable( $entity );
                     $role->loadData( $info[ 'prop' ] );
                     // TODO: implement relation. 
-                    if( !empty( $data[ 'link' ] ) )
-                        foreach( $data[ 'link' ] as $name => $link ) {
+                    if( isset( $info[ 'link' ] ) )
+                        foreach( $info[ 'link' ] as $name => $link ) {
                             $entities = $this->getCenaEntity( $link );
                             $this->em->relation( $entity, $name )->set( $entities );
                         }
