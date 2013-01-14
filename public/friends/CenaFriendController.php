@@ -184,6 +184,8 @@ class CenaFriendController
         $cena->useModel( 'friends\model\Friends' );
         $cena->useModel( 'friends\model\Group' );
         $cena->useModel( 'friends\model\Contacts' );
+        $cena->useSource( $_POST );
+        $cena->cleanUpIfEmpty( 'Contacts', 'info' );
         $cena->serveEntities();
         $this->em->save();
 
