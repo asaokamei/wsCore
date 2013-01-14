@@ -16,20 +16,42 @@ class CenaManager
     /** @var array     $models[ $modelName ] = $model */
     protected $models = array();
     
+    /** @var \WScore\DataMapper\Entity_Collection */
+    protected $entities;
+    
+    /** @var array  */
     protected $source = array();
+    
+    /** @var bool */
+    protected $valid = true;
+    // +----------------------------------------------------------------------+
+    //  construction
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DataMapper\EntityManager    $em
      * @param \WScore\DataMapper\Role            $role
-     * @DimInjection GET EntityManager
      * @DimInjection GET \WScore\DataMapper\Role
      */
-    public function __construct( $em, $role )
+    public function __construct( $role )
     {
-        $this->em = $em;
+        $this->em = $role->em();
         $this->role = $role;
+        $this->entities = $this->em->emptyCollection();
     }
 
+    /**
+     * @return \WScore\DataMapper\EntityManager
+     */
+    public function em() {
+        return $this->em;
+    }
+
+    /**
+     * @return \WScore\DataMapper\Role
+     */
+    public function role() {
+        return $this->role;
+    }
+    
     /**
      * @param string      $modelName
      * @param string|null $model
@@ -60,8 +82,6 @@ class CenaManager
         $valid = true;
         if( empty( $this->source ) ) $this->source = $_POST;
         $data = $this->source[ $this->cena ];
-        $list = $this->em->emptyCollection();
-        if( empty( $data ) ) return $list;
         foreach( $data as $model => $types ) {
             foreach( $types as $type => $ids ) {
                 foreach( $ids as $id => $info )
@@ -72,14 +92,25 @@ class CenaManager
                     foreach( $info as $method => $value ) {
                         $role->$method( $value );
                     }
-                    $valid &= $role->validate();
-                    $list->add( $entity );
+                    $this->entities->add( $entity );
                 }
             }
         }
-        return $list;
     }
 
+    /**
+     * @return bool
+     */
+    public function validate()
+    {
+        if( empty( $this->entities ) ) return $this->valid;
+        foreach( $this->entities as $entity ) {
+            $role   = $this->role->applyCenaLoad( $entity );
+            $this->valid &= $role->validate();
+        }
+        return $this->valid;
+    }
+    
     /**
      * @param string $cenaId
      * @return null|Entity_Interface|Entity_Interface[]
@@ -154,9 +185,7 @@ class CenaManager
         }
         return $data;
     }
-    // +----------------------------------------------------------------------+
-    //  utilities
-    // +----------------------------------------------------------------------+
+
     /**
      * removes cena data for data not having specified column ($name). 
      * 
