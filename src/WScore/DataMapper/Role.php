@@ -3,23 +3,17 @@ namespace WScore\DataMapper;
 
 class Role
 {
-    /** @var \WScore\DataMapper\EntityManager */
-    public $em;
+    /** @var \WScore\DiContainer\Dimplet */
+    protected $container;
 
     /**
-     * @param \WScore\DataMapper\EntityManager    $em
-     * @DimInjection get  EntityManager
+     * @param \WScore\DiContainer\Dimplet $container
+     * @return \WScore\DataMapper\Role
+     * @DimInjection Fresh Container
      */
-    public function __construct( $em )
+    public function __construct( $container )
     {
-        $this->em = $em;
-    }
-
-    /**
-     * @return \WScore\DataMapper\EntityManager
-     */
-    public function em() {
-        return $this->em;
+        $this->container = $container;
     }
 
     /**
@@ -42,7 +36,7 @@ class Role
         else {
             $class = '\WScore\DataMapper\Role_' . ucwords( $role );
         }
-        $role = $this->em->container()->fresh( $class );
+        $role = $this->container->fresh( $class );
         /** @var $role Role_Interface */
         $role->register( $entity );
         return $role;
