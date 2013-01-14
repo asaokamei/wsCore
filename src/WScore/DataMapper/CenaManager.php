@@ -28,12 +28,14 @@ class CenaManager
     //  construction
     // +----------------------------------------------------------------------+
     /**
+     * @param \WScore\DataMapper\EntityManager   $em
      * @param \WScore\DataMapper\Role            $role
+     * @DimInjection GET EntityManager
      * @DimInjection GET \WScore\DataMapper\Role
      */
-    public function __construct( $role )
+    public function __construct( $em, $role )
     {
-        $this->em = $role->em();
+        $this->em = $em;
         $this->role = $role;
         $this->entities = $this->em->emptyCollection();
     }
