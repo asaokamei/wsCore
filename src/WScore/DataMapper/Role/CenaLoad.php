@@ -5,6 +5,9 @@ class Role_CenaLoad extends Role_Loadable
 {
     protected $cena;
 
+    // +----------------------------------------------------------------------+
+    //  constructor
+    // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DataMapper\EntityManager    $em
      * @param \WScore\Validator\DataIO            $dio
@@ -26,7 +29,10 @@ class Role_CenaLoad extends Role_Loadable
     public function __call( $method, $args ) {
         return;
     }
-    
+
+    // +----------------------------------------------------------------------+
+    //  general methods. 
+    // +----------------------------------------------------------------------+
     /**
      * @param null|string $name
      * @param array       $data
@@ -59,6 +65,9 @@ class Role_CenaLoad extends Role_Loadable
         return $this;
     }
 
+    // +----------------------------------------------------------------------+
+    //  methods that match with Cena's state/action name.  
+    // +----------------------------------------------------------------------+
     /**
      * sets property. 
      * 
@@ -75,7 +84,7 @@ class Role_CenaLoad extends Role_Loadable
      * 
      * @param array $data
      */
-    public function links( $data )
+    public function link( $data )
     {
         foreach( $data as $name => $link ) {
             $entities = $this->cena->getCenaEntity( $link );
@@ -86,8 +95,9 @@ class Role_CenaLoad extends Role_Loadable
     /**
      * deletes an entity.
      */
-    public function delete()
+    public function del()
     {
         $this->em->delete( $this->entity );
     }
+    // +----------------------------------------------------------------------+
 }
