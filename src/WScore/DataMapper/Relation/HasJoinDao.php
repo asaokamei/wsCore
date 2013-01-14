@@ -116,7 +116,14 @@ class Relation_HasJoinDao implements Relation_Interface
      */
     public function set( $target )
     {
-        if( !$target ) return $this;
+        if( !$target ) return null;
+        if( is_array( $target ) || $target instanceof \WScore\DataMapper\Entity_Collection ) {
+            $joints = array();
+            foreach( $target as $tgt ) {
+                $joints[] = $this->set( $tgt );
+            }
+            return $joints;
+        }
         $targets = $this->source->relation( $this->relationName );
         $targets[ $target->_get_cenaId() ] = $target;
         $this->source->setRelation( $this->relationName, $targets );
