@@ -91,12 +91,12 @@ class Dimplet
             if( $found instanceof \Closure ) {
                 $found = $found( $this );
             }
-            elseif( $this->maybeClassName( $found ) && class_exists( $found ) ) {
-                $found = $this->Construct( $found );
+            elseif( $this->isClassName( $found ) ) {
+                $found = $this->construct( $found );
             }
         }
-        elseif( $this->maybeClassName( $id ) && class_exists( $id ) ) {
-            $found = $this->Construct( $id );
+        elseif( $this->isClassName( $id ) ) {
+            $found = $this->construct( $id );
         }
         else {
             throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
@@ -113,8 +113,8 @@ class Dimplet
      * @param mixed $name
      * @return bool
      */
-    private function maybeClassName( $name ) {
-        return is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name );
+    private function isClassName( $name ) {
+        return is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name ) && class_exists( $name );
     }
 
     /**
@@ -123,7 +123,7 @@ class Dimplet
      * @param $className
      * @return object
      */
-    private function Construct( $className )
+    private function construct( $className )
     {
         $refClass   = new \ReflectionClass( $className );
         $injectList = $this->dimConstructor->getList( $refClass );
