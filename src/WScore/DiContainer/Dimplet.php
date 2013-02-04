@@ -129,7 +129,7 @@ class Dimplet
     {
         // todo: maybe storing object before running constructor...
 
-        if( $object = $this->dimCache->fetch( $className ) ) {
+        if( false && $object = $this->dimCache->fetch( $className ) ) {
             return $object;
         }
         $refClass   = new \ReflectionClass( $className );
@@ -268,6 +268,7 @@ class DimCache
             try {
                 apc_store( $className, $value );
             } catch( \Exception $e ) {
+                apc_delete( $className );
             }
         } else {
             $this->cached[ $className ] = $value;
