@@ -65,6 +65,7 @@
         </div>
         <div class="span12">
             <p>development still undergoing. more demo should come up, hopefully sometime soon...</p>
+            <p><a href="info.php">php info</a> </p>
         </div>
     </div>
     <footer class="footer">
