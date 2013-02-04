@@ -3,6 +3,19 @@ namespace WScore\DiContainer;
 
 class DimConstructor
 {
+    private $useApc = false;
+    private $cached = array();
+    private $header = 'DimConstruct:';
+
+    /**
+     *
+     */
+    public function __construct()
+    {
+        if( function_exists( 'apc_store' ) ) {
+            $this->useApc = true;
+        }
+    }
     /**
      * gets constructor document for DimInjection.
      * 
@@ -12,10 +25,15 @@ class DimConstructor
     public function getList( $refClass )
     {
         $refConst   = $refClass->getConstructor();
+        $className  = $refClass->getName();
         if( !$refConst ) return array();
+        if( $injectList = $this->fetch( $className ) ) {
+            return $injectList;
+        }
         $comments   = $refConst->getDocComment();
         if( empty( $comments ) ) return array();
         $injectList = $this->parseDimDoc( $comments );
+        $this->store( $className, $injectList );
         return $injectList;
     }
 
@@ -50,12 +68,12 @@ class DimConstructor
             $injectInfo = array(
                 'by' => 'fresh',
                 'ob' => 'obj',
-                'id' => NULL,
+                'id' => null,
             );
         }
         foreach( $dimInfo as $info ) {
             switch( strtolower( $info ) ) {
-                case 'none':   $injectInfo[ 'by' ] = NULL;      break;
+                case 'none':   $injectInfo[ 'by' ] = null;      break;
                 case 'get':    $injectInfo[ 'by' ] = 'get';     break;
                 case 'fresh':  $injectInfo[ 'by' ] = 'fresh';   break;
                 case 'raw':    $injectInfo[ 'ob' ] = 'raw';     break;
@@ -64,5 +82,24 @@ class DimConstructor
             }
         }
         return $injectInfo;
+    }
+    private function store( $className, $value )
+    {
+        $className = $this->header . str_replace( '\\', '-', $className );
+        if( $this->useApc ) {
+            apc_store( $className, $value );
+        } else {
+            $this->cached[ $className ] = $value;
+        }
+    }
+    private function fetch( $className )
+    {
+        $className = $this->header . str_replace( '\\', '-', $className );
+        if( $this->useApc ) {
+            $fetched = apc_fetch( $className );
+        } else {
+            $fetched = array_key_exists( $className, $this->cached ) ? $this->cached[ $className]: false;
+        }
+        return $fetched;
     }
 }

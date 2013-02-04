@@ -1,6 +1,13 @@
 <?php
 
-
+if( $_GET[ 'act' ] == 'cache-info' ) {
+    $info =apc_cache_info( 'user' );
+    unset( $info[ 'slot_distribution' ] );
+    var_dump( $info );
+} elseif( $_GET[ 'act' ] == 'cache-clear' ) {
+    apc_clear_cache( 'opcode' );
+    apc_clear_cache( 'user' );
+}
 
 ?>
 <!DOCTYPE html>
@@ -65,7 +72,9 @@
         </div>
         <div class="span12">
             <p>development still undergoing. more demo should come up, hopefully sometime soon...</p>
-            <p><a href="info.php">php info</a> </p>
+            <p>[<a href="info.php">php info</a>],
+                [<a href="index.php?act=cache-info" >apc info</a>],
+                [<a href="index.php?act=cache-clear" >clear apc cache</a>], </p>
         </div>
     </div>
     <footer class="footer">

@@ -23,6 +23,7 @@ class Dimplet
     /** @var \WScore\DiContainer\DimConstructor */
     private $dimConstructor = '\WScore\DiContainer\DimConstructor';
 
+    private $dimCache = '\WScore\DiContainer\DimCache';
     // +----------------------------------------------------------------------+
     /**
      * @param DimConstructor $dimConst
@@ -30,6 +31,7 @@ class Dimplet
      */
     public function __construct( $dimConst=null ) {
         $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
+        $this->dimCache = new $this->dimCache;
     }
 
     /**
@@ -109,7 +111,7 @@ class Dimplet
     }
 
     /**
-     * test if a string maybe a class name, which contains backslash and a-zA-Z0-9. 
+     * test if a string maybe a class name, which contains backslash and a-zA-Z0-9.
      * @param mixed $name
      * @return bool
      */
@@ -118,13 +120,18 @@ class Dimplet
     }
 
     /**
-     * DI by constructor. uses annotation @DimInjection 
-     * 
+     * DI by constructor. uses annotation @DimInjection
+     *
      * @param $className
      * @return object
      */
     private function construct( $className )
     {
+        // todo: maybe storing object before running constructor...
+
+        if( $object = $this->dimCache->fetch( $className ) ) {
+            return $object;
+        }
         $refClass   = new \ReflectionClass( $className );
         $injectList = $this->dimConstructor->getList( $refClass );
         $args = array();
@@ -132,6 +139,7 @@ class Dimplet
             $args[] = $this->forgeObject( $injectInfo );
         }
         $object = $refClass->newInstanceArgs( $args );
+        $this->dimCache->store( $className, $object );
         return $object;
     }
 
@@ -238,5 +246,47 @@ class Dimplet
         else {
             $this->extends[$id] = $callable;
         }
+    }
+}
+
+class DimCache
+{
+    private $useApc = false;
+    private $cached = array();
+    private $header = 'DimCache:';
+    public function __construct()
+    {
+        if( function_exists( 'apc_store' ) ) {
+            $this->useApc = true;
+        }
+        $this->useApc = false;
+    }
+    public function store( $className, $value )
+    {
+        $className = $this->header . str_replace( '\\', '-', $className );
+        if( $this->useApc ) {
+            try {
+                apc_store( $className, $value );
+            } catch( \Exception $e ) {
+            }
+        } else {
+            $this->cached[ $className ] = $value;
+        }
+    }
+    public function fetch( $className )
+    {
+        $className = $this->header . str_replace( '\\', '-', $className );
+        if( $this->useApc ) {
+            try {
+                $fetched = apc_fetch( $className );
+            } catch( \Exception $e ) {
+                echo $className;
+                echo $e->getMessage();
+                exit;
+            }
+        } else {
+            $fetched = array_key_exists( $className, $this->cached ) ? $this->cached[ $className]: false;
+        }
+        return $fetched;
     }
 }
