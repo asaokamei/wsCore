@@ -31,10 +31,10 @@ class PdObject
     public function __construct( $pdoObj )
     {
         if( $pdoObj instanceof \PDO ) {
-            $this->pdoObj = $pdoObj;
+            $this->dbConnect( $pdoObj );
         } else {
             $this->connConfig = $pdoObj;
-            $this->pdoObj = \WScore\DbAccess\Rdb::connect( $pdoObj );
+            $this->dbConnect();
         }
     }
 
@@ -44,8 +44,12 @@ class PdObject
      * @param \Pdo $pdo
      * @return PdObject
      */
-    public function dbConnect( $pdo ) {
-        $this->pdoObj = $pdo;
+    public function dbConnect( $pdo=null ) {
+        if( isset( $pdo ) ) {
+            $this->pdoObj = $pdo;
+        } else {
+            $this->pdoObj = \WScore\DbAccess\Rdb::connect( $this->connConfig );
+        }
         return $this;
     }
 
