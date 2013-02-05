@@ -87,7 +87,7 @@ class Core
      */
     public static function setPdo( $config, $id='Pdo', $class=NULL, $method= NULL )
     {
-        return self::$_container->set( $id, $config );
+        self::$_container->set( $id, $config );
     }
     // +----------------------------------------------------------------------+
 }
