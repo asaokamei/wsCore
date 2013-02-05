@@ -10,7 +10,7 @@ class Cache
     /**
      * checks what cache to use.
      */
-    public function initialize()
+    public static function initialize()
     {
         if( function_exists( 'apc_store' ) ) {
             self::$useApc = true;
