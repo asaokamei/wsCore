@@ -19,6 +19,8 @@ class PdObject implements \Serializable
     protected $fetchConstArg = array();
     
     private $connConfig = null;
+
+    private $toSerialize = array( 'connConfig', 'fetchClass', 'fetchConstArg', 'fetchMode', );
     // +----------------------------------------------------------------------+
     //  Constructor and Managing Objects.
     // +----------------------------------------------------------------------+
@@ -214,12 +216,9 @@ class PdObject implements \Serializable
      */
     public function serialize()
     {
-        return serialize( array(
-            'connConfig' => $this->connConfig,
-            'fetchClass' => $this->fetchClass,
-            'fetchConstArg' => $this->fetchConstArg,
-            'fetchMode' => $this->fetchMode,
-        ) );
+        $data = array();
+        foreach( $this->toSerialize as $var ) { $data[ $var ] = $this->$var; }
+        return serialize( $data );
     }
 
     /**
@@ -231,10 +230,7 @@ class PdObject implements \Serializable
     public function unserialize( $serialized )
     {
         $info = unserialize( $serialized );
-        $this->connConfig = $info[ 'connConfig' ];
-        $this->fetchClass = $info[ 'fetchClass' ];
-        $this->fetchConstArg = $info[ 'fetchConstArg' ];
-        $this->fetchMode = $info[ 'fetchMode' ];
+        foreach( $this->toSerialize as $var ) { $this->$var = $info[ $var ]; }
         $this->dbConnect();
     }
 }
