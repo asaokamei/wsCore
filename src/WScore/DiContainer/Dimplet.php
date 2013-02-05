@@ -23,7 +23,7 @@ class Dimplet
     /** @var \WScore\DiContainer\DimConstructor */
     private $dimConstructor = '\WScore\DiContainer\DimConstructor';
 
-    private $dimCache = '\WScore\DiContainer\DimCache';
+    private $objectCache = '\WScore\DiContainer\Cache';
     // +----------------------------------------------------------------------+
     /**
      * @param DimConstructor $dimConst
@@ -31,7 +31,7 @@ class Dimplet
      */
     public function __construct( $dimConst=null ) {
         $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
-        $this->dimCache = new $this->dimCache;
+        $this->objectCache = new $this->objectCache;
     }
 
     /**
@@ -129,7 +129,7 @@ class Dimplet
     {
         // todo: maybe storing object before running constructor...
 
-        if( false && $object = $this->dimCache->fetch( $className ) ) {
+        if( $object = $this->objectCache->fetch( $className ) ) {
             return $object;
         }
         $refClass   = new \ReflectionClass( $className );
@@ -139,7 +139,7 @@ class Dimplet
             $args[] = $this->forgeObject( $injectInfo );
         }
         $object = $refClass->newInstanceArgs( $args );
-        $this->dimCache->store( $className, $object );
+        $this->objectCache->store( $className, $object );
         return $object;
     }
 
@@ -246,48 +246,5 @@ class Dimplet
         else {
             $this->extends[$id] = $callable;
         }
-    }
-}
-
-class DimCache
-{
-    private $useApc = false;
-    private $cached = array();
-    private $header = 'DimCache:';
-    public function __construct()
-    {
-        if( function_exists( 'apc_store' ) ) {
-            $this->useApc = true;
-        }
-        $this->useApc = false;
-    }
-    public function store( $className, $value )
-    {
-        $className = $this->header . str_replace( '\\', '-', $className );
-        if( $this->useApc ) {
-            try {
-                apc_store( $className, $value );
-            } catch( \Exception $e ) {
-                apc_delete( $className );
-            }
-        } else {
-            $this->cached[ $className ] = $value;
-        }
-    }
-    public function fetch( $className )
-    {
-        $className = $this->header . str_replace( '\\', '-', $className );
-        if( $this->useApc ) {
-            try {
-                $fetched = apc_fetch( $className );
-            } catch( \Exception $e ) {
-                echo $className;
-                echo $e->getMessage();
-                exit;
-            }
-        } else {
-            $fetched = array_key_exists( $className, $this->cached ) ? $this->cached[ $className]: false;
-        }
-        return $fetched;
     }
 }
