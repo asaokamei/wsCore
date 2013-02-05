@@ -3,17 +3,17 @@ namespace WScore\DiContainer;
 
 class Cache
 {
-    private $useApc = false;
-    private $cached = array();
-    private $header = 'DimCache:';
+    private static $useApc = false;
+    private static $cached = array();
+    private static $header = 'DimCache:';
 
     /**
      * checks what cache to use.
      */
-    public function __construct()
+    public function initialize()
     {
         if( function_exists( 'apc_store' ) ) {
-            $this->useApc = true;
+            self::$useApc = true;
         }
     }
 
@@ -23,17 +23,17 @@ class Cache
      * @param $className
      * @param $value
      */
-    public function store( $className, $value )
+    public static function store( $className, $value )
     {
-        $className = $this->header . str_replace( '\\', '-', $className );
-        if( $this->useApc ) {
+        $className = self::$header . str_replace( '\\', '-', $className );
+        if( self::$useApc ) {
             try {
                 apc_store( $className, $value );
             } catch( \Exception $e ) {
                 apc_delete( $className );
             }
         } else {
-            $this->cached[ $className ] = $value;
+            self::$cached[ $className ] = $value;
         }
     }
 
@@ -43,10 +43,11 @@ class Cache
      * @param $className
      * @return bool|mixed
      */
-    public function fetch( $className )
+    public static function fetch( $className )
     {
-        $className = $this->header . str_replace( '\\', '-', $className );
-        if( $this->useApc ) {
+        $className = self::$header . str_replace( '\\', '-', $className );
+        $fetched = false;
+        if( self::$useApc ) {
             try {
                 $fetched = apc_fetch( $className );
             } catch( \Exception $e ) {
@@ -54,8 +55,6 @@ class Cache
                 echo $e->getMessage();
                 exit;
             }
-        } else {
-            $fetched = array_key_exists( $className, $this->cached ) ? $this->cached[ $className ]: false;
         }
         return $fetched;
     }

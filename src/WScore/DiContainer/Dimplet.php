@@ -32,7 +32,8 @@ class Dimplet
      */
     public function __construct( $dimConst=null ) {
         $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
-        $this->objectCache = new $this->objectCache;
+        $cache = $this->objectCache;
+        $cache::initialize();
     }
 
     /**
@@ -128,7 +129,8 @@ class Dimplet
      */
     private function construct( $className )
     {
-        if( $object = $this->objectCache->fetch( $className ) ) {
+        $cache = $this->objectCache;
+        if( $object = $cache::fetch( $className ) ) {
             return $object;
         }
         $refClass   = new \ReflectionClass( $className );
@@ -138,7 +140,7 @@ class Dimplet
             $args[] = $this->forgeObject( $injectInfo );
         }
         $object = $refClass->newInstanceArgs( $args );
-        $this->objectCache->store( $className, $object );
+        $cache::store( $className, $object );
         return $object;
     }
 
