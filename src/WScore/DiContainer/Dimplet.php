@@ -23,6 +23,7 @@ class Dimplet
     /** @var \WScore\DiContainer\DimConstructor */
     private $dimConstructor = '\WScore\DiContainer\DimConstructor';
 
+    /** @var \WScore\DiContainer\Cache */
     private $objectCache = '\WScore\DiContainer\Cache';
     // +----------------------------------------------------------------------+
     /**
