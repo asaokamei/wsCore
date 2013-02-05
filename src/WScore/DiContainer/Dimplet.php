@@ -128,8 +128,6 @@ class Dimplet
      */
     private function construct( $className )
     {
-        // todo: maybe storing object before running constructor...
-
         if( $object = $this->objectCache->fetch( $className ) ) {
             return $object;
         }
