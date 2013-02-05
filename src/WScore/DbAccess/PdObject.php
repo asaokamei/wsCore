@@ -47,14 +47,20 @@ class PdObject implements \Serializable
      * @return PdObject
      */
     public function dbConnect( $pdo=null ) {
-        if( isset( $pdo ) ) {
+        if( isset( $pdo ) && $pdo instanceof \PDO ) {
             $this->pdoObj = $pdo;
         } else {
+            if( isset( $pdo ) ) {
+                $this->connConfig = $pdo;
+            }
             $this->pdoObj = \WScore\DbAccess\Rdb::connect( $this->connConfig );
         }
         return $this;
     }
 
+    public function getConnConfig() {
+        return $this->connConfig;
+    }
     // +----------------------------------------------------------------------+
     //  Executing SQL. all methods returns Dba object.
     // +----------------------------------------------------------------------+
