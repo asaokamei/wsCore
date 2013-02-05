@@ -15,17 +15,27 @@ class Cache
         if( function_exists( 'apc_store' ) ) {
             self::$useApc = true;
         }
+        self::$useApc = false;
     }
 
+    /**
+     * @param string $className
+     * @param string $id
+     * @return string
+     */
+    private static function name( $className, $id ) {
+        return self::$header . $id . ':' . str_replace( '\\', '-', $className );
+    }
     /**
      * stores objects.
      *
      * @param $className
+     * @param $id
      * @param $value
      */
-    public static function store( $className, $value )
+    public static function store( $className, $value, $id=null )
     {
-        $className = self::$header . str_replace( '\\', '-', $className );
+        $className = self::name( $className, $id );
         if( self::$useApc ) {
             try {
                 apc_store( $className, $value );
@@ -41,11 +51,12 @@ class Cache
      * fetches objects from cache.
      *
      * @param $className
+     * @param $id
      * @return bool|mixed
      */
-    public static function fetch( $className )
+    public static function fetch( $className, $id=null )
     {
-        $className = self::$header . str_replace( '\\', '-', $className );
+        $className = self::name( $className, $id );
         $fetched = false;
         if( self::$useApc ) {
             try {
