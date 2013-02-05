@@ -1,10 +1,10 @@
 <?php
 namespace WScore\DbAccess;
 
-class PdObject
+class PdObject implements \Serializable
 {
     /** @var \Pdo                        PDO object          */
-    protected $pdoObj  = NULL;
+    protected $pdoObj  = null;
 
     /** @var \PdoStatement */
     protected $pdoStmt;
@@ -13,7 +13,7 @@ class PdObject
     protected $fetchMode = \PDO::FETCH_ASSOC;
     
     /** @var string                      class name if fetch mode is Class */
-    protected $fetchClass = NULL;
+    protected $fetchClass = null;
 
     /** @var array                       arguments for fetch_class object  */
     protected $fetchConstArg = array();
@@ -143,7 +143,7 @@ class PdObject
      * @param array $constArg
      * @return PdObject
      */
-    public function setFetchMode( $mode, $class=NULL, $constArg=array() ) {
+    public function setFetchMode( $mode, $class=null, $constArg=array() ) {
         $this->fetchMode  = $mode;
         $this->fetchClass = $class;
         $this->fetchConstArg = (is_array( $constArg ))? $constArg: array($constArg);
@@ -207,4 +207,34 @@ class PdObject
         return $val;
     }
     // +----------------------------------------------------------------------+
+    /**
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     */
+    public function serialize()
+    {
+        return serialize( array(
+            'connConfig' => $this->connConfig,
+            'fetchClass' => $this->fetchClass,
+            'fetchConstArg' => $this->fetchConstArg,
+            'fetchMode' => $this->fetchMode,
+        ) );
+    }
+
+    /**
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized   The string representation of the object.
+     * @return mixed the original value unserialized.
+     */
+    public function unserialize( $serialized )
+    {
+        $info = unserialize( $serialized );
+        $this->connConfig = $info[ 'connConfig' ];
+        $this->fetchClass = $info[ 'fetchClass' ];
+        $this->fetchConstArg = $info[ 'fetchConstArg' ];
+        $this->fetchMode = $info[ 'fetchMode' ];
+        $this->dbConnect();
+    }
 }
