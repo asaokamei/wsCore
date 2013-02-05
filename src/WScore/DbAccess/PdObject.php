@@ -43,7 +43,7 @@ class PdObject implements \Serializable
     /**
      * set Pdo. kind of for backward compatibility. 
      *
-     * @param \Pdo $pdo
+     * @param \Pdo|string|array $pdo
      * @return PdObject
      */
     public function dbConnect( $pdo=null ) {
@@ -53,7 +53,9 @@ class PdObject implements \Serializable
             if( isset( $pdo ) ) {
                 $this->connConfig = $pdo;
             }
-            $this->pdoObj = \WScore\DbAccess\Rdb::connect( $this->connConfig );
+            if( isset( $this->connConfig ) ) {
+                $this->pdoObj = \WScore\DbAccess\Rdb::connect( $this->connConfig );
+            }
         }
         return $this;
     }
