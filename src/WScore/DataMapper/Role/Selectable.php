@@ -54,6 +54,28 @@ class Role_Selectable extends Role_Abstract
     }
 
     /**
+     * creates a select box for a relation (many-to-many). 
+     * todo: refactor this method.
+     * 
+     * @param string                               $name
+     * @param \WScore\DataMapper\Entity_Collection $lists
+     * @param string                               $display
+     * @return \WScore\Html\Form|\WScore\Html\Tags
+     */
+    public function popLinkSelect( $name, $lists, $display )
+    {
+        $idName = $lists->first()->_get_id_name();
+        $links = $lists->pack( array( $idName, $display ) );
+        $targets = $this->retrieve()->relation( $name );
+        $selected = array();
+        if( !empty( $targets ) )
+            foreach( $targets as $tgt ) {
+                $selected[] = $tgt[ $idName ];
+            }
+        $select = $this->selector->form()->select( 'groups', $links, $selected, array( 'multiple'=>true ) );
+        return $select;
+    }
+    /**
      * returns error message if any.
      *
      * @param $name

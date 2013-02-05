@@ -4,6 +4,14 @@ namespace WScore\DataMapper;
 interface Relation_Interface
 {
     /**
+     * loads related entities.
+     * this method is automatically called when the Relation object is constructed.
+     * use this method explicitly to refresh the relation.
+     *
+     * @return Relation_Interface
+     */
+    public function load();
+    /**
      * sets relation between the source and the target entity. 
      * 
      * @param Entity_Interface $target

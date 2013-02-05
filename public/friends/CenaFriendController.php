@@ -18,7 +18,7 @@ class CenaFriendController
     /** @var callable */
     protected $pager;
     
-    /** @var callable */
+    /** @var \WScore\DataMapper\CenaManager */
     protected $cena;
 
     /**
@@ -26,12 +26,12 @@ class CenaFriendController
      * @param \friends\views\cenaFriendsView     $view
      * @param \WScore\DataMapper\Role            $role
      * @param \Closure                           $pager
-     * @param \Closure                           $cena
+     * @param \WScore\DataMapper\CenaManager                           $cena
      * @DimInjection get EntityManager
      * @DimInjection get \friends\views\cenaFriendsView
      * @DimInjection get \WScore\DataMapper\Role
      * @DimInjection get Raw \wsModule\Alt\DbAccess\Paginate
-     * @DimInjection GET Raw \WScore\DataMapper\CenaManager
+     * @DimInjection GET \WScore\DataMapper\CenaManager
      */
     public function __construct( $em, $view, $role, $pager, $cena )
     {
@@ -97,9 +97,6 @@ class CenaFriendController
         if( $method == 'save' ) 
         {
             $cena = $this->cena;
-            /** @var $cena \Closure */
-            $cena = $cena();
-            /** @var $cena \WScore\DataMapper\CenaManager */
             $cena->useModel( 'friends\model\Friends' );
             $cena->serveEntities();
             $this->em->save();
@@ -147,86 +144,66 @@ class CenaFriendController
         $model = $this->em->getModel( 'friends\model\Friends' );
         $model->setupFormForListings();
         $id = $parameter[ 'id' ];
-        $friend = $this->em->getEntity( 'friends\model\Friends', $id );
         if( $this->front->request->getPost( '_method' ) == 'save' )
         {
-            // update groups
-            // group entities without registering to em.
-            $groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
-            $this->em->relation( $friend, 'groups' )->replace( $groups );
+            return $this->saveInfo( $id );
+        }
+        return $this->editInfo( $id );
+    }
 
-            // update friends info
-            $loadable = $this->role->applyCenaLoad( $friend );
-            $loadable->loadData();
-            if( $loadable->validate() )
-            {
-                $this->em->save();
-                $jump = $this->view->get( 'appUrl' ) . $id;
-                header( 'Location: ' . $jump );
-                exit;
-            }
+    /**
+     * @param string $id
+     * @return views\cenaFriendsView
+     */
+    protected function editInfo( $id )
+    {
+        $friend = $this->em->getEntity( 'friends\model\Friends', $id );
+        $this->em->relation( $friend, 'contacts' );
+        // add new contacts for each contact type. 
+        foreach( \friends\model\Contacts::$types as $type ) {
+            $contact = $this->em->newEntity( '\friends\model\Contacts' );
+            $contact[ 'type' ] = $type[0];
+            $this->em->relation( $friend, 'contacts' )->set( $contact );
+        }
+        foreach( $this->em->relation( $friend, 'contacts' )->get() as $contact ) {
+            $this->em->relation( $contact, 'friend' )->set( $friend );
         }
         $groups = $this->em->fetch( 'friends\model\Group' );
-        $groups = $groups->pack( array( 'group_code', 'name' ) );
         $this->em->relation( $friend, 'groups' );
         $this->view->showForm_detail( $friend, $groups );
         return $this->view;
     }
-    // +----------------------------------------------------------------------+
-    //  about contacts
-    // +----------------------------------------------------------------------+
-    public function getContactMod( $parameter )
-    {
-        $id   = $parameter[ 'id' ];
-        $cid  = $parameter[ 'cid' ];
-        $friend  = $this->em->getEntity( 'friends\model\Friends', $id );
-        $contact = $this->em->getEntity( 'friends\model\Contacts', $cid );
-        if( $this->front->request->isPost() )
-        {
-            $loadable = $this->role->applyCenaLoad( $contact );
-            $loadable->loadData();
-            if( $loadable->validate() )
-            {
-                $active = $this->role->applyActive( $contact );
-                $active->relation( 'friend' )->set( $friend );
-                $active->save();
-                $jump = $this->view->get( 'appUrl' ) . $id;
-                header( 'Location: ' . $jump );
-                exit;
-            }
-        }
-        $this->view->showContact_form( $friend, $contact );
-        return $this->view;
-    }
+
     /**
-     * @param $parameter
+     * @param string $id
      * @return views\cenaFriendsView
      */
-    public function getContactNew( $parameter )
+    protected function saveInfo( $id )
     {
-        $id   = $parameter[ 'id' ];
-        $type = $parameter[ 'type' ];
-        /** @var $friend  \friends\entity\friend */
-        /** @var $contact \friends\entity\contact */
-        $friend  = $this->em->getEntity( 'friends\model\Friends', $id );
-        $contact = $this->em->newEntity( 'friends\model\Contacts' );
-        $contact->type = $type;
-        /** @var $contact \friends\entity\contact */
-        if( $this->front->request->isPost() ) 
-        {
-            $loadable = $this->role->applyCenaLoad( $contact );
-            $loadable->loadData();
-            if( $loadable->validate() ) 
-            {
-                $active = $this->role->applyActive( $loadable );
-                $active->relation( 'friend' )->set( $friend );
-                $active->save();
-                $jump = $this->view->get( 'appUrl' ) . $id;
-                header( 'Location: ' . $jump );
-                exit;
-            }
+        $cena = $this->cena;
+        $cena->useModel( 'friends\model\Friends' );
+        $cena->useModel( 'friends\model\Group' );
+        $cena->useModel( 'friends\model\Contacts' );
+        $cena->useSource( $_POST );
+        $cena->cleanUpIfEmpty( 'Contacts', 'info' );
+        $cena->serveEntities();
+        
+        if( $cena->validate() ) {
+            $this->em->save();
+            $jump = $this->view->get( 'appUrl' ) . $id;
+            header( 'Location: ' . $jump );
+            exit;
         }
-        $this->view->showContact_form( $friend, $contact );
+        // update groups
+        // group entities without registering to em.
+        //$groups = $this->em->getModel( 'friends\model\Group' )->find( $_POST[ 'groups' ] );
+        //$this->em->relation( $friend, 'groups' )->replace( $groups );
+        $groups = $this->em->fetch( 'friends\model\Group' );
+        // TODO: fetch from collection in em. 
+        $friend = $this->em->fetch( 'friends\model\Friends', $id );
+        $friend = $friend->first();
+        $this->em->relation( $friend, 'groups' );
+        $this->view->showForm_detail( $friend, $groups );
         return $this->view;
     }
     // +----------------------------------------------------------------------+

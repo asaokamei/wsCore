@@ -16,17 +16,17 @@ $element->form(
 class Form extends Tags
 {
     /** @var null|string        overwrites name ex: name[1] */
-    static $var_format = NULL;
+    static $var_format = null;
 
-    public $style = NULL;
+    public $style = null;
 
-    public $type = NULL;
+    public $type = null;
 
-    public $value = NULL;
+    public $value = null;
 
     public $items = array();
 
-    public $multiple = FALSE;
+    public $multiple = false;
     
     // +----------------------------------------------------------------------+
     /**
@@ -38,7 +38,7 @@ class Form extends Tags
      * @param array       $attributes
      * @return Form|Tags
      */
-    public function input( $type, $name, $value=NULL, $attributes=array() ) 
+    public function input( $type, $name, $value=null, $attributes=array() ) 
     {
         $form = clone $this;
         $form->style = $type;
@@ -47,6 +47,7 @@ class Form extends Tags
         $form->setName( $name );
         $form->setValue( $value );
         $form->applyAttributes( $attributes );
+        if( array_key_exists( 'multiple', $attributes ) ) $form->multipleName();
         return $form;
     }
 
@@ -58,7 +59,7 @@ class Form extends Tags
      * @param array $attributes
      * @return Form|Tags
      */
-    public function textArea( $name, $value=NULL, $attributes=array() ) 
+    public function textArea( $name, $value=null, $attributes=array() ) 
     {
         $form = clone $this;
         $form->style = 'textarea';
@@ -264,7 +265,7 @@ class Form extends Tags
         }
         return $list;
     }
-    public function listBox( $items, $name=NULL )
+    public function listBox( $items, $name=null )
     {
         $list = $this::_()->nl();
         $div = $this::_()->div( $list )->_class( 'formListBox' . $name );
@@ -334,7 +335,7 @@ class Form extends Tags
      * @param string|null $id
      * @return Form|Tags
      */
-    public function setId( $id=NULL ) {
+    public function setId( $id=null ) {
         if( !$id ) {
             $id = array_key_exists( 'name', $this->attributes ) ? $this->attributes[ 'name' ] : false;
             if( $id === false ) return $this; // do not set id for tags without name attribute.
@@ -360,6 +361,7 @@ class Form extends Tags
 
     /**
      * makes the form object to array style name (i.e. name="varName[]").
+     * @return Form
      */
     public function multipleName()
     {
@@ -369,7 +371,12 @@ class Form extends Tags
         };
         /** @var $div Form */
         $this->walk( $addMultiple );
+        return $this;
     }
+
+    /**
+     * @return Form
+     */
     public function walkSetId()
     {
         $addId = function( $form ) {
@@ -377,6 +384,7 @@ class Form extends Tags
             $form->setId();
         };
         $this->walk( $addId );
+        return $this;
     }
     // +----------------------------------------------------------------------+
 }

@@ -14,20 +14,26 @@ class EntityManager
     
     /** @var \WScore\DataMapper\Entity_Collection */
     protected $collection;
+    
+    /** @var \WScore\DataMapper\Relation */
+    protected $relation;
 
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\DiContainer\Dimplet        $container
-     * @param \WScore\DataMapper\Entity_Property $entityProperty
+     * @param \WScore\DiContainer\Dimplet          $container
+     * @param \WScore\DataMapper\Entity_Property   $entityProperty
      * @param \WScore\DataMapper\Entity_Collection $collection
+     * @param \WScore\DataMapper\Relation          $relation
      * @DimInjection Fresh Container
      * @DimInjection Fresh \WScore\DataMapper\Entity_Property
      * @DimInjection Fresh \WScore\DataMapper\Entity_Collection
+     * @DimInjection Fresh \WScore\DataMapper\Relation
      */
-    public function __construct( $container, $entityProperty, $collection ) {
+    public function __construct( $container, $entityProperty, $collection, $relation ) {
         $this->container = $container;
         $this->entityProperty = $entityProperty;
         $this->collection = $collection;
+        $this->relation = $relation;
     }
 
     /**
@@ -251,7 +257,7 @@ class EntityManager
     public function relation( $entity, $name )
     {
         $model = $this->getModel( $entity );
-        $relation = Relation::getRelation( $this, $entity, $model->getRelationInfo(), $name );
+        $relation = $this->relation->getRelation( $this, $entity, $model->getRelationInfo(), $name );
         return $relation;
     }
     // +----------------------------------------------------------------------+

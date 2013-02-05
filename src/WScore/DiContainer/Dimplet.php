@@ -23,6 +23,8 @@ class Dimplet
     /** @var \WScore\DiContainer\DimConstructor */
     private $dimConstructor = '\WScore\DiContainer\DimConstructor';
 
+    /** @var \WScore\DiContainer\Cache */
+    private static $objectCache = '\WScore\DiContainer\Cache';
     // +----------------------------------------------------------------------+
     /**
      * @param DimConstructor $dimConst
@@ -30,6 +32,19 @@ class Dimplet
      */
     public function __construct( $dimConst=null ) {
         $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
+        $cache = self::$objectCache;
+        $cache::initialize();
+        $cache::store( 'WScore\DiContainer\Dimplet', $this );
+    }
+
+    public static function getInstance( $dimConst=null )
+    {
+        $cache = self::$objectCache;
+        $cache::initialize();
+        if( !$self = $cache::fetch( 'WScore\DiContainer\Dimplet' ) ) {
+            $self = new static( $dimConst );
+        }
+        return $self;
     }
 
     /**
@@ -91,12 +106,12 @@ class Dimplet
             if( $found instanceof \Closure ) {
                 $found = $found( $this );
             }
-            elseif( $this->maybeClassName( $found ) && class_exists( $found ) ) {
-                $found = $this->injectConstruction( $found );
+            elseif( $this->isClassName( $found ) ) {
+                $found = $this->construct( $found, $id );
             }
         }
-        elseif( $this->maybeClassName( $id ) && class_exists( $id ) ) {
-            $found = $this->injectConstruction( $id );
+        elseif( $this->isClassName( $id ) ) {
+            $found = $this->construct( $id );
         }
         else {
             throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
@@ -109,22 +124,27 @@ class Dimplet
     }
 
     /**
-     * test if a string maybe a class name, which contains backslash and a-zA-Z0-9. 
+     * test if a string maybe a class name, which contains backslash and a-zA-Z0-9.
      * @param mixed $name
      * @return bool
      */
-    public function maybeClassName( $name ) {
-        return is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name );
+    private function isClassName( $name ) {
+        return is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name ) && class_exists( $name );
     }
 
     /**
-     * DI by constructor. uses annotation @DimInjection 
-     * 
-     * @param $className
+     * DI by constructor. uses annotation @DimInjection
+     *
+     * @param string      $className
+     * @param null|string $id
      * @return object
      */
-    public function injectConstruction( $className )
+    public function construct( $className, $id=null )
     {
+        $cache = self::$objectCache;
+        if( $object = $cache::fetch( $className, $id ) ) {
+            return $object;
+        }
         $refClass   = new \ReflectionClass( $className );
         $injectList = $this->dimConstructor->getList( $refClass );
         $args = array();
@@ -132,6 +152,7 @@ class Dimplet
             $args[] = $this->forgeObject( $injectInfo );
         }
         $object = $refClass->newInstanceArgs( $args );
+        $cache::store( $className, $object );
         return $object;
     }
 

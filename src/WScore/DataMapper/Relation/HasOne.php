@@ -63,6 +63,9 @@ class Relation_HasOne implements Relation_Interface
      */
     public function set( $target ) 
     {
+        if( is_array( $target ) || $target instanceof Entity_Collection ) {
+            return $this->set( $target[0] );
+        }
         if( $target->_get_Model() != $this->targetModelName ) {
             throw new \RuntimeException( "target model not match! " );
         }

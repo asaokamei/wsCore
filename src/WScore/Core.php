@@ -3,8 +3,8 @@ namespace WScore;
 
 class Core
 {
-    /** @var null|self */
-    private static $_container = NULL;
+    /** @var \WScore\DiContainer\Dimplet */
+    private static $_container = null;
 
     /** @var array      set easy mode */
     public static $easy = array(
@@ -23,11 +23,6 @@ class Core
         '\WScore\Validator\Validator' => '\WScore\Aspect\LogValidator',
     );
     // +----------------------------------------------------------------------+
-    /**
-     *
-     */
-    public function __construct() {
-    }
 
     /**
      * starts WScore Framework
@@ -35,7 +30,7 @@ class Core
      * @return Core
      */
     public static function go() {
-        ( static::$_container ) ?: static::$_container = new \WScore\DiContainer\Dimplet();
+        ( static::$_container ) ?: static::$_container = \WScore\DiContainer\Dimplet::getInstance();
         self::_fill( self::$easy );
         static::$_container->set( 'Container', static::$_container );
         return static::$_container;
@@ -46,7 +41,7 @@ class Core
      */
     public static function goDev() {
         self::go();
-        self::set( 'devMode', TRUE );
+        self::set( 'devMode', true );
         self::_fill( self::$dev );
     }
     
@@ -59,7 +54,7 @@ class Core
      * @static
      */
     public static function clear() {
-        static::$_container = NULL;
+        static::$_container = null;
     }
 
     /**
@@ -78,6 +73,14 @@ class Core
     }
 
     /**
+     * @param string $id
+     * @param \Closure $func
+     */
+    public static function extend( $id, $func ) {
+        self::$_container->extend( $id, $func );
+    }
+
+    /**
      * set up for Pdo object.
      * 
      * @param string|array  $config
@@ -85,9 +88,9 @@ class Core
      * @param null|string   $class
      * @param null|string   $method
      */
-    public static function setPdo( $config, $id='Pdo', $class=NULL, $method= NULL )
+    public static function setPdo( $config, $id='Pdo', $class=null, $method= null )
     {
-        return self::$_container->set( $id, $config );
+        self::$_container->set( $id, $config );
     }
     // +----------------------------------------------------------------------+
 }

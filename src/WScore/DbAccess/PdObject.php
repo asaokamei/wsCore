@@ -1,10 +1,10 @@
 <?php
 namespace WScore\DbAccess;
 
-class PdObject
+class PdObject implements \Serializable
 {
     /** @var \Pdo                        PDO object          */
-    protected $pdoObj  = NULL;
+    protected $pdoObj  = null;
 
     /** @var \PdoStatement */
     protected $pdoStmt;
@@ -13,12 +13,14 @@ class PdObject
     protected $fetchMode = \PDO::FETCH_ASSOC;
     
     /** @var string                      class name if fetch mode is Class */
-    protected $fetchClass = NULL;
+    protected $fetchClass = null;
 
     /** @var array                       arguments for fetch_class object  */
     protected $fetchConstArg = array();
     
     private $connConfig = null;
+
+    private $toSerialize = array( 'connConfig', 'fetchClass', 'fetchConstArg', 'fetchMode', );
     // +----------------------------------------------------------------------+
     //  Constructor and Managing Objects.
     // +----------------------------------------------------------------------+
@@ -31,24 +33,36 @@ class PdObject
     public function __construct( $pdoObj )
     {
         if( $pdoObj instanceof \PDO ) {
-            $this->pdoObj = $pdoObj;
+            $this->dbConnect( $pdoObj );
         } else {
             $this->connConfig = $pdoObj;
-            $this->pdoObj = \WScore\DbAccess\Rdb::connect( $pdoObj );
+            $this->dbConnect();
         }
     }
 
     /**
      * set Pdo. kind of for backward compatibility. 
      *
-     * @param \Pdo $pdo
+     * @param \Pdo|string|array $pdo
      * @return PdObject
      */
-    public function dbConnect( $pdo ) {
-        $this->pdoObj = $pdo;
+    public function dbConnect( $pdo=null ) {
+        if( isset( $pdo ) && $pdo instanceof \PDO ) {
+            $this->pdoObj = $pdo;
+        } else {
+            if( isset( $pdo ) ) {
+                $this->connConfig = $pdo;
+            }
+            if( isset( $this->connConfig ) ) {
+                $this->pdoObj = \WScore\DbAccess\Rdb::connect( $this->connConfig );
+            }
+        }
         return $this;
     }
 
+    public function getConnConfig() {
+        return $this->connConfig;
+    }
     // +----------------------------------------------------------------------+
     //  Executing SQL. all methods returns Dba object.
     // +----------------------------------------------------------------------+
@@ -139,7 +153,7 @@ class PdObject
      * @param array $constArg
      * @return PdObject
      */
-    public function setFetchMode( $mode, $class=NULL, $constArg=array() ) {
+    public function setFetchMode( $mode, $class=null, $constArg=array() ) {
         $this->fetchMode  = $mode;
         $this->fetchClass = $class;
         $this->fetchConstArg = (is_array( $constArg ))? $constArg: array($constArg);
@@ -203,4 +217,28 @@ class PdObject
         return $val;
     }
     // +----------------------------------------------------------------------+
+    /**
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     */
+    public function serialize()
+    {
+        $data = array();
+        foreach( $this->toSerialize as $var ) { $data[ $var ] = $this->$var; }
+        return serialize( $data );
+    }
+
+    /**
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized   The string representation of the object.
+     * @return mixed the original value unserialized.
+     */
+    public function unserialize( $serialized )
+    {
+        $info = unserialize( $serialized );
+        foreach( $this->toSerialize as $var ) { $this->$var = $info[ $var ]; }
+        $this->dbConnect();
+    }
 }

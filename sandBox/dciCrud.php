@@ -1,5 +1,37 @@
 <?php
 
+class dci extends \wsModule\Dci\Web\Persist
+{
+    function get( $action ) 
+    {
+        if( $action == 'form' ) {
+            return 'form';
+        }
+        return 'form';
+    }
+    function post( $action )
+    {
+        $entity = $this->restoreData( 'entity' );
+        if( $this->checkPin( 'form' ) ) {
+            return 'form';
+        }
+        if( $action == 'form' ) {
+            $this->context( 'load' )->run( $entity );
+        }
+        if( !$this->context( 'validate' )->run( $entity ) ) {
+            return 'form';
+        }
+        if( $this->checkPin( 'confirm' ) || $action !== 'save' ) {
+            return 'confirm';
+        }
+        if( $this->checkPin( 'save' ) && $this->session->verifyToken() ) {
+            $this->context( 'save' )->run( $entity );
+            return 'save';
+        }
+        return 'done';
+    }
+}
+
 class Interaction
 {
     protected $variables = array();

@@ -103,7 +103,7 @@ class cenaFriendsView
     {
         $role        = $this->role->applyCenatar( $entity );
         $id          = $role->getId();
-        $this->set( 'title', $role->popHtml( 'name' ) );
+        $this->set( 'title', $role->popHtml( 'star' ) . $role->popHtml( 'name' ));
         $tags        = $this->tags;
         $appUrl      = $this->get( 'appUrl' );
         $editUrl     = $appUrl . $id;
@@ -127,7 +127,7 @@ class cenaFriendsView
         $contents[ ] = $form;
         $dl = $this->tags->dl()->_class( 'dl-horizontal' );
         $dl->contain_( $this->tags->dt( 'basic info' ) );
-        $dl->contain_( $this->tags->dd( $this->lists( $role, array( 'gender', 'birthday', 'star' ) ) ) );
+        $dl->contain_( $this->tags->dd( $this->lists( $role, array( 'gender', 'birthday' ) ) ) );
         $dl->contain_( $this->tags->div()->style( 'clear:both') );
         $dl->contain_( $this->tags->dt( 'groups' ) );
         $dl->contain_( $this->tags->dd( $groupInfo ) );
@@ -146,9 +146,6 @@ class cenaFriendsView
         foreach( Contacts::$types as $type )
         {
             $contents[ ] = '<hr>';
-            $contents[ ] = $tags->a( 'add new' )
-                ->href( $appUrl.'contact/' . $id . '/type/' . $type[0] )
-                ->_class( 'btn btn-mini btn-info' )->style( 'float:right' );
             $contents[ ] = $tags->h4( $type[1] );
             if( isset( $roleContacts[ $type[0] ] ) )
             {
@@ -156,10 +153,9 @@ class cenaFriendsView
                 /** @var $role \WScore\DataMapper\Role_Selectable */
                 foreach( $roleContacts[ $type[0] ] as $role )
                 {
-                    $link = $appUrl . 'contact/' . $id . '/' . $role->getId();
                     $dl->contain_(
                         $this->tags->dt( $role->popHtml( 'label' ) ),
-                        $this->tags->dd( $this->tags->a( $role->popHtml( 'info' ) )->href( $link ) )
+                        $this->tags->dd( $role->popHtml( 'info' ) )
                     );
                 }
             }
@@ -170,25 +166,25 @@ class cenaFriendsView
 
     /**
      * @param \WScore\DataMapper\Entity_Interface $entity
-     * @param string[] $groups
+     * @param \WScore\DataMapper\Entity_Collection $groups
      */
     public function showForm_detail( $entity, $groups )
     {
+        // -----------------------------
+        // use Cenatar to generate forms.
+        $contacts = $entity->relation( 'contacts' );
+        $entity = $this->role->applyCenatar( $entity );
+        $entity->setHtmlType( 'form' );
+        // -----------------------------
         // get groups
-        $myGroup = $entity->relation( 'groups' );
-        $selectedGroup = array();
-        if( !empty( $myGroup ) )
-        foreach( $myGroup as $grp ) {
-            $selectedGroup[] = $grp->group_code;
-        }
-        $select = $this->tags->select( 'groups', $groups, $selectedGroup, array( 'multiple'=>true ) );
+        $select = $entity->popLinkSelect( 'groups', $groups, 'name' );
         $selGroup = $this->tags->dl(
             $this->tags->dt( 'group list' ),
             $this->tags->dd( $select )
         )->_class( 'dl-horizontal' );
+
+        // -----------------------------
         // form basic info
-        $entity = $this->role->applyCenatar( $entity );
-        $entity->setHtmlType( 'form' );
         $this->set( 'title', $entity->popHtml( 'name', 'html' ) );
         $back = $this->view->get( 'appUrl' ) . $entity->getId();
         $form = $this->tags->form()->method( 'post' )->action( '' );
@@ -199,42 +195,53 @@ class cenaFriendsView
             $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' ),
             $this->tags->input( 'hidden', '_method', 'save' )
         );
-        $contents    = array();
-        $contents[ ] = $form;
-        $this->set( 'content', $contents );
-    }
+        // -----------------------------
+        // form contact info
+        // organize contacts based on types
+        $roleContacts = array();
+        if( !empty( $contacts ) )
+            foreach( $contacts as $contact ) {
+                $type = $contact[ 'type' ];
+                /** @var $role \WScore\DataMapper\Role_Cenatar */
+                $role = $this->role->applyCenatar( $contact );
+                $role->setHtmlType( 'form' );
+                $roleContacts[ $type ][] = $role;
+            }
+        // show contact for each type
+        foreach( Contacts::$types as $type )
+        {
+            $form->contain_( '<hr>',
+                $this->tags->h4( $type[1] )
+            );
+            if( isset( $roleContacts[ $type[0] ] ) )
+            {
+                $dl = $this->tags->dl()->_class( 'dl-horizontal' );
+                foreach( $roleContacts[ $type[0] ] as $role )
+                {
+                    $dl->contain_(
+                        $this->tags->dt( $role->popHtml( 'type' )->_class( 'span1' ) ),
+                        $this->tags->dd( 
+                            $role->popHtml( 'label' )->_class( 'span1' ),
+                            $role->popHtml( 'info'  )->_class( 'span3' ), 
+                            $role->popLinkHidden( 'friend' )
+                        )
+                    );
+                }
+                $form->contain_( $dl );
+            }
+            $form->contain_( $this->tags->div()->style( 'clear:both' ) );
+        }
 
-    // +----------------------------------------------------------------------+
-    //  about contacts
-    // +----------------------------------------------------------------------+
-
-    /**
-     * @param \friends\entity\friend $friend
-     * @param \friends\entity\contact $contact
-     */
-    public function showContact_form( $friend, $contact )
-    {
-        $friend_id = $friend->friend_id;
-        $back = $this->view->get( 'appUrl' ) . $friend_id;
-        $contact_type = $contact->type;
-        $friend  = $this->role->applyCenatar( $friend );
-        $contact = $this->role->applyCenatar( $contact );
-        $contact->setHtmlType( 'form' );
-        $this->set( 'title', $friend->popHtml( 'name' ) );
-        $contents    = array();
-        $contents[ ] = $this->lists( $friend, array( 'gender', 'birthday', 'star' ) );
-        $contents[ ] = $this->tags->div()->style( 'clear:both' );
-        $contents[ ] = $this->tags->h4( 'contact info for: ', $contact->popHtml( 'type', 'html' ) );
-        
-        $form = $this->tags->form()->action('')->method( 'post' );
         $form->contain_(
-            $this->dl( $contact, array( 'type', 'label', 'info', ) ),
-            $this->view->bootstrapButton( 'submit', 'save contact', 'btn btn-primary' ),
-            $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' )
+            $this->view->bootstrapButton( 'submit', 'update info', 'btn btn-primary' ),
+            $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' ),
+            $this->tags->input( 'hidden', '_method', 'save' )
         );
-        $contents[ ] = $form;
+        
+        $contents    = array( $form );
         $this->set( 'content', $contents );
     }
+
     // +----------------------------------------------------------------------+
     //  about Groups
     // +----------------------------------------------------------------------+
@@ -366,7 +373,11 @@ class cenaFriendsView
             $row->setHtmlType( $type );
 
             /** @var $task \task\entity\task */
-            $name   = $this->tags->a( $row->popHtml( 'name' ) )->href( $appUrl . $id )->style( 'font-weight:bold' );
+            if( $type == 'form' ) {
+                $name   = $this->tags->span( $row->popHtml( 'name' ) )->style( 'font-weight:bold' );
+            } else {
+                $name   = $this->tags->a( $row->popHtml( 'name' ) )->href( $appUrl . $id )->style( 'font-weight:bold' );
+            }
             $star   = $row->popHtml( 'star' );
             $button = $this->tags->a( '>>' )->href( $appUrl . $id )->_class( 'btn btn-small btn' );
             $table->contain_(
