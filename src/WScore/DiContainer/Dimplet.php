@@ -24,7 +24,7 @@ class Dimplet
     private $dimConstructor = '\WScore\DiContainer\DimConstructor';
 
     /** @var \WScore\DiContainer\Cache */
-    private $objectCache = '\WScore\DiContainer\Cache';
+    private static $objectCache = '\WScore\DiContainer\Cache';
     // +----------------------------------------------------------------------+
     /**
      * @param DimConstructor $dimConst
@@ -32,8 +32,19 @@ class Dimplet
      */
     public function __construct( $dimConst=null ) {
         $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
-        $cache = $this->objectCache;
+        $cache = self::$objectCache;
         $cache::initialize();
+        $cache::store( 'WScore\DiContainer\Dimplet', $this );
+    }
+
+    public static function getInstance( $dimConst=null )
+    {
+        $cache = self::$objectCache;
+        $cache::initialize();
+        if( !$self = $cache::fetch( 'WScore\DiContainer\Dimplet' ) ) {
+            $self = new static( $dimConst );
+        }
+        return $self;
     }
 
     /**
@@ -129,7 +140,7 @@ class Dimplet
      */
     private function construct( $className )
     {
-        $cache = $this->objectCache;
+        $cache = self::$objectCache;
         if( $object = $cache::fetch( $className ) ) {
             return $object;
         }

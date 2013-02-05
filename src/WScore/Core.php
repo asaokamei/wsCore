@@ -23,11 +23,6 @@ class Core
         '\WScore\Validator\Validator' => '\WScore\Aspect\LogValidator',
     );
     // +----------------------------------------------------------------------+
-    /**
-     *
-     */
-    public function __construct() {
-    }
 
     /**
      * starts WScore Framework
@@ -35,7 +30,7 @@ class Core
      * @return Core
      */
     public static function go() {
-        ( static::$_container ) ?: static::$_container = new \WScore\DiContainer\Dimplet();
+        ( static::$_container ) ?: static::$_container = \WScore\DiContainer\Dimplet::getInstance();
         self::_fill( self::$easy );
         static::$_container->set( 'Container', static::$_container );
         return static::$_container;
@@ -75,6 +70,14 @@ class Core
      */
     public static function get( $id ) {
         return self::$_container->get( $id );
+    }
+
+    /**
+     * @param string $id
+     * @param \Closure $func
+     */
+    public static function extend( $id, $func ) {
+        self::$_container->extend( $id, $func );
     }
 
     /**
