@@ -107,7 +107,7 @@ class Dimplet
                 $found = $found( $this );
             }
             elseif( $this->isClassName( $found ) ) {
-                $found = $this->construct( $found );
+                $found = $this->construct( $found, $id );
             }
         }
         elseif( $this->isClassName( $id ) ) {
@@ -135,13 +135,14 @@ class Dimplet
     /**
      * DI by constructor. uses annotation @DimInjection
      *
-     * @param $className
+     * @param string      $className
+     * @param null|string $id
      * @return object
      */
-    private function construct( $className )
+    public function construct( $className, $id=null )
     {
         $cache = self::$objectCache;
-        if( $object = $cache::fetch( $className ) ) {
+        if( $object = $cache::fetch( $className, $id ) ) {
             return $object;
         }
         $refClass   = new \ReflectionClass( $className );
