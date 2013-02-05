@@ -3,8 +3,8 @@ namespace WScore;
 
 class Core
 {
-    /** @var null|self */
-    private static $_container = NULL;
+    /** @var \WScore\DiContainer\Dimplet */
+    private static $_container = null;
 
     /** @var array      set easy mode */
     public static $easy = array(
@@ -46,7 +46,7 @@ class Core
      */
     public static function goDev() {
         self::go();
-        self::set( 'devMode', TRUE );
+        self::set( 'devMode', true );
         self::_fill( self::$dev );
     }
     
@@ -59,7 +59,7 @@ class Core
      * @static
      */
     public static function clear() {
-        static::$_container = NULL;
+        static::$_container = null;
     }
 
     /**
@@ -85,7 +85,7 @@ class Core
      * @param null|string   $class
      * @param null|string   $method
      */
-    public static function setPdo( $config, $id='Pdo', $class=NULL, $method= NULL )
+    public static function setPdo( $config, $id='Pdo', $class=null, $method= null )
     {
         self::$_container->set( $id, $config );
     }
