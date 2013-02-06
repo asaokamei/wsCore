@@ -103,6 +103,9 @@ class Dimplet
      */
     public function fresh( $id, $option=array() )
     {
+        if( isset( $this->options[$id] ) ) {
+            $option = $this->array_merge_recursive_distinct( $this->options[$id], $option );
+        }
         if( array_key_exists($id, $this->values) ) 
         {
             $found = $this->values[$id];
@@ -110,16 +113,10 @@ class Dimplet
                 $found = $found( $this );
             }
             elseif( $this->isClassName( $found ) ) {
-                if( isset( $this->options[$id] ) ) {
-                    $option = $this->array_merge_recursive_distinct( $this->options[$id], $option );
-                }
                 $found = $this->construct( $found, $option );
             }
         }
         elseif( $this->isClassName( $id ) ) {
-            if( isset( $this->options[$id] ) ) {
-                $option = $this->array_merge_recursive_distinct( $this->options[$id], $option );
-            }
             $found = $this->construct( $id, $option );
         }
         else {
