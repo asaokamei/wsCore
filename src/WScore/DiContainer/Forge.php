@@ -3,15 +3,18 @@ namespace WScore\DiContainer;
 
 class Forge
 {
-    private $useApc = false;
+    private $useApc = true;
     private $cacheKey = 'DimForge:cached';
     private $cached = array();
     // +----------------------------------------------------------------------+
     public function __construct()
     {
-        if( function_exists( 'apc_store' ) ) {
+        if( $this->useApc && function_exists( 'apc_store' ) ) {
             $this->useApc = true;
             $this->cached = unserialize( apc_fetch( $this->cacheKey ) ) ?: array();
+        }
+        else {
+            $this->useApc = false;
         }
     }
 
