@@ -11,8 +11,11 @@ namespace WScore\DiContainer;
 
 class Dimplet
 {
-    /** @var array|\Closure[]      */
+    /** @var string[]|mixed[]|\Closure[]      */
     private $values = array();
+    
+    /** @var array */
+    private $options = array();
 
     /** @var array      */
     private $objects = array();
@@ -53,10 +56,12 @@ class Dimplet
      *
      * @param string $id    The unique identifier for the parameter or object
      * @param mixed  $value The value of the parameter or a \Closure to defined an object
+     * @param array  $option  set dependencies. 
      */
-    public function set($id, $value)
+    public function set($id, $value, $option=null)
     {
         $this->values[$id] = $value;
+        if( isset( $option ) ) $this->options[ $id ] = $option;
     }
 
     /**
@@ -105,10 +110,16 @@ class Dimplet
                 $found = $found( $this );
             }
             elseif( $this->isClassName( $found ) ) {
+                if( isset( $this->options[$id] ) ) {
+                    $option = $this->array_merge_recursive_distinct( $this->options[$id], $option );
+                }
                 $found = $this->construct( $found, $option );
             }
         }
         elseif( $this->isClassName( $id ) ) {
+            if( isset( $this->options[$id] ) ) {
+                $option = $this->array_merge_recursive_distinct( $this->options[$id], $option );
+            }
             $found = $this->construct( $id, $option );
         }
         else {
