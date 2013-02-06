@@ -11,8 +11,8 @@ namespace WScore\DiContainer;
 
 class Dimplet
 {
-    /** @var string[]|mixed[]|\Closure[]      */
-    private $values = array();
+    /** @var \WScore\DiContainer\Pimplet  */
+    private $values = '\WScore\DiContainer\Pimplet';
     
     /** @var array */
     private $options = array();
@@ -30,11 +30,13 @@ class Dimplet
     private static $self = null;
     // +----------------------------------------------------------------------+
     /**
-     * @param Forge $dimConst
+     * @param Pimplet  $pimplet
+     * @param Forge    $forge
      * @DimInjection Get \WScore\DiContainer\Forge
      */
-    public function __construct( $dimConst=null ) {
-        $this->forge = $dimConst ?: new $this->forge;
+    public function __construct( $pimplet=null, $forge=null ) {
+        $this->values = $pimplet ?: new $this->values;
+        $this->forge = $forge ?: new $this->forge;
     }
 
     public static function getInstance( $dimConst=null )
@@ -60,7 +62,7 @@ class Dimplet
      */
     public function set( $id, $value, $option=null )
     {
-        $this->values[$id] = $value;
+        $this->values->set( $id, $value );
         if( isset( $option ) ) $this->options[ $id ] = $option;
     }
 
@@ -71,7 +73,7 @@ class Dimplet
      * @return bool
      */
     public function exists( $id ) {
-        return array_key_exists( $id, $this->values );
+        return $this->values->exists( $id );
     }
 
     /**
@@ -106,9 +108,9 @@ class Dimplet
         if( isset( $this->options[$id] ) ) {
             $option = $this->array_merge_recursive_distinct( $this->options[$id], $option );
         }
-        if( array_key_exists($id, $this->values) ) 
+        if( $this->values->exists( $id ) ) 
         {
-            $found = $this->values[$id];
+            $found = $this->values->get( $id );
             if( $found instanceof \Closure ) {
                 $found = $found( $this );
             }
@@ -189,13 +191,7 @@ class Dimplet
      */
     public function share( \Closure $callable )
     {
-        return function ($c) use ($callable) {
-            static $object;
-            if (null === $object) {
-                $object = $callable($c);
-            }
-            return $object;
-        };
+        return $this->values->share( $callable );
     }
     
     /**
@@ -208,9 +204,7 @@ class Dimplet
      */
     public function protect( $value )
     {
-        return function () use ($value) {
-            return $value;
-        };
+        return $this->values->protect( $value );
     }
 
     /**
@@ -223,15 +217,7 @@ class Dimplet
      */
     public function raw( $id, $by='get' )
     {
-        if( array_key_exists( $id, $this->values ) && 
-            $this->values[ $id ] instanceof \Closure ) {
-            return $this->values[ $id ];
-        }
-        $c = $this;
-        return function() use( $c, $id, $by ) {
-            /** @var $c Dimplet */
-            return $c->$by( $id );
-        };
+        return $this->values->raw( $id, $by );
     }
 
     /**
@@ -251,11 +237,7 @@ class Dimplet
     {
         /** @var $factory \Closure */
         if( isset( $this->extends[ $id ] ) ) {
-            $callable2 = $this->extends[ $id ];
-            $this->extends[$id] = function( $obj ) use( $callable, $callable2 ) {
-                $obj = $callable2( $obj );
-                return $callable ( $obj );
-            };
+            $this->extends[$id] = $this->values->makeExtend( $callable, $this->extends[ $id ] );
         }
         else {
             $this->extends[$id] = $callable;
