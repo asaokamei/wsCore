@@ -32,6 +32,7 @@ class Dimplet
     /**
      * @param Pimplet  $pimplet
      * @param Forge    $forge
+     * @DimInjection Get \WScore\DiContainer\Pimplet
      * @DimInjection Get \WScore\DiContainer\Forge
      */
     public function __construct( $pimplet=null, $forge=null ) {
@@ -173,7 +174,6 @@ class Dimplet
     }
 
     /**
-     * from Pimple!
      * Returns a \Closure that stores the result of the given \Closure for
      * uniqueness in the scope of this instance of Pimple.
      *
@@ -186,7 +186,6 @@ class Dimplet
     }
     
     /**
-     * from Pimple!
      * Protects a callable from being interpreted as a service. This is useful
      * when you want to store a callable or a class name as a parameter.
      *
@@ -199,7 +198,6 @@ class Dimplet
     }
 
     /**
-     * from Pimple!
      * Gets a \Closure returning an object for id.
      *
      * @param string $id   The unique identifier for the parameter or object
