@@ -3,9 +3,16 @@ namespace WScore\DiContainer;
 
 class Forge
 {
+    private $useApc = false;
+    private $cacheKey = 'DimForge:cached';
+    private $cached = array();
+    // +----------------------------------------------------------------------+
     public function __construct()
     {
-        
+        if( function_exists( 'apc_store' ) ) {
+            $this->useApc = true;
+            $this->cached = unserialize( apc_fetch( $this->cacheKey ) ) ?: array();
+        }
     }
 
     /**
@@ -16,6 +23,7 @@ class Forge
      */
     public function listDi( $className )
     {
+        if( $diList = $this->fetch( $className ) ) return $diList;
         $refClass   = new \ReflectionClass( $className );
         $dimConst   = $this->dimConstructor( $refClass );
         $diList     = array(
@@ -23,6 +31,7 @@ class Forge
             'setter' => array(),
             'property' => array(),
         );
+        $this->store( $className, $diList );
         return $diList;
     }
 
@@ -40,6 +49,9 @@ class Forge
         $object = $refClass->newInstanceArgs( $args );
         return $object;
     }
+    // +----------------------------------------------------------------------+
+    //  parsing PHPDoc for @DimInjection
+    // +----------------------------------------------------------------------+
 
     /**
      * @param \ReflectionClass $refClass
@@ -99,4 +111,30 @@ class Forge
         }
         return $injectInfo;
     }
+    // +----------------------------------------------------------------------+
+    //  Caching using APC.
+    // +----------------------------------------------------------------------+
+    /**
+     * @param $className
+     * @param $diList
+     */
+    private function store( $className, $diList ) 
+    {
+        $this->cached[ $className ] = $diList;
+        apc_store( $this->cacheKey, serialize( $this->cached ) );
+    }
+
+    /**
+     * @param $className
+     * @return bool
+     */
+    private function fetch( $className )
+    {
+        if( !$this->useApc ) return false;
+        if( array_key_exists( $className, $this->cached ) ) {
+            return $this->cached[ $className ];
+        }
+        return false;
+    }
+    // +----------------------------------------------------------------------+
 }
