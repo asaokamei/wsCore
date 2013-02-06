@@ -23,8 +23,8 @@ class Dimplet
     /** @var \WScore\DiContainer\DimConstructor */
     private $dimConstructor = '\WScore\DiContainer\DimConstructor';
 
-    /** @var \WScore\DiContainer\Cache */
-    private static $objectCache = '\WScore\DiContainer\Cache';
+    /** @var \WScore\DiContainer\Dimplet */
+    private static $self = null;
     // +----------------------------------------------------------------------+
     /**
      * @param DimConstructor $dimConst
@@ -32,19 +32,14 @@ class Dimplet
      */
     public function __construct( $dimConst=null ) {
         $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
-        $cache = self::$objectCache;
-        $cache::initialize();
-        $cache::store( 'WScore\DiContainer\Dimplet', $this );
     }
 
     public static function getInstance( $dimConst=null )
     {
-        $cache = self::$objectCache;
-        $cache::initialize();
-        if( !$self = $cache::fetch( 'WScore\DiContainer\Dimplet' ) ) {
-            $self = new static( $dimConst );
+        if( ! self::$self ) {
+            self::$self = new static( $dimConst );
         }
-        return $self;
+        return self::$self;
     }
 
     /**
@@ -141,10 +136,6 @@ class Dimplet
      */
     public function construct( $className, $id=null )
     {
-        $cache = self::$objectCache;
-        if( $object = $cache::fetch( $className, $id ) ) {
-            return $object;
-        }
         $refClass   = new \ReflectionClass( $className );
         $injectList = $this->dimConstructor->getList( $refClass );
         $args = array();
@@ -152,7 +143,6 @@ class Dimplet
             $args[] = $this->forgeObject( $injectInfo );
         }
         $object = $refClass->newInstanceArgs( $args );
-        $cache::store( $className, $object );
         return $object;
     }
 
