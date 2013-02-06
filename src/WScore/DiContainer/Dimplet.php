@@ -21,17 +21,17 @@ class Dimplet
     private $extends = array();
 
     /** @var \WScore\DiContainer\Forge */
-    private $dimConstructor = '\WScore\DiContainer\Forge';
+    private $forge = '\WScore\DiContainer\Forge';
 
     /** @var \WScore\DiContainer\Dimplet */
     private static $self = null;
     // +----------------------------------------------------------------------+
     /**
-     * @param DimConstructor $dimConst
-     * @DimInjection Get \WScore\DiContainer\DimConstructor
+     * @param Forge $dimConst
+     * @DimInjection Get \WScore\DiContainer\Forge
      */
     public function __construct( $dimConst=null ) {
-        $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
+        $this->forge = $dimConst ?: new $this->forge;
     }
 
     public static function getInstance( $dimConst=null )
@@ -136,11 +136,11 @@ class Dimplet
      */
     public function construct( $className, $id=null )
     {
-        $injectList = $this->dimConstructor->listDi( $className );
+        $injectList = $this->forge->listDi( $className );
         foreach( $injectList['construct'] as $key => $injectInfo ) {
-            $injectList['construct'][$key] = $this->forgeObject( $injectInfo );
+            $injectList['construct'][$key] = $this->getObject( $injectInfo );
         }
-        $object = $this->dimConstructor->forge( $className, $injectList );
+        $object = $this->forge->forge( $className, $injectList );
         return $object;
     }
 
@@ -148,7 +148,7 @@ class Dimplet
      * @param array $injectInfo
      * @return mixed|null
      */
-    private function forgeObject( $injectInfo )
+    private function getObject( $injectInfo )
     {
         extract( $injectInfo ); // gets $by, $ob, and $id.
         /** @var $by string   type of object fresh/get   */
