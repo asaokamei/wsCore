@@ -58,7 +58,7 @@ class Dimplet
      * @param mixed  $value The value of the parameter or a \Closure to defined an object
      * @param array  $option  set dependencies. 
      */
-    public function set($id, $value, $option=null)
+    public function set( $id, $value, $option=null )
     {
         $this->values[$id] = $value;
         if( isset( $option ) ) $this->options[ $id ] = $option;
@@ -307,4 +307,5 @@ class Dimplet
         }
 
         return $merged;
-    }}
+    }
+}
