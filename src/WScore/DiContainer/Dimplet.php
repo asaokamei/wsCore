@@ -83,7 +83,7 @@ class Dimplet
         if( array_key_exists( $id, $this->objects ) ) {
             return $this->objects[ $id ];
         }
-        $this->objects[ $id ] = $this->fresh( $id, $option=array() );
+        $this->objects[ $id ] = $this->fresh( $id, $option );
         return $this->objects[ $id ];
     }
 
