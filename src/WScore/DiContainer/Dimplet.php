@@ -20,8 +20,8 @@ class Dimplet
     /** @var \Closure[]      */
     private $extends = array();
 
-    /** @var \WScore\DiContainer\DimConstructor */
-    private $dimConstructor = '\WScore\DiContainer\DimConstructor';
+    /** @var \WScore\DiContainer\Forge */
+    private $dimConstructor = '\WScore\DiContainer\Forge';
 
     /** @var \WScore\DiContainer\Dimplet */
     private static $self = null;
@@ -136,13 +136,11 @@ class Dimplet
      */
     public function construct( $className, $id=null )
     {
-        $refClass   = new \ReflectionClass( $className );
-        $injectList = $this->dimConstructor->getList( $refClass );
-        $args = array();
-        foreach( $injectList as $injectInfo ) {
-            $args[] = $this->forgeObject( $injectInfo );
+        $injectList = $this->dimConstructor->listDi( $className );
+        foreach( $injectList['construct'] as $key => $injectInfo ) {
+            $injectList['construct'][$key] = $this->forgeObject( $injectInfo );
         }
-        $object = $refClass->newInstanceArgs( $args );
+        $object = $this->dimConstructor->forge( $className, $injectList );
         return $object;
     }
 
