@@ -114,11 +114,11 @@ class Dimplet
             if( $found instanceof \Closure ) {
                 $found = $found( $this );
             }
-            elseif( $this->isClassName( $found ) ) {
+            elseif( Utils::isClassName( $found ) ) {
                 $found = $this->construct( $found, $option );
             }
         }
-        elseif( $this->isClassName( $id ) ) {
+        elseif( Utils::isClassName( $id ) ) {
             $found = $this->construct( $id, $option );
         }
         else {
@@ -129,15 +129,6 @@ class Dimplet
             $found = $extender( $found, $this );
         }
         return $found;
-    }
-
-    /**
-     * test if a string maybe a class name, which contains backslash and a-zA-Z0-9.
-     * @param mixed $name
-     * @return bool
-     */
-    private function isClassName( $name ) {
-        return is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name ) && class_exists( $name );
     }
 
     /**

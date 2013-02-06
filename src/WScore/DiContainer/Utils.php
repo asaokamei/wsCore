@@ -5,6 +5,15 @@ class Utils
 {
 
     /**
+     * test if a string maybe a class name, which contains backslash and a-zA-Z0-9.
+     * @param mixed $name
+     * @return bool
+     */
+    public static function isClassName( $name ) {
+        return is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name ) && class_exists( $name );
+    }
+
+    /**
      * FROM:
      * http://www.php.net/manual/ja/function.array-merge-recursive.php#92195
      *
