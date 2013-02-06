@@ -20,31 +20,26 @@ class Dimplet
     /** @var \Closure[]      */
     private $extends = array();
 
-    /** @var \WScore\DiContainer\DimConstructor */
-    private $dimConstructor = '\WScore\DiContainer\DimConstructor';
+    /** @var \WScore\DiContainer\Forge */
+    private $forge = '\WScore\DiContainer\Forge';
 
-    /** @var \WScore\DiContainer\Cache */
-    private static $objectCache = '\WScore\DiContainer\Cache';
+    /** @var \WScore\DiContainer\Dimplet */
+    private static $self = null;
     // +----------------------------------------------------------------------+
     /**
-     * @param DimConstructor $dimConst
-     * @DimInjection Get \WScore\DiContainer\DimConstructor
+     * @param Forge $dimConst
+     * @DimInjection Get \WScore\DiContainer\Forge
      */
     public function __construct( $dimConst=null ) {
-        $this->dimConstructor = $dimConst ?: new $this->dimConstructor;
-        $cache = self::$objectCache;
-        $cache::initialize();
-        $cache::store( 'WScore\DiContainer\Dimplet', $this );
+        $this->forge = $dimConst ?: new $this->forge;
     }
 
     public static function getInstance( $dimConst=null )
     {
-        $cache = self::$objectCache;
-        $cache::initialize();
-        if( !$self = $cache::fetch( 'WScore\DiContainer\Dimplet' ) ) {
-            $self = new static( $dimConst );
+        if( ! self::$self ) {
+            self::$self = new static( $dimConst );
         }
-        return $self;
+        return self::$self;
     }
 
     /**
@@ -78,27 +73,30 @@ class Dimplet
      * gets id from container. id can be:
      *  - a pre-set id for a data or a factory \Closure.
      *  - a class name to construct.
-     * 
-     * @param $id
+     *
+     * @param       $id
+     * @param array $option
      * @return mixed
      */
-    public function get( $id )
+    public function get( $id, $option=array() )
     {
         if( array_key_exists( $id, $this->objects ) ) {
             return $this->objects[ $id ];
         }
-        $this->objects[ $id ] = $this->fresh( $id );
+        $this->objects[ $id ] = $this->fresh( $id, $option );
         return $this->objects[ $id ];
     }
+
     /**
-     * gets _fresh_ id from container. returns freshly constructed objects 
-     * unless it is wrapped by share method. 
+     * gets _fresh_ id from container. returns freshly constructed objects
+     * unless it is wrapped by share method.
      *
-     * @param $id
-     * @return mixed
+     * @param       $id
+     * @param array $option
      * @throws \RuntimeException
+     * @return mixed
      */
-    public function fresh( $id )
+    public function fresh( $id, $option=array() )
     {
         if( array_key_exists($id, $this->values) ) 
         {
@@ -107,11 +105,11 @@ class Dimplet
                 $found = $found( $this );
             }
             elseif( $this->isClassName( $found ) ) {
-                $found = $this->construct( $found, $id );
+                $found = $this->construct( $found, $option );
             }
         }
         elseif( $this->isClassName( $id ) ) {
-            $found = $this->construct( $id );
+            $found = $this->construct( $id, $option );
         }
         else {
             throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
@@ -133,26 +131,21 @@ class Dimplet
     }
 
     /**
-     * DI by constructor. uses annotation @DimInjection
+     * DI by constructor. uses annotation
+     * @DimInjection
      *
-     * @param string      $className
-     * @param null|string $id
+     * @param string     $className
+     * @param array|null $option
      * @return object
      */
-    public function construct( $className, $id=null )
+    public function construct( $className, $option=array() )
     {
-        $cache = self::$objectCache;
-        if( $object = $cache::fetch( $className, $id ) ) {
-            return $object;
+        $injectList = $this->forge->listDi( $className );
+        $injectList = $this->array_merge_recursive_distinct( $injectList, $option );
+        foreach( $injectList['construct'] as $key => $injectInfo ) {
+            $injectList['construct'][$key] = $this->getObject( $injectInfo );
         }
-        $refClass   = new \ReflectionClass( $className );
-        $injectList = $this->dimConstructor->getList( $refClass );
-        $args = array();
-        foreach( $injectList as $injectInfo ) {
-            $args[] = $this->forgeObject( $injectInfo );
-        }
-        $object = $refClass->newInstanceArgs( $args );
-        $cache::store( $className, $object );
+        $object = $this->forge->forge( $className, $injectList );
         return $object;
     }
 
@@ -160,7 +153,7 @@ class Dimplet
      * @param array $injectInfo
      * @return mixed|null
      */
-    private function forgeObject( $injectInfo )
+    private function getObject( $injectInfo )
     {
         extract( $injectInfo ); // gets $by, $ob, and $id.
         /** @var $by string   type of object fresh/get   */
@@ -260,4 +253,50 @@ class Dimplet
             $this->extends[$id] = $callable;
         }
     }
-}
+
+    /**
+     * FROM:
+     * http://www.php.net/manual/ja/function.array-merge-recursive.php#92195
+     * 
+     * array_merge_recursive does indeed merge arrays, but it converts values with duplicate
+     * keys to arrays rather than overwriting the value in the first array with the duplicate
+     * value in the second array, as array_merge does. I.e., with array_merge_recursive,
+     * this happens (documented behavior):
+     *
+     * array_merge_recursive(array('key' => 'org value'), array('key' => 'new value'));
+     *     => array('key' => array('org value', 'new value'));
+     *
+     * array_merge_recursive_distinct does not change the datatypes of the values in the arrays.
+     * Matching keys' values in the second array overwrite those in the first array, as is the
+     * case with array_merge, i.e.:
+     *
+     * array_merge_recursive_distinct(array('key' => 'org value'), array('key' => 'new value'));
+     *     => array('key' => array('new value'));
+     *
+     * Parameters are passed by reference, though only for performance reasons. They're not
+     * altered by this function.
+     *
+     * @param array $array1
+     * @param array $array2
+     * @return array
+     * @author Daniel <daniel (at) danielsmedegaardbuus (dot) dk>
+     * @author Gabriel Sobrinho <gabriel (dot) sobrinho (at) gmail (dot) com>
+     */
+    private function array_merge_recursive_distinct ( array &$array1, array &$array2 )
+    {
+        $merged = $array1;
+
+        foreach ( $array2 as $key => &$value )
+        {
+            if ( is_array ( $value ) && isset ( $merged [$key] ) && is_array ( $merged [$key] ) )
+            {
+                $merged [$key] = $this->array_merge_recursive_distinct ( $merged [$key], $value );
+            }
+            else
+            {
+                $merged [$key] = $value;
+            }
+        }
+
+        return $merged;
+    }}

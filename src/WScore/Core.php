@@ -1,6 +1,8 @@
 <?php
 namespace WScore;
 
+use \WScore\DiContainer\Dimplet;
+
 class Core
 {
     /** @var \WScore\DiContainer\Dimplet */
@@ -29,11 +31,14 @@ class Core
      * @static
      * @return Core
      */
-    public static function go() {
-        ( static::$_container ) ?: static::$_container = \WScore\DiContainer\Dimplet::getInstance();
+    public static function go() 
+    {
+        if( !isset( self::$_container ) ) {
+            self::$_container = new Dimplet(); 
+        }
         self::_fill( self::$easy );
-        static::$_container->set( 'Container', static::$_container );
-        return static::$_container;
+        self::$_container->set( 'Container', self::$_container );
+        return self::$_container;
     }
 
     /**
@@ -54,7 +59,7 @@ class Core
      * @static
      */
     public static function clear() {
-        static::$_container = null;
+        self::$_container = null;
     }
 
     /**
