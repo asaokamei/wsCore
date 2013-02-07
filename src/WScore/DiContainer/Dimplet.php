@@ -145,34 +145,12 @@ class Dimplet
         $injectList = $this->forge->listDi( $className );
         $injectList = Utils::array_merge_recursive_distinct( $injectList, $option );
         foreach( $injectList['construct'] as $key => $injectInfo ) {
-            $injectList['construct'][$key] = $this->getObject( $injectInfo );
+            $injectList['construct'][$key] = Utils::constructByInfo( $this, $injectInfo );
         }
         $object = $this->forge->forge( $className, $injectList );
         return $object;
     }
-
-    /**
-     * @param array $injectInfo
-     * @return mixed|null
-     */
-    private function getObject( $injectInfo )
-    {
-        extract( $injectInfo ); // gets $by, $ob, and $id.
-        /** @var $by string   type of object fresh/get   */
-        /** @var $ob string   type of construct obj/raw  */
-        /** @var $id string   look for id to generate    */
-        $object = null;
-        if( $by && $ob && $id ) {
-            if( $ob == 'raw' ) {
-                $object = $this->raw( $id, $by );
-            }
-            else {
-                $object = $this->$by( $id );
-            }
-        }
-        return $object;
-    }
-
+    
     /**
      * Returns a \Closure that stores the result of the given \Closure for
      * uniqueness in the scope of this instance of Pimple.

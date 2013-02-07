@@ -119,5 +119,27 @@ class Utils
 
         return $merged;
     }
-    
+
+    /**
+     * @param Dimplet  $container
+     * @param array    $injectInfo
+     * @return mixed|null
+     */
+    public static function constructByInfo( $container, $injectInfo )
+    {
+        extract( $injectInfo ); // gets $by, $ob, and $id.
+        /** @var $by string   type of object fresh/get   */
+        /** @var $ob string   type of construct obj/raw  */
+        /** @var $id string   look for id to generate    */
+        $object = null;
+        if( $by && $ob && $id ) {
+            if( $ob == 'raw' ) {
+                $object = $container->raw( $id, $by );
+            }
+            else {
+                $object = $container->$by( $id );
+            }
+        }
+        return $object;
+    }
 }
