@@ -107,7 +107,7 @@ class Dimplet
     public function fresh( $id, $option=array() )
     {
         if( isset( $this->options[$id] ) ) {
-            $option = Utils::array_merge_recursive_distinct( $this->options[$id], $option );
+            $option = Utils::mergeOption( $this->options[$id], $option );
         }
         if( $this->values->exists( $id ) ) 
         {
@@ -143,14 +143,14 @@ class Dimplet
     public function construct( $className, $option=array() )
     {
         $injectList = $this->forge->listDi( $className );
-        $injectList = Utils::array_merge_recursive_distinct( $injectList, $option );
+        $injectList = Utils::mergeOption( $injectList, $option );
         foreach( $injectList['construct'] as $key => $injectInfo ) {
             $injectList['construct'][$key] = Utils::constructByInfo( $this, $injectInfo );
         }
         $object = $this->forge->forge( $className, $injectList );
         return $object;
     }
-    
+
     /**
      * Returns a \Closure that stores the result of the given \Closure for
      * uniqueness in the scope of this instance of Pimple.
