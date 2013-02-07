@@ -43,26 +43,26 @@ class Property_Test extends \PHPUnit_Framework_TestCase
     {
         $class = '\wsTests\DiContainer\DimpletMockProp\C';
         $list  = $this->forge->listDi( $class );
-        $this->assertEquals( '\wsTests\DiContainer\DimpleMockDb\DbAccess', $list[ 'property' ][ 'invoice' ][ 'id' ] );
+        $this->assertEquals( '\wsTests\DiContainer\DimpleMockDb\DbAccess', $list[ 'property' ][ 'invoice' ][0][ 'id' ] );
     }
     function test_dimProperty_can_get_child_property()
     {
         $class = '\wsTests\DiContainer\DimpletMockProp\C';
         $list  = $this->forge->listDi( $class );
-        $this->assertEquals( '\wsTests\DiContainer\DimpleMockDb\DumbAccess', $list[ 'property' ][ 'injected' ][ 'id' ] );
+        $this->assertEquals( '\wsTests\DiContainer\DimpleMockDb\DumbAccess', $list[ 'property' ][ 'injected' ][0][ 'id' ] );
     }
     function test_dimProperty_override_case()
     {
         $class = '\wsTests\DiContainer\DimpletMockProp\B';
         $list  = $this->forge->listDi( $class );
-        $this->assertEquals( '\wsTests\DiContainer\DimpleMockDb\DumbAccess', $list[ 'property' ][ 'injected' ][ 'id' ] );
+        $this->assertEquals( '\wsTests\DiContainer\DimpleMockDb\DumbAccess', $list[ 'property' ][ 'injected' ][0][ 'id' ] );
     }
     function test_dimProperty_simple_case()
     {
         $class = '\wsTests\DiContainer\DimpletMockProp\A';
         $list  = $this->forge->listDi( $class );
-        $this->assertEquals( '\wsTests\DiContainer\DimpleMockDb\DbAccess', $list[ 'property' ][ 'injected' ][ 'id' ] );
-        $this->assertEquals( '\wsTests\DiContainer\DimpleMockBiz\Invoice', $list[ 'property' ][ 'invoice'  ][ 'id' ] );
+        $this->assertEquals( '\wsTests\DiContainer\DimpleMockDb\DbAccess', $list[ 'property' ][ 'injected' ][0][ 'id' ] );
+        $this->assertEquals( '\wsTests\DiContainer\DimpleMockBiz\Invoice', $list[ 'property' ][ 'invoice'  ][0][ 'id' ] );
     }
 }
 
