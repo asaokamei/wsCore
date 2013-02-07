@@ -129,6 +129,7 @@ class Request
     }
     // +-------------------------------------------------------------+
     /**
+     * @param array|null $config
      * @return bool|string
      */
     function getPathInfo( $config=null ) {
