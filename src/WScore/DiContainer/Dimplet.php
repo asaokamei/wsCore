@@ -101,30 +101,26 @@ class Dimplet
      *
      * @param       $id
      * @param array $option
-     * @throws \RuntimeException
      * @return mixed
      */
     public function fresh( $id, $option=array() )
     {
-        if( isset( $this->options[$id] ) ) {
-            $option = Utils::mergeOption( $this->options[$id], $option );
-        }
-        if( $this->values->exists( $id ) ) 
-        {
+        // if $id is not set at all, return $id itself.
+        $found = $id;
+        if( $this->values->exists( $id ) ) { // found it in the values.
             $found = $this->values->get( $id );
-            if( $found instanceof \Closure ) {
-                $found = $found( $this );
+        }
+        // check if $found is a closure, or a className to construct.
+        if( $found instanceof \Closure ) {
+            $found = $found( $this );
+        }
+        elseif( Utils::isClassName( $found ) ) {
+            if( isset( $this->options[$id] ) ) { // prepare options
+                $option = Utils::mergeOption( $this->options[$id], $option );
             }
-            elseif( Utils::isClassName( $found ) ) {
-                $found = $this->construct( $found, $option );
-            }
+            $found = $this->construct( $found, $option );
         }
-        elseif( Utils::isClassName( $id ) ) {
-            $found = $this->construct( $id, $option );
-        }
-        else {
-            throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
-        }
+        // extend the found value if extend is set.
         if( array_key_exists( $id, $this->extends ) ) {
             $extender = $this->extends[ $id ];
             $found = $extender( $found, $this );
