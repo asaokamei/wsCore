@@ -64,7 +64,7 @@ class Dimplet
     public function set( $id, $value, $option=null )
     {
         $this->values->set( $id, $value );
-        if( isset( $option ) ) $this->options[ $id ] = $option;
+        if( isset( $option ) ) $this->options[ $id ] = Utils::normalizeOption( $option );
     }
 
     /**
@@ -115,6 +115,7 @@ class Dimplet
             $found = $found( $this );
         }
         elseif( Utils::isClassName( $found ) ) {
+            $option = Utils::normalizeOption( $option );
             if( isset( $this->options[$id] ) ) { // prepare options
                 $option = Utils::mergeOption( $this->options[$id], $option );
             }
