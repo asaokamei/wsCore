@@ -9,6 +9,9 @@ namespace WScore\DiContainer;
  */
 class Utils
 {
+    // +----------------------------------------------------------------------+
+    //  managing dependency options.
+    // +----------------------------------------------------------------------+
 
     /**
      * normalize dependency option. 
@@ -63,7 +66,9 @@ class Utils
         }
         return $option;
     }
-    
+    // +----------------------------------------------------------------------+
+    // +----------------------------------------------------------------------+
+
     /**
      * test if a string maybe a class name, which contains backslash and a-zA-Z0-9.
      * @param mixed $name
@@ -118,6 +123,57 @@ class Utils
         }
 
         return $merged;
+    }
+    // +----------------------------------------------------------------------+
+    //  parsing @DimInjection in PHPDoc.
+    // +----------------------------------------------------------------------+
+
+    /**
+     * parse phpDoc comments for DimInjection.
+     *
+     * @param string $comments
+     * @param array  $injectInfo
+     * @return array
+     */
+    public static function parseDimDoc( $comments, $injectInfo=array() )
+    {
+        if( !preg_match_all( "/(@.*)$/mU", $comments, $matches ) ) return array();
+        $injectList = array();
+        foreach( $matches[1] as $comment ) {
+            if( !preg_match( '/@DimInjection[ \t]+(.*)$/', $comment, $comMatch ) ) continue;
+            $dimInfo = preg_split( '/[ \t]+/', trim( $comMatch[1] ) );
+            $injectList[] = self::parseDimInjection( $dimInfo, $injectInfo );
+        }
+        return $injectList;
+    }
+
+    /**
+     * parse @DimInjection comment into injection information.
+     *
+     * @param array $dimInfo
+     * @param array $injectInfo
+     * @return array
+     */
+    private static function parseDimInjection( $dimInfo, $injectInfo=array() )
+    {
+        if( empty( $injectInfo ) ) {
+            $injectInfo = array(
+                'by' => 'fresh',
+                'ob' => 'obj',
+                'id' => null,
+            );
+        }
+        foreach( $dimInfo as $info ) {
+            switch( strtolower( $info ) ) {
+                case 'none':   $injectInfo[ 'by' ] = null;      break;
+                case 'get':    $injectInfo[ 'by' ] = 'get';     break;
+                case 'fresh':  $injectInfo[ 'by' ] = 'fresh';   break;
+                case 'raw':    $injectInfo[ 'ob' ] = 'raw';     break;
+                case 'obj':    $injectInfo[ 'ob' ] = 'obj';     break;
+                default:       $injectInfo[ 'id' ] = $info;     break;
+            }
+        }
+        return $injectInfo;
     }
 
     /**
