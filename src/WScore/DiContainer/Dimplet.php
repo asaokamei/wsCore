@@ -181,7 +181,7 @@ class Dimplet
      */
     public function raw( $id, $by='get' )
     {
-        return $this->values->raw( $id, $by );
+        return $this->values->raw( $this, $id, $by );
     }
 
     /**
