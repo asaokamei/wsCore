@@ -3,6 +3,7 @@ namespace WScore\DiContainer;
 
 class Forge
 {
+    public static $PROPERTY_INJECTION = false;
     private $useApc = true;
     private $cacheKey = 'DimForge:cached';
     private $cached = array();
@@ -29,10 +30,11 @@ class Forge
         if( $diList = $this->fetch( $className ) ) return $diList;
         $refClass   = new \ReflectionClass( $className );
         $dimConst   = $this->dimConstructor( $refClass );
+        $dimProp    = $this->dimProperty( $refClass );
         $diList     = array(
             'construct' => $dimConst,
-            'setter' => array(),
-            'property' => array(),
+            'setter'    => array(),
+            'property'  => $dimProp,
         );
         $this->store( $className, $diList );
         return $diList;
@@ -48,8 +50,15 @@ class Forge
     public function forge( $className, $di )
     {
         $refClass   = new \ReflectionClass( $className );
-        $args = $di[ 'construct' ];
-        $object = $refClass->newInstanceArgs( $args );
+        // constructor injection
+        $object = $refClass->newInstanceArgs( $di[ 'construct' ] );
+        // property injection.
+        foreach( $di[ 'property' ] as $propName => $dep ) {
+            if( !$refClass->hasProperty( $propName ) ) continue;
+            $refProp = $refClass->getProperty( $propName );
+            $refProp->setAccessible( true );
+            $refProp->setValue( $object, $dep );
+        }
         return $object;
     }
     // +----------------------------------------------------------------------+
@@ -65,6 +74,33 @@ class Forge
         if( !$refConst   = $refClass->getConstructor() ) return array();
         if( !$comments   = $refConst->getDocComment()  ) return array();
         $injectList = Utils::parseDimDoc( $comments );
+        return $injectList;
+    }
+
+    /**
+     * get dependency information of properties for a class.
+     * searches all properties in parent classes as well.
+     *
+     * @param \ReflectionClass $refClass
+     * @return array
+     */
+    public  function dimProperty( $refClass )
+    {
+        $injectList = array();
+        if( !self::$PROPERTY_INJECTION ) return $injectList;
+        do {
+            if( $properties = $refClass->getProperties() ) {
+                foreach( $properties as $refProp ) {
+                    if( isset( $injectList[ $refProp->name ] ) ) continue;
+                    if( $comments = $refProp->getDocComment() ) {
+                        if( $info = Utils::parseDimDoc( $comments ) ) {
+                            $injectList[ $refProp->name ] = end( $info );
+                        }
+                    }
+                }
+            }
+            $refClass = $refClass->getParentClass();
+        } while( false !== $refClass );
         return $injectList;
     }
     // +----------------------------------------------------------------------+

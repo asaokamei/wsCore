@@ -141,10 +141,18 @@ class Dimplet
     {
         $injectList = $this->forge->listDi( $className );
         $injectList = Utils::mergeOption( $injectList, $option );
+        $diList = array(
+            'construct' => array(),
+            'property'  => array(),
+            'setter'    => array(),
+        );
         foreach( $injectList['construct'] as $key => $injectInfo ) {
-            $injectList['construct'][$key] = Utils::constructByInfo( $this, $injectInfo );
+            $diList['construct'][$key] = Utils::constructByInfo( $this, $injectInfo );
         }
-        $object = $this->forge->forge( $className, $injectList );
+        foreach( $injectList['property'] as $key => $injectInfo ) {
+            $diList['property'][$key] = Utils::constructByInfo( $this, $injectInfo );
+        }
+        $object = $this->forge->forge( $className, $diList );
         return $object;
     }
 
