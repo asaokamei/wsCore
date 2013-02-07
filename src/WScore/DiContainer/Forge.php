@@ -20,6 +20,36 @@ class Forge
     }
 
     /**
+     * DI by constructor. uses annotation
+     *
+     * @DimInjection
+     *
+     * @param Dimplet    $container
+     * @param string     $className
+     * @param array|null $option
+     * @return object
+     */
+    public function construct( $container, $className, $option=array() )
+    {
+        $injectList = $this->listDi( $className );
+        $injectList = Utils::mergeOption( $injectList, $option );
+        $diList = array(
+            'construct' => array(),
+            'property'  => array(),
+            'setter'    => array(),
+        );
+        foreach( $injectList['construct'] as $key => $injectInfo ) {
+            $diList['construct'][$key] = Utils::constructByInfo( $container, $injectInfo );
+        }
+        foreach( $injectList['property'] as $key => $injectInfo ) {
+            $diList['property'][$key][0] = Utils::constructByInfo( $container, $injectInfo[0] );
+            $diList['property'][$key][1] = $injectInfo[1];
+        }
+        $object = $this->forge( $className, $diList );
+        return $object;
+    }
+
+    /**
      * list dependencies of a className. 
      * 
      * @param string $className
@@ -44,20 +74,22 @@ class Forge
      * construct/forge a className injecting dependencies in $di.
      * 
      * @param $className
-     * @param $di
+     * @param $diList
      * @return object
      */
-    public function forge( $className, $di )
+    public function forge( $className, $diList )
     {
         $refClass   = new \ReflectionClass( $className );
         // constructor injection
-        $object = $refClass->newInstanceArgs( $di[ 'construct' ] );
+        $object = $refClass->newInstanceArgs( $diList[ 'construct' ] );
         // property injection.
-        foreach( $di[ 'property' ] as $propName => $dep ) {
+        foreach( $diList[ 'property' ] as $propName => $dep ) 
+        {
             if( !$refClass->hasProperty( $propName ) ) continue;
-            $refProp = $refClass->getProperty( $propName );
+            /** @var $refProp \ReflectionProperty */
+            $refProp = $dep[1];
             $refProp->setAccessible( true );
-            $refProp->setValue( $object, $dep );
+            $refProp->setValue( $object, $dep[0] );
         }
         return $object;
     }
@@ -94,7 +126,7 @@ class Forge
                     if( isset( $injectList[ $refProp->name ] ) ) continue;
                     if( $comments = $refProp->getDocComment() ) {
                         if( $info = Utils::parseDimDoc( $comments ) ) {
-                            $injectList[ $refProp->name ] = end( $info );
+                            $injectList[ $refProp->name ] = array( end( $info ), $refProp );
                         }
                     }
                 }
