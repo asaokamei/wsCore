@@ -4,19 +4,16 @@ namespace WScore\DiContainer;
 class Forge
 {
     public static $PROPERTY_INJECTION = false;
-    private $useApc = true;
-    private $cacheKey = 'DimForge:cached';
-    private $cached = array();
+
+    /** @var Cache_Interface */
+    private $cache  = null;
     // +----------------------------------------------------------------------+
-    public function __construct()
+    /**
+     * @param null|Cache_Interface $cache
+     */
+    public function __construct( $cache=null )
     {
-        if( $this->useApc && function_exists( 'apc_store' ) ) {
-            $this->useApc = true;
-            $this->cached = unserialize( apc_fetch( $this->cacheKey ) ) ?: array();
-        }
-        else {
-            $this->useApc = false;
-        }
+        if( !$cache ) $this->cache = Cache::getCache();
     }
 
     /**
@@ -57,7 +54,7 @@ class Forge
      */
     public function listDi( $className )
     {
-        if( $diList = $this->fetch( $className ) ) return $diList;
+        if( $diList = $this->cache->fetch( $className ) ) return $diList;
         $refClass   = new \ReflectionClass( $className );
         $dimConst   = $this->dimConstructor( $refClass );
         $dimProp    = $this->dimProperty( $refClass );
@@ -66,7 +63,7 @@ class Forge
             'setter'    => array(),
             'property'  => $dimProp,
         );
-        $this->store( $className, $diList );
+        $this->cache->store( $className, $diList );
         return $diList;
     }
 
@@ -134,31 +131,6 @@ class Forge
             $refClass = $refClass->getParentClass();
         } while( false !== $refClass );
         return $injectList;
-    }
-    // +----------------------------------------------------------------------+
-    //  Caching using APC.
-    // +----------------------------------------------------------------------+
-    /**
-     * @param $className
-     * @param $diList
-     */
-    private function store( $className, $diList ) 
-    {
-        $this->cached[ $className ] = $diList;
-        apc_store( $this->cacheKey, serialize( $this->cached ) );
-    }
-
-    /**
-     * @param $className
-     * @return bool
-     */
-    private function fetch( $className )
-    {
-        if( !$this->useApc ) return false;
-        if( array_key_exists( $className, $this->cached ) ) {
-            return $this->cached[ $className ];
-        }
-        return false;
     }
     // +----------------------------------------------------------------------+
 }
