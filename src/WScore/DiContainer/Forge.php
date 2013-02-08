@@ -13,7 +13,11 @@ class Forge
      */
     public function __construct( $cache=null )
     {
-        if( !$cache ) $this->cache = Cache::getCache();
+        if( $cache ) {
+            $this->cache = $cache;
+        } else {
+            $this->cache = Cache::getCache();
+        }
     }
 
     /**

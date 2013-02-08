@@ -8,6 +8,8 @@ class Core
     /** @var \WScore\DiContainer\Dimplet */
     private static $_container = null;
 
+    private static $_cache = null;
+
     /** @var array      set easy mode */
     public static $easy = array(
         'Query'     => '\WScore\DbAccess\Query',
@@ -34,11 +36,20 @@ class Core
     public static function go() 
     {
         if( !isset( self::$_container ) ) {
-            self::$_container = new Dimplet(); 
+            self::newDiC();
         }
         self::_fill( self::$easy );
         self::$_container->set( 'Container', self::$_container );
         return self::$_container;
+    }
+
+    public static function newDiC()
+    {
+        self::$_cache = \WScore\DiContainer\Cache::getCache();
+        self::$_container = new Dimplet(
+            new \WScore\DiContainer\Pimplet(),
+            new \WScore\DiContainer\Forge( self::$_cache )
+        );
     }
 
     /**
