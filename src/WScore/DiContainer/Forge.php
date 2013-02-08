@@ -5,6 +5,12 @@ class Forge
 {
     public static $PROPERTY_INJECTION = false;
 
+    /** @var array */
+    private $cachedDi = array();
+
+    /** @var string */
+    private $cacheName = 'WScore:DimForge:';
+
     /** @var Cache_Interface */
     private $cache  = null;
     // +----------------------------------------------------------------------+
@@ -18,6 +24,7 @@ class Forge
         } else {
             $this->cache = Cache::getCache();
         }
+        $this->cachedDi = $this->cache->fetch( $this->cacheName );
     }
 
     /**
@@ -58,7 +65,7 @@ class Forge
      */
     public function listDi( $className )
     {
-        if( $diList = $this->cache->fetch( $className ) ) return $diList;
+        if( $diList = $this->fetch( $className ) ) return $diList;
         $refClass   = new \ReflectionClass( $className );
         $dimConst   = $this->dimConstructor( $refClass );
         $dimProp    = $this->dimProperty( $refClass );
@@ -67,8 +74,20 @@ class Forge
             'setter'    => array(),
             'property'  => $dimProp,
         );
-        $this->cache->store( $className, $diList );
+        $this->store( $className, $diList );
         return $diList;
+    }
+
+    private function fetch( $className ) {
+        if( isset( $this->cachedDi[ $className ] ) ) {
+            return $this->cachedDi[ $className ];
+        }
+        return false;
+    }
+
+    private function store( $className, $di ) {
+        $this->cachedDi[ $className ] = $di;
+        $this->cache->store( $this->cacheName, $this->cachedDi );
     }
 
     /**
