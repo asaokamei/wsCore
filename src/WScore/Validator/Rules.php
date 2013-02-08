@@ -1,6 +1,13 @@
 <?php
 namespace WScore\Validator;
 
+/**
+ * about pattern and matches filter.
+ * both filters uses preg_match for patter match.
+ * it's just pattern is uses in html5's form element, while matches are not.
+ *
+ */
+
 /** @method date() */
 class Rules implements \ArrayAccess
 {
@@ -10,8 +17,10 @@ class Rules implements \ArrayAccess
     /** @var array        predefined filter filter set        */
     public $filterTypes = array();
 
+    /** @var null|string */
     public $type = null;
-    
+
+    /** @var array */
     public $filter = array();
     
     // +----------------------------------------------------------------------+
@@ -71,8 +80,26 @@ class Rules implements \ArrayAccess
         $this->filter = $this->filterOrder;
     }
 
+    // +----------------------------------------------------------------------+
+    /**
+     * @return null|string
+     */
     public function getType() {
         return $this->type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired() {
+        return !!$this->filter[ 'required' ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPattern() {
+        return $this->filter[ 'pattern' ];
     }
 
     // +----------------------------------------------------------------------+
