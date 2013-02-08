@@ -103,7 +103,7 @@ class Filter
      * @param $p
      */
     public function filter_sanitize( $p ) {
-        $option = $this->arrGet( $this->patterns, $p, $p );
+        $option = $this->arrGet( $this->matchType, $p, $p );
         $this->value = filter_var( $this->value, $option );
     }
 
@@ -177,7 +177,7 @@ class Filter
      * options for patterns.
      * @var array
      */
-    public $patterns = array(
+    public $matchType = array(
         'number' => '[0-9]+',
         'int'    => '[-0-9]+',
         'float'  => '[-.0-9]+',
@@ -185,12 +185,17 @@ class Filter
         'mail'   => '[a-zA-Z0-9_.-]+@[a-zA-Z0-9_.-]+\.[a-zA-Z]+',
     );
 
+    public function filter_matches( $p ) {
+        $option  = $this->arrGet( $this->matchType, $p, $p );
+        if( !preg_match( "/^{$option}\$/", $this->value ) ) {
+            $this->error( __METHOD__, $p );
+        }
+    }
     /**
      * @param $p
      */
     public function filter_pattern( $p ) {
-        $option  = $this->arrGet( $this->patterns, $p, $p );
-        if( !preg_match( "/^{$option}\$/", $this->value ) ) {
+        if( !preg_match( "/^{$p}\$/", $this->value ) ) {
             $this->error( __METHOD__, $p );
         }
     }
