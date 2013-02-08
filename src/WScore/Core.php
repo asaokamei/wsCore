@@ -112,6 +112,7 @@ class Core
      */
     public static function clear() {
         self::$_container = null;
+        self::$_cache     = null;
     }
 
     // +----------------------------------------------------------------------+
