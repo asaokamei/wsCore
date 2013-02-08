@@ -115,6 +115,29 @@ class NewValidator
 
     /**
      * @param string $name
+     * @param mixed  $value
+     * @return NewValidator
+     */
+    public function pushValue( $name, $value ) {
+        $this->output[ $name ] = $value;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $error
+     * @param bool|mixed $value
+     * @return NewValidator
+     */
+    public function pushError( $name, $error, $value=false ) {
+        $this->errors[ $name ] = $error;
+        $this->err_num ++;
+        if( $value !== false ) $this->output[ $name ] = $value;
+        return $this;
+    }
+    
+    /**
+     * @param string $name
      * @param array|Rules $filters
      * @param null  $message
      * @return mixed
@@ -134,8 +157,7 @@ class NewValidator
         // prepares filter for sameWith.
         $filters = Utils::prepare_sameWith( $this, $filters );
         // now, validate this value.
-        $err_msg = null;
-        $ok = $this->validate->is( $value, $filters, $err_msg );
+        $ok = $this->validate->is( $value, $filters, $message );
         return $ok;
     }
     // +----------------------------------------------------------------------+
