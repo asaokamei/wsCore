@@ -129,7 +129,7 @@ class Dimplet
             if( isset( $this->options[$id] ) ) { // prepare options
                 $option = Utils::mergeOption( $this->options[$id], $option );
             }
-            $found = $this->construct( $found, $option );
+            $found = $this->forge->construct( $this, $found, $option );
         }
         // extend the found value if extend is set.
         if( array_key_exists( $id, $this->extends ) ) {
@@ -137,19 +137,6 @@ class Dimplet
             $found = $extender( $found, $this );
         }
         return $found;
-    }
-
-    /**
-     * DI by constructor. uses annotation
-     * @DimInjection
-     *
-     * @param string     $className
-     * @param array|null $option
-     * @return object
-     */
-    public function construct( $className, $option=array() )
-    {
-        return $this->forge->construct( $this, $className, $option );
     }
 
     /**
