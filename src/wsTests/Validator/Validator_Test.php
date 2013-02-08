@@ -48,7 +48,7 @@ class Validator_Test extends \PHPUnit_Framework_TestCase
     {
         $text_number = '123490';
         $text = $text_number;
-        $filters = 'pattern:number';
+        $filters = 'matches:number';
 
         $ok = $this->validator->isValid( $text, $filters );
         $this->assertTrue( $ok );
