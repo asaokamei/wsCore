@@ -68,7 +68,7 @@ class FrontMC
             if ( !class_exists( $controller_name ) ) {
                 throw new FrontMcNotFoundException( 'no such class: ' . $controller_name );
             }
-            $controller = $this->container->fresh( $controller_name );
+            $controller = $this->container->get( $controller_name );
 
             // set up pre_action method if exists.
             if( method_exists( $controller, 'pre_action' ) ) {
