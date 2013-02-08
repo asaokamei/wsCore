@@ -10,7 +10,7 @@ class NewValidator
     protected $source = array();
 
     /** @var array                 validated and invalidated data  */
-    protected $data = array();
+    protected $output = array();
 
     /** @var array                 invalidated error messages      */
     protected $errors = array();
@@ -43,16 +43,16 @@ class NewValidator
      */
     public function pop( $key=null ) {
         if( is_null( $key ) ) {
-            return $this->data;
+            return $this->output;
         }
-        return $this->arrGet( $this->data, $key );
+        return $this->arrGet( $this->output, $key );
     }
 
     /**
      * @return array
      */
     public function popSafe() {
-        $safeData = $this->data;
+        $safeData = $this->output;
         $this->_findClean( $safeData, $this->errors );
         return $safeData;
     }
@@ -107,13 +107,13 @@ class NewValidator
     public function push( $name, $filters=array(), $message=null )
     {
         $this->find( $name, $filters, $message );
-        $this->data[ $name ] = $this->validate->value;
+        $this->output[ $name ] = $this->validate->value;
         if( !$this->validate->isValid ) {
             $this->errors[ $name ] = $this->validate->err_msg;
             $this->err_num ++;
             return false;
         }
-        return $this->data[ $name ];
+        return $this->output[ $name ];
     }
 
     /**
