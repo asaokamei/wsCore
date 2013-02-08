@@ -25,12 +25,12 @@ class CenaFriendController
      * @param \WScore\DataMapper\EntityManager   $em
      * @param \friends\views\cenaFriendsView     $view
      * @param \WScore\DataMapper\Role            $role
-     * @param \Closure                           $pager
-     * @param \WScore\DataMapper\CenaManager                           $cena
+     * @param \wsModule\Alt\DbAccess\Paginate    $pager
+     * @param \WScore\DataMapper\CenaManager     $cena
      * @DimInjection get EntityManager
      * @DimInjection get \friends\views\cenaFriendsView
      * @DimInjection get \WScore\DataMapper\Role
-     * @DimInjection get Raw \wsModule\Alt\DbAccess\Paginate
+     * @DimInjection get \wsModule\Alt\DbAccess\Paginate
      * @DimInjection GET \WScore\DataMapper\CenaManager
      */
     public function __construct( $em, $view, $role, $pager, $cena )
@@ -78,10 +78,8 @@ class CenaFriendController
     public function getIndex()
     {
         $uri = $this->front->request->getRequestUri();
-        $pager = $this->pager;
-        $pager = $pager();
-        $entities   = $this->loadIndex( $pager );
-        $this->view->showForm_list( $entities, $pager, 'edit', $uri );
+        $entities   = $this->loadIndex( $this->pager );
+        $this->view->showForm_list( $entities, $this->pager, 'edit', $uri );
         return $this->view;
     }
 
@@ -105,13 +103,11 @@ class CenaFriendController
         }
         else 
         {
-            $pager = $this->pager;
-            $pager = $pager();
-            $entities   = $this->loadIndex( $pager );
+            $entities   = $this->loadIndex( $this->pager );
             /** @var $model \friends\model\Friends */
             $model = $this->em->getModel( 'friends\model\Friends' );
             $model->setupFormForListings();
-            $this->view->showForm_list( $entities, $pager, 'save', $uri );
+            $this->view->showForm_list( $entities, $this->pager, 'save', $uri );
         }
         return $this->view;
     }

@@ -48,7 +48,7 @@ class DataIO_Test extends \PHPUnit_Framework_TestCase
         $data = $this->getData();
         $value = NULL;
         $this->dio->source( $data );
-        $this->dio->pushValue( 'number', 'pattern:number', $value );
+        $this->dio->pushValue( 'number', 'matches:number', $value );
 
         $this->assertEquals( $data[ 'number' ], $value );
     }

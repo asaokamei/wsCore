@@ -3,10 +3,9 @@ include( __DIR__ . '/autoload.php' );
 include( __DIR__ . '/../src/autoloader.php' );
 use WScore\Core;
 
-Core::cache();
+$container = Core::go();
 if( !$front = Core::fetch( 'cenaFriend.app' ) ) {
 
-    $container = Core::go();
     $container->set( 'Pdo', array( 'dsn' => 'mysql:dbname=test_friends', 'username' => 'admin', 'password' => 'admin' ) );
 
     /** @var $front wsModule\Alt\Web\FrontMC */
@@ -32,6 +31,7 @@ if( !$front = Core::fetch( 'cenaFriend.app' ) ) {
         'cenaFriends'                        => array( 'action' => 'index' ),
     );
     $front->router->set( $routes );
+    $container->get( '\friends\CenaFriendController' );
     Core::store( 'cenaFriend.app', $front );
 }
 

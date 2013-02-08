@@ -18,7 +18,7 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
     function test_setting_err_msg()
     {
         $text = 'text';
-        $filters    = array( 'err_msg' => 'not a number', 'pattern' => 'number', );
+        $filters    = array( 'err_msg' => 'not a number', 'matches' => 'number', );
         $ok = $this->validate->validate( $text, $filters );
         $this->assertFalse( $ok );
         $this->assertFalse( $this->validate->isValid );
@@ -51,22 +51,22 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
     function test_error_pattern_array()
     {
         $text = array( '1234', 'text', '5678' );
-        $filters    = array( 'pattern' => 'number' );
+        $filters    = array( 'matches' => 'number' );
         $ok = $this->validate->validate( $text, $filters );
         $this->assertFalse( $ok );
         $this->assertFalse( $this->validate->isValid );
         $error = $this->validate->err_msg;
-        $this->assertEquals( 'invalid pattern with number', $error[1] );
+        $this->assertEquals( 'invalid matches with number', $error[1] );
     }
     function test_error_pattern_reports_option()
     {
         $text = 'text';
-        $filters    = array( 'pattern' => 'number' );
+        $filters    = array( 'matches' => 'number' );
         $ok = $this->validate->validate( $text, $filters );
         $this->assertFalse( $ok );
         $this->assertFalse( $this->validate->isValid );
         $error = $this->validate->err_msg;
-        $this->assertEquals( 'invalid pattern with number', $error );
+        $this->assertEquals( 'invalid matches with number', $error );
     }
     public function test_is_style()
     {
@@ -89,7 +89,7 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
 
         $text_number = '123490';
         $text = $text_number;
-        $filters = array( 'pattern' => 'number' );
+        $filters = array( 'matches' => 'number' );
 
         $ok = $this->validate->is( $text, $filters );
         $this->assertTrue( $ok );
@@ -126,7 +126,7 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
     {
         $text_number = '123490';
         $text = $text_number;
-        $filters = array( 'pattern' => 'number' );
+        $filters = array( 'matches' => 'number' );
 
         $ok = $this->validate->validate( $text, $filters );
         $this->assertTrue( $ok );

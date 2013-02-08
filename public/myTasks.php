@@ -3,10 +3,9 @@ include( __DIR__ . '/autoload.php' );
 include( __DIR__ . '/../src/autoloader.php' );
 use WScore\Core;
 
-Core::cache();
+$container = Core::go();
 if( !$front = Core::fetch( 'myTask.app' ) ) {
 
-    $container = Core::go();
     $container->set( 'Pdo', array( 'dsn' => 'sqlite:' . __DIR__ . '/task/data/tasks.sqlite' ) );
 
     /** @var $front wsModule\Alt\Web\FrontMC */
@@ -33,6 +32,8 @@ if( !$front = Core::fetch( 'myTask.app' ) ) {
         'myTasks'              => array( 'controller' => 'task', 'action' => 'index' ),
     );
     $front->router->set( $routes );
+
+    $container->get( '\task\TaskController' );
 
     Core::store( 'myTask.app', $front );
 }

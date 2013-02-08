@@ -1,6 +1,13 @@
 <?php
 namespace WScore\Validator;
 
+/**
+ * about pattern and matches filter.
+ * both filters uses preg_match for patter match.
+ * it's just pattern is uses in html5's form element, while matches are not.
+ *
+ */
+
 /** @method date() */
 class Rules implements \ArrayAccess
 {
@@ -10,8 +17,10 @@ class Rules implements \ArrayAccess
     /** @var array        predefined filter filter set        */
     public $filterTypes = array();
 
+    /** @var null|string */
     public $type = null;
-    
+
+    /** @var array */
     public $filter = array();
     
     // +----------------------------------------------------------------------+
@@ -40,7 +49,7 @@ class Rules implements \ArrayAccess
             'code'        => false,
             'maxlength'   => false,
             'pattern'     => false,      // checks pattern with preg_match.
-            'number'      => false,
+            'matches'     => false,      // preg_match with default types.
             'min'         => false,
             'max'         => false,
             'range'       => false,
@@ -55,10 +64,10 @@ class Rules implements \ArrayAccess
         $this->filterTypes = array(
             'binary'   => 'noNull:FALSE | encoding:FALSE | mbConvert:FALSE | trim:FALSE ',
             'text'     => '',
-            'mail'     => 'mbConvert:hankaku | sanitize:email | pattern:mail',
-            'number'   => 'mbConvert:hankaku | pattern:number',
-            'integer'  => 'mbConvert:hankaku | pattern:int',
-            'float'    => 'mbConvert:hankaku | pattern:float',
+            'mail'     => 'mbConvert:hankaku | sanitize:email | matches:mail',
+            'number'   => 'mbConvert:hankaku | matches:number',
+            'integer'  => 'mbConvert:hankaku | matches:int',
+            'float'    => 'mbConvert:hankaku | matches:float',
             'date'     => 'multiple:YMD | mbConvert:hankaku | pattern:[0-9]{4}-[0-9]{2}-[0-9]{2}',
             'dateYM'   => 'multiple:YM  | mbConvert:hankaku | pattern:[0-9]{4}-[0-9]{2}',
             'time'     => 'multiple:His | mbConvert:hankaku | pattern:[0-9]{2}:[0-9]{2}:[0-9]{2}',
@@ -71,8 +80,26 @@ class Rules implements \ArrayAccess
         $this->filter = $this->filterOrder;
     }
 
+    // +----------------------------------------------------------------------+
+    /**
+     * @return null|string
+     */
     public function getType() {
         return $this->type;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired() {
+        return !!$this->filter[ 'required' ];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPattern() {
+        return $this->filter[ 'pattern' ];
     }
 
     // +----------------------------------------------------------------------+
