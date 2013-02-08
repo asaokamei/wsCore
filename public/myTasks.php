@@ -3,17 +3,18 @@ include( __DIR__ . '/autoload.php' );
 include( __DIR__ . '/../src/autoloader.php' );
 use WScore\Core;
 
-if( !$front = apc_fetch( 'myTask.app' ) ) {
+Core::cache();
+if( !$front = Core::fetch( 'myTask.app' ) ) {
 
-    Core::go();
-    Core::setPdo( array( 'dsn' => 'sqlite:' . __DIR__ . '/task/data/tasks.sqlite' ) );
+    $container = Core::go();
+    $container->set( 'Pdo', array( 'dsn' => 'sqlite:' . __DIR__ . '/task/data/tasks.sqlite' ) );
 
     /** @var $front wsModule\Alt\Web\FrontMC */
     /** @var $request \wsModule\Alt\Web\Request */
     /** @var $router \wsModule\Alt\Web\Router */
-    $front          = Core::get( 'wsModule\Alt\Web\FrontMC' );
-    $front->request = Core::get( 'wsModule\Alt\Web\Request' );
-    $front->router  = Core::get( 'wsModule\Alt\Web\Router' );
+    $front          = $container->get( 'wsModule\Alt\Web\FrontMC' );
+    $front->request = $container->get( 'wsModule\Alt\Web\Request' );
+    $front->router  = $container->get( 'wsModule\Alt\Web\Router' );
     $front->setDefaultParameter( array(
         'namespace'  => 'task',
         'controller' => 'task',
@@ -33,7 +34,7 @@ if( !$front = apc_fetch( 'myTask.app' ) ) {
     );
     $front->router->set( $routes );
 
-    apc_store( 'myTask.app', $front );
+    Core::store( 'myTask.app', $front );
 }
 
 $parameter = $front->router->match( $front->request->getPathInfo( $_SERVER ) );
