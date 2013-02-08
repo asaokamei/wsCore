@@ -64,7 +64,17 @@ class Dimplet
     public function set( $id, $value, $option=null )
     {
         $this->values->set( $id, $value );
-        if( isset( $option ) ) $this->options[ $id ] = Utils::normalizeOption( $option );
+        if( isset( $option ) ) $this->setOption( $id, $option );
+    }
+
+    /**
+     * sets an option for an id.
+     *
+     * @param $id
+     * @param $option
+     */
+    public function setOption( $id, $option ) {
+        $this->options[ $id ] = Utils::normalizeOption( $option );
     }
 
     /**
