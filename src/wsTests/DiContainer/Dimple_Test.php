@@ -236,7 +236,7 @@ class Dimple_Test extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals( $who_dba, $who_inv );
     }
-    function test_option()
+    function test_runtime_option()
     {
         $invoice = $this->container->fresh( 
             '\wsTests\DiContainer\DimpleMockBiz\Invoice',
@@ -248,5 +248,18 @@ class Dimple_Test extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals( $who_dba, $who_inv );
         
+    }
+    function test_set_option()
+    {
+        $this->container->set( 'invoice', '\wsTests\DiContainer\DimpleMockBiz\Invoice',
+            array( 'construct' => array( 0 => array( 'id' => '\wsTests\DiContainer\DimpleMockDb\DumbAccess' ) ) ) 
+        );
+        $invoice = $this->container->fresh( 'invoice' );
+        $who_inv = $invoice->showDbType();
+        $dba = new DimpleMockDb\DumbAccess();
+        $who_dba = $dba->name;
+
+        $this->assertEquals( $who_dba, $who_inv );
+
     }
 }

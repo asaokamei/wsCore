@@ -17,7 +17,10 @@ class FrontMC
     
     /** @var \wsModule\Alt\Web\Request */
     public $request;
-    
+
+    /** @var \wsModule\Alt\Web\Router */
+    public $router;
+
     /** @var array */
     public $parameter = array(
         'method' => 'get',

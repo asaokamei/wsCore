@@ -11,8 +11,11 @@ namespace WScore\DiContainer;
 
 class Dimplet
 {
-    /** @var array|\Closure[]      */
-    private $values = array();
+    /** @var \WScore\DiContainer\Pimplet  */
+    private $values = '\WScore\DiContainer\Pimplet';
+    
+    /** @var array */
+    private $options = array();
 
     /** @var array      */
     private $objects = array();
@@ -27,11 +30,14 @@ class Dimplet
     private static $self = null;
     // +----------------------------------------------------------------------+
     /**
-     * @param Forge $dimConst
+     * @param Pimplet  $pimplet
+     * @param Forge    $forge
+     * @DimInjection Get \WScore\DiContainer\Pimplet
      * @DimInjection Get \WScore\DiContainer\Forge
      */
-    public function __construct( $dimConst=null ) {
-        $this->forge = $dimConst ?: new $this->forge;
+    public function __construct( $pimplet=null, $forge=null ) {
+        $this->values = $pimplet ?: new $this->values;
+        $this->forge = $forge ?: new $this->forge;
     }
 
     public static function getInstance( $dimConst=null )
@@ -53,10 +59,22 @@ class Dimplet
      *
      * @param string $id    The unique identifier for the parameter or object
      * @param mixed  $value The value of the parameter or a \Closure to defined an object
+     * @param array  $option  set dependencies. 
      */
-    public function set($id, $value)
+    public function set( $id, $value, $option=null )
     {
-        $this->values[$id] = $value;
+        $this->values->set( $id, $value );
+        if( isset( $option ) ) $this->setOption( $id, $option );
+    }
+
+    /**
+     * sets an option for an id.
+     *
+     * @param $id
+     * @param $option
+     */
+    public function setOption( $id, $option ) {
+        $this->options[ $id ] = Utils::normalizeOption( $option );
     }
 
     /**
@@ -66,7 +84,7 @@ class Dimplet
      * @return bool
      */
     public function exists( $id ) {
-        return array_key_exists( $id, $this->values );
+        return $this->values->exists( $id );
     }
 
     /**
@@ -93,41 +111,32 @@ class Dimplet
      *
      * @param       $id
      * @param array $option
-     * @throws \RuntimeException
      * @return mixed
      */
     public function fresh( $id, $option=array() )
     {
-        if( array_key_exists($id, $this->values) ) 
-        {
-            $found = $this->values[$id];
-            if( $found instanceof \Closure ) {
-                $found = $found( $this );
+        // if $id is not set at all, return $id itself.
+        $found = $id;
+        if( $this->values->exists( $id ) ) { // found it in the values.
+            $found = $this->values->get( $id );
+        }
+        // check if $found is a closure, or a className to construct.
+        if( $found instanceof \Closure ) {
+            $found = $found( $this );
+        }
+        elseif( Utils::isClassName( $found ) ) {
+            $option = Utils::normalizeOption( $option );
+            if( isset( $this->options[$id] ) ) { // prepare options
+                $option = Utils::mergeOption( $this->options[$id], $option );
             }
-            elseif( $this->isClassName( $found ) ) {
-                $found = $this->construct( $found, $option );
-            }
+            $found = $this->construct( $found, $option );
         }
-        elseif( $this->isClassName( $id ) ) {
-            $found = $this->construct( $id, $option );
-        }
-        else {
-            throw new \RuntimeException(sprintf('Identifier "%s" is not defined.', $id));
-        }
+        // extend the found value if extend is set.
         if( array_key_exists( $id, $this->extends ) ) {
             $extender = $this->extends[ $id ];
             $found = $extender( $found, $this );
         }
         return $found;
-    }
-
-    /**
-     * test if a string maybe a class name, which contains backslash and a-zA-Z0-9.
-     * @param mixed $name
-     * @return bool
-     */
-    private function isClassName( $name ) {
-        return is_string( $name ) && preg_match( "/^[_a-zA-Z0-9\\\\]*$/", $name ) && class_exists( $name );
     }
 
     /**
@@ -140,39 +149,10 @@ class Dimplet
      */
     public function construct( $className, $option=array() )
     {
-        $injectList = $this->forge->listDi( $className );
-        $injectList = $this->array_merge_recursive_distinct( $injectList, $option );
-        foreach( $injectList['construct'] as $key => $injectInfo ) {
-            $injectList['construct'][$key] = $this->getObject( $injectInfo );
-        }
-        $object = $this->forge->forge( $className, $injectList );
-        return $object;
+        return $this->forge->construct( $this, $className, $option );
     }
 
     /**
-     * @param array $injectInfo
-     * @return mixed|null
-     */
-    private function getObject( $injectInfo )
-    {
-        extract( $injectInfo ); // gets $by, $ob, and $id.
-        /** @var $by string   type of object fresh/get   */
-        /** @var $ob string   type of construct obj/raw  */
-        /** @var $id string   look for id to generate    */
-        $object = null;
-        if( $by && $ob && $id ) {
-            if( $ob == 'raw' ) {
-                $object = $this->raw( $id, $by );
-            }
-            else {
-                $object = $this->$by( $id );
-            }
-        }
-        return $object;
-    }
-
-    /**
-     * from Pimple!
      * Returns a \Closure that stores the result of the given \Closure for
      * uniqueness in the scope of this instance of Pimple.
      *
@@ -181,17 +161,10 @@ class Dimplet
      */
     public function share( \Closure $callable )
     {
-        return function ($c) use ($callable) {
-            static $object;
-            if (null === $object) {
-                $object = $callable($c);
-            }
-            return $object;
-        };
+        return $this->values->share( $callable );
     }
     
     /**
-     * from Pimple!
      * Protects a callable from being interpreted as a service. This is useful
      * when you want to store a callable or a class name as a parameter.
      *
@@ -200,13 +173,10 @@ class Dimplet
      */
     public function protect( $value )
     {
-        return function () use ($value) {
-            return $value;
-        };
+        return $this->values->protect( $value );
     }
 
     /**
-     * from Pimple!
      * Gets a \Closure returning an object for id.
      *
      * @param string $id   The unique identifier for the parameter or object
@@ -215,15 +185,7 @@ class Dimplet
      */
     public function raw( $id, $by='get' )
     {
-        if( array_key_exists( $id, $this->values ) && 
-            $this->values[ $id ] instanceof \Closure ) {
-            return $this->values[ $id ];
-        }
-        $c = $this;
-        return function() use( $c, $id, $by ) {
-            /** @var $c Dimplet */
-            return $c->$by( $id );
-        };
+        return $this->values->raw( $this, $id, $by );
     }
 
     /**
@@ -243,60 +205,10 @@ class Dimplet
     {
         /** @var $factory \Closure */
         if( isset( $this->extends[ $id ] ) ) {
-            $callable2 = $this->extends[ $id ];
-            $this->extends[$id] = function( $obj ) use( $callable, $callable2 ) {
-                $obj = $callable2( $obj );
-                return $callable ( $obj );
-            };
+            $this->extends[$id] = $this->values->makeExtend( $callable, $this->extends[ $id ] );
         }
         else {
             $this->extends[$id] = $callable;
         }
     }
-
-    /**
-     * FROM:
-     * http://www.php.net/manual/ja/function.array-merge-recursive.php#92195
-     * 
-     * array_merge_recursive does indeed merge arrays, but it converts values with duplicate
-     * keys to arrays rather than overwriting the value in the first array with the duplicate
-     * value in the second array, as array_merge does. I.e., with array_merge_recursive,
-     * this happens (documented behavior):
-     *
-     * array_merge_recursive(array('key' => 'org value'), array('key' => 'new value'));
-     *     => array('key' => array('org value', 'new value'));
-     *
-     * array_merge_recursive_distinct does not change the datatypes of the values in the arrays.
-     * Matching keys' values in the second array overwrite those in the first array, as is the
-     * case with array_merge, i.e.:
-     *
-     * array_merge_recursive_distinct(array('key' => 'org value'), array('key' => 'new value'));
-     *     => array('key' => array('new value'));
-     *
-     * Parameters are passed by reference, though only for performance reasons. They're not
-     * altered by this function.
-     *
-     * @param array $array1
-     * @param array $array2
-     * @return array
-     * @author Daniel <daniel (at) danielsmedegaardbuus (dot) dk>
-     * @author Gabriel Sobrinho <gabriel (dot) sobrinho (at) gmail (dot) com>
-     */
-    private function array_merge_recursive_distinct ( array &$array1, array &$array2 )
-    {
-        $merged = $array1;
-
-        foreach ( $array2 as $key => &$value )
-        {
-            if ( is_array ( $value ) && isset ( $merged [$key] ) && is_array ( $merged [$key] ) )
-            {
-                $merged [$key] = $this->array_merge_recursive_distinct ( $merged [$key], $value );
-            }
-            else
-            {
-                $merged [$key] = $value;
-            }
-        }
-
-        return $merged;
-    }}
+}

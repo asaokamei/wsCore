@@ -8,6 +8,9 @@ class Core
     /** @var \WScore\DiContainer\Dimplet */
     private static $_container = null;
 
+    /** @var \WScore\DiContainer\Cache_Interface */
+    private static $_cache = null;
+
     /** @var array      set easy mode */
     public static $easy = array(
         'Query'     => '\WScore\DbAccess\Query',
@@ -24,21 +27,70 @@ class Core
         '\WScore\DbAccess\DbAccess'   => '\WScore\Aspect\LogDba',
         '\WScore\Validator\Validator' => '\WScore\Aspect\LogValidator',
     );
-    // +----------------------------------------------------------------------+
 
+    // +----------------------------------------------------------------------+
+    //  Managing Caches.
+    // +----------------------------------------------------------------------+
+    /**
+     * setup caches.
+     * @param bool $on
+     */
+    public static function cache( $on=true )
+    {
+        \WScore\DiContainer\Cache::cacheOn( $on );
+        self::$_cache = \WScore\DiContainer\Cache::getCache();
+    }
+
+    /**
+     * stores into cache.
+     *
+     * @param $name
+     * @param $value
+     */
+    public static function store( $name, $value ) {
+        self::$_cache->store( $name, $value );
+    }
+
+    /**
+     * fetches from cache.
+     *
+     * @param $name
+     * @return mixed
+     */
+    public static function fetch( $name ) {
+        return self::$_cache->fetch( $name );
+    }
     /**
      * starts WScore Framework
      * @static
      * @return Core
      */
-    public static function go() 
+
+    // +----------------------------------------------------------------------+
+    //  managing DiContainer, Dimplet.
+    // +----------------------------------------------------------------------+
+    public static function go()
     {
+        if( !isset( self::$_cache ) ) {
+            self::cache();
+        }
         if( !isset( self::$_container ) ) {
-            self::$_container = new Dimplet(); 
+            self::newDiC();
         }
         self::_fill( self::$easy );
         self::$_container->set( 'Container', self::$_container );
         return self::$_container;
+    }
+
+    /**
+     *
+     */
+    public static function newDiC()
+    {
+        self::$_container = new Dimplet(
+            new \WScore\DiContainer\Pimplet(),
+            new \WScore\DiContainer\Forge( self::$_cache )
+        );
     }
 
     /**
@@ -60,8 +112,12 @@ class Core
      */
     public static function clear() {
         self::$_container = null;
+        self::$_cache     = null;
     }
 
+    // +----------------------------------------------------------------------+
+    //  methods to be deleted
+    // +----------------------------------------------------------------------+
     /**
      * @param string $id
      * @param mixed $val

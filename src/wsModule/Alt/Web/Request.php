@@ -32,25 +32,6 @@ class Request
         else {
             $this->_server = & $_SERVER;
         }
-        $this->verifyEncoding = function( $result, $val ) {
-            $ok = mb_check_encoding( $val, Request::CHAR_SET );
-            return $result && $ok;
-        };
-        $this->verifyFile = function( $result, $val ) {
-            $ok = preg_match( '/^[-\._a-zA-Z0-9]+$/', $val );
-            return $result && $ok;
-        };
-        $this->verifyCode = function( $result, $val ) {
-            $ok = preg_match( '/^[_a-zA-Z0-9]+$/', $val );
-            return $result && $ok;
-        };
-        $this->getVerifyMatch = function( $match ) {
-            return function( $result, $val ) use( $match ) {
-                $match = preg_quote( $match );
-                $ok = preg_match( "/^{$match}+$/", $val );
-                return $result && $ok;
-            };
-        };
     }
 
     /**
@@ -148,9 +129,11 @@ class Request
     }
     // +-------------------------------------------------------------+
     /**
+     * @param array|null $config
      * @return bool|string
      */
-    function getPathInfo() {
+    function getPathInfo( $config=null ) {
+        if( isset( $config ) ) $this->_server = $config;
         if( !isset( $this->path_info ) ) {
             $this->path_info = $this->calPathInfo();
         }
@@ -233,7 +216,7 @@ class Request
      */
     function _verify( $val, $verifyName ) {
         /** @var $verify \closure */
-        $verify = $this->$verifyName;
+        $verify = Utils::$verifyName();
         $result = false;
         if( is_callable( $verify ) ) {
             $result = ( is_array( $val ) ) ?

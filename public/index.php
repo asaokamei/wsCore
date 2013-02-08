@@ -1,6 +1,9 @@
 <?php
 
-if( $_GET[ 'act' ] == 'cache-info' ) {
+if( !isset( $_GET[ 'act' ] ) ) {
+    // do nothing
+}
+elseif( $_GET[ 'act' ] == 'cache-info' ) {
     $info =apc_cache_info( 'user' );
     unset( $info[ 'slot_distribution' ] );
     var_dump( $info );
