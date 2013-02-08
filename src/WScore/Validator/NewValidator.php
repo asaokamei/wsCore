@@ -45,7 +45,7 @@ class NewValidator
         if( is_null( $key ) ) {
             return $this->output;
         }
-        return $this->arrGet( $this->output, $key );
+        return Utils::arrGet( $this->output, $key );
     }
 
     /**
@@ -82,7 +82,7 @@ class NewValidator
      * @return array|mixed
      */
     public function popError( $name=null ) {
-        if( $name ) return $this->arrGet( $this->errors, $name );
+        if( $name ) return Utils::arrGet( $this->errors, $name );
         return $this->errors;
     }
 
@@ -93,9 +93,6 @@ class NewValidator
         return !$this->err_num;
     }
 
-    public function arrGet( $arr, $key, $default=null ) {
-        return array_key_exists( $key, $arr ) ? $arr[ $key ] : $default;
-    }
     // +----------------------------------------------------------------------+
 
     /**
@@ -130,110 +127,16 @@ class NewValidator
             // simplest case.
             $value = $this->source[ $name ];
         }
-        elseif( $this->arrGet( $filters, 'multiple' ) ) {
+        elseif( Utils::arrGet( $filters, 'multiple' ) ) {
             // check for multiple case i.e. Y-m-d.
-            $value = $this->prepare_multiple( $name, $filters[ 'multiple' ] );
+            $value = Utils::prepare_multiple( $name, $this->source, $filters[ 'multiple' ] );
         }
         // prepares filter for sameWith.
-        $filters = $this->prepare_sameWith( $filters );
+        $filters = Utils::prepare_sameWith( $this, $filters );
         // now, validate this value.
         $err_msg = null;
         $ok = $this->validate->is( $value, $filters, $err_msg );
         return $ok;
-    }
-
-    // +----------------------------------------------------------------------+
-    //  multiple inputs.
-    // +----------------------------------------------------------------------+
-    /**
-     * @var array   options for multiple preparation.
-     */
-    public $multiples = array(
-        'date'     => array( 'suffix' => 'y,m,d', 'connector' => '-', ),
-        'YMD'      => array( 'suffix' => 'y,m,d', 'connector' => '-', ),
-        'YM'       => array( 'suffix' => 'y,m',   'connector' => '-', ),
-        'time'     => array( 'suffix' => 'h,i,s', 'connector' => ':', ),
-        'His'      => array( 'suffix' => 'h,i,s', 'connector' => ':', ),
-        'Hi'       => array( 'suffix' => 'h,i',   'connector' => ':', ),
-        'datetime' => array( 'suffix' => 'y,m,d,h,i,s', 'format' => '%04d-%02d-%02d %02d:%02d:%02d', ),
-        'tel'      => array( 'suffix' => '1,2,3',   'connector' => '-', ),
-        'credit'   => array( 'suffix' => '1,2,3,4', 'connector' => '', ),
-        'amex'     => array( 'suffix' => '1,2,3',   'connector' => '', ),
-    );
-
-    /**
-     * prepares for validation by creating a value from multiple value.
-     *
-     * @param string $name
-     * @param string|array $option
-     * @return mixed|null|string
-     */
-    public function prepare_multiple( $name, $option )
-    {
-        // get options.
-        if( is_string( $option ) ) {
-            $option = $this->multiples[ $option ];
-        }
-        $sep = array_key_exists( 'separator', $option ) ? $option[ 'separator' ]: '_';
-        $con = array_key_exists( 'connector', $option ) ? $option[ 'connector' ]: '-';
-        // find multiples values from suffix list.
-        $lists = array();
-        $suffix = explode( ',', $option[ 'suffix' ] );
-        foreach( $suffix as $sfx ) {
-            $name_sfx = $name . $sep . $sfx;
-            if( array_key_exists( $name_sfx, $this->source ) ) {
-                $lists[] = $this->source[ $name_sfx ];
-            }
-        }
-        // merge the found list into one value.
-        $found = null; // default is null if list was not found.
-        if( !empty( $lists ) )
-        {
-            // found format using sprintf.
-            if( isset( $option[ 'format' ] ) ) {
-                $param = array_merge( array( $option[ 'format' ] ), $lists );
-                $found = call_user_func_array( 'sprintf', $param );
-            }
-            else {
-                $found = implode( $con, $lists );
-            }
-        }
-        return $found;
-    }
-
-    // +----------------------------------------------------------------------+
-    /**
-     * prepares filter for sameWith rule.
-     * get another value to compare in sameWith, and compare it with the value using sameAs rule.
-     *
-     * @param array|Rules $filters
-     * @return array
-     */
-    public function prepare_sameWith( $filters )
-    {
-        if( !$this->arrGet( $filters, 'sameWith' ) ) return $filters;
-        // find the same with value.
-        $sub_name = $filters[ 'sameWith' ];
-        if( is_object( $filters ) ) {
-            $sub_filter = clone $filters;
-        } else {
-            $sub_filter = $filters;
-        }
-        $sub_filter[ 'sameWith' ] = false;
-        $sub_filter[ 'required' ] = false;
-        $value = null;
-        $this->find( $sub_name, $sub_filter );
-
-        // reset sameWith filter, and set same{As|Empty} filter.
-        $filters[ 'sameWith' ] = false;
-        if( $value ) {
-            $filters[ 'sameAs' ] = $value;
-        }
-        else {
-            $filters[ 'sameEmpty' ] = true;
-        }
-        $filters[ 'sameWith' ] = false;
-        return $filters;
     }
     // +----------------------------------------------------------------------+
 }
