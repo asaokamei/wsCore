@@ -23,8 +23,7 @@ class WScore_SuiteTests
 
         // DbAccess Tests
         $suite->addTestFile( $folder . 'DbAccess/DbAccess_SuiteTest.php' );
-        $suite->addTestFile( $folder . 'DataMapper/EntityManager.php' );
-        $suite->addTestFile( $folder . 'DataMapper/EntityManagerMySql.php' );
+        $suite->addTestFile( $folder . 'DataMapper/All_DataMapper_SuiteTest.php' );
 
         return $suite;
     }
