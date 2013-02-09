@@ -103,7 +103,7 @@ class Filter
      * @param $p
      */
     public function filter_sanitize( $p ) {
-        $option = $this->arrGet( $this->matchType, $p, $p );
+        $option = $this->arrGet( $this->sanitizes, $p, $p );
         $this->value = filter_var( $this->value, $option );
     }
 
