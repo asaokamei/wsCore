@@ -76,7 +76,7 @@ class Rules implements \ArrayAccess, \Iterator
         $this->filterTypes = array(
             'binary'   => 'noNull:FALSE | encoding:FALSE | mbConvert:FALSE | trim:FALSE ',
             'text'     => '',
-            'mail'     => 'mbConvert:hankaku | sanitize:email | matches:mail',
+            'mail'     => 'mbConvert:hankaku | sanitize:mail | matches:mail',
             'number'   => 'mbConvert:hankaku | matches:number',
             'integer'  => 'mbConvert:hankaku | matches:int',
             'float'    => 'mbConvert:hankaku | matches:float',
@@ -159,40 +159,13 @@ class Rules implements \ArrayAccess, \Iterator
     public function mergeFilter( $filter )
     {
         if( is_string( $filter ) ) {
-            $filter = $this->convertFilter( $filter );
+            $filter = Utils::convertFilter( $filter );
         }
         if( empty( $filter ) ) return;
         foreach( $filter as $key => $val ) {
             $this->filter[ $key ] = $val;
         }
         return;
-    }
-    
-    /**
-     * converts string filter to array. string in: 'rule1:parameter1|rule2:parameter2'
-     *
-     * @param string|array $filter
-     * @return array
-     */
-    public function convertFilter( $filter )
-    {
-        if( !$filter ) return array();
-        if( is_array( $filter ) ) return $filter;
-        
-        $filter_array = array();
-        $rules = explode( '|', $filter );
-        foreach( $rules as $rule ) 
-        {
-            $filter = explode( ':', $rule, 2 );
-            array_walk( $filter, function( &$v ) { $v = trim( $v ); } );
-            if( isset( $filter[1] ) ) {
-                $filter_array[ $filter[0] ] = ( $filter[1]=='FALSE' )? false: $filter[1];
-            }
-            else {
-                $filter_array[ $filter[0] ] = true;
-            }
-        }
-        return $filter_array;
     }
 
     /**
