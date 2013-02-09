@@ -9,7 +9,7 @@ namespace WScore\Validator;
  */
 
 /** @method date() */
-class Rules implements \ArrayAccess
+class Rules implements \ArrayAccess, \Iterator
 {
     /** @var array        order of filterOptions to apply     */
     protected $filterOrder = array();
@@ -123,7 +123,7 @@ class Rules implements \ArrayAccess
      * @return Rules
      */
     public function email( $filters=null ) {
-        return $this->ruleForType( 'email', $filters );
+        return $this->ruleForType( 'mail', $filters );
     }
 
     /**
@@ -223,5 +223,46 @@ class Rules implements \ArrayAccess
      */
     public function offsetUnset( $offset ) {
         if( array_key_exists( $offset, $this->filter ) ) unset( $this->filter[ $offset ] );
+    }
+
+    /**
+     * Return the current element
+     * @return mixed Can return any type.
+     */
+    public function current() {
+        return current( $this->filter );
+    }
+
+    /**
+     * Move forward to next element
+     * @return void Any returned value is ignored.
+     */
+    public function next() {
+        next( $this->filter );
+    }
+
+    /**
+     * Return the key of the current element
+     * @return mixed scalar on success, or null on failure.
+     */
+    public function key() {
+        return key( $this->filter );
+    }
+
+    /**
+     * Checks if current position is valid
+     * @return boolean The return value will be casted to boolean and then evaluated.
+     *       Returns true on success or false on failure.
+     */
+    public function valid() {
+        return key( $this->filter ) !== null;
+    }
+
+    /**
+     * Rewind the Iterator to the first element
+     * @return void Any returned value is ignored.
+     */
+    public function rewind() {
+        reset( $this->filter );
     }
 }
