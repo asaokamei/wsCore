@@ -89,7 +89,7 @@ class Validate
             $this->err_msg = array();
             foreach( $value as $key => $val ) 
             {
-                $success = $this->applyFilters( $val, $rules );
+                $success = $this->applyFilters( $val, $this->filter, $rules );
                 $this->value[ $key ] = $this->filter->value;
                 if( !$success ) {
                     $this->err_msg[ $key ] = $this->filter->error;
@@ -99,7 +99,7 @@ class Validate
             $this->isValid = (bool) $this->isValid;
             return $this->isValid;
         }
-        $this->isValid = $this->applyFilters( $value, $rules );
+        $this->isValid = $this->applyFilters( $value, $this->filter, $rules );
         $this->err_msg = $this->filter->error;
         $this->value   = $this->filter->value;
         return $this->isValid;
@@ -109,12 +109,13 @@ class Validate
      * do the validation for a single value.
      *
      * @param string $value
+     * @param Filter $filter
      * @param array  $rules
      * @return bool
      */
-    public function applyFilters( $value, $rules )
+    public function applyFilters( $value, $filter, $rules )
     {
-        $this->filter->setup( $value );
+        $filter->setup( $value );
         $success = true;
         // loop through all the rules to validate $value.
         foreach( $rules as $rule => $parameter )
@@ -123,17 +124,17 @@ class Validate
             if( $parameter === false ) continue; // skip rules with option as FALSE.
             // apply filter.
             $method = 'filter_' . $rule;
-            if( method_exists( $this->filter, $method ) ) {
-                $this->filter->$method( $parameter );
+            if( method_exists( $filter, $method ) ) {
+                $filter->$method( $parameter );
             }
             // got some error. 
-            if( $this->filter->error ) {
-                $this->filter->error = $this->getMessage( $this->filter->error );
+            if( $filter->error ) {
+                $filter->error = $this->getMessage( $filter->error );
                 $success = false;
                 break;
             }
             // loop break. 
-            if( $this->filter->break ) break;
+            if( $filter->break ) break;
         }
         return $success;
     }
