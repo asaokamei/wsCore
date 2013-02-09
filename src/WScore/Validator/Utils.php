@@ -11,9 +11,9 @@ class Utils
      */
     public static function arrGet( $arr, $key, $default=null ) 
     {
-        if( !is_string( $key ) ) return false;
-        if( !is_array(  $arr ) ) return false;
-        return array_key_exists( $key, $arr ) ? $arr[ $key ] : $default;
+        if( !is_string( $key ) ) return $default;
+        if( !is_array(  $arr ) && ( is_object( $arr ) && !( $arr instanceof \ArrayAccess ) ) ) return $default;
+        return isset( $arr[ $key ] ) ? $arr[ $key ] : $default;
     }
     
     // +----------------------------------------------------------------------+
