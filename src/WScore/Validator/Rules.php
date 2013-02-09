@@ -114,6 +114,13 @@ class Rules implements \ArrayAccess, \Iterator
         return $this->filter[ 'pattern' ];
     }
 
+    public function getFilters( $name=null ) {
+        if( isset( $name ) ) { 
+            if( array_key_exists( $name, $this->filter ) ) return $this->filter[ $name ]; 
+            return null;
+        }
+        return $this->filter;
+    }
     // +----------------------------------------------------------------------+
     /**
      * @param $type
@@ -127,6 +134,7 @@ class Rules implements \ArrayAccess, \Iterator
         $typeFilter = $this->filterTypes[ $type ];
         $rule->mergeFilter( $typeFilter );
         $rule->mergeFilter( $filters );
+        $this->filter[ 'type' ] = $type;
         return $rule;
     }
 
