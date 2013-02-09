@@ -8,7 +8,19 @@ namespace WScore\Validator;
  *
  */
 
-/** @method date() */
+/** 
+ * @method text() 
+ * @method mail()
+ * @method number()
+ * @method integer()
+ * @method float()
+ * @method date()
+ * @method dateYM()
+ * @method time()
+ * @method timeHi()
+ * @method tel()
+ * @method fax()
+ */
 class Rules implements \ArrayAccess, \Iterator
 {
     /** @var array        order of filterOptions to apply     */
