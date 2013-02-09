@@ -75,13 +75,22 @@ class Filter
      * @param $p
      */
     public function filter_err_msg( $p ) {
+        $this->filter_message( $p );
+    }
+    public function filter_message( $p ) {
         $this->err_msg = $p;
     }
 
+    /**
+     * removes null from text. 
+     */
     public function filter_noNull() {
         $this->value = str_replace( "\0", '', $this->value );
     }
 
+    /**
+     * trims text. 
+     */
     public function filter_trim() {
         $this->value = trim( $this->value );
     }
