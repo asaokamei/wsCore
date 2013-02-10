@@ -12,7 +12,7 @@ class Role_Abstract implements Role_Interface
     /** @var \WScore\DataMapper\Entity_Interface */
     protected $entity;
 
-    /** @var \WScore\Validator\DataIO */
+    /** @var \WScore\Validation\Validation */
     protected $dio;
 
     /** @var \WScore\Html\Selector */

@@ -10,15 +10,18 @@ class Role_CenaLoad extends Role_Loadable
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DataMapper\CenaManager      $cena
-     * @param \WScore\Validator\DataIO            $dio
+     * @param \WScore\Validation\Validation       $dio
+     * @param \WScore\Validation\Rules            $rule
      * @DimInjection Get \WScore\DataMapper\CenaManager
-     * @DimInjection Get \WScore\Validator\DataIO
+     * @DimInjection Get \WScore\Validation\Validation
+     * @DimInjection Get \WScore\Validation\Rules
      */
-    public function __construct( $cena, $dio )
+    public function __construct( $cena, $dio, $rule )
     {
         $this->em = $cena->em();
         $this->dio = $dio;
         $this->cena = $cena;
+        $this->rule = $rule;
     }
 
     /**
