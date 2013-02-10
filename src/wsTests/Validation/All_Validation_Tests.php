@@ -11,7 +11,7 @@ class Validation_SuiteTests
         $folder = __DIR__ . '/';
         $suite->addTestFile( $folder . 'Validate_test.php' );
         $suite->addTestFile( $folder . 'Rules_Test.php' );
-        $suite->addTestFile( $folder . 'NewValidator_Test.php' );
+        $suite->addTestFile( $folder . 'Validation_Test.php' );
 
         return $suite;
     }

@@ -108,7 +108,7 @@ class Utils
      * prepares filter for sameWith rule.
      * get another value to compare in sameWith, and compare it with the value using sameAs rule.
      *
-     * @param NewValidator $dio
+     * @param Validation $dio
      * @param array|Rules  $filters
      * @return array
      */
