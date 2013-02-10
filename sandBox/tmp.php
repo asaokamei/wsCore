@@ -11,7 +11,8 @@ Hello <?= $_v->name; ?>!<br />
     <li><?= $td['name']; ?></li>
     <?php } ?>
 </ul>
-<p>there should be nothing above and no error.</p>
+<?php if( !$_v->bad ) echo '<p>empty bad array.</p>'."\n" ?>
+<p>there should be no error.</p>
 <h3>XSS: safe html </h3>
 <p>show html: <?= $_v->get( 'html' ); ?></p>
 <p>show safe: <?= $_v->html; ?></p>
