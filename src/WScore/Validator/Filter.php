@@ -78,7 +78,7 @@ class Filter
         $this->filter_message( $p );
     }
     public function filter_message( $p ) {
-        $this->err_msg = $p;
+        if( $p ) $this->err_msg = $p;
     }
 
     /**
