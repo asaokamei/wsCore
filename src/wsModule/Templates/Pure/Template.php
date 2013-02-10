@@ -72,6 +72,11 @@ class Template
     public function get( $name, $default=null ) {
         return array_key_exists( $name, $this->data ) ? $this->data[ $name ] : $default;
     }
+    
+    public function safe( $name, $default=null ) {
+        $html = $this->get( $name, $default );
+        return $html = htmlspecialchars( $html, ENT_QUOTES, 'UTF-8' );
+    }
 
     /**
      * @param string $name
@@ -112,7 +117,7 @@ class Template
     }
 
     public function __get( $name ) {
-        return $this->get( $name );
+        return $this->safe( $name );
     }
     
     public function __set( $name, $value ) {

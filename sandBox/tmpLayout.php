@@ -4,6 +4,6 @@
     <title><?= $view->title; ?></title>
 </head>
 <body>
-<div id="content"><?= $view->content; ?></div>
+<div id="content"><?= $view->get( 'content' ); ?></div>
 </body>
 </html>
