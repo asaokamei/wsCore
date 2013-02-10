@@ -3,6 +3,12 @@
 $_v->parent( 'tmpLayout.php' ); 
 ?>
 <?php $_v->title = 'template <i>sample</i>'; ?>
+<?php $_v->block =<<<END_BLOCKS
+<h3>This is Here Block</h3>
+<p>You see this "Hello {$_v->name}!</p>
+
+END_BLOCKS;
+?>
 This is sample content. <br />
 Hello <?= $_v->name; ?>!<br />
 <h3>sample foreach</h3>
