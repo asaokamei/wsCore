@@ -133,17 +133,12 @@ class Template
      *
      * @param string  $template   The template to render
      * @param array   $parameters An array of parameters to pass to the template
-     *
-     * @throws \InvalidArgumentException
      * @return string|bool The evaluated template, or false if the engine is unable to render the template
      */
     protected function evaluate( $template, array $parameters = array())
     {
+        if( isset( $parameters[ '__template__' ] ) ) unset( $parameters[ '__template__' ] );
         $__template__ = $template;
-
-        if (isset( $parameters[ '__template__' ] ) ) {
-            throw new \InvalidArgumentException('Invalid parameter (__template__)');
-        }
 
         extract($parameters, EXTR_SKIP);
         $view = $this;
