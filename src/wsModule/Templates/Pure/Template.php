@@ -138,7 +138,7 @@ class Template
     protected function evaluate( $template, array $parameters = array())
     {
         $parameters[ '__template__' ] = $template;
-        $parameters[ '__v' ] = $this;
+        $parameters[ '_v' ] = $this;
 
         /** @var $__template__ string */
         extract( $parameters, EXTR_SKIP );

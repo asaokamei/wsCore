@@ -1,10 +1,10 @@
-<?php /** @var $__v \wsModule\Templates\Pure\Template */ ?>
+<?php /** @var $_v \wsModule\Templates\Pure\Template */ ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $__v->title; ?></title>
+    <title><?= $_v->title; ?></title>
 </head>
 <body>
-<div id="content"><?= $__v->get( 'content' ); ?></div>
+<div id="content"><?= $_v->get( 'content' ); ?></div>
 </body>
 </html>
