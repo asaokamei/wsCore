@@ -137,11 +137,11 @@ class Template
      */
     protected function evaluate( $template, array $parameters = array())
     {
-        if( isset( $parameters[ '__template__' ] ) ) unset( $parameters[ '__template__' ] );
-        $__template__ = $template;
+        $parameters[ '__template__' ] = $template;
+        $parameters[ '__v' ] = $this;
 
-        extract($parameters, EXTR_SKIP);
-        $view = $this;
+        /** @var $__template__ string */
+        extract( $parameters, EXTR_SKIP );
         ob_start();
         require $__template__;
 
