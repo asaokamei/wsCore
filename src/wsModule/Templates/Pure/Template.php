@@ -16,6 +16,7 @@ class Template
     /** @var array */
     protected $data = array();
 
+    // +----------------------------------------------------------------------+
     /**
      * @param string $name
      */
@@ -23,6 +24,90 @@ class Template
     {
         $this->templateFile = $name;
     }
+
+    // +----------------------------------------------------------------------+
+    //  setting values. 
+    // +----------------------------------------------------------------------+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function set( $name, $value ) {
+        $this->data[ $name ] = $value;
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function __set( $name, $value ) {
+        $this->set( $name, $value );
+    }
+
+    /**
+     * mass assign data.
+     * 
+     * @param array $data
+     */
+    public function assign( $data ) {
+        $this->data = array_merge( $this->data, $data );
+    }
+
+    /**
+     * sets parent/outer template for the current template.
+     * 
+     * @param string $parentTemplate
+     */
+    public function parent( $parentTemplate ) {
+        $this->outerTemplate = new static( $parentTemplate );
+    }
+
+    // +----------------------------------------------------------------------+
+    //  getting values. 
+    // +----------------------------------------------------------------------+
+    /**
+     * @param string $name
+     * @param mixed  $default
+     * @return null|mixed
+     */
+    public function get( $name, $default=null ) {
+        return array_key_exists( $name, $this->data ) ? $this->data[ $name ] : $default;
+    }
+
+    /**
+     * html safe get.
+     * 
+     * @param      $name
+     * @param null $default
+     * @return string
+     */
+    public function safe( $name, $default=null ) {
+        $html = $this->get( $name, $default );
+        return $html = htmlspecialchars( $html, ENT_QUOTES, 'UTF-8' );
+    }
+
+    /**
+     * html safe get. 
+     * 
+     * @param $name
+     * @return string
+     */
+    public function __get( $name ) {
+        return $this->safe( $name );
+    }
+
+    /**
+     * @param string $name
+     * @param array|mixed $default
+     * @return mixed|null
+     */
+    public function arr( $name, $default=array() ) {
+        return $this->get( $name, $default );
+    }
+
+    // +----------------------------------------------------------------------+
+    //  rendering the template. 
+    // +----------------------------------------------------------------------+
     /**
      * @param mixed  $template
      * @param array  $parameters
@@ -41,50 +126,6 @@ class Template
         }
 
         return $content;
-    }
-
-    /**
-     * @param string $name
-     * @param mixed  $value
-     */
-    public function set( $name, $value ) {
-        $this->data[ $name ] = $value;
-    }
-
-    /**
-     * @param array $data
-     */
-    public function assign( $data ) {
-        $this->data = array_merge( $this->data, $data );
-    }
-
-    /**
-     * @param string $parentTemplate
-     */
-    public function parent( $parentTemplate ) {
-        $this->outerTemplate = new static( $parentTemplate );
-    }
-    /**
-     * @param string $name
-     * @param mixed  $default
-     * @return null|mixed
-     */
-    public function get( $name, $default=null ) {
-        return array_key_exists( $name, $this->data ) ? $this->data[ $name ] : $default;
-    }
-    
-    public function safe( $name, $default=null ) {
-        $html = $this->get( $name, $default );
-        return $html = htmlspecialchars( $html, ENT_QUOTES, 'UTF-8' );
-    }
-
-    /**
-     * @param string $name
-     * @param array|mixed $default
-     * @return mixed|null
-     */
-    public function arr( $name, $default=array() ) {
-        return $this->get( $name, $default );
     }
 
     /**
@@ -111,16 +152,12 @@ class Template
 
         return ob_get_clean();
     }
-    
+
+    /**
+     * @return mixed
+     */
     public function __toString() {
         return $this->render( $this->templateFile, $this->data );
     }
-
-    public function __get( $name ) {
-        return $this->safe( $name );
-    }
-    
-    public function __set( $name, $value ) {
-        $this->set( $name, $value );
-    }
+    // +----------------------------------------------------------------------+
 }
