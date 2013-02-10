@@ -54,27 +54,29 @@ class Message
     {
         // is it really an error?
         if( !$error || empty( $error ) ) return '';
-        // message is set.
+        
+        // 1. return message if it is set.
         if( $this->message ) return $this->message;
 
         // find more specific error messages.
-        $rule    = null;
-        $option  = '';
-        foreach( $error as $rule => $option ) {}
-        if( !$rule ) return $err_msg;
+        if( !is_array( $error ) ) return $err_msg;
+        $keys    = key( $error );
+        $rule    = (is_array( $keys ) ) ? end( $keys ) : $keys;
+        $option  = $error[ $rule ];
         
-        // search for filter specific error message
+        // 2. return filter specific message if it is set. 
         if( isset( $this->filterErrMsg[ $rule ] ) ) {
             return $this->filterErrMsg[ $rule ];
         }
-        // message for this specific value. 
+        // 3. return message for this specific value. 
         if( $err_msg ) {
             return $err_msg;
         }
-        // message for this type, if type is set. 
+        // 4. return message based on this type, if type is set. 
         if( isset( $type ) && isset( $this->typeErrMsg[ $type ] ) ) {
             return $this->typeErrMsg[ $type ];
         }
+        // 5. return generic error message based on rule/option. 
         $err_msg = "invalid {$rule}";
         if( $option ) $err_msg .= " with {$option}";
         return $err_msg;
