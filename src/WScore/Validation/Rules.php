@@ -48,7 +48,7 @@ class Rules implements \ArrayAccess
             // filterOptions (modifies the value)
             'err_msg'     => false,
             'message'     => false,
-            'multiple'    => false,      // multiple value for DataIO.
+            'multiple'    => false,      // multiple value.
             'noNull'      => true,       // filters out NULL (\0) char from the value.
             'encoding'    => 'UTF-8',    // checks the encoding of value.
             'mbConvert'   => 'standard', // converts Kana set (Japanese)
@@ -68,7 +68,7 @@ class Rules implements \ArrayAccess
             'range'       => false,
             'checkdate'   => false,
             'mbCheckKana' => false,
-            'sameWith'    => false,      // comparing with other field for DataIO.
+            'sameWith'    => false,      // comparing with other field.
             'sameAs'      => false,
             'sameEmpty'   => false,
         );

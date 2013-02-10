@@ -2,7 +2,6 @@
 namespace WScore\Validation;
 
 /**
- * must rename to... Validator or DataIO class.
  * 
  * @method pushText()
  * @method pushMail()
