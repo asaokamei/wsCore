@@ -15,6 +15,26 @@ class Validate_Test extends \PHPUnit_Framework_TestCase
         $this->validate = Core::get( '\WScore\Validator\Validate' );
     }
     // +----------------------------------------------------------------------+
+    function test_setting_message_override()
+    {
+        $text = 'text';
+        $filters    = array( 'message' => 'not a number', 'matches' => 'number', );
+        $ok = $this->validate->validate( $text, $filters, 'wow error!' );
+        $this->assertFalse( $ok );
+        $this->assertFalse( $this->validate->isValid );
+        $error = $this->validate->err_msg;
+        $this->assertEquals( 'wow error!', $error );
+    }
+    function test_setting_message()
+    {
+        $text = 'text';
+        $filters    = array( 'message' => 'not a number', 'matches' => 'number', );
+        $ok = $this->validate->validate( $text, $filters );
+        $this->assertFalse( $ok );
+        $this->assertFalse( $this->validate->isValid );
+        $error = $this->validate->err_msg;
+        $this->assertEquals( 'not a number', $error );
+    }
     function test_setting_err_msg()
     {
         $text = 'text';

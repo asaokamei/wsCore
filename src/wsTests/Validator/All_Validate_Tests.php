@@ -13,6 +13,7 @@ class Validator_SuiteTests
         $suite->addTestFile( $folder . 'Validate_test.php' );
         $suite->addTestFile( $folder . 'Rules_Test.php' );
         $suite->addTestFile( $folder . 'DataIO_Test.php' );
+        $suite->addTestFile( $folder . 'NewValidator_Test.php' );
 
         return $suite;
     }

@@ -8,7 +8,19 @@ namespace WScore\Validator;
  *
  */
 
-/** @method date() */
+/** 
+ * @method text() 
+ * @method mail()
+ * @method number()
+ * @method integer()
+ * @method float()
+ * @method date()
+ * @method dateYM()
+ * @method time()
+ * @method timeHi()
+ * @method tel()
+ * @method fax()
+ */
 class Rules implements \ArrayAccess
 {
     /** @var array        order of filterOptions to apply     */
@@ -35,6 +47,7 @@ class Rules implements \ArrayAccess
         $this->filterOrder = array(
             // filterOptions (modifies the value)
             'err_msg'     => false,
+            'message'     => false,
             'multiple'    => false,      // multiple value for DataIO.
             'noNull'      => true,       // filters out NULL (\0) char from the value.
             'encoding'    => 'UTF-8',    // checks the encoding of value.
@@ -64,7 +77,7 @@ class Rules implements \ArrayAccess
         $this->filterTypes = array(
             'binary'   => 'noNull:FALSE | encoding:FALSE | mbConvert:FALSE | trim:FALSE ',
             'text'     => '',
-            'mail'     => 'mbConvert:hankaku | sanitize:email | matches:mail',
+            'mail'     => 'mbConvert:hankaku | sanitize:mail | matches:mail',
             'number'   => 'mbConvert:hankaku | matches:number',
             'integer'  => 'mbConvert:hankaku | matches:int',
             'float'    => 'mbConvert:hankaku | matches:float',
@@ -102,6 +115,13 @@ class Rules implements \ArrayAccess
         return $this->filter[ 'pattern' ];
     }
 
+    public function getFilters( $name=null ) {
+        if( isset( $name ) ) { 
+            if( array_key_exists( $name, $this->filter ) ) return $this->filter[ $name ]; 
+            return null;
+        }
+        return $this->filter;
+    }
     // +----------------------------------------------------------------------+
     /**
      * @param $type
@@ -115,6 +135,7 @@ class Rules implements \ArrayAccess
         $typeFilter = $this->filterTypes[ $type ];
         $rule->mergeFilter( $typeFilter );
         $rule->mergeFilter( $filters );
+        $this->filter[ 'type' ] = $type;
         return $rule;
     }
 
@@ -123,7 +144,7 @@ class Rules implements \ArrayAccess
      * @return Rules
      */
     public function email( $filters=null ) {
-        return $this->ruleForType( 'email', $filters );
+        return $this->ruleForType( 'mail', $filters );
     }
 
     /**
@@ -147,40 +168,13 @@ class Rules implements \ArrayAccess
     public function mergeFilter( $filter )
     {
         if( is_string( $filter ) ) {
-            $filter = $this->convertFilter( $filter );
+            $filter = Utils::convertFilter( $filter );
         }
         if( empty( $filter ) ) return;
         foreach( $filter as $key => $val ) {
             $this->filter[ $key ] = $val;
         }
         return;
-    }
-    
-    /**
-     * converts string filter to array. string in: 'rule1:parameter1|rule2:parameter2'
-     *
-     * @param string|array $filter
-     * @return array
-     */
-    public function convertFilter( $filter )
-    {
-        if( !$filter ) return array();
-        if( is_array( $filter ) ) return $filter;
-        
-        $filter_array = array();
-        $rules = explode( '|', $filter );
-        foreach( $rules as $rule ) 
-        {
-            $filter = explode( ':', $rule, 2 );
-            array_walk( $filter, function( &$v ) { $v = trim( $v ); } );
-            if( isset( $filter[1] ) ) {
-                $filter_array[ $filter[0] ] = ( $filter[1]=='FALSE' )? false: $filter[1];
-            }
-            else {
-                $filter_array[ $filter[0] ] = true;
-            }
-        }
-        return $filter_array;
     }
 
     /**

@@ -15,7 +15,8 @@ class Forge
     private $cache  = null;
     // +----------------------------------------------------------------------+
     /**
-     * @param null|Cache_Interface $cache
+     * @param null $cache
+     * @return \WScore\DiContainer\Forge
      */
     public function __construct( $cache=null )
     {
@@ -136,7 +137,7 @@ class Forge
      * @param \ReflectionClass $refClass
      * @return array
      */
-    public  function dimProperty( $refClass )
+    private function dimProperty( $refClass )
     {
         $injectList = array();
         if( !self::$PROPERTY_INJECTION ) return $injectList;

@@ -36,7 +36,7 @@ class Rules_Test extends \PHPUnit_Framework_TestCase
 
         // email filter have sanitize for email. 
         $this->assertArrayHasKey( 'sanitize', $filter );
-        $this->assertEquals( 'email', $filter[ 'sanitize' ] );
+        $this->assertEquals( 'mail', $filter[ 'sanitize' ] );
         
         // type is email. 
         $this->assertEquals( 'mail', $rule2->getType() );
