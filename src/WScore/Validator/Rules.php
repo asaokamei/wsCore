@@ -47,6 +47,7 @@ class Rules implements \ArrayAccess, \Iterator
         $this->filterOrder = array(
             // filterOptions (modifies the value)
             'err_msg'     => false,
+            'message'     => false,
             'multiple'    => false,      // multiple value for DataIO.
             'noNull'      => true,       // filters out NULL (\0) char from the value.
             'encoding'    => 'UTF-8',    // checks the encoding of value.
