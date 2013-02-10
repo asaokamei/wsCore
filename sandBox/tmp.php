@@ -10,5 +10,5 @@ Hello <?= $view->name; ?>!<br />
 </ul>
 <p>there should be nothing above and no error.</p>
 <h3>XSS: safe html </h3>
-<p>show html: <?= $view->html; ?></p>
-<p>show safe: <?= $view->safe( 'html' ); ?></p>
+<p>show html: <?= $view->get( 'html' ); ?></p>
+<p>show safe: <?= $view->html; ?></p>
