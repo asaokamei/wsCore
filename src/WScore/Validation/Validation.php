@@ -3,6 +3,19 @@ namespace WScore\Validation;
 
 /**
  * must rename to... Validator or DataIO class.
+ * 
+ * @method pushText()
+ * @method pushMail()
+ * @method pushNumber()
+ * @method pushInteger()
+ * @method pushFloat()
+ * @method pushDate()
+ * @method pushDateYM()
+ * @method pushTime()
+ * @method pushTimeHi()
+ * @method pushTel()
+ * @method pushFax()
+ * 
  */
 class Validation
 {
@@ -21,14 +34,19 @@ class Validation
     /** @var Validate */
     protected $validate = null;
 
+    /** @var \WScore\Validation\Rules */
+    protected $rule = null;
     // +----------------------------------------------------------------------+
     /**
      * @param Validate   $validate
+     * @param Rules      $rule
      * @param null|array $data
      * @DimInjection Fresh \WScore\Validation\Validate
+     * @DimInjection Fresh \WScore\Validation\Rules
      */
-    public function __construct( $validate, $data=null ) {
+    public function __construct( $validate, $rule, $data=null ) {
         $this->validate = $validate;
+        $this->rule     = $rule;
         if( isset( $data ) ) $this->source = $data;
     }
 
@@ -97,6 +115,18 @@ class Validation
 
     // +----------------------------------------------------------------------+
 
+    public function __call( $method, $args )
+    {
+        if( substr( $method, 0, 4 ) == 'push' ) {
+            $name    = $args[0];
+            $filter  = isset( $args[1] ) ? $args[1]: null;
+            $message = isset( $args[2] ) ? $args[2]: null;
+            $type = strtolower( substr( $method, 4 ) );
+            $rule = $this->rule->$type( $filter );
+            return $this->push( $name, $rule, $message );
+        }
+        throw new \RuntimeException( 'unknown method: ' . $method );
+    }
     /**
      * @param string $name
      * @param array|Rules $rules
@@ -105,6 +135,7 @@ class Validation
      */
     public function push( $name, $rules=array(), $message=null )
     {
+        if( !$rules instanceof Rules ) $rules = $this->rule->text( $rules );
         $this->find( $name, $rules, $message );
         $this->output[ $name ] = $this->validate->value;
         if( !$this->validate->isValid ) {
