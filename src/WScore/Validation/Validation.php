@@ -23,11 +23,13 @@ class Validation
 
     // +----------------------------------------------------------------------+
     /**
-     * @param Validate $validate
+     * @param Validate   $validate
+     * @param null|array $data
      * @DimInjection Fresh \WScore\Validation\Validate
      */
-    public function __construct( $validate ) {
+    public function __construct( $validate, $data=null ) {
         $this->validate = $validate;
+        if( isset( $data ) ) $this->source = $data;
     }
 
     /**
