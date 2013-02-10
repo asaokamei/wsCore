@@ -4,7 +4,7 @@ namespace WScore\Validation;
 /**
  * must rename to... Validator or DataIO class.
  */
-class NewValidator
+class Validation
 {
     /** @var array                 source of data to read from     */
     protected $source = array();
@@ -116,7 +116,7 @@ class NewValidator
     /**
      * @param string $name
      * @param mixed  $value
-     * @return NewValidator
+     * @return Validation
      */
     public function pushValue( $name, $value ) {
         $this->output[ $name ] = $value;
@@ -127,7 +127,7 @@ class NewValidator
      * @param string $name
      * @param mixed  $error
      * @param bool|mixed $value
-     * @return NewValidator
+     * @return Validation
      */
     public function pushError( $name, $error, $value=false ) {
         $this->errors[ $name ] = $error;
