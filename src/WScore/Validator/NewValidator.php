@@ -97,13 +97,13 @@ class NewValidator
 
     /**
      * @param string $name
-     * @param array|Rules $filters
+     * @param array|Rules $rules
      * @param null  $message
      * @return mixed
      */
-    public function push( $name, $filters=array(), $message=null )
+    public function push( $name, $rules=array(), $message=null )
     {
-        $this->find( $name, $filters, $message );
+        $this->find( $name, $rules, $message );
         $this->output[ $name ] = $this->validate->value;
         if( !$this->validate->isValid ) {
             $this->errors[ $name ] = $this->validate->err_msg;
@@ -138,11 +138,11 @@ class NewValidator
     
     /**
      * @param string $name
-     * @param array|Rules $filters
+     * @param array|Rules $rules
      * @param null  $message
      * @return mixed
      */
-    public function find( $name, $filters=array(), $message=null )
+    public function find( $name, $rules=array(), $message=null )
     {
         // find a value from data source.
         $value = null;
@@ -150,14 +150,14 @@ class NewValidator
             // simplest case.
             $value = $this->source[ $name ];
         }
-        elseif( Utils::arrGet( $filters, 'multiple' ) ) {
+        elseif( Utils::arrGet( $rules, 'multiple' ) ) {
             // check for multiple case i.e. Y-m-d.
-            $value = Utils::prepare_multiple( $name, $this->source, $filters[ 'multiple' ] );
+            $value = Utils::prepare_multiple( $name, $this->source, $rules[ 'multiple' ] );
         }
         // prepares filter for sameWith.
-        $filters = Utils::prepare_sameWith( $this, $filters );
+        $rules = Utils::prepare_sameWith( $this, $rules );
         // now, validate this value.
-        $ok = $this->validate->is( $value, $filters, $message );
+        $ok = $this->validate->is( $value, $rules, $message );
         return $ok;
     }
     // +----------------------------------------------------------------------+
