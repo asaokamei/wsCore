@@ -85,8 +85,8 @@ class Rules implements \ArrayAccess
             'dateYM'   => 'multiple:YM  | mbConvert:hankaku | pattern:[0-9]{4}-[0-9]{2}',
             'time'     => 'multiple:His | mbConvert:hankaku | pattern:[0-9]{2}:[0-9]{2}:[0-9]{2}',
             'timeHi'   => 'multiple:Hi  | mbConvert:hankaku | pattern:[0-9]{2}:[0-9]{2}',
-            'tel'      => '',
-            'fax'      => '',
+            'tel'      => 'multiple:tel | mbConvert:hankaku',
+            'fax'      => 'multiple:tel | mbConvert:hankaku',
         );
         
         // default filter is filterOrder. 
