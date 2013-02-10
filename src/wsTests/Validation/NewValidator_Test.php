@@ -1,22 +1,22 @@
 <?php
-namespace wsTests\Validator;
+namespace wsTests\Validation;
 require_once( __DIR__ . '/../../autoloader.php' );
 
 use \WScore\Core;
 
 class NewValidator_Test extends \PHPUnit_Framework_TestCase
 {
-    /** @var \WScore\Validator\NewValidator */
+    /** @var \WScore\Validation\NewValidator */
     var $dio;
     
-    /** @var \WScore\Validator\Rules */
+    /** @var \WScore\Validation\Rules */
     var $rule;
     
     public function setUp()
     {
         Core::go();
-        $this->dio  = Core::get( '\WScore\Validator\NewValidator' );
-        $this->rule = Core::get( '\WScore\Validator\Rules' );
+        $this->dio  = Core::get( '\WScore\Validation\NewValidator' );
+        $this->rule = Core::get( '\WScore\Validation\Rules' );
     }
     public function getData()
     {

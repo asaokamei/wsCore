@@ -1,5 +1,5 @@
 <?php
-namespace WScore\Validator;
+namespace WScore\Validation;
 
 /**
  * must rename to... Validator or DataIO class.
@@ -24,7 +24,7 @@ class NewValidator
     // +----------------------------------------------------------------------+
     /**
      * @param Validate $validate
-     * @DimInjection Fresh \WScore\Validator\Validate
+     * @DimInjection Fresh \WScore\Validation\Validate
      */
     public function __construct( $validate ) {
         $this->validate = $validate;

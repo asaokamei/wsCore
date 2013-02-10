@@ -1,5 +1,5 @@
 <?php
-namespace WScore\Validator;
+namespace WScore\Validation;
 
 /**
  * about pattern and matches filter.

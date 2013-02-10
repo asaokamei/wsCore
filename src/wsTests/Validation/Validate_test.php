@@ -1,18 +1,18 @@
 <?php
-namespace wsTests\Validator;
+namespace wsTests\Validation;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 use \WScore\Core;
 
 class Validate_Test extends \PHPUnit_Framework_TestCase
 {
-    /** @var \WScore\Validator\Validate */
+    /** @var \WScore\Validation\Validate */
     var $validate;
 
     public function setUp()
     {
         Core::go();
-        $this->validate = Core::get( '\WScore\Validator\Validate' );
+        $this->validate = Core::get( '\WScore\Validation\Validate' );
     }
     // +----------------------------------------------------------------------+
     function test_setting_message_override()

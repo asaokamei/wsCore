@@ -1,9 +1,9 @@
 <?php
-namespace WScore\Validator;
+namespace WScore\Validation;
 
 class Validate
 {
-    /** @var \WScore\Validator\Filter */
+    /** @var \WScore\Validation\Filter */
     protected $filter;
 
     /** @var Message */
@@ -20,10 +20,10 @@ class Validate
 
     // +----------------------------------------------------------------------+
     /**
-     * @param \WScore\Validator\Filter  $filter
-     * @param \WScore\Validator\Message $message
-     * @DimInjection Get \WScore\Validator\Filter
-     * @DimInjection Get \WScore\Validator\Message
+     * @param \WScore\Validation\Filter  $filter
+     * @param \WScore\Validation\Message $message
+     * @DimInjection Get \WScore\Validation\Filter
+     * @DimInjection Get \WScore\Validation\Message
      */
     public function __construct( $filter, $message )
     {

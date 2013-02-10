@@ -28,13 +28,13 @@ class Validator
     /** @var array        error message for each filter       */
     public $filterErrMsg = array();
 
-    /** @var null|\WScore\Validator\Filter                    */
+    /** @var null|\WScore\Validation\Filter                    */
     protected $filter = null;
 
     // +----------------------------------------------------------------------+
     /**
-     * @param Filter $filter
-     * @DimInjection Get \WScore\Validator\Filter
+     * @param \WScore\Validation\Filter $filter
+     * @DimInjection Get \WScore\Validation\Filter
      */
     public function __construct( $filter )
     {
