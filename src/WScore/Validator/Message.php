@@ -58,7 +58,7 @@ class Message
         // 1. return message if it is set.
         if( $this->message ) return $this->message;
 
-        // find more specific error messages.
+        // find rule and option of the last error.
         if( !is_array( $error ) ) return $err_msg;
         $keys    = key( $error );
         $rule    = (is_array( $keys ) ) ? end( $keys ) : $keys;
