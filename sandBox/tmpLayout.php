@@ -1,9 +1,10 @@
+<?php /** @var $__v \wsModule\Templates\Pure\Template */ ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $view->title; ?></title>
+    <title><?= $__v->title; ?></title>
 </head>
 <body>
-<div id="content"><?= $view->get( 'content' ); ?></div>
+<div id="content"><?= $__v->get( 'content' ); ?></div>
 </body>
 </html>
