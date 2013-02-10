@@ -14,8 +14,7 @@ class Core
     /** @var array      set easy mode */
     public static $easy = array(
         'Query'     => '\WScore\DbAccess\Query',
-        'Validator' => '\WScore\Validator\Validator',
-        'DataIO'    => '\WScore\Validator\DataIO',
+        'Validation' => '\WScore\Validation\Validation',
         'Selector'  => '\WScore\Html\Selector',
         'EntityManager' => '\WScore\DataMapper\EntityManager',
         'Session'   => '\WScore\Web\Session',

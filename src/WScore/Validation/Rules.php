@@ -1,5 +1,5 @@
 <?php
-namespace WScore\Validator;
+namespace WScore\Validation;
 
 /**
  * about pattern and matches filter.
@@ -48,7 +48,7 @@ class Rules implements \ArrayAccess
             // filterOptions (modifies the value)
             'err_msg'     => false,
             'message'     => false,
-            'multiple'    => false,      // multiple value for DataIO.
+            'multiple'    => false,      // multiple value.
             'noNull'      => true,       // filters out NULL (\0) char from the value.
             'encoding'    => 'UTF-8',    // checks the encoding of value.
             'mbConvert'   => 'standard', // converts Kana set (Japanese)
@@ -68,7 +68,7 @@ class Rules implements \ArrayAccess
             'range'       => false,
             'checkdate'   => false,
             'mbCheckKana' => false,
-            'sameWith'    => false,      // comparing with other field for DataIO.
+            'sameWith'    => false,      // comparing with other field.
             'sameAs'      => false,
             'sameEmpty'   => false,
         );
@@ -85,8 +85,8 @@ class Rules implements \ArrayAccess
             'dateYM'   => 'multiple:YM  | mbConvert:hankaku | pattern:[0-9]{4}-[0-9]{2}',
             'time'     => 'multiple:His | mbConvert:hankaku | pattern:[0-9]{2}:[0-9]{2}:[0-9]{2}',
             'timeHi'   => 'multiple:Hi  | mbConvert:hankaku | pattern:[0-9]{2}:[0-9]{2}',
-            'tel'      => '',
-            'fax'      => '',
+            'tel'      => 'multiple:tel | mbConvert:hankaku',
+            'fax'      => 'multiple:tel | mbConvert:hankaku',
         );
         
         // default filter is filterOrder. 

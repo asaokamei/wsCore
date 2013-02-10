@@ -8,9 +8,7 @@ class WScore_SuiteTests
         $folder = __DIR__ . '/';
 
         // Validator Tests
-        $suite->addTestFile( $folder . 'Validator/Validator_Test.php' );
-        $suite->addTestFile( $folder . 'Validator/DataIO_Test.php' );
-        $suite->addTestFile( $folder . 'Validator/All_Validate_Tests.php' );
+        $suite->addTestFile( $folder . 'Validation/All_Validation_Tests.php' );
         
         // wait until Dimplet test rewrite. 
         $suite->addTestFile( $folder . 'DiContainer/Dimple_Test.php' );

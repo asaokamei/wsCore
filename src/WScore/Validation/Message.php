@@ -1,5 +1,5 @@
 <?php
-namespace WScore\Validator;
+namespace WScore\Validation;
 
 class Message
 {

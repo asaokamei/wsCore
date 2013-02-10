@@ -5,19 +5,26 @@ class Role_Input extends Role_Abstract
 {
     /** @var string                html, form, or ...? */
     private $html_type = 'html';
+    
+    /** @var \WScore\Validation\Rules */
+    protected $rule;
     // +----------------------------------------------------------------------+
     /**
      * @param \WScore\DataMapper\EntityManager    $em
-     * @param \WScore\Validator\DataIO          $dio
+     * @param \WScore\Validation\Validation       $dio
      * @param \WScore\Html\Selector             $selector
+     * @param \WScore\Validation\Rules            $rule
      * @DimInjection Get \WScore\DataMapper\EntityManager
-     * @DimInjection Get \WScore\Validator\DataIO
+     * @DimInjection Get \WScore\Validation\Validation
+     * @DimInjection Get \WScore\Html\Selector
+     * @DimInjection Get \WScore\Validation\Rules
      */
-    public function __construct( $em, $dio, $selector )
+    public function __construct( $em, $dio, $selector, $rule )
     {
         $this->em = $em;
         $this->dio = $dio;
         $this->selector = $selector;
+        $this->rule = $rule;
     }
 
     // +----------------------------------------------------------------------+
@@ -55,7 +62,13 @@ class Role_Input extends Role_Abstract
             $validateInfo = $this->model->getValidateInfo( $propName );
             $type   = array_key_exists( 0, $validateInfo ) ? $validateInfo[0] : null ;
             $filter = array_key_exists( 1, $validateInfo ) ? $validateInfo[1] : '' ;
-            $this->dio->push( $propName, $type, $filter );
+            if( $type ) {
+                $rule = $this->rule->$type( $filter );
+            }
+            else {
+                $rule = $this->rule->text( $filter );
+            }
+            $this->dio->push( $propName, $rule );
         }
         $this->em->setEntityProperty( $this->entity, 'errors',  $this->dio->popError() );
         $this->em->setEntityProperty( $this->entity, 'isValid', $this->dio->isValid() );

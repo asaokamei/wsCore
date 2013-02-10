@@ -11,14 +11,14 @@ class controller
     /** @var \WScore\Html\Form */
     protected $form;
 
-    /** @var $dio \WScore\Validator\DataIO */
+    /** @var $dio \WScore\Validation\Validation */
     protected $dio;
 
     /**
      * @param \WScore\Html\Form $form
-     * @param \WScore\Validator\DataIO $dio
+     * @param \WScore\Validation\Validation $dio
      * @DimInjection fresh \WScore\Html\Form
-     * @DimInjection fresh DataIO
+     * @DimInjection fresh \WScore\Validation\Validation
      */
     public function __construct( $form, $dio ) {
         $this->form = $form;
@@ -76,9 +76,9 @@ class controller
     public function act_generate( $view )
     {
         $this->dio->source( $_POST );
-        $this->dio->push( 'length', 'number' );
-        $this->dio->push( 'symbol', 'text' );
-        $this->dio->push( 'count', 'number' );
+        $this->dio->pushNumber( 'length' );
+        $this->dio->pushText(   'symbol' );
+        $this->dio->pushNumber( 'count' );
 
         $input = $this->dio->popSafe();
         if( $input[ 'length' ] < 5 ) $input[ 'length' ] = $this->input[ 'length' ];
