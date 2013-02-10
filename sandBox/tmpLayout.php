@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-        <html>
+<html>
 <head>
-<title></title>    
+    <title><?= $view->title; ?></title>
 </head>
 <body>
-
+<div id="content"><?= $view->content; ?></div>
 </body>
-        </html>
+</html>
