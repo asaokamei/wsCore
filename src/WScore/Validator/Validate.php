@@ -43,7 +43,6 @@ class Validate
         $this->value   = null;
         $this->isValid = true;
         $this->err_msg = null;
-        if( !$message ) $message = array_key_exists( 'message', $rules ) ? $rules[ 'message' ] : null; 
         $this->message->setMessage( $message );
     }
 
