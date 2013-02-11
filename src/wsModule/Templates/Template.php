@@ -71,7 +71,9 @@ class Template
      * @return null|mixed
      */
     public function get( $name, $default=null ) {
-        return array_key_exists( $name, $this->data ) ? $this->data[ $name ] : $default;
+        list( $name, $filters ) = $this->parse( $name );
+        if( !array_key_exists( $name, $this->data ) ) return $default;
+        return $this->filter( $this->data[ $name ], $filters );
     }
 
     /**
@@ -90,7 +92,7 @@ class Template
      * @param $name
      * @return array
      */
-    public function parse( $name ) {
+    protected function parse( $name ) {
         $list = explode( '|', $name );
         $name = array_shift( $list );
         return array( $name, $list );
@@ -99,13 +101,20 @@ class Template
     /**
      * @param        $value
      * @param        $filters
-     * @param string $type
+     * @param string $method
      * @return mixed
      */
-    public function filter( $value, $filters, $type='' ) {
+    protected function filter( $value, $filters, $method='' ) 
+    {
+        // check if $method maybe a filter name in basic filters. 
+        $defaultClass = __NAMESPACE__ . '\Filter_Basic';
+        $classes = array( $defaultClass );
+        if( $method && method_exists( $classes[0], $method ) ) {
+            $value = $defaultClass::$method( $value );
+        }
+        // check for filter maybe in Filter_$method class. 
         if( empty( $filters ) ) return $value;
-        $classes = array( __NAMESPACE__ . '\Filter_Basic' );
-        if( $type ) $classes[] = __NAMESPACE__ . '\Filter_' . ucwords( $type );
+        if( $method ) $classes[] = __NAMESPACE__ . '\Filter_' . ucwords( $method );
         foreach( $filters as $f ) {
             foreach( $classes as $c ) {
                 if( method_exists( $c, $f ) ) {
