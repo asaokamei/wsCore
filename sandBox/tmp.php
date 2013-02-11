@@ -22,3 +22,5 @@ Hello <?= $_v->name; ?>!<br />
 <h3>XSS: safe html </h3>
 <p>show html: <?= $_v->get( 'html' ); ?></p>
 <p>show safe: <?= $_v->html; ?></p>
+<p>filter: <?= $_v->get( 'html|h' ); ?></p>
+<p>date|dot: <?= $_v->date( 'date|dot' ); ?></p>

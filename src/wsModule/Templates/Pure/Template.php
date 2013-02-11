@@ -75,6 +75,49 @@ class Template
     }
 
     /**
+     * @param $method
+     * @param $args
+     * @return mixed|null
+     */
+    public function __call( $method, $args ) {
+        $name = array_shift( $args );
+        list( $name, $filters ) = $this->parse( $name );
+        if( !$value = $this->get( $name ) ) return $value;
+        return $this->filter( $value, $filters, $method );
+    }
+
+    /**
+     * @param $name
+     * @return array
+     */
+    public function parse( $name ) {
+        $list = explode( '|', $name );
+        $name = array_shift( $list );
+        return array( $name, $list );
+    }
+
+    /**
+     * @param        $value
+     * @param        $filters
+     * @param string $type
+     * @return mixed
+     */
+    public function filter( $value, $filters, $type='' ) {
+        if( empty( $filters ) ) return $value;
+        $classes = array( __NAMESPACE__ . '\Filter_Basic' );
+        if( $type ) $classes[] = __NAMESPACE__ . '\Filter_' . ucwords( $type );
+        foreach( $filters as $f ) {
+            foreach( $classes as $c ) {
+                if( method_exists( $c, $f ) ) {
+                    $value = $c::$f( $value );
+                    break;
+                }
+            }
+        }
+        return $value;
+    }
+    
+    /**
      * html safe get.
      * 
      * @param      $name
@@ -83,7 +126,7 @@ class Template
      */
     public function safe( $name, $default=null ) {
         $html = $this->get( $name, $default );
-        return $html = htmlspecialchars( $html, ENT_QUOTES, 'UTF-8' );
+        return Filter_Basic::h( $html );
     }
 
     /**

@@ -1,6 +1,5 @@
 <?php
-require_once( __DIR__ . '/../src/wsModule/Templates/Pure/Template.php' );
-require_once( __DIR__ . '/../src/wsModule/Templates/Pure/SelfTemplate.php' );
+require_once( __DIR__ . '/../src/autoloader.php' );
 
 $_v = new \wsModule\Templates\Pure\SelfTemplate();
 $_v->name = 'World';
