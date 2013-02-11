@@ -1,5 +1,5 @@
 <?php
-/** @var $_v \wsModule\Templates\Pure\Template */
+/** @var $_v \wsModule\Templates\Template */
 $_v->parent( 'tmpLayout.php' ); 
 ?>
 <?php $_v->title = 'template <i>sample</i>'; ?>
@@ -11,6 +11,14 @@ END_BLOCKS;
 ?>
 This is sample content. <br />
 Hello <?= $_v->name; ?>!<br />
+<h3>sample name list</h3>
+<ul>
+    <?php foreach( $_v->arr( 'list' ) as $td ) { ?>
+    <li><?= $td; ?></li>
+    <?php } ?>
+</ul>
+<?php if( !$_v->bad ) echo '<p>empty name list.</p>'."\n" ?>
+<p>there should be a list of JoJo names.</p>
 <h3>sample foreach</h3>
 <ul>
     <?php foreach( $_v->arr( 'bad' ) as $td ) { ?>
@@ -22,5 +30,6 @@ Hello <?= $_v->name; ?>!<br />
 <h3>XSS: safe html </h3>
 <p>show html: <?= $_v->get( 'html' ); ?></p>
 <p>show safe: <?= $_v->html; ?></p>
-<p>filter: <?= $_v->get( 'html|h' ); ?></p>
+<p>filter:|h <?= $_v->get( 'html|h' ); ?></p>
+<p>filter:h <?= $_v->h( 'html' ); ?></p>
 <p>date|dot: <?= $_v->date( 'date|dot' ); ?></p>

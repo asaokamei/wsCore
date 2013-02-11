@@ -1,4 +1,4 @@
-<?php /** @var $_v \wsModule\Templates\Pure\Template */ ?>
+<?php /** @var $_v \wsModule\Templates\Template */ ?>
 <!DOCTYPE html>
 <html>
 <head>
