@@ -2,8 +2,7 @@
 namespace wsModule\Templates;
 
 /**
- * Template engine.
- * many codes copied from Symfony 2... bad practice...
+ * Template engine using pure PHP code.
  */
 class Template
 {
