@@ -1,7 +1,7 @@
 <?php
 require_once( __DIR__ . '/../src/autoloader.php' );
 
-$_v = new \wsModule\Templates\Pure\SelfTemplate();
+$_v = new \wsModule\Templates\SelfTemplate();
 $_v->name = 'World';
 $_v->html = 'this is <b>bold</b> text. ';
 $_v->parent( 'tmpLayout.php' ); 

@@ -1,5 +1,5 @@
 <?php
-namespace wsModule\Templates\Pure;
+namespace wsModule\Templates;
 
 class Filter_Date
 {
