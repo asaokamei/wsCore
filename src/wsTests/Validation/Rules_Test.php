@@ -1,18 +1,18 @@
 <?php
-namespace wsTests\Validator;
+namespace wsTests\Validation;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 use \WScore\Core;
 
 class Rules_Test extends \PHPUnit_Framework_TestCase
 {
-    /** @var \WScore\Validator\Rules */
+    /** @var \WScore\Validation\Rules */
     var $rule;
 
     public function setUp()
     {
         Core::go();
-        $this->rule = Core::get( '\WScore\Validator\Rules' );
+        $this->rule = Core::get( '\WScore\Validation\Rules' );
     }
     // +----------------------------------------------------------------------+
     function test_merge_filter()
@@ -36,7 +36,7 @@ class Rules_Test extends \PHPUnit_Framework_TestCase
 
         // email filter have sanitize for email. 
         $this->assertArrayHasKey( 'sanitize', $filter );
-        $this->assertEquals( 'email', $filter[ 'sanitize' ] );
+        $this->assertEquals( 'mail', $filter[ 'sanitize' ] );
         
         // type is email. 
         $this->assertEquals( 'mail', $rule2->getType() );

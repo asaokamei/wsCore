@@ -1,5 +1,5 @@
 <?php
-namespace WScore\Validator;
+namespace WScore\Validation;
 
 class Filter
 {
@@ -75,13 +75,22 @@ class Filter
      * @param $p
      */
     public function filter_err_msg( $p ) {
-        $this->err_msg = $p;
+        $this->filter_message( $p );
+    }
+    public function filter_message( $p ) {
+        if( $p ) $this->err_msg = $p;
     }
 
+    /**
+     * removes null from text. 
+     */
     public function filter_noNull() {
         $this->value = str_replace( "\0", '', $this->value );
     }
 
+    /**
+     * trims text. 
+     */
     public function filter_trim() {
         $this->value = trim( $this->value );
     }
@@ -103,7 +112,7 @@ class Filter
      * @param $p
      */
     public function filter_sanitize( $p ) {
-        $option = $this->arrGet( $this->matchType, $p, $p );
+        $option = $this->arrGet( $this->sanitizes, $p, $p );
         $this->value = filter_var( $this->value, $option );
     }
 

@@ -1,20 +1,40 @@
 <?php
-namespace wsTests\Validator;
+namespace wsTests\Validation;
 
 require_once( __DIR__ . '/../../autoloader.php' );
 use \WScore\Core;
 
 class Validate_Test extends \PHPUnit_Framework_TestCase
 {
-    /** @var \WScore\Validator\Validate */
+    /** @var \WScore\Validation\Validate */
     var $validate;
 
     public function setUp()
     {
         Core::go();
-        $this->validate = Core::get( '\WScore\Validator\Validate' );
+        $this->validate = Core::get( '\WScore\Validation\Validate' );
     }
     // +----------------------------------------------------------------------+
+    function test_setting_message_override()
+    {
+        $text = 'text';
+        $filters    = array( 'message' => 'not a number', 'matches' => 'number', );
+        $ok = $this->validate->validate( $text, $filters, 'wow error!' );
+        $this->assertFalse( $ok );
+        $this->assertFalse( $this->validate->isValid );
+        $error = $this->validate->err_msg;
+        $this->assertEquals( 'wow error!', $error );
+    }
+    function test_setting_message()
+    {
+        $text = 'text';
+        $filters    = array( 'message' => 'not a number', 'matches' => 'number', );
+        $ok = $this->validate->validate( $text, $filters );
+        $this->assertFalse( $ok );
+        $this->assertFalse( $this->validate->isValid );
+        $error = $this->validate->err_msg;
+        $this->assertEquals( 'not a number', $error );
+    }
     function test_setting_err_msg()
     {
         $text = 'text';
