@@ -1,11 +1,11 @@
 <?php
 require_once( __DIR__ . '/../src/autoloader.php' );
 
-$_v = new \wsModule\Templates\SelfTemplate();
+$_v = new \wsModule\Templates\Template();
 $_v->name = 'World';
 $_v->html = 'this is <b>bold</b> text. ';
 $_v->parent( 'tmpLayout.php' ); 
-
+$_v->renderSelf();
 ?>
 <?php $_v->title = 'self template <i>sample</i>'; ?>
 <?php $_v->block =<<<END_BLOCKS

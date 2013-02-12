@@ -6,6 +6,9 @@ namespace wsModule\Templates;
  */
 class Template
 {
+    /** specify self rendering mode.  */
+    const SELF = '*self*';
+
     /** @var string  */
     protected $templateFile;
     
@@ -19,11 +22,13 @@ class Template
     /**
      * @param string $name
      */
-    public function __construct( $name )
+    public function __construct()
     {
-        $this->templateFile = $name;
     }
 
+    public function setTemplate( $name ) {
+        $this->templateFile = $name;
+    }
     // +----------------------------------------------------------------------+
     //  setting values. 
     // +----------------------------------------------------------------------+
@@ -58,7 +63,8 @@ class Template
      * @param string $parentTemplate
      */
     public function parent( $parentTemplate ) {
-        $this->outerTemplate = new static( $parentTemplate );
+        $this->outerTemplate = clone $this;
+        $this->outerTemplate->setTemplate( $parentTemplate );
     }
 
     // +----------------------------------------------------------------------+
@@ -168,7 +174,12 @@ class Template
     public function render( $template, $parameters = array() )
     {
         // attach the global variables
-        $content = $this->evaluate( $template, $parameters );
+        if( $this->templateFile == self::SELF ) {
+            $content = ob_get_clean();
+        }
+        else {
+            $content = $this->evaluate( $template, $parameters );
+        }
 
         if( isset( $this->outerTemplate ) ) {
             $this->set( 'content', $content );
@@ -177,6 +188,14 @@ class Template
         }
 
         return $content;
+    }
+
+    /**
+     * rendering output from own php file.
+     */
+    public function renderSelf() {
+        ob_start();
+        $this->templateFile = self::SELF;
     }
 
     /**
@@ -204,6 +223,16 @@ class Template
      */
     public function __toString() {
         return $this->render( $this->templateFile, $this->data );
+    }
+
+    /**
+     * render output if rendering self output.
+     */
+    public function __destruct()
+    {
+        if( $this->templateFile == self::SELF ) {
+            echo $this->render( $this->templateFile );
+        }
     }
     // +----------------------------------------------------------------------+
 }
