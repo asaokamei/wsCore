@@ -17,6 +17,30 @@ class Template_Test extends \PHPUnit_Framework_TestCase
         return htmlspecialchars( $v, ENT_QUOTES, 'UTF-8' );
     }
     // +----------------------------------------------------------------------+
+    //  tests on using templates
+    // +----------------------------------------------------------------------+
+    function test_template()
+    {
+        $t = $this->template;
+        $case = __DIR__ . '/templates/case1.php';
+        $content = $t->render( $case, array( 'test' => 'case1' ) );
+        $this->assertEquals( 'test:case1', $content );
+    }
+    function test_template_with_parent()
+    {
+        $t = $this->template;
+        $case = __DIR__ . '/templates/case2.php';
+        $content = $t->render( $case, array( 'test' => 'case2' ) );
+        $this->assertEquals( 'Layout:test:case2', $content );
+    }
+    function test_self_template()
+    {
+        ob_start();
+        require __DIR__ . '/templates/self.php';
+        $content = ob_get_clean();
+        $this->assertEquals( 'Layout:test:selfTest', $content );
+    }
+    // +----------------------------------------------------------------------+
     //  tests on assignments and basic filters.
     // +----------------------------------------------------------------------+
     function test_simple_assignments()
