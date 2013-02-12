@@ -209,6 +209,7 @@ class Template
     {
         $parameters[ '__template__' ] = $template;
         $parameters[ '_v' ] = $this;
+        $this->assign( $parameters );
 
         /** @var $__template__ string */
         extract( $parameters, EXTR_SKIP );
