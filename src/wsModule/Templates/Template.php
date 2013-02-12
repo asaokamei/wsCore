@@ -20,7 +20,6 @@ class Template
 
     // +----------------------------------------------------------------------+
     /**
-     * @param string $name
      */
     public function __construct()
     {
