@@ -6,6 +6,7 @@ namespace wsModule\Alt\Web;
  * This is a DCI inspired module. things works as coded but still quite experimental.
  *
  * TODO: remove $this->view property. Interaction should not know about view...
+ * todo: remove this. use wsModule\Dci, instead.
  */
 class Interaction
 {

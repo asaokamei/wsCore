@@ -1,6 +1,8 @@
 <?php
 namespace WScore\DiContainer;
-
+/**
+ * todo: remove Cache, use Cache in DiContainer folder.
+ */
 class Cache
 {
     private static $useApc = false;

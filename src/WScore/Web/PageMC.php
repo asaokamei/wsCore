@@ -1,12 +1,16 @@
 <?php
 namespace WScore\Web;
 
+/**
+ * todo: use FrontMC for PageMC. should remove this class.
+ * todo: should move Web folder to Alt.
+ */
 class PageMcException extends \Exception {}
 
 class PageMC
 {
     /** @var object             object for Pager.  */
-    protected $controller = NULL;
+    protected $controller = null;
 
     /** @var string             name of action in $_REQUEST */
     protected $act_name = '_act';
@@ -15,7 +19,7 @@ class PageMC
     protected $default  = 'index';
 
     /** @var \WScore\Html\PageView           view object...  */
-    protected $view = NULL;
+    protected $view = null;
 
     /** @var \WScore\Web\Session */
     public $session;

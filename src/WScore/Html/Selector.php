@@ -2,6 +2,7 @@
 namespace WScore\Html;
 
 /*
+TODO: move Selector stuff to Selector folder.
 
 Selector( $style, $name, $opt1, $opt2, $ime );
 

@@ -3,6 +3,8 @@ namespace wsModule\Alt\Web;
 
 /**
  * Request class
+ * TODO: create Http folder.
+ * TOD: move Request, Response, and Router class to Http folder.
  * from Perfect PHP.
  */
 class Request

@@ -4,6 +4,8 @@ namespace wsModule\Alt\Web;
 class FrontMcNotFoundException extends \Exception {}
 
 /**
+ * todo: set multiple routes and loop through them.
+ *
  * simple front-end mini-controller.
  * mostly from PerfectPHP book.
  */
