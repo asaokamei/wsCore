@@ -68,6 +68,9 @@ class Core
     // +----------------------------------------------------------------------+
     //  managing DiContainer, Dimplet.
     // +----------------------------------------------------------------------+
+    /**
+     * @return null|DiContainer\Dimplet
+     */
     public static function go()
     {
         if( !isset( self::$_cache ) ) {
