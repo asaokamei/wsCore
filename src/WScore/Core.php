@@ -85,6 +85,12 @@ class Core
     }
 
     /**
+     * @return null|DiContainer\Dimplet
+     */
+    public static function dic() {
+        return self::$_container;
+    }
+    /**
      *
      */
     public static function newDiC()
