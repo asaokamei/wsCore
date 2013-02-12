@@ -46,7 +46,7 @@ class Filter
         }
         // apply filters
         foreach( $filters as $f ) {
-            foreach( $this->filters as $obj ) {
+            foreach( $objects as $obj ) {
                 if( method_exists( $obj, $f ) ) {
                     $value = $obj->$f( $value );
                     break;
