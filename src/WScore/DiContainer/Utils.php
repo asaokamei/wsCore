@@ -133,17 +133,16 @@ class Utils
      * parse phpDoc comments for DimInjection.
      *
      * @param string $comments
-     * @param array  $injectInfo
      * @return array
      */
-    public static function parseDimDoc( $comments, $injectInfo=array() )
+    public static function parseDimDoc( $comments )
     {
         if( !preg_match_all( "/(@.*)$/mU", $comments, $matches ) ) return array();
         $injectList = array();
         foreach( $matches[1] as $comment ) {
             if( !preg_match( '/@DimInjection[ \t]+(.*)$/', $comment, $comMatch ) ) continue;
             $dimInfo = preg_split( '/[ \t]+/', trim( $comMatch[1] ) );
-            $injectList[] = self::parseDimInjection( $dimInfo, $injectInfo );
+            $injectList[] = self::parseDimInjection( $dimInfo );
         }
         return $injectList;
     }
@@ -152,18 +151,15 @@ class Utils
      * parse @DimInjection comment into injection information.
      *
      * @param array $dimInfo
-     * @param array $injectInfo
      * @return array
      */
-    private static function parseDimInjection( $dimInfo, $injectInfo=array() )
+    private static function parseDimInjection( $dimInfo )
     {
-        if( empty( $injectInfo ) ) {
-            $injectInfo = array(
-                'by' => 'fresh',
-                'ob' => 'obj',
-                'id' => null,
-            );
-        }
+        $injectInfo = array(
+            'by' => 'fresh',
+            'ob' => 'obj',
+            'id' => null,
+        );
         foreach( $dimInfo as $info ) {
             switch( strtolower( $info ) ) {
                 case 'none':   $injectInfo[ 'by' ] = null;      break;
