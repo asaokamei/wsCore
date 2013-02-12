@@ -11,11 +11,13 @@ class Template_Test extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $container = Core::go();
-        $this->template = $container->get( '\wsModule\Templates\Template' );
+        $this->template = $container->fresh( '\wsModule\Templates\Template' );
     }
     public function h( $v ) {
         return htmlspecialchars( $v, ENT_QUOTES, 'UTF-8' );
     }
+    // +----------------------------------------------------------------------+
+    //  tests on assignments and basic filters.
     // +----------------------------------------------------------------------+
     function test_simple_assignments()
     {
@@ -45,4 +47,20 @@ class Template_Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals( $this->h( $word ), $t->h( 'test' ) );
         $this->assertEquals( nl2br(    $word ), $t->nl2br( 'test' ) );
     }
+    function test_arr_returns_empty_array()
+    {
+        $this->assertEquals( array(), $this->template->arr( 'list' ) );
+    }
+    function test_arrays()
+    {
+        $t = $this->template;
+        $list = array( 'Jonathan', 'Joester' );
+        $t->set( 'list', $list );
+        $this->assertEquals( $list, $t->get( 'list' ) );
+    }
+    function test_true_on_unassigned()
+    {
+        $this->assertTrue( !$this->template->get( 'list' ) );
+    }
+    // +----------------------------------------------------------------------+
 }
