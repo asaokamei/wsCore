@@ -40,6 +40,13 @@ class Template_Test extends \PHPUnit_Framework_TestCase
         $content = ob_get_clean();
         $this->assertEquals( 'Layout:test:selfTest', $content );
     }
+    function test_block_template()
+    {
+        $t = $this->template;
+        $case = __DIR__ . '/templates/case3.php';
+        $content = $t->render( $case, array( 'test' => 'case3' ) );
+        $this->assertEquals( "Layout:test:case3\nLayout:Block: block name", $content );
+    }
     // +----------------------------------------------------------------------+
     //  tests on assignments and basic filters.
     // +----------------------------------------------------------------------+
