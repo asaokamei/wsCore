@@ -32,7 +32,7 @@ class Filter
      * @param string   $method
      * @return mixed
      */
-    protected function apply( $value, $filters, $method='' )
+    public function apply( $value, $filters, $method='' )
     {
         // check if $method maybe a filter name in basic filters.
         if( $method && method_exists( $this->filters['basic'], $method ) ) {

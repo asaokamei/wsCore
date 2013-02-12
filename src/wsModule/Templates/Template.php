@@ -18,11 +18,16 @@ class Template
     /** @var array */
     protected $data = array();
 
+    /** @var \wsModule\Templates\Filter */
+    protected $filter;
     // +----------------------------------------------------------------------+
     /**
+     * @param \wsModule\Templates\Filter $filter
+     * @DimInjection Fresh \wsModule\Templates\Filter
      */
-    public function __construct()
+    public function __construct( $filter )
     {
+        $this->filter = $filter;
     }
 
     public function setTemplate( $name ) {
@@ -110,23 +115,7 @@ class Template
      */
     protected function filter( $value, $filters, $method='' ) 
     {
-        // check if $method maybe a filter name in basic filters. 
-        $defaultClass = __NAMESPACE__ . '\Filter_Basic';
-        $classes = array( $defaultClass );
-        if( $method && method_exists( $classes[0], $method ) ) {
-            $value = $defaultClass::$method( $value );
-        }
-        // check for filter maybe in Filter_$method class. 
-        if( empty( $filters ) ) return $value;
-        if( $method ) $classes[] = __NAMESPACE__ . '\Filter_' . ucwords( $method );
-        foreach( $filters as $f ) {
-            foreach( $classes as $c ) {
-                if( method_exists( $c, $f ) ) {
-                    $value = $c::$f( $value );
-                    break;
-                }
-            }
-        }
+        $value = $this->filter->apply( $value, $filters, $method );
         return $value;
     }
     
