@@ -62,5 +62,14 @@ class Template_Test extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue( !$this->template->get( 'list' ) );
     }
+    function test_external_date_filters()
+    {
+        $t = $this->template;
+        $date = '1981-03-04';
+        $t->set( 'date', $date );
+        $this->assertEquals( $date, $t->get( 'date' ) );
+        $this->assertEquals( $date, $t->get( 'date|dot' ) );
+        $this->assertEquals( str_replace( '-', '.', $date ), $t->date( 'date|dot' ) );
+    }
     // +----------------------------------------------------------------------+
 }
