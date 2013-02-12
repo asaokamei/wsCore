@@ -127,8 +127,7 @@ class Template
      * @return string
      */
     public function safe( $name, $default=null ) {
-        $html = $this->get( $name, $default );
-        return Filter_Basic::h( $html );
+        return $this->get( $name.'|h', $default );
     }
 
     /**
