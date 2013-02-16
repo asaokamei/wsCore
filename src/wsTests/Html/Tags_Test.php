@@ -12,7 +12,12 @@ class Tags_Test extends \PHPUnit_Framework_TestCase
         $this->tags = new Tags();
     }
     // +----------------------------------------------------------------------+
-    function test_get_call()
+    function test_short_attribute()
+    {
+        $img = $this->tags->img->important->src( 'image src' );
+        $this->assertContains( '<img important="important" src="image src" />', (string) $img );
+    }
+    function test_short_tagName()
     {
         $img = $this->tags->img->src( 'image src' );
         $this->assertContains( '<img src="image src" />', (string) $img );

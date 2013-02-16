@@ -2,9 +2,6 @@
 namespace WScore\Html;
 
 /**
- * todo: rename methods:
- * [ _class, _style ] -> [ class_, style_ ] , [ safe_, wrap_ ] -> [ _safe, _wrap ]
- * [ _contain -> _contain ], _ = _contain,
  *
  * @method \WScore\Html\Tags a()
  * @method \WScore\Html\Tags href()
