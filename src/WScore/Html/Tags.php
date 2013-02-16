@@ -141,6 +141,13 @@ class Tags
         return $this;
     }
 
+    public function __get( $name ) {
+        if( is_null( $this->tagName ) ) {
+            return $this->_new( $name );
+        }
+        $this->_setAttribute( $name, true );
+        return $this;
+    }
     /**
      * make string VERY safe for html.
      *

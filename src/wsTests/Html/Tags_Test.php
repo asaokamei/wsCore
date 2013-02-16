@@ -12,6 +12,14 @@ class Tags_Test extends \PHPUnit_Framework_TestCase
         $this->tags = new Tags();
     }
     // +----------------------------------------------------------------------+
+    function test_get_call()
+    {
+        $img = $this->tags->img->src( 'image src' );
+        $this->assertContains( '<img src="image src" />', (string) $img );
+        
+        $div = $this->tags->div->class_( 'divClass' )->_contain( 'div text' );
+        $this->assertContains( '<div class="divClass">div text</div>', (string) $div );
+    }
     public function test_underscore_to_hyphen()
     {
         $span = (string) $this->tags->span( 'text span' )->data_type( 'dataType' );
