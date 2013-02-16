@@ -51,13 +51,13 @@ class Tags
     protected $contents   = array();
     
     /** @var array                 array of attributes       */
-    public $attributes = array();
+    public $_attributes = array();
     
     /** @var bool                  for form element's name   */
     protected $multiple = false;
 
     /** @var array                 normalize tag name  */
-    public static $normalize_tag = array(
+    public static $_normalize_tag = array(
         'b'       => 'strong',
         'bold'    => 'strong',
         'italic'  => 'i',
@@ -67,23 +67,23 @@ class Tags
         'number'  => 'nl',
     );
     /** @var array                  tags without contents */
-    public static $tag_no_body = array(
+    public static $_tag_no_body = array(
         'br', 'img', 'input',
     );
     /** @var array                  in-line tags   */
-    public static $tag_span = array(
+    public static $_tag_span = array(
         'span', 'p', 'strong', 'i', 'sub', 'li', 'a', 'label',
     );
     /** @var array                  how to connect attribute values */
-    public static $attribute_connectors = array(
+    public static $_attribute_connectors = array(
         'class' => ' ',
         'style' => '; ',
     );
     /** @var string                 encoding */
-    public static $encoding = 'UTF-8';
+    public static $_encoding = 'UTF-8';
 
     /** @var bool                   true for tags such as <img /> */
-    public $noBodyTag = false;
+    public $_noBodyTag = false;
     // +----------------------------------------------------------------------+
     //  constructions and static methods
     // +----------------------------------------------------------------------+
@@ -149,7 +149,7 @@ class Tags
      */
     public static function _safe( $value ) {
         if( empty( $value ) ) return $value;
-        return htmlentities( $value, ENT_QUOTES, static::$encoding );
+        return htmlentities( $value, ENT_QUOTES, static::$_encoding );
     }
 
     /**
@@ -163,11 +163,11 @@ class Tags
     }
 
     public function _isSpanTag() {
-        return in_array( $this->tagName, static::$tag_span );
+        return in_array( $this->tagName, static::$_tag_span );
     }
 
     public function _isNoBodyTag() {
-        return $this->noBodyTag;
+        return $this->_noBodyTag;
     }
     // +----------------------------------------------------------------------+
     //  mostly internal functions
@@ -182,12 +182,12 @@ class Tags
     {
         if( empty( $tagName ) ) return $this;
         $tagName = $this->_normalize( $tagName );
-        if( array_key_exists( $tagName, static::$normalize_tag ) ) {
-            $tagName = static::$normalize_tag[ $tagName ];
+        if( array_key_exists( $tagName, static::$_normalize_tag ) ) {
+            $tagName = static::$_normalize_tag[ $tagName ];
         }
         $this->tagName = $tagName;
-        if( in_array( $this->tagName, static::$tag_no_body ) ) {
-            $this->noBodyTag = true;
+        if( in_array( $this->tagName, static::$_tag_no_body ) ) {
+            $this->_noBodyTag = true;
         }
         return $this;
     }
@@ -234,17 +234,17 @@ class Tags
         // set connector if it is not set.
         if( $connector === null ) {
             $connector = false;                  // default is to replace value.
-            if( array_key_exists( $name, static::$attribute_connectors ) ) {
-                $connector = static::$attribute_connectors[ $name ];
+            if( array_key_exists( $name, static::$_attribute_connectors ) ) {
+                $connector = static::$_attribute_connectors[ $name ];
             }
         }
         // set attribute.
-        if( !isset( $this->attributes[ $name ] ) // new attribute.
+        if( !isset( $this->_attributes[ $name ] ) // new attribute.
             || $connector === false ) {          // replace with new value.
-            $this->attributes[ $name ] = $value;
+            $this->_attributes[ $name ] = $value;
         }
         else {                                   // attribute is appended.
-            $this->attributes[ $name ] .= $connector . $value;
+            $this->_attributes[ $name ] .= $connector . $value;
         }
         return $this;
     }
@@ -303,15 +303,15 @@ class Tags
      * @param \Closure $func
      * @param string $attribute
      */
-    public function walk( $func, $attribute=null )
+    public function _walk( $func, $attribute=null )
     {
-        if( !$attribute || isset( $this->$attribute ) || isset( $this->attributes[ $attribute ] ) ) {
+        if( !$attribute || isset( $this->$attribute ) || isset( $this->_attributes[ $attribute ] ) ) {
             $func( $this );
         }
         if( !empty( $this->contents ) ) {
             foreach( $this->contents as $content ) {
                 if( $content instanceof self ) {
-                    $content->walk( $func, $attribute );
+                    $content->_walk( $func, $attribute );
                 }
             }
         }
@@ -345,8 +345,8 @@ class Tags
      */
     protected function _toAttribute() {
         $attr = '';
-        if( !empty( $this->attributes ) )
-            foreach( $this->attributes as $name => $value ) {
+        if( !empty( $this->_attributes ) )
+            foreach( $this->_attributes as $name => $value ) {
                 if( $value instanceof \Closure ) {
                     $value = $value(); // wrapped by closure. use it as is.
                 }

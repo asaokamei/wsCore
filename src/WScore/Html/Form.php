@@ -337,7 +337,7 @@ class Form extends Tags
      */
     public function setId( $id=null ) {
         if( !$id ) {
-            $id = array_key_exists( 'name', $this->attributes ) ? $this->attributes[ 'name' ] : false;
+            $id = array_key_exists( 'name', $this->_attributes ) ? $this->_attributes[ 'name' ] : false;
             if( $id === false ) return $this; // do not set id for tags without name attribute.
             $id = str_replace( array( '[', ']' ), '_', $id );
             if( in_array( $this->type, array( 'checkbox', 'radio' ) ) && isset( $this->value )) {
@@ -367,10 +367,10 @@ class Form extends Tags
     {
         $addMultiple = function( $form ) {
             /** @var $form Form */
-            if( isset( $form->attributes[ 'name' ] ) ) { $form->attributes[ 'name' ].= '[]'; }
+            if( isset( $form->_attributes[ 'name' ] ) ) { $form->_attributes[ 'name' ].= '[]'; }
         };
         /** @var $div Form */
-        $this->walk( $addMultiple );
+        $this->_walk( $addMultiple );
         return $this;
     }
 
@@ -383,7 +383,7 @@ class Form extends Tags
             /** @var $form Form */
             $form->setId();
         };
-        $this->walk( $addId );
+        $this->_walk( $addId );
         return $this;
     }
     // +----------------------------------------------------------------------+

@@ -290,7 +290,7 @@ class Selector
         $lists = $this->form->datalist()->id( $id );
         foreach( $this->item_data as $item ) {
             $option = $this->form->option()->value( $item );
-            $option->noBodyTag = true;
+            $option->_noBodyTag = true;
             $lists->_contain( $option );
         }
         $div = $this->form->div( $input, $lists );

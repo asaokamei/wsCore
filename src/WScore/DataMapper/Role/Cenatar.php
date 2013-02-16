@@ -50,17 +50,17 @@ class Role_Cenatar extends Role_Selectable
         $format = $this->cena->getFormName( $cenaId, $type );
         $makeCena = function( $form ) use( $format ) {
             /** @var $tags \WScore\Html\Form */
-            if( isset( $form->attributes[ 'name' ] ) ) {
-                $name = $form->attributes[ 'name' ];
+            if( isset( $form->_attributes[ 'name' ] ) ) {
+                $name = $form->_attributes[ 'name' ];
                 $post = '';
                 if( substr( $name, -2 ) == '[]' ) {
                     $name = substr( $name, 0, -2 );
                     $post = '[]';
                 }
-                $form->attributes[ 'name' ] = $format . '[' . $name . ']' . $post;
+                $form->_attributes[ 'name' ] = $format . '[' . $name . ']' . $post;
             }
         };
-        $html->walk( $makeCena, 'name' );
+        $html->_walk( $makeCena, 'name' );
     }
 
     /**
