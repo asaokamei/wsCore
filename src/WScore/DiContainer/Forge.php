@@ -15,7 +15,7 @@ class Forge
     private $cache  = null;
     // +----------------------------------------------------------------------+
     /**
-     * @param null $cache
+     * @param Cache_Interface $cache
      * @return \WScore\DiContainer\Forge
      */
     public function __construct( $cache=null )
