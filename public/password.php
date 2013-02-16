@@ -39,7 +39,7 @@ if( $passwords = $view->get( 'passwords' ) )
     /** @var $table \WScore\Html\Tags */
     $md5  = $view->get( 'md5' );
     $tags = Core::get( '\WScore\Html\Tags' );
-    $table = $tags->table()->_class( 'table' )->contain_(
+    $table = $tags->table()->class_( 'table' )->_contain(
         $tags->tr(
             $tags->th( '#' ),
             $tags->th( 'generated password' ),
@@ -49,7 +49,7 @@ if( $passwords = $view->get( 'passwords' ) )
     $counter = 0;
     foreach( $passwords as $key => $pwd ) {
 
-        $table->contain_(
+        $table->_contain(
             $tags->tr(
                 $tags->td( ++$counter ),
                 $tags->td( $tags->span( $pwd )->style( 'font-family: courier') ),

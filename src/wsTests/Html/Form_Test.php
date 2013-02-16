@@ -181,7 +181,7 @@ class Form_Test extends \PHPUnit_Framework_TestCase
         $form = (string) $this->form->textArea( 'user_memo', 'this is memo' )->_ime( 'ON' );
         $this->assertEquals( '<textarea name="user_memo" style="ime-mode:active">this is memo</textarea>'."\n", $form );
         
-        $form = (string) $this->form->textArea( 'user_memo', 'this is memo. ' )->contain_( 'more memo' );
+        $form = (string) $this->form->textArea( 'user_memo', 'this is memo. ' )->_contain( 'more memo' );
         $this->assertEquals( '<textarea name="user_memo">this is memo. more memo</textarea>'."\n", $form );
     }
     function test_input_no_class_is_set()

@@ -103,14 +103,14 @@ class friendsView
         // -----------------------------
         // show brief info about my friend.
         $contents    = array();
-        $contents[ ] = $tags->a( 'edit info' )->href( $editUrl )->_class( 'btn btn-primary' )->style( 'float:right' );
-        $dl = $this->tags->dl()->_class( 'dl-horizontal' );
-        $dl->contain_( $this->tags->dt( 'basic info' ) );
-        $dl->contain_( $this->tags->dd( $this->lists( $role, array( 'gender', 'birthday', 'star' ) ) ) );
-        $dl->contain_( $this->tags->div()->style( 'clear:both') );
-        $dl->contain_( $this->tags->dt( 'groups' ) );
-        $dl->contain_( $this->tags->dd( $groupInfo ) );
-        $dl->contain_( $this->tags->div()->style( 'clear:both' ) );
+        $contents[ ] = $tags->a( 'edit info' )->href( $editUrl )->class_( 'btn btn-primary' )->style( 'float:right' );
+        $dl = $this->tags->dl()->class_( 'dl-horizontal' );
+        $dl->_contain( $this->tags->dt( 'basic info' ) );
+        $dl->_contain( $this->tags->dd( $this->lists( $role, array( 'gender', 'birthday', 'star' ) ) ) );
+        $dl->_contain( $this->tags->div()->style( 'clear:both') );
+        $dl->_contain( $this->tags->dt( 'groups' ) );
+        $dl->_contain( $this->tags->dd( $groupInfo ) );
+        $dl->_contain( $this->tags->div()->style( 'clear:both' ) );
         $contents[] = $dl;
         // -----------------------------
         // organize contacts based on types
@@ -127,16 +127,16 @@ class friendsView
             $contents[ ] = '<hr>';
             $contents[ ] = $tags->a( 'add new' )
                 ->href( $appUrl.'contact/' . $id . '/type/' . $type[0] )
-                ->_class( 'btn btn-mini btn-info' )->style( 'float:right' );
+                ->class_( 'btn btn-mini btn-info' )->style( 'float:right' );
             $contents[ ] = $tags->h4( $type[1] );
             if( isset( $roleContacts[ $type[0] ] ) )
             {
-                $contents[] = $dl = $tags->dl()->_class( 'dl-horizontal' );
+                $contents[] = $dl = $tags->dl()->class_( 'dl-horizontal' );
                 /** @var $role \WScore\DataMapper\Role_Selectable */
                 foreach( $roleContacts[ $type[0] ] as $role )
                 {
                     $link = $appUrl . 'contact/' . $id . '/' . $role->getId();
-                    $dl->contain_(
+                    $dl->_contain(
                         $this->tags->dt( $role->popHtml( 'label' ) ),
                         $this->tags->dd( $this->tags->a( $role->popHtml( 'info' ) )->href( $link ) )
                     );
@@ -171,11 +171,11 @@ class friendsView
         $this->set( 'title', $entity->popHtml( 'name', 'html' ) );
         $back = $this->view->get( 'appUrl' ) . $entity->getId();
         $form = $this->tags->form()->method( 'post' )->action( '' );
-        $form->contain_(
+        $form->_contain(
             $selGroup,
             $this->dl( $entity, array( 'name', 'gender', 'birthday', 'star', 'memo' ) ),
             $this->view->bootstrapButton( 'submit', 'update info', 'btn btn-primary' ),
-            $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' )
+            $this->tags->a( 'back' )->href( $back )->class_( 'btn btn-small' )
         );
         $contents    = array();
         $contents[ ] = $form;
@@ -205,10 +205,10 @@ class friendsView
         $contents[ ] = $this->tags->h4( 'contact info for: ', $contact->popHtml( 'type', 'html' ) );
         
         $form = $this->tags->form()->action('')->method( 'post' );
-        $form->contain_(
+        $form->_contain(
             $this->dl( $contact, array( 'type', 'label', 'info', ) ),
             $this->view->bootstrapButton( 'submit', 'save contact', 'btn btn-primary' ),
-            $this->tags->a( 'back' )->href( $back )->_class( 'btn btn-small' )
+            $this->tags->a( 'back' )->href( $back )->class_( 'btn btn-small' )
         );
         $contents[ ] = $form;
         $this->set( 'content', $contents );
@@ -223,21 +223,21 @@ class friendsView
     public function showForm_group( $groups, $action )
     {
         $this->set( 'title', 'My Groups' );
-        $dl = $this->tags->dl()->_class( 'dl-horizontal');
-        $dl->contain_( $this->tags->dt( 'group code:' ) );
-        $dl->contain_( $this->tags->dd( 'group\'s name/description' ) );
+        $dl = $this->tags->dl()->class_( 'dl-horizontal');
+        $dl->_contain( $this->tags->dt( 'group code:' ) );
+        $dl->_contain( $this->tags->dd( 'group\'s name/description' ) );
         foreach( $groups as $group )
         {
             $sel = $this->role->applySelectable( $group );
             $link = $this->get( 'appUrl' ) . 'group/' . $sel->popHtml( 'group_code' );
             $link = $this->tags->a( $this->tags->dd( $sel->popHtml( 'name' ) ) )->href( $link );
-            $dl->contain_( $this->tags->dt( $sel->popHtml( 'group_code' ) ) );
-            $dl->contain_( $link );
+            $dl->_contain( $this->tags->dt( $sel->popHtml( 'group_code' ) ) );
+            $dl->_contain( $link );
         }
         $form = $this->tags->form()->method('post');
-        $form->contain_(
-            $this->tags->input( 'text', 'group_code' )->_class( 'span2' )->placeholder( 'group code' ),
-            $this->tags->input( 'text', 'name' )->_class( 'span5' )->placeholder( 'group\'s name... ' ),
+        $form->_contain(
+            $this->tags->input( 'text', 'group_code' )->class_( 'span2' )->placeholder( 'group code' ),
+            $this->tags->input( 'text', 'name' )->class_( 'span5' )->placeholder( 'group\'s name... ' ),
             '<br>',
             $this->tags->input( 'submit', 'submit', 'new group', array( 'class' => 'btn btn-primary btn-small' ) )
         );
@@ -250,14 +250,14 @@ class friendsView
         $sel->setHtmlType( 'form' );
         $this->set( 'title', 'My Groups' );
         $dl = $this->tags->dl();
-        $dl->contain_( $this->dt( $sel, 'group_code' ) );
-        $dl->contain_( $this->tags->dd( $sel->popHtml( 'group_code', 'html' ) ) );
-        $dl->contain_( $this->dt( $sel, 'name' ) );
-        $dl->contain_( $this->dd( $sel, 'name' ) );
+        $dl->_contain( $this->dt( $sel, 'group_code' ) );
+        $dl->_contain( $this->tags->dd( $sel->popHtml( 'group_code', 'html' ) ) );
+        $dl->_contain( $this->dt( $sel, 'name' ) );
+        $dl->_contain( $this->dd( $sel, 'name' ) );
         $form = $this->tags->form()->method( 'post' );
-        $form->contain_( $dl );
-        $form->contain_( $this->view->bootstrapButton( 'submit', 'save group', 'primary' ) );
-        $form->contain_( $this->tags->a( 'back' )->href( $this->get( 'appUrl' ) . 'group' )->_class( 'btn btn-small') );
+        $form->_contain( $dl );
+        $form->_contain( $this->view->bootstrapButton( 'submit', 'save group', 'primary' ) );
+        $form->_contain( $this->tags->a( 'back' )->href( $this->get( 'appUrl' ) . 'group' )->class_( 'btn btn-small') );
         $contents = array( $form );
         $this->set( 'content', $contents );
     }
@@ -275,7 +275,7 @@ class friendsView
         $tags = $this->tags;
         $div  = $tags->div();
         foreach ( $list as $name ) {
-            $div->contain_( $tags->div( $entity->popHtml( $name ) )->style( 'float:left; margin-right: 1em; min-width:3em; ' ) );
+            $div->_contain( $tags->div( $entity->popHtml( $name ) )->style( 'float:left; margin-right: 1em; min-width:3em; ' ) );
         }
         return $div;
     }
@@ -290,8 +290,8 @@ class friendsView
         $tags = $this->tags;
         $dl   = $tags->dl();
         foreach ( $list as $name ) {
-            $dl->contain_( $this->dt( $entity, $name ) );
-            $dl->contain_( $this->dd( $entity, $name ) );
+            $dl->_contain( $this->dt( $entity, $name ) );
+            $dl->_contain( $this->dd( $entity, $name ) );
         }
         return $dl;
     }
@@ -316,7 +316,7 @@ class friendsView
         return $this->tags->dd(
             $entity->popHtml( $name ),
             $this->tags->div()->style( 'clear:both' ),
-            $this->tags->span( $entity->popError( $name ) )->_class( 'formError' )
+            $this->tags->span( $entity->popError( $name ) )->class_( 'formError' )
         );
     }
 
@@ -327,7 +327,7 @@ class friendsView
      */
     public function tableView( $entity, $type = 'html' )
     {
-        $table  = $this->tags->table()->_class( 'table' )->contain_(
+        $table  = $this->tags->table()->class_( 'table' )->_contain(
             $this->tags->tr(
                 $this->tags->th( ' ' ),
                 $this->tags->th( 'name' ),
@@ -356,8 +356,8 @@ class friendsView
                 }
             }
             $groupInfo = implode( ', ', $groupInfo );
-            $button = $this->tags->a( '>>' )->href( $appUrl . $id )->_class( 'btn btn-small btn' );
-            $table->contain_(
+            $button = $this->tags->a( '>>' )->href( $appUrl . $id )->class_( 'btn btn-small btn' );
+            $table->_contain(
                 $tr = $this->tags->tr(
                     $this->tags->td( $star ),
                     $this->tags->td( $memo ),
@@ -376,7 +376,7 @@ class friendsView
         $this->set( 'title', 'Confirm Initializing Tasks' );
         $check = $this->tags->checkLabel( 'initDb', 'yes', 'check this box and click initialize button' );
         $form  = $this->tags->form()->method( 'post' )->action( '' );
-        $form->contain_(
+        $form->_contain(
             $this->tags->p( 'really initialize database?' ),
             $this->tags->p( 'all the current tasks will be removed...' ),
             $check,

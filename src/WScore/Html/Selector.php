@@ -291,7 +291,7 @@ class Selector
         foreach( $this->item_data as $item ) {
             $option = $this->form->option()->value( $item );
             $option->noBodyTag = true;
-            $lists->contain_( $option );
+            $lists->_contain( $option );
         }
         $div = $this->form->div( $input, $lists );
         return $div;

@@ -78,7 +78,7 @@ class Role_Cenatar extends Role_Selectable
                 $cenaId = $this->cena->cena . $this->cena->connector . $target->_get_cenaId();
                 $tag = $this->selector->form()->input( 'hidden', $name, $cenaId )->multipleName();
                 $this->populateFormName( $tag, 'link' );
-                $hideDivs->contain_( $tag );
+                $hideDivs->_contain( $tag );
             }
         }
         return $hideDivs;

@@ -130,21 +130,21 @@ class taskView
         /** @var $dl \WScore\Html\Tags */
         $entity->setHtmlType( $type );
         $dl = $this->tags->dl();
-        $dl->contain_(
+        $dl->_contain(
             $this->tags->dt( $entity->popName( 'task_memo' ) ),
             $this->tags->dd(
                 $entity->popHtml( 'task_memo' ), '<br />',
-                $this->tags->span( $entity->popError( 'task_memo' ) )->_class( 'formError' )
+                $this->tags->span( $entity->popError( 'task_memo' ) )->class_( 'formError' )
             ),
             $this->tags->dt( $entity->popName( 'task_date' ) ),
             $this->tags->dd(
                 $entity->popHtml( 'task_date' ), '<br />',
-                $this->tags->span( $entity->popError( 'task_date' ) )->_class( 'formError' )
+                $this->tags->span( $entity->popError( 'task_date' ) )->class_( 'formError' )
             ),
             $this->tags->dt( $entity->popName( 'task_status' ) ),
             $this->tags->dd(
                 $entity->popHtml( 'task_status' ), '<br />',
-                $this->tags->span( $entity->popError( 'task_status' ) )->_class( 'formError' )
+                $this->tags->span( $entity->popError( 'task_status' ) )->class_( 'formError' )
             )
         );
         return $dl;
@@ -157,7 +157,7 @@ class taskView
      */
     public function tableView( $entity, $type='html' )
     {
-        $table = $this->tags->table()->_class( 'table' )->contain_(
+        $table = $this->tags->table()->class_( 'table' )->_contain(
             $this->tags->tr(
                 $this->tags->th( 'task description' ),
                 $this->tags->th( 'date' ),
@@ -173,13 +173,13 @@ class taskView
             $task = $row->retrieve();
             if( $task->isDone() ) {
                 $memo   = $this->tags->a( $row->popHtml( 'task_memo' ) )->href( $taskUrl . 'task/'.$id )->style( 'color:#669999');
-                $button = $this->tags->a( 'delete' )->href( $taskUrl . 'done/'.$id )->_class( 'btn btn-small btn' );
+                $button = $this->tags->a( 'delete' )->href( $taskUrl . 'done/'.$id )->class_( 'btn btn-small btn' );
             }
             else {
                 $memo   = $this->tags->a( $row->popHtml( 'task_memo' ) )->href( $taskUrl . 'task/'.$id )->style( 'font-weight:bold' );
-                $button = $this->tags->a( 'done' )->href( $taskUrl . 'done/'.$id )->_class( 'btn btn-small btn-primary' );
+                $button = $this->tags->a( 'done' )->href( $taskUrl . 'done/'.$id )->class_( 'btn btn-small btn-primary' );
             }
-            $table->contain_(
+            $table->_contain(
                 $tr = $this->tags->tr(
                     $this->tags->td( $memo ),
                     $this->tags->td( $row->popHtml( 'task_date' ) ),
@@ -195,7 +195,7 @@ class taskView
         $this->set( 'title', 'Confirm Initializing Tasks' );
         $check = $this->tags->checkLabel( 'initDb', 'yes', 'check this box and click initialize button' );
         $form = $this->tags->form()->method( 'post' )->action( '' );
-        $form->contain_(
+        $form->_contain(
             $this->tags->p( 'really initialize database?' ),
             $this->tags->p( 'all the current tasks will be removed...' ),
             $check,

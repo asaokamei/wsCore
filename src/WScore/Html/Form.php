@@ -42,7 +42,7 @@ class Form extends Tags
     {
         $form = clone $this;
         $form->style = $type;
-        $form->setTagName_( 'input' );
+        $form->_setTagName( 'input' );
         $form->setType( $type );
         $form->setName( $name );
         $form->setValue( $value );
@@ -63,25 +63,25 @@ class Form extends Tags
     {
         $form = clone $this;
         $form->style = 'textarea';
-        $form->setTagName_( 'textarea' );
+        $form->_setTagName( 'textarea' );
         $form->applyAttributes( $attributes );
         $form->setName( $name );
         $form->contents[0] = '';
-        return $form->contain_( $value );
+        return $form->_contain( $value );
     }
 
-    public function setContents_( $contents )
+    public function _setContents( $contents )
     {
         // for textarea special.
         if( $this->tagName == 'textarea' ) {
             if( is_array( $contents ) ) {
                 $contents = implode( '', $contents ); // to string.
             }
-            $contents = $this->safe_( $contents );
+            $contents = $this->_safe( $contents );
             $this->contents[0] .= $contents;
             return $this;
         }
-        return parent::setContents_( $contents );
+        return parent::_setContents( $contents );
     }
     // +----------------------------------------------------------------------+
     /**
@@ -98,7 +98,7 @@ class Form extends Tags
     {
         $form = clone $this;
         $form->style = 'select';
-        $form->setTagName_( 'select' );
+        $form->_setTagName( 'select' );
         $form->setName( $name );
         $form->items = $items;
         $form->applyAttributes( $attributes );
@@ -123,7 +123,7 @@ class Form extends Tags
         {
             $value = $item[0];
             $label = $item[1];
-            $option = $this::_()->option( $label )->value( $value );
+            $option = $this::_new()->option( $label )->value( $value );
             if( in_array( $value, $checked ) ) {
                 /** @noinspection PhpUndefinedMethodInspection */
                 $option->selected( true );
@@ -135,14 +135,14 @@ class Form extends Tags
                     $optGroup = $groupList[ $group ];
                 }
                 else {
-                    $optGroup = $this::_()->optgroup()->label( $group );
-                    $select->contain_( $optGroup );
+                    $optGroup = $this::_new()->optgroup()->label( $group );
+                    $select->_contain( $optGroup );
                     $groupList[ $group ] = $optGroup;
                 }
-                $optGroup->contain_( $option );
+                $optGroup->_contain( $option );
             }
             else {
-                $select->contain_( $option );
+                $select->_contain( $option );
             }
         }
     }
@@ -186,7 +186,7 @@ class Form extends Tags
      * @return Form|Tags
      */
     public function radioLabel( $name, $value, $label, $attributes=array() ) {
-        return $this::_()->label( $this->radio( $name, $value, $attributes ), $label );
+        return $this::_new()->label( $this->radio( $name, $value, $attributes ), $label );
     }
 
     /**
@@ -198,7 +198,7 @@ class Form extends Tags
      * @return Form|Tags
      */
     public function checkLabel( $name, $value, $label, $attributes=array() ) {
-        return $this::_()->label( $this->check( $name, $value, $attributes ), $label );
+        return $this::_new()->label( $this->check( $name, $value, $attributes ), $label );
     }
 
     /**
@@ -242,35 +242,35 @@ class Form extends Tags
     public function doBox( $style, $name, $items, $checked=array(), $attributes=array() )
     {
         if( !is_array( $checked ) ) $checked = array( $checked );
-        $list = $this::_()->nl();
+        $list = $this::_new()->nl();
         /** @var $div Form */
-        $div = $this::_()->div( $list )->_class( 'formListBox' );
+        $div = $this::_new()->div( $list )->class_( 'formListBox' );
         foreach( $items as $item ) {
             $value = $item[0];
             $label = $item[1];
             /** @var $check Form */
             $check = $this()->$style( $name, $value, $attributes );
             if( in_array( $value, $checked ) ) $check->checked( true );
-            $list->contain_(
-                $this::_()->li( $this::_()->label( $check, $label )
+            $list->_contain(
+                $this::_new()->li( $this::_new()->label( $check, $label )
                 ));
         }
         return $div;
     }
 
     public function lists( $items, $name=null ) {
-        $list = $this::_()->nl()->_class( 'formListBox' . $name );
+        $list = $this::_new()->nl()->class_( 'formListBox' . $name );
         foreach( $items as $item ) {
-            $list->contain_( $this::_()->li( $item ) );
+            $list->_contain( $this::_new()->li( $item ) );
         }
         return $list;
     }
     public function listBox( $items, $name=null )
     {
-        $list = $this::_()->nl();
-        $div = $this::_()->div( $list )->_class( 'formListBox' . $name );
+        $list = $this::_new()->nl();
+        $div = $this::_new()->div( $list )->class_( 'formListBox' . $name );
         foreach( $items as $item ) {
-            $list->contain_( $this::_()->li( $item ) );
+            $list->_contain( $this::_new()->li( $item ) );
         }
         return $div;
     }
@@ -307,14 +307,14 @@ class Form extends Tags
             );
         }
         if( isset( $ime_style[ strtoupper( $ime ) ] ) ) {
-            $this->_style( $ime_style[ strtoupper( $ime ) ] );
+            $this->style_( $ime_style[ strtoupper( $ime ) ] );
         }
         return $this;
     }
 
     public function setValue( $value ) {
         $this->value = $value;
-        $this->setAttribute_( 'value', $value );
+        $this->_setAttribute( 'value', $value );
         return $this;
     }
     /**
@@ -326,7 +326,7 @@ class Form extends Tags
     public function setType( $type )
     {
         $this->type = $type;
-        $this->setAttribute_( 'type', $type );
+        $this->_setAttribute( 'type', $type );
         return $this;
     }
     /**
@@ -344,7 +344,7 @@ class Form extends Tags
                 $id .= '_' . $this->value;
             }
         }
-        $this->setAttribute_( 'id', $id );
+        $this->_setAttribute( 'id', $id );
         return $this;
     }
 
@@ -355,7 +355,7 @@ class Form extends Tags
      * @return Form|Tags
      */
     public function setName( $name ) {
-        $this->setAttribute_( 'name', $name );
+        $this->_setAttribute( 'name', $name );
         return $this;
     }
 

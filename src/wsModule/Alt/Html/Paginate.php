@@ -47,18 +47,18 @@ class Paginate
      */
     function bootstrap()
     {
-        $pageDiv = $this->tags->div( $ul = $this->tags->ul() )->_class( 'pagination' );
-        if( $li = $this->getListBootstrap( 'top_page',  'top' ) ) $ul->contain_( $li );
-        if( $li = $this->getListBootstrap( 'prev_page', '«'   ) ) $ul->contain_( $li );
+        $pageDiv = $this->tags->div( $ul = $this->tags->ul() )->class_( 'pagination' );
+        if( $li = $this->getListBootstrap( 'top_page',  'top' ) ) $ul->_contain( $li );
+        if( $li = $this->getListBootstrap( 'prev_page', '«'   ) ) $ul->_contain( $li );
         foreach( $this->url['pages'] as $page => $url ) {
             if( !$url ) {
-                $ul->contain_( $this->tags->li( $this->tags->a( $page )->href( '#' ) )->_class( 'disabled' ) );
+                $ul->_contain( $this->tags->li( $this->tags->a( $page )->href( '#' ) )->class_( 'disabled' ) );
             } else {
-                $ul->contain_( $this->tags->li( $this->tags->a( $page )->href( $url ) ) );
+                $ul->_contain( $this->tags->li( $this->tags->a( $page )->href( $url ) ) );
             }
         }
-        if( $li = $this->getListBootstrap( 'next_page', '»'    ) ) $ul->contain_( $li );
-        if( $li = $this->getListBootstrap( 'last_page', 'last' ) ) $ul->contain_( $li );
+        if( $li = $this->getListBootstrap( 'next_page', '»'    ) ) $ul->_contain( $li );
+        if( $li = $this->getListBootstrap( 'last_page', 'last' ) ) $ul->_contain( $li );
         return $pageDiv;
     }
 
@@ -73,7 +73,7 @@ class Paginate
         if( $this->url[ $name ] ) {
             return $this->tags->li( $this->tags->a( $label )->href( $this->url[ $name ] ) );
         }
-        return $this->tags->li( $this->tags->a( $label )->href( '#' ) )->_class( 'disabled' );
+        return $this->tags->li( $this->tags->a( $label )->href( '#' ) )->class_( 'disabled' );
     }
     // +----------------------------------------------------------------------+
 }

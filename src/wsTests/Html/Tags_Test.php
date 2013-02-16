@@ -23,7 +23,7 @@ class Tags_Test extends \PHPUnit_Framework_TestCase
         $text = (string)  $this->tags->input()->value( $unsafe );
         $this->assertContains( htmlentities( $unsafe ), $text );
         
-        $text = (string)  $this->tags->input()->value( Tags::wrap_( $unsafe ) );
+        $text = (string)  $this->tags->input()->value( Tags::_wrap( $unsafe ) );
         $this->assertContains( $unsafe, $text );
     }
     public function test_inline()
@@ -38,7 +38,7 @@ class Tags_Test extends \PHPUnit_Framework_TestCase
     }
     public function test_div_in_div_box()
     {
-        $text = (string)  $this->tags->div()->_class( 'divClass' )->contain_(
+        $text = (string)  $this->tags->div()->class_( 'divClass' )->_contain(
             'this is a text',
             $this->tags->div(
                 $this->tags->a( 'link1' )->href( 'do.php' )->target( '_blank' ),
@@ -80,16 +80,16 @@ class Tags_Test extends \PHPUnit_Framework_TestCase
         $text = (string)  $this->tags->a( 'a link' )->href( 'do.php' )->style( 'style1' )->style( 'style2' );
         $this->assertContains( '<a href="do.php" style="style1; style2">a link</a>', $text );
 
-        $text = (string)  $this->tags->a( 'a link' )->href( 'do.php' )->style( 'style1' )->_style( 'style2', FALSE );
+        $text = (string)  $this->tags->a( 'a link' )->href( 'do.php' )->style( 'style1' )->style_( 'style2', false );
         $this->assertContains( '<a href="do.php" style="style2">a link</a>', $text );
 
     }
     public function test_class()
     {
-        $text = (string)  $this->tags->a( 'a link' )->href( 'do.php' )->_class( 'myClass' )->_class( 'myClass2' );
+        $text = (string)  $this->tags->a( 'a link' )->href( 'do.php' )->class_( 'myClass' )->class_( 'myClass2' );
         $this->assertContains( '<a href="do.php" class="myClass myClass2">a link</a>', $text );
 
-        $text = (string)  $this->tags->a( 'a link' )->href( 'do.php' )->_class( 'myClass' )->_class( 'myClass2', FALSE );
+        $text = (string)  $this->tags->a( 'a link' )->href( 'do.php' )->class_( 'myClass' )->class_( 'myClass2', false );
         $this->assertContains( '<a href="do.php" class="myClass2">a link</a>', $text );
 
     }

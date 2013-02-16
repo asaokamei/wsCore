@@ -57,7 +57,7 @@ class controller
         );
         $view->set( 'count',
             $this->form->select( 'count', $item_count, array( $this->input['count'] ) )
-                ->_class( 'span2' )
+                ->class_( 'span2' )
         );
     }
 
