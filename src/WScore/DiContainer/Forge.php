@@ -10,15 +10,19 @@ class Forge
 
     /** @var string */
     private $cacheName = 'WScore:DimForge:';
-
+    
     /** @var Cache_Interface */
     private $cache  = null;
+
+    /** @var \WScore\DiContainer\ParseDim */
+    private $parser;
     // +----------------------------------------------------------------------+
     /**
      * @param Cache_Interface $cache
+     * @param ParseDim $parser
      * @return \WScore\DiContainer\Forge
      */
-    public function __construct( $cache=null )
+    public function __construct( $cache=null, $parser=null )
     {
         if( $cache ) {
             $this->cache = $cache;
@@ -26,6 +30,11 @@ class Forge
             $this->cache = Cache::getCache();
         }
         $this->cachedDi = $this->cache->fetch( $this->cacheName );
+        if( $parser ) {
+            $this->parser = $parser;
+        } else {
+            $this->parser = new ParseDim();
+        }
     }
 
     /**
@@ -48,10 +57,10 @@ class Forge
             'setter'    => array(),
         );
         foreach( $injectList['construct'] as $key => $injectInfo ) {
-            $diList['construct'][$key] = Utils::constructByInfo( $container, $injectInfo );
+            $diList['construct'][$key] = $this->parser->constructByInfo( $container, $injectInfo );
         }
         foreach( $injectList['property'] as $key => $injectInfo ) {
-            $diList['property'][$key][0] = Utils::constructByInfo( $container, $injectInfo[0] );
+            $diList['property'][$key][0] = $this->parser->constructByInfo( $container, $injectInfo[0] );
             $diList['property'][$key][1] = $injectInfo[1];
         }
         $object = $this->forge( $className, $diList );
@@ -126,7 +135,7 @@ class Forge
     {
         if( !$refConst   = $refClass->getConstructor() ) return array();
         if( !$comments   = $refConst->getDocComment()  ) return array();
-        $injectList = Utils::parseDimDoc( $comments );
+        $injectList = $this->parser->parseDimDoc( $comments );
         return $injectList;
     }
 
@@ -146,7 +155,7 @@ class Forge
                 foreach( $properties as $refProp ) {
                     if( isset( $injectList[ $refProp->name ] ) ) continue;
                     if( $comments = $refProp->getDocComment() ) {
-                        if( $info = Utils::parseDimDoc( $comments ) ) {
+                        if( $info = $this->parser->parseDimDoc( $comments ) ) {
                             $injectList[ $refProp->name ] = array( end( $info ), $refProp );
                         }
                     }
